@@ -10,7 +10,7 @@ void DriveForwardBy::start(){
 };
 
 void DriveForwardBy::periodic(){ 
-    double output = control->calculate(getDistTraveled(), Brain.Timer.time()) * 2.5;  
+    double output = control->calculate(getDistTraveled(), Brain.Timer.time()) * 2;  
     if (!goingForward) 
         output = -output;
     driveRef.manualDriveForward(output);
@@ -215,22 +215,7 @@ void WaitFor::end(){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+////////////////////////////////////////////////////////////  
 
 
 
@@ -272,3 +257,262 @@ CommandInterface* ramForwardFor(double percentage, double timeDuration){
 }
 
 
+/////////////////////////////////////////////////////////////////////  
+
+/*
+string makePreciseDrive(){  
+    ostringstream res; 
+
+    double dist = 0;   
+    bool intaking;
+    while (true){   
+
+       Brain.Screen.printAt(50, 200, "Press "B" for drive without intaking");   
+       Brain.Screen.printAt(50, 220, "Press "A" for drive with intaking");    
+
+       if (Controller.ButtonB.pressing()){
+         intaking = false;  
+         break;
+       } 
+       if (Controller.ButtonA.pressing()){ 
+         intaking = true  
+         break;
+       }
+    }   
+
+    Brain.Screen.clearScreen(); 
+
+    Drivebase::globalRef->setSpeedFactor(0.1); 
+
+    while (!(Controller.ButtonL2.pressing() && Controller.ButtonRight.pressing())){  
+        
+        Brain.Screen.printAt();
+
+        Drivebase::globalRef->arcadeDrive(Controller.Axis3.position(), 0); 
+      
+      dist += Drivebase::globalRef->get<double>("Velocity_mm/20ms");   
+
+      Brain.Screen.printAt(50,200, "%f", dist); 
+
+      if (intaking){ 
+        
+        Intake::globalRef->intake(); 
+
+      }
+    }  
+    
+    Brain.Screen.clearScreen(); 
+
+    Intake::globalRef->stop();   
+    Drivebase::globalRef->stop(); 
+    Drivebase::globalRef->setSpeedFactor(0.85); 
+    
+    res << intaking << "," << fabs(dist) << "," << (dist > 0);
+    //if (intaking)
+        //return DriveForwardWhileIntaking::getCommand(fabs(dist), dist > 0);
+    //return DriveForwardBy::getCommand(fabs(dist), dist > 0); 
+    return res.str();
+}
+
+string makePreciseTurn(){   
+    ostringstream res;
+    Drivebase::globalRef->setSpeedFactor(0.1);
+    while (!(Controller.ButtonL2.pressing() && Controller.ButtonRight.pressing())){   
+
+        Brain.Screen.printAt(50, 150, "Use the right x-axis on the controller to adjust the angle...");
+        Brain.Screen.printAt(20, 200, "Turn angle: %f", Drivebase::globalRef->get<double>("Angle_Degrees"));  
+
+        Drivebase::globalRef->arcadeDrive(0, Controller.Axis1.position());  
+
+    }  
+    Brain.Screen.clearScreen(); 
+    Drivebase::globalRef->stop();  
+    Drivebase::globalRef->setSpeedFactor(0.85); 
+
+    res "Drive to pos:"<< Drivebase::globalRef->get<double>("Angle_Degrees");
+    return res.str();
+    //return TurnToHeading::getCommand(Drivebase::globalRef->get<double>("Angle_Degrees"));
+} 
+
+string makeIntakeCubes(){  
+     
+     ostringstream res; 
+
+     double startTime;   
+     double elapsedTime = -1;
+     bool holding = false;  
+
+     Hood::globalRef->close(); 
+
+     while ((!(Controller.ButtonL2.pressing() && Controller.ButtonRight.pressing())) || elapsedTime == -1){ 
+        
+        Brain.Screen.printAt(50, 150, "Hold Y to intake cubes"); 
+        Brain.Screen.printAt(50, 150, "Press L2 + Arrow Right to exit");  
+
+        if (!holding){ 
+        if (Controller.ButtonY.pressing()){
+           holding = true; 
+           startTime = Brain.Timer.time();  
+        }
+       }  
+       if (holding){   
+
+         Brain.Screen.printAt(50, 200, "Time holding: %f", Brain.Timer.time() - startTime);   
+         Brain.Screen.printAt(50, 250, "Last time elapsed: %f", elapsedTime); 
+
+         Intake::globalRef->intake(); 
+         Indexer::globalRef->spinOver();
+
+         if (!Controller.ButtonY.pressing()){ 
+            holding = false;   
+
+            Brain.Screen.clearLine(200); 
+            Brain.Screen.clearLine(250);
+
+            Intake::globalRef->stop(); 
+            Indexer::globalRef->stop(); 
+
+            elapsedTime = Brain.Timer.time() - startTime; 
+         } 
+       } 
+     } 
+     res << "Intaking:" << elapsedTime;  
+     return res.str();
+     //return IntakeToHopper::getCommand(elapsedTime);
+}; 
+
+string makeScoreCubes(){ 
+    ostringstream res; 
+
+    int pos;   
+
+    double startTime;   
+    double elapsedTime = -1;
+    bool holding = false;  
+
+    while (true){   
+        
+        Brain.Screen.printAt(50, 200, "Choose which goal you are scoring at: [Arrow Up : 1 : High], [Arrow Left : 2 : Mid], [Arrow Down : 3 : Low]");
+        Brain.Screen.printAt(50, 150, "Press L2 + Arrow Right to exit"); 
+
+        if (Controller.ButtonUp.pressing()){
+           pos = 1;   
+           break
+        }  
+        if (Controller.ButtonLeft.pressing()){ 
+           pos = 2; 
+           break;
+        } 
+        if (Controller.ButtonDown.pressing()){ 
+            pos = 3; 
+            break;
+        }
+    }   
+
+    Brain.Screen.clearLine(200); 
+    Brain.Screen.clearLine(150);
+
+    if (pos == 1){ 
+        Hood::globalRef->open();
+    }
+    while ((!(Controller.ButtonL2.pressing() && Controller.ButtonRight.pressing())) || elapsedTime == -1){ 
+       
+       Brain.Screen.printAt(50,100, "Scoring for goal: %d", pos);  
+       Brain.Screen.printAt(50, 125, "Hold Y to score:");   
+       Brain.Screen.printAt(50, 150, "Press L2 + Arrow Right to exit"); 
+        
+
+       if (!holding){ 
+        if (Controller.ButtonY.pressing()){
+           holding = true; 
+           startTime = Brain.Timer.time();  
+        }
+       }  
+       if (holding){       
+
+         Brain.Screen.printAt(50, 250, "Last time elapsed: %f", elapsedTime); 
+         Brain.Screen.printAt(50, 200, "Time holding: %f", Brain.Timer.time() - startTime);   
+         
+
+         Hopper::globalRef->dispenseCubes();
+         switch (pos){ 
+            case 1: 
+              Intake::globalRef->intake(); 
+              Indexer::globalRef->spinOver(); 
+              break  
+            case 2: 
+              Intake::globalRef->intake(); 
+              Indexer::globalRef.->spinUnder();  
+              break;
+            case 3: 
+              Intake::globalRef->outtake(); 
+              break; 
+         }
+         if (!Controller.ButtonY.pressing()){ 
+            holding = false;  
+            
+            Brain.Screen.clearLine(200); 
+            Brain.Screen.clearLine(250);
+
+            Intake::globalRef->stop(); 
+            Indexer::globalRef->stop();  
+            Hopper::globalRef->stop();
+
+            elapsedTime = Brain.Timer.time() - startTime; 
+         } 
+       } 
+
+    } 
+    res << "ScoreOnGoal:" << pos << "," << elapsedTime; 
+    return res.str();
+    //return ScoreOnGoal::getCommand(pos, elapsedTime);
+} 
+
+string makeRamForward(){  
+    ostringstream res; 
+
+    double percentSpeed = 0; 
+    while (!Controller.ButtonRight.pressing()){ 
+        if (Controller.ButtonUp.pressing()){ 
+            percentSpeed = percentSpeed < 100 ? percentSpeed + 5 : percentSpeed; 
+        } else if (Controller.ButtonDown.pressing()){ 
+            percentSpeed = percentSpeed > -100 ? percentSpeed - 5 : percentSpeed;
+        }
+    } 
+    double startTime;  
+    double elapsedTime;
+    bool holding = false; 
+    
+    Drivebase::globalRef->setSpeedFactor(1);
+
+    while (true){    
+
+      Brain.Screen.printAt(50, 150, "Hold the R2 button to Ram");   
+
+      if (!holding){ 
+         if (Controller.ButtonR2.pressing()){
+           holding = true;   
+           startTime = Brain.Timer.time(); 
+         }
+      } else {   
+
+        Brain.Screen.printAt(50, 200, "Last time elapsed: %f", elapsedTime);  
+        Brain.Screen.printAt(50, 225, "Time holding: %f", Brain.Timer.time() - startTime);
+
+        Drivebase::globalRef->arcadeDrive(percentSpeed, 0); 
+
+        if (!Controller.ButtonR2.pressing()){   
+
+            Drivebase::globalRef->stop();  
+
+            elapsedTime = Brain.Timer.time() - startTime;  
+            break;  
+
+        }
+      }
+    } 
+    res << "Ram forward" << percentSpeed << "," << elapsedTime; 
+    return res.str();
+    //return DriveForwardForTime::getCommand(percentSpeed, elapsedTime);
+}
+*/

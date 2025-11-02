@@ -32,7 +32,8 @@ public:
                                        "drivebase",
                                         {(EntrySet){"Pos_X", EntryType::DOUBLE},
                                          (EntrySet){"Pos_Y", EntryType::DOUBLE},
-                                         (EntrySet){"Angle_Degrees", EntryType::DOUBLE}, 
+                                         (EntrySet){"Angle_Degrees", EntryType::DOUBLE},  
+                                         (EntrySet){"Velocity_mm/20ms", EntryType::DOUBLE},
                                          (EntrySet){"Current_Location", EntryType::STRING}
                                         }
                                     ),

@@ -50,7 +50,7 @@ void Intake::intake(){
 }  
 
 void Intake::outtake(){ 
-    intakeMotor.setVelocity(75, vex::percentUnits::pct); 
+    intakeMotor.setVelocity(50, vex::percentUnits::pct); 
     intakeMotor.spin(vex::directionType::fwd);
 }  
 

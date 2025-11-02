@@ -282,8 +282,16 @@ CommandInterface* holdFor(double timeDuration);
 CommandInterface* extend(); 
 CommandInterface* retract(); 
 CommandInterface* driveAndIntakeForTiles(double tiles);  
-CommandInterface* ramForwardFor(double percentage, double timeDuration);
+CommandInterface* ramForwardFor(double percentage, double timeDuration); 
 
+
+/*
+string makePreciseDrive(bool intaking);
+string makePreciseTurn();
+string makeScoreCubes();
+string makeIntakeCubes();
+string makeRamForward();
+*/
 
 
 

@@ -28,7 +28,7 @@ void Drivebase::init()
    turnPID.P = 0.8;
    turnPID.I = 0.0005;
    turnPID.D = 0;
-   turnPID.errorTolerance = 1.2;
+   turnPID.errorTolerance = 3;
 
    set<double>("Pos_X", startX + ROBOT_WIDTH_MM / 2);
    set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2);
@@ -55,7 +55,8 @@ void Drivebase::updateTelemetry()
    y += hypotenuse * sin(angleRadians);
 
    set<double>("Pos_X", x);
-   set<double>("Pos_Y", y);    
+   set<double>("Pos_Y", y);     
+   set<double>("Velocity_mm/20ms", hypotenuse);
 
    Brain.Screen.print(get<double>("Angle_Degrees")); 
    Brain.Screen.newLine();
