@@ -55,9 +55,10 @@ class Location {
 
      double centerX; 
      double centerY; 
-     double zoneRadius; 
+     double zoneRadius;  
+     double angleTolerance;
      double perfectEntranceAngle; 
-     double angleTolerance;     
+          
 
      string locationName;  
 

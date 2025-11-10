@@ -28,7 +28,7 @@ double DriveForwardBy::getDistTraveled(){
 }; 
 */  
 void DrivePath::start(){ 
-    initializeTurn();   
+    return; 
 }  
 
 void DrivePath::periodic(){ 
@@ -40,10 +40,10 @@ void DrivePath::periodic(){
 } 
 
 bool DrivePath::isOver(){ 
-    return operationsIndex == numOfOperations;
+    return operationsIndex > numOfOperations;
 } 
 
-void DrivePath::end(){ 
+void DrivePath::end(){  
     return;
 }
 
@@ -63,7 +63,7 @@ void DrivePath::drivePeriodic(){
    }
 }  
 
-void DrivePath::turnPeriodic(){ 
+void DrivePath::turnPeriodic(){  
    if (!initialized){
     initializeTurn();  
     initialized = true;
@@ -80,11 +80,11 @@ void DrivePath::turnPeriodic(){
 } 
 
 bool DrivePath::isDriving(){ 
-   return !offset ? operationsIndex % 2 == 1 : operationsIndex % 2 == 0;
+   return turningFirst ? operationsIndex % 2 == 1 : operationsIndex % 2 == 0;
 } 
 
 bool DrivePath::isTurning(){ 
-   return !offset ? operationsIndex % 2 == 0 : operationsIndex % 2 == 1;
+   return turningFirst ? operationsIndex % 2 == 0 : operationsIndex % 2 == 1;
 }
 
 bool DrivePath::isDriveOver(){ 
@@ -95,13 +95,11 @@ void DrivePath::initializeDrive(){
 
     isGoingForward = setpoints.at(operationsIndex) > 0;  
   
-    double xTrans = cos((drivebaseRef.get<double>("Angle_Degrees_CCW")) / 360 * (2*M_PI)) * setpoints.at(operationsIndex); 
-    double yTrans = sin((drivebaseRef.get<double>("Angle_Degrees_CCW")) / 360 * (2*M_PI)) * setpoints.at(operationsIndex); 
-
-    projectedPoint[0] = drivebaseRef.get<double>("Pos_X") + xTrans;   
-    projectedPoint[1] = drivebaseRef.get<double>("Pos_Y") + yTrans; 
+    startingPoint[0] = drivebaseRef.get<double>("Pos_X");   
+    startingPoint[1] = drivebaseRef.get<double>("Pos_Y"); 
     
-    drivePID = new pidcontroller(drivebaseRef.getPowerPID(), 0);
+    drivePID = new pidcontroller(drivebaseRef.getPowerPID(), fabs(setpoints.at(operationsIndex)));  
+    drivePID->setLastTimestamp(Brain.Timer.time());
 }  
 
 void DrivePath::drive(){ 
@@ -112,8 +110,8 @@ void DrivePath::drive(){
 } 
 
 double DrivePath::getDrivingError(){ 
-    return hypot(drivebaseRef.get<double>("Pos_X") - projectedPoint[0], drivebaseRef.get<double>("Pos_Y") - projectedPoint[1]);
-}
+    return hypot(drivebaseRef.get<double>("Pos_X") - startingPoint[0], drivebaseRef.get<double>("Pos_Y") - startingPoint[1]);
+} 
 
 bool DrivePath::isTurnOver(){ 
     return turnPID->atSetpoint(getAngularError());
@@ -125,29 +123,42 @@ void DrivePath::initializeTurn(){
     
     double angleSetpoint = setpoints.at(operationsIndex); 
     
-    double counterClockwiseDist = startAngle > angleSetpoint ? (360 - startAngle) + angleSetpoint : angleSetpoint - startAngle; 
-    double clockwiseDist = 360 - counterClockwiseDist; 
-    
-    isCounterClockwise = (clockwiseDist > counterClockwiseDist);
-  
+    double normalDist = startAngle > angleSetpoint ? (360 - startAngle) + angleSetpoint : angleSetpoint - startAngle;  
+    isCounterClockwise = true; 
+
+    if (normalDist > 180){
+       isCounterClockwise = false;    
+       normalDist = 360 - normalDist;  
+    }
+
+    Brain.Screen.print(normalDist); 
+    Brain.Screen.newLine(); 
+    Brain.Screen.print(isCounterClockwise ? "counter-clockwise" : "clockwise");  
+    Brain.Screen.newLine();  
+
     turnPID = new pidcontroller(drivebaseRef.getTurningPID(), 0);    
-    turnPID->setLastTimestamp(Brain.Timer.time()); 
+    turnPID->setLastTimestamp(Brain.Timer.time());  
+
 } 
 
 void DrivePath::turn(){ 
     double output = turnPID->calculate(getAngularError(), Brain.Timer.time());   
-    if (isCounterClockwise) 
-      output *= -1;
-    drivebaseRef.manualTurnClockwise(output); 
+    if (isCounterClockwise){ 
+      output *= -1;  
+    } 
+    drivebaseRef.manualTurnClockwise(-output); 
 }  
 
-double DrivePath::getAngularError(){ 
+double DrivePath::getAngularError(){  
     double currentAngle = drivebaseRef.get<double>("Angle_Degrees_CCW");  
-    double angleSetpoint = setpoints.at(operationsIndex);
-    double dist = currentAngle > angleSetpoint ? (360 - currentAngle) + angleSetpoint : angleSetpoint - currentAngle; 
-    if (!isCounterClockwise){ 
-        dist = 360 - dist;
+    double angleSetpoint = setpoints.at(operationsIndex); 
+    
+    double dist = currentAngle > angleSetpoint ? (360 - currentAngle) + angleSetpoint : angleSetpoint - currentAngle;  
+
+    if (!isCounterClockwise){   
+        dist = (360 - dist); 
     } 
+    
     return dist;
 }
 

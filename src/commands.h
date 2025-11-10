@@ -21,7 +21,7 @@ class DrivePath : Command<Drivebase> {
   private: 
       Drivebase& drivebaseRef; 
       vector<double> setpoints;   
-      bool offset;
+      bool turningFirst;
 
       pidcontroller* turnPID = nullptr; 
       pidcontroller* drivePID = nullptr;  
@@ -31,7 +31,7 @@ class DrivePath : Command<Drivebase> {
       bool isCounterClockwise;  
 
       bool isGoingForward; 
-      double projectedPoint[2];
+      double startingPoint[2];
 
       int operationsIndex; 
       int numOfOperations;  
@@ -63,19 +63,19 @@ class DrivePath : Command<Drivebase> {
 
   public: 
 
-     static CommandInterface *getCommand(vector<double> setpoints, bool offset)
+     static CommandInterface *getCommand(vector<double> setpoints, bool turningFirst)
      {
-         return new DrivePath(*Drivebase::globalRef, setpoints, offset);
+         return new DrivePath(*Drivebase::globalRef, setpoints, turningFirst);
      }  
 
-     DrivePath(Drivebase& drive, vector<double> setpoints, bool offset) :  
+     DrivePath(Drivebase& drive, vector<double> setpoints, bool turningFirst) :  
      Command<Drivebase>(drive), 
      drivebaseRef(drive), 
      setpoints(setpoints),  
-     offset(offset),
+     turningFirst(turningFirst),
      initialized(false), 
      operationsIndex(0),
-     numOfOperations(setpoints.size())
+     numOfOperations(setpoints.size() - 1)
      {}; 
      
   

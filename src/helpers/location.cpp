@@ -9,7 +9,7 @@ bool Location::isRobotVisiting()
    double robotX = Telemetry::inst.getValueAt<double>("drivebase", "Pos_X");
    double robotY = Telemetry::inst.getValueAt<double>("drivebase", "Pos_Y");   
    
-   return isRobotInBounds(robotX, robotY);//isRobotClose(robotX, robotY) && isRobotFacing(robotX, robotY, robotHeading);
+   return isRobotFacing(robotX, robotY, robotHeading) && isRobotInBounds(robotX, robotY);
 
 };  
 
@@ -34,8 +34,7 @@ bool Location::isRobotFacing(double robotX, double robotY, double robotHeading){
 
 bool Location::isRobotInBounds(double robotX, double robotY){ 
    double robotToMe = normalizeTrigOutput(atan2((centerX - robotX), (centerY - robotY)));  
-   double minBoundRequiredAngle =  getAngleDiff(perfectEntranceAngle, (angleTolerance / 2));  
-   return getAngleDiff(robotToMe, minBoundRequiredAngle) <= angleTolerance;
+   return getAngleDiff(robotToMe, perfectEntranceAngle) <= angleTolerance;
 } 
 
 bool Location::isRobotClose(double robotX, double robotY){ 
@@ -61,8 +60,8 @@ vector<double> Location::getEuclideanAlignmentPath(double distFrom){
   double robotY = Telemetry::inst.getValueAt<double>("Drivebase","Pos_Y");  
   
   double dist = hypot(robotX - setpoint[0], robotY - setpoint[1]); 
-  double angle = normalizeTrigOutput(atan2(setpoint[1] - robotY, setpoint[0] - robotX));    
-  double finalAngle =  getAngleSum(perfectEntranceAngle, 180); 
+  double angle = normalizeTrigOutput(atan2(robotY - setpoint[1], robotX - setpoint[0]));    
+  double finalAngle =  perfectEntranceAngle; 
   
   return {angle, dist, finalAngle};
 

@@ -14,8 +14,8 @@ void Drivebase::declareLocations(){
    locations[0] = new Location( 
    "native-matchloader", 
     0, 
-    1000, 
-    100, 
+    500, 
+    500, 
     0, 
     30
    );  
@@ -41,7 +41,10 @@ void Drivebase::declareLocations(){
 }; 
 
 void Drivebase::init()
-{  
+{   
+
+   //driveGyro.setTurnType(vex::turnType::left); 
+
    leftDriveMotors.setStopping(vex::brakeType::brake);
    rightDriveMotors.setStopping(vex::brakeType::brake);
    
@@ -52,20 +55,23 @@ void Drivebase::init()
       vex::this_thread::yield();
    }
 
-   driveGyro.resetHeading();
+   driveGyro.setHeading(0, vex::rotationUnits::deg);
 
-   powerPID.P = 0.8;
-   powerPID.I = 0.0001;
-   powerPID.D = 0.01;
+   powerPID.P = 0.75;
+   powerPID.I = 0.015;
+   powerPID.D = 0.25; 
+   powerPID.iLimit = 1500;
    powerPID.errorTolerance = 1;
    //------------------------------
-   turnPID.P = 0.8;
-   turnPID.I = 0.0005;
-   turnPID.D = 0;
-   turnPID.errorTolerance = 1;
+   turnPID.P = 0.75;
+   turnPID.I = 0.1;
+   turnPID.D = 0.05; 
+   turnPID.iLimit = 180;
+   turnPID.errorTolerance = 0.5;
 
    set<double>("Pos_X", startX + ROBOT_WIDTH_MM / 2);
-   set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2);
+   set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2); 
+   set<double>("Velocity_mm/20ms", 0);
    set<string>("Current_Location", "NONE"); 
 
    declareLocations();
@@ -80,7 +86,7 @@ void Drivebase::updateTelemetry()
 {
    double x = get<double>("Pos_X");
    double y = get<double>("Pos_Y");  
-   set<double>("Angle_Degrees_CCW", fmod(90 - driveGyro.heading() + 360, 360)); 
+   set<double>("Angle_Degrees_CCW", fmod(90 + -driveGyro.heading() + 360, 360)); 
 
    double rpmToDist = (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI) * 0.02;
    double hypotenuse = ((leftDriveMotors.velocity(vex::velocityUnits::rpm) - rightDriveMotors.velocity(vex::velocityUnits::rpm)) / 2) / 60 * rpmToDist; // Times 0.02 because that is the time interval
@@ -152,13 +158,17 @@ void Drivebase::manualDriveForward(double speedMM)
 };
 
 void Drivebase::manualTurnClockwise(double turnDeg)
-{
-   turnDeg += 3;
-   turnDeg *= 2.79999;
-   leftDriveMotors.setVelocity(turnDeg, vex::velocityUnits::dps);
-   rightDriveMotors.setVelocity(turnDeg, vex::velocityUnits::dps);
-   leftDriveMotors.spin(vex::directionType::fwd);
-   rightDriveMotors.spin(vex::directionType::fwd);
+{ 
+   double rotationsPerMinutes = fabs((((ROBOT_LENGTH_MM * M_PI) * (turnDeg / 360.0)) / (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI)) * 60);
+   leftDriveMotors.setVelocity(rotationsPerMinutes, vex::velocityUnits::rpm);
+   rightDriveMotors.setVelocity(rotationsPerMinutes, vex::velocityUnits::rpm); 
+   if (turnDeg < 0){
+     leftDriveMotors.spin(vex::directionType::rev);
+     rightDriveMotors.spin(vex::directionType::rev);  
+   } else { 
+     leftDriveMotors.spin(vex::directionType::fwd);
+     rightDriveMotors.spin(vex::directionType::fwd);
+   }
 };
 
 void Drivebase::stop()
