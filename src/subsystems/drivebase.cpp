@@ -9,29 +9,121 @@
 Drivebase* Drivebase::globalRef = nullptr; 
 
 double Drivebase::DRIVE_WHEEL_RADIUS_MM = 76.2; 
+double Drivebase::PITCH_TOLERANCE = 10; 
 
 void Drivebase::declareLocations(){    
    locations[0] = new Location( 
-   "native-matchloader", 
-    0, 
-    500, 
-    500, 
-    0, 
+   "native-matchloader_left", 
+    TILE_SIZE_MM, 
+    60, 
+    45, 
+    180, 
     30
    );  
-   locations[1] = nullptr; 
-   locations[2] = nullptr; 
-   locations[3] = nullptr; 
-   locations[4] = nullptr; 
-   locations[5] = nullptr;  
-   locations[6] = nullptr; 
-   locations[7] = nullptr; 
-   locations[8] = nullptr; 
-   locations[9] = nullptr; 
-   locations[10] = nullptr;  
-   locations[11] = nullptr; 
-   locations[12] = nullptr; 
-   locations[13] = nullptr; 
+   locations[1] = new Location( 
+   "native-matchloader_right", 
+    TILE_SIZE_MM*5, 
+    60, 
+    45, 
+    180, 
+    30
+   );; 
+   locations[2] = new Location( 
+   "native-highgoal_left", 
+    TILE_SIZE_MM, 
+    TILE_SIZE_MM * 2, 
+    30, 
+    0, 
+    30
+   );
+   locations[3] = new Location( 
+   "native-highgoal_right", 
+    TILE_SIZE_MM * 5, 
+    TILE_SIZE_MM * 2, 
+    30, 
+    0, 
+    30
+   );
+   locations[4] = new Location( 
+   "native-mid", 
+    TILE_SIZE_MM * 2 + 200, 
+    TILE_SIZE_MM * 2 + 200, 
+    30, 
+    45, 
+    30
+   ); 
+   locations[5] = new Location( 
+   "native-low", 
+    TILE_SIZE_MM * 3 + 400, 
+    TILE_SIZE_MM * 2 + 200, 
+    30, 
+    315, 
+    30
+   );  
+   locations[6] = new Location( 
+   "park_near", 
+    TILE_SIZE_MM * 3, 
+    210, 
+    TILE_SIZE_MM * 0.625, 
+    180, 
+    90
+   ); 
+   locations[7] = new Location( 
+   "foreign_matchloader_right", 
+    TILE_SIZE_MM * 5, 
+    TILE_SIZE_MM * 6 - 60, 
+    45, 
+    0, 
+    30
+   ); 
+   locations[8] = new Location( 
+   "foreign_matchloader_left", 
+    TILE_SIZE_MM * 1, 
+    TILE_SIZE_MM * 6 - 60, 
+    45, 
+    0, 
+    30
+   );
+   locations[9] = new Location( 
+   "foreign_highgoal_left", 
+    TILE_SIZE_MM, 
+    TILE_SIZE_MM * 4, 
+    30, 
+    180, 
+    30
+   ); 
+   locations[10] = new Location( 
+   "foreign_highgoal_right", 
+    TILE_SIZE_MM * 5, 
+    TILE_SIZE_MM * 4, 
+    30, 
+    180, 
+    30
+   );  
+   locations[11] = new Location( 
+   "foreign_mid", 
+    TILE_SIZE_MM * 3 + 400, 
+    TILE_SIZE_MM * 3 + 400, 
+    30, 
+    225, 
+    30
+   ); 
+   locations[12] = new Location( 
+   "foreign_low", 
+    TILE_SIZE_MM * 2 + 200, 
+    TILE_SIZE_MM * 3 + 400, 
+    30, 
+    135, 
+    30
+   );
+   locations[13] = new Location( 
+   "park_far", 
+    TILE_SIZE_MM * 3, 
+    TILE_SIZE_MM * 6 - 210, 
+    TILE_SIZE_MM * 0.625, 
+    0, 
+    90
+   ); 
    locations[14] = nullptr; 
    locations[15] = nullptr;  
    locations[16] = nullptr; 
@@ -72,7 +164,8 @@ void Drivebase::init()
    set<double>("Pos_X", startX + ROBOT_WIDTH_MM / 2);
    set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2); 
    set<double>("Velocity_mm/20ms", 0);
-   set<string>("Current_Location", "NONE"); 
+   set<string>("Current_Location", "NONE");  
+   set<double>("Max_Pitch", 0); 
 
    declareLocations();
 };
@@ -92,33 +185,40 @@ void Drivebase::updateTelemetry()
    double hypotenuse = ((leftDriveMotors.velocity(vex::velocityUnits::rpm) - rightDriveMotors.velocity(vex::velocityUnits::rpm)) / 2) / 60 * rpmToDist; // Times 0.02 because that is the time interval
 
    double angleRadians = get<double>("Angle_Degrees_CCW") * (2*M_PI) / 360;
+   
+   //if (driveGyro.pitch(vex::rotationUnits::deg)) 
+   //if (driveGyro.pitch(vex::rotationUnits::deg) >= PITCH_TOLERANCE){  
 
+   if (driveGyro.pitch(vex::rotationUnits::deg) > get<double>("Max_Pitch")) 
+      set<double>("Max_Pitch", driveGyro.pitch(vex::rotationUnits::deg));  
    x += (hypotenuse * cos(angleRadians));
    y += (hypotenuse * sin(angleRadians));
+   
 
    set<double>("Pos_X", x);
    set<double>("Pos_Y", y);     
    set<double>("Velocity_mm/20ms", hypotenuse);  
    
-   //Brain.Screen.printAt(20, 200, "Currently visiting: "); 
-   
    Brain.Screen.printAt(20,100,"X: %f",get<double>("Pos_X"));  
    Brain.Screen.printAt(20,125,"Y: %f",get<double>("Pos_Y"));  
-   Brain.Screen.printAt(20,150,"Angle: %f", get<double>("Angle_Degrees_CCW"));   
+   Brain.Screen.printAt(20,150,"Angle Heading: %f", get<double>("Angle_Degrees_CCW"));    
+   //Brain.Screen.printAt(20, 175, "Maximum Pitch Val: %f", get<double>("Max_Pitch")); 
    
-   set<string>("Current_Location","NONE");  
-   for (int index = 0; index < 18; index ++){ 
+   set<string>("Current_Location","NONE");   
+   
+   for (int index = 0; index < 14; index ++){ 
       if (locations.at(index) != nullptr){ 
          Location* currentLocation = locations.at(index);
          if (currentLocation->isRobotVisiting()){  
-            set<string>("Current_Location",currentLocation->getName()); 
-            Controller.rumble("-");
+            set<string>("Current_Location",currentLocation->getName());  
+            break;
          }
       } else { 
          continue; 
       }
-   }  
-   Brain.Screen.printAt(20,175, get<string>("Current_Location").c_str());
+   }   
+
+   Brain.Screen.printAt(20,200, get<string>("Current_Location").c_str());
 
    Telemetry::inst.placeValueAt<double>(driveFrontLeft.temperature(), "Motor_Temps","DriveFrontLeft"); 
    Telemetry::inst.placeValueAt<double>(driveFrontRight.temperature(), "Motor_Temps","DriveFrontRight"); 
@@ -131,12 +231,12 @@ void Drivebase::updateTelemetry()
    
 }; 
 
-/*
-void Drivebase::updateLocations()
-{ 
 
-}
-*/
+Location* Drivebase::getLocation(int index)
+{ 
+  return locations.at(index); 
+}  
+
 
 void Drivebase::arcadeDrive(double speed, double rotation)
 { 

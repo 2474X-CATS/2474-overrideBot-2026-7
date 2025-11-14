@@ -46,6 +46,10 @@ array<double, 2> Location::getProjectedSetpoint(double distFrom){
    res[0] = centerX - cos(degreesToRadians(perfectEntranceAngle)) * distFrom;  
    res[1] = centerY - sin(degreesToRadians(perfectEntranceAngle)) * distFrom; 
    return res;
+} 
+
+double Location::getPerfectEntranceAngle(){ 
+   return perfectEntranceAngle;
 }
  
 vector<double> Location::getEuclideanAlignmentPath(double distFrom){ 

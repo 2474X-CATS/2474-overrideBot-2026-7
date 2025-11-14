@@ -8,37 +8,39 @@ double Intake::ABSOLUTE_INTAKE_SPEED = 200;
 
 void Intake::init()
 {  
-    Telemetry::inst.placeValueAt<double>(intakeMotor.temperature(), "Motor_Temps","IntakeMotor");
-    set<bool>("blockedByCubes", false); 
+    set<bool>("isOn", true); 
 };
 
 void Intake::periodic()
-{
+{ 
     if (shouldIntake())
-    { 
+    {  
         intake();
     }
     else if (shouldOuttake())
-    {
-        outtake();
+    { 
+        intake();
     }
     else
-    {
+    { 
         stop();
-    }
+    } 
+
+
     
 };
 
 void Intake::updateTelemetry()
-{ 
-   return;
+{      
+    return;
+   //Telemetry::inst.placeValueAt<double>(intakeMotor.temperature(), "Motor_Temps","IntakeMotor");
 }
 
 bool Intake::shouldIntake()
 {
-    return getFromInputs<bool>("Controller/Button_Y") ||
-           getFromInputs<bool>("Controller/Button_R1") ||
-           getFromInputs<bool>("Controller/Button_R2");
+    return getFromInputs<bool>("Controller/Button_R1") ||
+           getFromInputs<bool>("Controller/Button_R2") || 
+           getFromInputs<bool>("Controller/Button_Y");
 }
 
 bool Intake::shouldOuttake()

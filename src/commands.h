@@ -16,9 +16,33 @@ typedef enum {
    LOW_GOAL = 3
 } Goal_Pos; 
 
-class DrivePath : Command<Drivebase> { 
+typedef enum { 
+  NAT_ML_LEFT = 0, 
+  NAT_ML_RIGHT, 
+  NAT_HIGH_LEFT, 
+  NAT_HIGH_RIGHT, 
+  NAT_MID, 
+  NAT_LOW, 
+  NEAR_PARK, 
+  FOR_ML_RIGHT, 
+  FOR_ML_LEFT, 
+  FOR_HIGH_LEFT, 
+  FOR_HIGH_RIGHT, 
+  FOR_MID, 
+  FOR_LOW, 
+  FAR_PARK
+} Zones; 
+
+typedef enum { 
+   EUCLIDEAN, 
+   MANHATTAN_XY, 
+   MANHATTAN_YX
+} PathType;
+
+
+class DrivePath : public Command<Drivebase> { 
   
-  private: 
+  protected: 
       Drivebase& drivebaseRef; 
       vector<double> setpoints;   
       bool turningFirst;
@@ -54,8 +78,6 @@ class DrivePath : Command<Drivebase> {
       void drivePeriodic(); 
       void turnPeriodic();
 
-
-  protected: 
       void start() override;
       void periodic() override;
       bool isOver() override;
@@ -66,8 +88,16 @@ class DrivePath : Command<Drivebase> {
      static CommandInterface *getCommand(vector<double> setpoints, bool turningFirst)
      {
          return new DrivePath(*Drivebase::globalRef, setpoints, turningFirst);
-     }  
+     }   
+   /*
+     static CommandInterface* getCommand(int locationIndex, double endpointDist){ 
+         return new DrivePath(*Drivebase::globalRef, *Drivebase::globalRef->getLocation(locationIndex)->getEuclideanAlignmentPath(endpointDist), true); 
+     } 
 
+     static CommandInterface* getCommand(int locationIndex, double endpointDist, bool xFirst){ 
+         return new DrivePath(*Drivebase::globalRef, *Drivebase::globalRef->getLocation(locationIndex)->getTaxicabAlignmentPath(endpointDist, xFirst), true);
+     }
+   */
      DrivePath(Drivebase& drive, vector<double> setpoints, bool turningFirst) :  
      Command<Drivebase>(drive), 
      drivebaseRef(drive), 
@@ -77,9 +107,41 @@ class DrivePath : Command<Drivebase> {
      operationsIndex(0),
      numOfOperations(setpoints.size() - 1)
      {}; 
-     
-  
-};
+}; 
+
+class DriveToSetpoint : DrivePath {  
+   private:  
+     double setpointX; 
+     double setpointY;  
+     double endingAngle;  
+     PathType pathType;
+
+   public:   
+
+     static CommandInterface *getCommand(int locationIndex, double distFrom, PathType pathType)
+     { 
+         Location* location = Drivebase::globalRef->getLocation(locationIndex);   
+         array<double, 2> setpoint = location->getProjectedSetpoint(distFrom);
+         return new DriveToSetpoint(*Drivebase::globalRef, setpoint.at(0), setpoint.at(1), location->getPerfectEntranceAngle(), pathType); 
+     }  
+
+     static CommandInterface *getCommand(double setpointX, double setpointY, PathType pathType)
+     { 
+         return new DriveToSetpoint(*Drivebase::globalRef, setpointX, setpointY, 90, pathType); 
+     } 
+
+     DriveToSetpoint(Drivebase& drive, double setpointX, double setpointY, double endingAngle, PathType pathType) :  
+     DrivePath(drive, {}, true),  
+     setpointX(setpointX), 
+     setpointY(setpointY), 
+     endingAngle(endingAngle), 
+     pathType(pathType) 
+     {}; 
+
+   protected: 
+     void start() override; 
+
+}; 
 
 
 class DriveForwardForTime : Command<Drivebase> { 
@@ -269,7 +331,9 @@ class WaitFor : Command<DummySystem> {
 };
 
 //CommandInterface* driveForwardByTiles(double tiles); 
-//CommandInterface* turnToAngle(double goalHeading);
+//CommandInterface* turnToAngle(double goalHeading); 
+CommandInterface* alignWithLocation(int locationIndex, double projectedDist, PathType pathType); 
+CommandInterface* driveToPoint(double setX, double setY, PathType pathType);
 CommandInterface* scoreOnGoal(Goal_Pos position, double timeDuration);
 CommandInterface* intakeCubes(double timeDuration);
 CommandInterface* holdFor(double timeDuration);

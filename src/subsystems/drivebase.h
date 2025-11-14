@@ -14,7 +14,8 @@ class Drivebase : public Subsystem
 private:
   // Motor initialization
   static double DRIVE_WHEEL_RADIUS_MM; 
-
+  static double PITCH_TOLERANCE; 
+  
   vex::inertial driveGyro; 
 
   vex::motor driveFrontLeft;
@@ -35,7 +36,7 @@ private:
   double startX, startY;
   double speedFactor = 1;   
   
-  array<Location*, 18> locations; 
+  array<Location*, 14> locations; 
 
   void declareLocations(); 
   //Location* currentLocation = nullptr; 
@@ -56,6 +57,7 @@ public:
                                          (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE},  
                                          (EntrySet){"Velocity_mm/20ms", EntryType::DOUBLE},
                                          (EntrySet){"Current_Location", EntryType::STRING}, 
+                                         (EntrySet){"Max_Pitch", EntryType::DOUBLE} 
                                         }
                                     ),    
                                     driveGyro(vex::inertial(vex::PORT20)), 
@@ -81,7 +83,9 @@ public:
   void manualDriveForward(double speedMM);
   void manualTurnClockwise(double turnDeg); 
   
-  void setSpeedFactor(double speedFactor); 
+  void setSpeedFactor(double speedFactor);  
+
+  Location* getLocation(int index); 
   
   //void updateTileCoordinates();
    

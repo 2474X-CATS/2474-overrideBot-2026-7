@@ -15,7 +15,7 @@ public:
                    "hopper",
                    {(EntrySet){"isOn", EntryType::BOOL}} 
                ), 
-               hopperMotor(vex::motor(vex::PORT17, false)) 
+               hopperMotor(vex::motor(vex::PORT18, false)) 
                //containerSensor(vex::distance(vex::PORT22))
     { 
         globalRef = this;

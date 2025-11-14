@@ -14,10 +14,9 @@ public:
 
     Intake() : Subsystem(
                     "intake",
-                    {(EntrySet){"blockedByCubes", EntryType::BOOL}
+                    {(EntrySet){"isOn", EntryType::BOOL}
                     }), 
-                    intakeMotor(vex::motor(vex::PORT18, false))
-                    //channelSensor(vex::distance(vex::PORT13))
+                    intakeMotor(vex::motor(vex::PORT17, false))
                     { 
                         globalRef = this;
                     }  

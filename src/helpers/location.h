@@ -18,12 +18,7 @@ using std::string;
 using std::vector;  
 using std::array; 
 
-//IN DEVELOPMENT
-
-typedef enum { 
-  EUCLIDEAN, 
-  MANHATTAN
-} PathProcess; 
+//IN DEVELOPMENT 
 
 class Location { 
    public: 
@@ -41,7 +36,8 @@ class Location {
 
      double getY(); 
      double getX(); 
-     double getRadius();
+     double getRadius(); 
+     double getPerfectEntranceAngle(); 
 
      array<double, 2> getProjectedSetpoint(double distFrom); 
      vector<double> getEuclideanAlignmentPath(double distFrom);

@@ -7,8 +7,9 @@
 #include "subsystems/hood.h" 
 #include "subsystems/hopper.h" 
 #include "subsystems/intake.h"  
-#include "subsystems/matchloader.h"  
-#include "helpers/location.h"
+#include "subsystems/matchloader.h"   
+//#include "subsystems/hooks.h"
+#include "helpers/location.h" 
 #include "commands.h" 
 
 using namespace vex;
@@ -95,219 +96,7 @@ void driveCommandMatch(std::vector<CommandInterface*> commandGroup){
   robot.driverControl(false); //Free drive
 } 
 
-/*
-vector<CommandInterface*> AUTO_SHORT_ORIGIN(){ 
-    return { 
-      turnToAngle(330), 
-      driveAndIntakeForTiles(1.2),  
-      turnToAngle(45), 
-      driveForwardByTiles(1), 
-      scoreOnGoal(Goal_Pos::MID_GOAL, 2000), 
-      driveForwardByTiles(-1), 
-      turnToAngle(90), 
-      driveAndIntakeForTiles(2), 
-      turnToAngle(315), 
-      driveForwardByTiles(0.6666), 
-      scoreOnGoal(Goal_Pos::LOW_GOAL, 2000),
-    };
-};  
 
-vector<CommandInterface*> AUTO_SHORT_INVERTED(){ 
-    return { 
-      turnToAngle(360 - 330), 
-      driveAndIntakeForTiles(1.2),  
-      turnToAngle(360 - 45), 
-      driveForwardByTiles(1), 
-      scoreOnGoal(Goal_Pos::LOW_GOAL, 2000), 
-      driveForwardByTiles(-1), 
-      turnToAngle(360 - 90), 
-      driveAndIntakeForTiles(2), 
-      turnToAngle(360 - 315), 
-      driveForwardByTiles(0.6666), 
-      scoreOnGoal(Goal_Pos::MID_GOAL, 2000),
-    };
-};  
-
-vector<CommandInterface*> AUTO_CLOSED_SIDE_ORIGIN(){ 
-    return { 
-      turnToAngle(270), 
-      driveForwardByTiles(1.6666), 
-      turnToAngle(180), 
-      extend(), 
-      ramForwardFor(0.60, 3000), 
-      intakeCubes(3000),  
-      retract(), 
-      driveForwardByTiles(-0.75),  
-      turnToAngle(0), 
-      scoreOnGoal(Goal_Pos::HIGH_GOAL, 3000), 
-      driveForwardByTiles(-0.125), 
-      turnToAngle(75), 
-      driveAndIntakeForTiles(1),  
-      driveForwardByTiles(1), 
-      scoreOnGoal(Goal_Pos::MID_GOAL, 3000)
-    };
-};  
-
-vector<CommandInterface*> AUTO_CLOSED_SIDE_INVERTED(){ 
-    return { 
-      turnToAngle(360 - 270), 
-      driveForwardByTiles(1.6666), 
-      turnToAngle(180), 
-      extend(), 
-      ramForwardFor(0.60, 3000), 
-      intakeCubes(3000),  
-      retract(), 
-      driveForwardByTiles(-0.75),  
-      turnToAngle(0), 
-      scoreOnGoal(Goal_Pos::HIGH_GOAL, 3000), 
-      driveForwardByTiles(-0.125), 
-      turnToAngle(360 - 75), 
-      driveAndIntakeForTiles(1),  
-      driveForwardByTiles(1), 
-      scoreOnGoal(Goal_Pos::LOW_GOAL, 3000)
-    };
-};  
-
-vector<CommandInterface*> AUTO_SELF_SUFFICIENT_ORIGIN(){ 
-    return { 
-      turnToAngle(270), 
-      driveForwardByTiles(1.6666), 
-      turnToAngle(180), 
-      extend(), 
-      ramForwardFor(0.60, 3000), 
-      intakeCubes(3000),  
-      retract(), 
-      driveForwardByTiles(-0.75),  
-      turnToAngle(0), 
-      scoreOnGoal(Goal_Pos::HIGH_GOAL, 3000), 
-      driveForwardByTiles(-0.125), 
-      turnToAngle(75), 
-      driveAndIntakeForTiles(1),  
-      driveForwardByTiles(1), 
-      scoreOnGoal(Goal_Pos::MID_GOAL, 2000), 
-      driveForwardByTiles(-1), 
-      turnToAngle(90),
-      driveAndIntakeForTiles(2), 
-      turnToAngle(315), 
-      driveForwardByTiles(0.6666), 
-      scoreOnGoal(Goal_Pos::LOW_GOAL, 2000)
-    };
-};  
-
-vector<CommandInterface*> AUTO_SELF_SUFFICIENT_INVERTED(){ 
-    return { 
-      turnToAngle(360 - 270), 
-      driveForwardByTiles(1.6666), 
-      turnToAngle(180), 
-      extend(), 
-      ramForwardFor(0.60, 3000), 
-      intakeCubes(3000),  
-      retract(), 
-      driveForwardByTiles(-0.75),  
-      turnToAngle(0), 
-      scoreOnGoal(Goal_Pos::HIGH_GOAL, 3000), 
-      driveForwardByTiles(-0.125), 
-      turnToAngle(360 - 75), 
-      driveAndIntakeForTiles(1),  
-      driveForwardByTiles(1), 
-      scoreOnGoal(Goal_Pos::LOW_GOAL, 2000), 
-      driveForwardByTiles(-1), 
-      turnToAngle(360 - 90),
-      driveAndIntakeForTiles(2), 
-      turnToAngle(360 - 315), 
-      driveForwardByTiles(0.6666), 
-      scoreOnGoal(Goal_Pos::MID_GOAL, 2000)
-    };
-};   
-*/  
-/*
-vector<CommandInterface*> DEPENDENT(){ 
-   return { 
-     driveForwardByTiles(1.5)
-   };
-} 
-
-vector<CommandInterface*> AUTONOMOUS_PERIOD(){  
-   return {
-      driveForwardByTiles(0.6),  
-      turnToAngle(323), 
-      driveAndIntakeForTiles(0.5), 
-      turnToAngle(225), 
-      driveForwardByTiles(1.59), 
-      turnToAngle(352),   
-      holdFor(500),
-      driveForwardByTiles(0.89),  
-      scoreOnGoal(Goal_Pos::HIGH_GOAL, 4500),   
-   };
-}    
-
-vector<CommandInterface*> AUTONOMOUS_PERIOD_INVERTED(){ 
-   return { 
-      driveForwardByTiles(0.6),  
-      turnToAngle(360 - 323 - 10), 
-      driveAndIntakeForTiles(0.45),  
-      turnToAngle(360 - 225 - 10),  
-      driveForwardByTiles(1.7),  
-      turnToAngle(360 - 349 - 10),   
-      holdFor(500),
-      driveForwardByTiles(0.91),  
-      scoreOnGoal(Goal_Pos::HIGH_GOAL, 4500),  
-   };
-}
-
-
-
-vector<CommandInterface*> PROGRAMMING_SKILLS(){ 
-    return {   
-      driveForwardByTiles(-0.5),
-      ramForwardFor(1, 2300),  
-      intakeCubes(2000)
-    };  
-};     
-
-vector<CommandInterface*> BUZZER_BEATER(){ 
-    return { 
-      driveForwardByTiles(0.6),  
-      turnToAngle(323), 
-      driveAndIntakeForTiles(0.5), 
-      turnToAngle(225), 
-      driveForwardByTiles(1.58), 
-      turnToAngle(349),   
-      holdFor(500),
-      driveForwardByTiles(0.84056),  
-      scoreOnGoal(Goal_Pos::HIGH_GOAL, 4500),   
-      driveForwardByTiles(-0.125),  
-      turnToAngle(150), 
-      driveForwardByTiles(0.750), 
-      turnToAngle(90), 
-      ramForwardFor(1, 1000)
-    };
-}
-
-*/
-
-
-/*
-vector<CommandInterface*> PARK_FROM_HIGH_GOAL(){ 
-  return {
-      driveForwardByTiles(-0.250), 
-      turnToAngle(90), 
-      driveForwardByTiles(2), 
-      turnToAngle(180), 
-      ramForwardFor(1, 2000)  
-  };
-} 
-
-fvector<CommandInterface*> PARK_FROM_START(){ 
-  return { 
-    driveForwardByTiles(1), 
-    turnToAngle(90), 
-    driveForwardByTiles(0.5), 
-    turnToAngle(180), 
-    ramForwardFor(1, 1000)
-  };
-};
-*/ 
 
 int main()
 {
@@ -324,27 +113,16 @@ int main()
     7: Start competition match with commands as auton
     8: Free drive
   */  
-
-  
   Drivebase drive = Drivebase(1,1); //Tile location right 1 up 1    
   Intake intake;  
   Matchloader matchloader;   
   Indexer indexer;  
   Hood hood; 
   Hopper hopper;     
-  
+  //Hooks hooks; 
+
   robot.initialize();  
   
-
-  //double angleToNativeMatchloader = fmod((atan2(drive.get<double>("Pos_Y") - 500, drive.get<double>("Pos_X") - 500) / M_PI * 180) + 180, 360); 
-  //double distToNativeMatchloader = hypot(500 - drive.get<double>("Pos_X"), 500 - drive.get<double>("Pos_Y"));
-  
-  driveCommandMatch( 
-    {  
-      holdFor(25),
-      DrivePath::getCommand({270}, true)
-     //DrivePath::getCommand({90}, true) 
-    }
-  );
+  freeDrive(); 
 
 }

@@ -160,6 +160,42 @@ double DrivePath::getAngularError(){
     } 
     
     return dist;
+} 
+
+
+void DriveToSetpoint::start(){  
+
+    double startingX = drivebaseRef.get<double>("Pos_X"); 
+    double startingY = drivebaseRef.get<double>("Pos_Y");   
+
+    double overallDist = hypot(startingX - setpointX, startingY - setpointY); 
+    double overallAngle = fmod((atan2(startingY - setpointY, startingX - setpointX) / M_PI * 180 + 180), 360); 
+
+    double xDist = setpointX - startingX;  
+    double yDist = setpointY - startingY; 
+    
+    switch (pathType){ 
+        case EUCLIDEAN:  
+          setpoints.push_back(overallAngle);  
+          setpoints.push_back(overallDist); 
+          break;  
+        case MANHATTAN_XY: 
+          setpoints.push_back((xDist >= 0 ? 0 : 180)); 
+          setpoints.push_back(fabs(xDist)); 
+          setpoints.push_back((yDist >= 0 ? 90 : 270)); 
+          setpoints.push_back(fabs(yDist)); 
+          break;
+        case MANHATTAN_YX:  
+          setpoints.push_back((yDist >= 0 ? 90 : 270)); 
+          setpoints.push_back(fabs(yDist));  
+          setpoints.push_back((xDist >= 0 ? 0 : 180)); 
+          setpoints.push_back(fabs(xDist));
+          break;
+    } 
+
+    setpoints.push_back(endingAngle);
+    
+    numOfOperations = setpoints.size() - 1;  
 }
 
 ////////////////////////////////////////////////////////////  
@@ -391,6 +427,13 @@ CommandInterface* ramForwardFor(double percentage, double timeDuration){
     return DriveForwardForTime::getCommand(percentage, timeDuration);
 }
 
+CommandInterface* driveToPoint(double setX, double setY, PathType pathType){ 
+   return DriveToSetpoint::getCommand(setX, setY, pathType);
+} 
+
+CommandInterface* alignWithLocation(int locationIndex, double projectedDist, PathType pathType){ 
+    return DriveToSetpoint::getCommand((int)locationIndex, projectedDist, pathType);
+}
 
 /////////////////////////////////////////////////////////////////////  
 
