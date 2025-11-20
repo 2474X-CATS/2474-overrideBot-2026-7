@@ -35,16 +35,12 @@ void Intake::updateTelemetry()
 
 bool Intake::shouldIntake()
 {
-    return getFromInputs<bool>("Controller/Button_R1") ||
-           getFromInputs<bool>("Controller/Button_R2") || 
-           getFromInputs<bool>("Controller/Button_Y") || 
-           getFromInputs<bool>("Controller/Button_A");
+    return RobotState::getStateOf("scoring_high") || RobotState::getStateOf("scoring_mid") || RobotState::getStateOf("intaking_to_hopper");
 }
 
 bool Intake::shouldOuttake()
 {
-    return getFromInputs<bool>("Controller/Button_B") ||  
-           getFromInputs<bool>("Controller/Button_RIGHT");
+    return RobotState::getStateOf("scoring_low");
 } 
 
 void Intake::intake(){  

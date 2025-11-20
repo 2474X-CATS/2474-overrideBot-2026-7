@@ -1,8 +1,6 @@
 #include "robotConfig.h" 
 
-vex::brain Brain;
-
-vex::controller Controller = vex::controller(vex::controllerType::primary);
+vex::brain Brain; 
 
 /*
  TO-DO:

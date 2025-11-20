@@ -44,11 +44,18 @@ class Drivebase : public Subsystem {
 
 */
 
+typedef enum { 
+   LEFT_VERTICAL, 
+   LEFT_HORIZONTAL, 
+   RIGHT_VERTICAL, 
+   RIGHT_HORIZONTAL
+} AxisType;   
 
-bool getStateOf(string key);  
-
-void modifyStateOf(string key, bool val); 
-
+typedef enum { 
+  DRIVER, 
+  MANUAL, 
+  STOPPED
+} ControlType; 
 
 class Subsystem
 {
@@ -67,20 +74,7 @@ public:
   {
     return Telemetry::inst.getValueAt<T>(this->label, entryName);
   };
-
-  template <typename T>
-  T getFromInputs(string entryName) // Gets a telemtry input value (controllers / files / neither)
-  {
-    return Telemetry::inst.getValueAt<T>("system", entryName);
-  }; 
   
-  static bool getRobotState(string key){ 
-    return getStateOf(key); 
-  }; 
-
-  static bool modifyStateOf(string key, bool val){
-
-  }
 
   static std::vector<Subsystem *> systems; // A list of all subsystems that is filled on instantiation
 
@@ -104,51 +98,28 @@ public:
 
 //----------------------------------------------------------------------
 
-class RobotState : Subsystem {   
-    
-    protected: 
-       using Subsystem::set;   
-       
-    private:  
-       int mode = 1; // 1 is updating based on controller 2 is null state values 3 is manually set states (for auton)
 
-       void updateStopped();  
-       void updateRegular();   
+class RobotState {   
+    private:   
 
-       static RobotState* globalState; 
-      
+       static ControlType mode; // 1 is updating based on controller 2 is null state values 3 is manually set states (for auton)
+       static bool axisesEnabled;
+     
+       static void updateStopped();  
+       static void updateRegular();    
+
     public:  
-       using Subsystem::get; 
-       using Subsystem::getFromInputs;  
        
-       static void manuallyModifyState(string key, bool val);   
-
+       static void manuallyModifyState(string key, bool val);    
        static bool getStateOf(string key); 
+       static void setMode(ControlType control);    
+       static int getAxisState(AxisType axisType); 
 
-       RobotState() :  
-       Subsystem( 
-        "robot-state", 
-         { 
-            (EntrySet){"intaking_to_hopper", EntryType::BOOL}, 
-            (EntrySet){"scoring_high", EntryType::BOOL},
-            (EntrySet){"scoring_mid", EntryType::BOOL}, 
-            (EntrySet){"scoring_low", EntryType::BOOL}, 
-            (EntrySet){"matchlaoder_out", EntryType::BOOL}, 
-            (EntrySet){"toggling_hood", EntryType::BOOL}
-         }
-       )
-       { 
-         globalState = this; 
-       }; 
-       
-       void updateTelemetry() override;  
-       void periodic() override; 
-       void init() override;  
-       void stop() override;    
+       static void initializeState(); 
 
-       void setMode(); 
-   
-       void modifyStateManually(string key, bool val); 
+       static void updateState(); 
+        
+      
 };
 
 //---------------------------------------------------------------------- 

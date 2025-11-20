@@ -9,7 +9,6 @@ class Hooks : public Subsystem
 {
 public:
     using Subsystem::get;
-    using Subsystem::getFromInputs;
      
     static Hooks* globalRef;
 

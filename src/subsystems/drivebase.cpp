@@ -1,10 +1,9 @@
 #include "drivebase.h"
 #include "math.h"
 #include "../architecture/telemetry.h" 
-
 #include <algorithm>
 
-//---Drivebase: SUBSYSTEM
+//---Drivebase: SUBSYSTEM  
 
 Drivebase* Drivebase::globalRef = nullptr; 
 
@@ -123,12 +122,12 @@ void Drivebase::declareLocations(){
     TILE_SIZE_MM * 0.625, 
     0, 
     90
-   ); 
+   );  
+
    locations[14] = nullptr; 
    locations[15] = nullptr;  
    locations[16] = nullptr; 
    locations[17] = nullptr; 
-
 
 }; 
 
@@ -172,7 +171,7 @@ void Drivebase::init()
 
 void Drivebase::periodic()
 { 
-   arcadeDrive((double)getFromInputs<int>("Controller/Axis-Vert-Left"), (double)getFromInputs<int>("Controller/Axis-Hori-Right"));
+   arcadeDrive((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL), (double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL));
 }; 
 
 void Drivebase::updateTelemetry()

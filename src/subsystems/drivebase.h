@@ -46,7 +46,6 @@ protected:
 
 public:
   using Subsystem::get;
-  using Subsystem::getFromInputs; 
 
   static Drivebase* globalRef; 
 

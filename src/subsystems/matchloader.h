@@ -8,7 +8,6 @@
 class Matchloader : public Subsystem {
 public:
     using Subsystem::get;
-    using Subsystem:: getFromInputs;
     
     static Matchloader* globalRef;  
 
@@ -31,9 +30,7 @@ public:
 protected:
     using Subsystem::set; 
 private:  
-    vex::pneumatics matchloaderPiston; 
-
-    bool shouldDeploy(); 
+    vex::pneumatics matchloaderPiston;  
 };
 
 #endif

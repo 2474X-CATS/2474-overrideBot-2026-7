@@ -9,7 +9,6 @@ class Hood : public Subsystem
 {
 public:
     using Subsystem::get;
-    using Subsystem::getFromInputs;
      
     static Hood* globalRef;
 

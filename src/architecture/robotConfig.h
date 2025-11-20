@@ -4,8 +4,6 @@
 
 extern vex::brain Brain;
 
-extern vex::controller Controller;
-
 /*
  TO-DO:
    o- Initialize all vex devices here (motors/sensors/pneumatics/etc)

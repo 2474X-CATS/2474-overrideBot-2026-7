@@ -8,7 +8,6 @@
 class Intake : public Subsystem {
 public: 
     using Subsystem::get;  
-    using Subsystem::getFromInputs; 
 
     static Intake* globalRef; 
 

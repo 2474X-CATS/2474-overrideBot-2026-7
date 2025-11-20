@@ -34,11 +34,11 @@ void Indexer::periodic()
 }; 
 
 bool Indexer::shouldSpinOver(){ 
-  return getFromInputs<bool>("Controller/Button_R2") || getFromInputs<bool>("Controller/Button_Y") || getFromInputs<bool>("Controller/Button_A");
+  return RobotState::getStateOf("scoring_high") || RobotState::getStateOf("intaking_to_hopper");
 }
 
 bool Indexer::shouldSpinUnder(){ 
-  return getFromInputs<bool>("Controller/Button_R1");
+  return RobotState::getStateOf("scoring_mid");
 } 
 
 void Indexer::spinOver(){ 

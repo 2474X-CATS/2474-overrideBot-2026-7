@@ -7,7 +7,6 @@ class Hopper : public Subsystem
 {
 public:
     using Subsystem ::get;
-    using Subsystem ::getFromInputs;
     
     static Hopper* globalRef; 
 

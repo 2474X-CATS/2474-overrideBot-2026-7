@@ -43,18 +43,18 @@ void Hood::stop(){
 }
 
 bool Hood::isHolding(){ 
-  return getFromInputs<bool>("Controller/Button_L1");
-} 
+  return RobotState::getStateOf("toggling_hood");
+};
 
 bool Hood::shouldOpen(){ 
-  return getFromInputs<bool>("Controller/Button_R1") || getFromInputs<bool>("Controller/Button_R2");
-} 
+  return RobotState::getStateOf("scoring_high");
+};
 
 bool Hood::shouldClose(){ 
-  return getFromInputs<bool>("Controller/Button_Y");
-} 
+  return RobotState::getStateOf("intaking_to_hopper");
+};
 
 void Hood::updateTelemetry()
 {
     return;
-}
+};

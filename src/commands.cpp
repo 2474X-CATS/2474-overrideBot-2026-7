@@ -249,40 +249,6 @@ void DriveForwardForTime::end(){
     drivebaseRef.stop(); 
     drivebaseRef.setSpeedFactor(0.85);
 }
-//////////////////////////////////////////////////////////// 
-/*
-void TurnToHeading::start(){   
-  double startAngle = driveRef.get<double>("Angle_Degrees");
-  double clockwiseDist = startAngle > angleSetpoint ? (360 - startAngle) + angleSetpoint : angleSetpoint - startAngle; 
-  double counterClockwiseDist = 360 - clockwiseDist; 
-  isClockwise = (clockwiseDist < counterClockwiseDist);
-  control->setLastTimestamp(Brain.Timer.time());
-};
-
-void TurnToHeading::periodic(){ 
-    double output = control->calculate(getAngluarDifference(), Brain.Timer.time()) * 1.5; 
-    output = isClockwise ? -output : output; 
-    driveRef.manualTurnClockwise(output);
-};
-
-bool TurnToHeading::isOver(){ 
-    return control->atSetpoint(getAngluarDifference());
-}; 
-
-void TurnToHeading::end(){ 
-    driveRef.stop();  
-};
-
-double TurnToHeading::getAngluarDifference(){  
-    double currentAngle = driveRef.get<double>("Angle_Degrees"); 
-    double dist = currentAngle > angleSetpoint ? (360 - currentAngle) + angleSetpoint : angleSetpoint - currentAngle; 
-    if (!isClockwise){ 
-        dist = 360 - dist;
-    } 
-    return dist;
-};
-*/
-////////////////////////////////////////////////////////////  
 
 void IntakeToHopper::start(){ 
    hoodRef.close(); 

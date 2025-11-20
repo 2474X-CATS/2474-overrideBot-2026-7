@@ -8,7 +8,6 @@ class Indexer : public Subsystem
 {
 public:
    using Subsystem::get;
-   using Subsystem::getFromInputs;
    
    static Indexer* globalRef; 
 

@@ -24,7 +24,7 @@ void Hooks::periodic(){
 }; 
 
 bool Hooks::toggleSignal(){ 
-    return getFromInputs<bool>("Controller/Button_X");
+    return RobotState::getStateOf("toggling_descore");
 }
 
 void Hooks::updateTelemetry(){ 

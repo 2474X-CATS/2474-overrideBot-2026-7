@@ -17,70 +17,19 @@ using namespace vex;
 competition Competition;
 Robot robot; 
 
-typedef enum
-{
-  CODING_SKILLS,
-  DRIVER_SKILLS,
-  COMPETITIVE
-} MatchType;
-
 void runTelemetry()
 {
   robot.runTelemetryThread(false);
 }
 
 void freeDrive()
-{ 
+{  
   thread telemetryThread = thread(runTelemetry); 
   robot.driverControl();
 } 
 
 
-/*
-void mirrorMobilize(MirrorMode mode, string filename)
-{
-  switch (mode)
-  {
-  case REFLECT:
-    robot.initializeMirror(MirrorMode::REFLECT, filename);
-    break;
-  case ABSORB:
-    robot.initializeMirror(MirrorMode::ABSORB, filename);
-    break;
-  default:
-    return;
-  }
-  robot.initialize();
-  thread telem = thread(runTelemetry);
-  robot.driverControl(true); 
-  robot.detachInput();
-}
-
-void startMatch(MatchType type, string auton, string auton_skills)
-{
-  switch (type)
-  {
-  case CODING_SKILLS:
-    robot.initializeMirror(MirrorMode::REFLECT, auton_skills);
-    break;
-  default:
-    robot.initializeMirror(MirrorMode::REFLECT, auton);
-    break;
-  }
-  robot.initialize();
-  Competition.drivercontrol([]()
-                            { robot.driverControl(false); });
-  Competition.autonomous([]()
-                         { robot.driverControl(true); }); 
-  while (!Competition.isEnabled()) 
-     this_thread::yield();
-  robot.runTelemetryThread(true);
-}
-*/ 
-
-
 void startCommandMatch(std::vector<CommandInterface*> commandGroup){  
-  robot.initialize();
   robot.setAutonomousCommand(commandGroup);
   Competition.autonomous([](){robot.autonControl();}); 
   Competition.drivercontrol([](){robot.driverControl();});  
@@ -89,7 +38,7 @@ void startCommandMatch(std::vector<CommandInterface*> commandGroup){
   robot.runTelemetryThread(true);
 }  
 
-void driveCommandMatch(std::vector<CommandInterface*> commandGroup){  
+void driveCommandMatch(std::vector<CommandInterface*> commandGroup){   
   robot.setAutonomousCommand(commandGroup); //Registers the autonomous routine
   thread telemThread = thread(runTelemetry); //Start data logging
   robot.autonControl(); //Runs the autonomous command
