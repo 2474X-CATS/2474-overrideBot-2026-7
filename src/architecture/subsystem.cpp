@@ -110,9 +110,9 @@ bool RobotState::getStateOf(string key){
 
 
 int RobotState::getAxisState(AxisType axisType){ 
-   int axisVal = 0;  
+   int axisVal; 
    if (axisesEnabled){ 
-     switch (axisType){ 
+    switch (axisType){ 
       case LEFT_HORIZONTAL:   
         axisVal = Controller.Axis4.position();
         break;
@@ -125,10 +125,8 @@ int RobotState::getAxisState(AxisType axisType){
       case RIGHT_VERTICAL:   
         axisVal = Controller.Axis2.position(); 
         break;
-      default:    
-        break;
-      }
-   } 
+    } 
+   }
    return axisVal;
 };
 

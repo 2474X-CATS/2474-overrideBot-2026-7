@@ -136,7 +136,7 @@ void Drivebase::declareLocations(){
 
 void Drivebase::init()
 {   
-
+   
    encoderLinear.setPosition(0, vex::rotationUnits::rev); 
    encoderAngular.setPosition(0, vex::rotationUnits::rev);  
    encoderLinear.setReversed(true);  
@@ -166,9 +166,9 @@ void Drivebase::init()
 };
 
 void Drivebase::periodic()
-{ 
-   arcadeDrive((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL), (double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL));
-}; 
+{  
+   arcadeDrive( ((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL)) , ((double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL)) ); 
+} 
 
 void Drivebase::updateTelemetry()
 {
@@ -238,7 +238,7 @@ Location* Drivebase::getLocation(int index)
 void Drivebase::arcadeDrive(double speed, double rotation)
 { 
    speed = speed > 100 ? 100 : (speed < -100 ? -100 : speed); 
-   rotation = rotation > 100 ? 100 : (rotation < -100 ? -100 : rotation);  
+   rotation = rotation > 100 ? 100 : (rotation < -100 ? -100 : rotation);   
    leftDriveMotors.setVelocity((speed + rotation) * speedFactor, vex::percentUnits::pct);
    leftDriveMotors.spin(vex::directionType::fwd);
    rightDriveMotors.setVelocity((speed - rotation) * speedFactor, vex::percentUnits::pct);

@@ -53,18 +53,19 @@ public:
 
   Drivebase(double tileX, double tileY) : Subsystem(
                                        "drivebase",
-                                        {(EntrySet){"Pos_X", EntryType::DOUBLE},
+                                        { 
+                                         (EntrySet){"Pos_X", EntryType::DOUBLE},
                                          (EntrySet){"Pos_Y", EntryType::DOUBLE},
                                          (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE},  
                                          (EntrySet){"Current_Location", EntryType::STRING}, 
                                         }
                                     ),    
                                     encoderLinear(vex::rotation(vex::PORT15)), 
-                                    encoderAngular(vex::rotation(vex::PORT16)),
+                                    encoderAngular(vex::rotation(vex::PORT16)),  
                                     driveFrontLeft(vex::motor(vex::PORT1, vex::ratio18_1, true)), 
                                     driveMidLeft(vex::motor(vex::PORT2, vex::ratio18_1, true)),  
-                                    driveBackLeft(vex::motor(vex::PORT3, vex::ratio18_1)), 
-                                    driveBackRight(vex::motor(vex::PORT8, vex::ratio18_1)), 
+                                    driveBackLeft(vex::motor(vex::PORT4, vex::ratio18_1)), 
+                                    driveBackRight(vex::motor(vex::PORT7, vex::ratio18_1)), 
                                     driveFrontRight(vex::motor(vex::PORT10, vex::ratio18_1, true)),
                                     driveMidRight(vex::motor(vex::PORT9, vex::ratio18_1, true)),
                                     leftDriveMotors(vex::motor_group(driveFrontLeft, driveBackLeft, driveMidLeft)), 
