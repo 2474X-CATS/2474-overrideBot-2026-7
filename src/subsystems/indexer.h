@@ -3,39 +3,38 @@
 
 #include "../architecture/subsystem.h"
 
-
 class Indexer : public Subsystem
 {
 public:
    using Subsystem::get;
-   
-   static Indexer* globalRef; 
+
+   static Indexer *globalRef;
 
    Indexer() : Subsystem(
                    "indexer",
-                   {(EntrySet){"isOn", EntryType::BOOL}}),  
-                   indexerMotor(vex::motor(vex::PORT19))
-                   { 
-                     globalRef = this;
-                   }
+                   {(EntrySet){"isOn", EntryType::BOOL}}),
+               indexerMotor(vex::motor(vex::PORT19))
+   {
+      globalRef = this;
+   }
    void init() override;
    void periodic() override;
-   void updateTelemetry() override; 
-   void stop() override; 
+   void updateTelemetry() override;
+   void stop() override;
 
 protected:
-   using Subsystem::set; 
-private:   
-   static double ABSOLUTE_INDEXER_SPEED; 
+   using Subsystem::set;
 
-   vex::motor indexerMotor; 
+private:
+   static double ABSOLUTE_INDEXER_SPEED;
 
-   bool shouldSpinOver(); 
-   bool shouldSpinUnder();  
+   vex::motor indexerMotor;
 
-   void spinOver(); 
+   bool shouldSpinOver();
+   bool shouldSpinUnder();
+
+   void spinOver();
    void spinUnder();
-
 };
 
 #endif

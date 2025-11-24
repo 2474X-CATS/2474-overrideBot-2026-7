@@ -1,13 +1,13 @@
 #include "vex.h"
 #include "indexer.h"
 
-Indexer* Indexer::globalRef = nullptr;  
+Indexer *Indexer::globalRef = nullptr;
 
-double Indexer::ABSOLUTE_INDEXER_SPEED = 200; 
+double Indexer::ABSOLUTE_INDEXER_SPEED = 200;
 
 void Indexer::init()
-{  
-  Telemetry::inst.placeValueAt<double>(indexerMotor.temperature(), "Motor_Temps","IndexerMotor");
+{
+  Telemetry::inst.placeValueAt<double>(indexerMotor.temperature(), "Motor_Temps", "IndexerMotor");
   set<bool>("isOn", true);
 };
 
@@ -22,36 +22,40 @@ void Indexer::periodic()
   {
     spinOver();
   }
-  else if (shouldSpinUnder()) 
+  else if (shouldSpinUnder())
   {
-    spinUnder(); 
+    spinUnder();
   }
-  else 
+  else
   {
     stop();
   }
-  
-}; 
+};
 
-bool Indexer::shouldSpinOver(){ 
+bool Indexer::shouldSpinOver()
+{
   return RobotState::getStateOf("scoring_high") || RobotState::getStateOf("intaking_to_hopper");
 }
 
-bool Indexer::shouldSpinUnder(){ 
+bool Indexer::shouldSpinUnder()
+{
   return RobotState::getStateOf("scoring_mid");
-} 
+}
 
-void Indexer::spinOver(){ 
-  indexerMotor.setVelocity(-ABSOLUTE_INDEXER_SPEED, vex::velocityUnits::rpm); 
+void Indexer::spinOver()
+{
+  indexerMotor.setVelocity(-ABSOLUTE_INDEXER_SPEED, vex::velocityUnits::rpm);
   indexerMotor.spin(vex::directionType::fwd);
-} 
+}
 
-void Indexer::spinUnder(){ 
-  indexerMotor.setVelocity(ABSOLUTE_INDEXER_SPEED * 0.75, vex::velocityUnits::rpm); 
+void Indexer::spinUnder()
+{
+  indexerMotor.setVelocity(ABSOLUTE_INDEXER_SPEED * 0.75, vex::velocityUnits::rpm);
   indexerMotor.spin(vex::directionType::fwd);
-} 
+}
 
-void Indexer::stop(){ 
-  indexerMotor.setVelocity(0, vex::percentUnits::pct); 
+void Indexer::stop()
+{
+  indexerMotor.setVelocity(0, vex::percentUnits::pct);
   indexerMotor.spin(vex::directionType::fwd);
 }

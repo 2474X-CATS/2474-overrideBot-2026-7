@@ -26,19 +26,18 @@
          V
     |stdout: 30|
 
-*/ 
+*/
 
-#include <map> 
-using std::map;  
+#include <map>
+using std::map;
 
-#include <vector>  
-using std::vector;  
+#include <vector>
+using std::vector;
 
-#include <string> 
+#include <string>
 using std::string;
 
-using namespace std; 
-
+using namespace std;
 
 typedef enum
 {
@@ -57,15 +56,15 @@ struct EntrySet
 class Telemetry
 {
 private:
-  map<string, map<string, struct EntrySet>> table; //A table of every subtable possible
+  map<string, map<string, struct EntrySet>> table; // A table of every subtable possible
 
 public:
-  static Telemetry inst; //Only need one telemetry class
-  
+  static Telemetry inst; // Only need one telemetry class
+
   void deleteSubtable(string tableKey);
 
-  void registerSubtable(string tableKeys, vector<struct EntrySet> subKeys); //Create a new subtable with a key, entry names, and types for those entry names using EntryType
-                                                                            //Would make like (EntrySet){entry_key, EntryType::type}
+  void registerSubtable(string tableKeys, vector<struct EntrySet> subKeys); // Create a new subtable with a key, entry names, and types for those entry names using EntryType
+                                                                            // Would make like (EntrySet){entry_key, EntryType::type}
   template <typename T>
   void placeValueAt(T val, string directory, string entryKey); // Place a appropriately typed value at a certain subtable:key entry
 

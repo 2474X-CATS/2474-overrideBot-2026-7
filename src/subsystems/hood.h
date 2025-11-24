@@ -4,41 +4,40 @@
 #include "../architecture/subsystem.h"
 #include "vex.h"
 
-
 class Hood : public Subsystem
 {
 public:
     using Subsystem::get;
-     
-    static Hood* globalRef;
+
+    static Hood *globalRef;
 
     Hood() : Subsystem(
                  "hood",
-                 {(EntrySet){"isOn", EntryType::BOOL}}), 
-                 hoodPiston(vex::pneumatics(Brain.ThreeWirePort.G))  
-                 { 
-                    globalRef = this;
-                 } 
+                 {(EntrySet){"isOn", EntryType::BOOL}}),
+             hoodPiston(vex::pneumatics(Brain.ThreeWirePort.G))
+    {
+        globalRef = this;
+    }
 
     void init() override;
     void periodic() override;
-    void updateTelemetry() override; 
-    void stop() override;  
+    void updateTelemetry() override;
+    void stop() override;
 
-protected: 
+protected:
     using Subsystem::set;
-private:    
-    
-    vex::pneumatics hoodPiston; 
-    
-    void open(); 
-    void close(); 
 
-    bool holding = false;  
+private:
+    vex::pneumatics hoodPiston;
 
-    bool shouldOpen(); 
-    bool shouldClose();  
-    bool isHolding(); 
+    void open();
+    void close();
+
+    bool holding = false;
+
+    bool shouldOpen();
+    bool shouldClose();
+    bool isHolding();
 };
 
 #endif

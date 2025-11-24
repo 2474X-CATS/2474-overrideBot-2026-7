@@ -44,18 +44,20 @@ class Drivebase : public Subsystem {
 
 */
 
-typedef enum { 
-   LEFT_VERTICAL, 
-   LEFT_HORIZONTAL, 
-   RIGHT_VERTICAL, 
-   RIGHT_HORIZONTAL
-} AxisType;   
+typedef enum
+{
+  LEFT_VERTICAL,
+  LEFT_HORIZONTAL,
+  RIGHT_VERTICAL,
+  RIGHT_HORIZONTAL
+} AxisType;
 
-typedef enum { 
-  DRIVER, 
-  MANUAL, 
+typedef enum
+{
+  DRIVER,
+  MANUAL,
   STOPPED
-} ControlType; 
+} ControlType;
 
 class Subsystem
 {
@@ -74,7 +76,6 @@ public:
   {
     return Telemetry::inst.getValueAt<T>(this->label, entryName);
   };
-  
 
   static std::vector<Subsystem *> systems; // A list of all subsystems that is filled on instantiation
 
@@ -84,9 +85,9 @@ public:
 
   static void refreshTelemetry(); // Logs telemetry data for every subsystem in the subsystem list
 
-  static void stopAll(); 
+  static void stopAll();
 
-  static Subsystem* getSubsystem(int index);
+  static Subsystem *getSubsystem(int index);
 
   Subsystem(string tableLabel, vector<EntrySet> entryNames);
 
@@ -98,31 +99,27 @@ public:
 
 //----------------------------------------------------------------------
 
+class RobotState
+{
+private:
+  static ControlType mode; // 1 is updating based on controller 2 is null state values 3 is manually set states (for auton)
+  static bool axisesEnabled;
 
-class RobotState {   
-    private:   
+  static void updateStopped();
+  static void updateRegular();
 
-       static ControlType mode; // 1 is updating based on controller 2 is null state values 3 is manually set states (for auton)
-       static bool axisesEnabled;
-     
-       static void updateStopped();  
-       static void updateRegular();    
+public:
+  static void manuallyModifyState(string key, bool val);
+  static bool getStateOf(string key);
+  static void setMode(ControlType control);
+  static int getAxisState(AxisType axisType);
 
-    public:  
-       
-       static void manuallyModifyState(string key, bool val);    
-       static bool getStateOf(string key); 
-       static void setMode(ControlType control);    
-       static int getAxisState(AxisType axisType); 
+  static void initializeState();
 
-       static void initializeState(); 
-
-       static void updateState(); 
-        
-      
+  static void updateState();
 };
 
-//---------------------------------------------------------------------- 
+//----------------------------------------------------------------------
 
 class DummySystem : public Subsystem
 {
@@ -153,7 +150,7 @@ public:
   void stop() override
   {
     return;
-  } 
+  }
 };
 
 extern DummySystem GLOBAL_DUMMY;

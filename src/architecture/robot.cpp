@@ -1,7 +1,7 @@
 #include "robot.h"
 #include "telemetry.h"
-#include "command.h"  
-#include "subsystem.h" 
+#include "command.h"
+#include "subsystem.h"
 #include "vex.h"
 using namespace vex;
 
@@ -81,62 +81,61 @@ void displayGraphicalData()
 
 Robot::Robot() {
 
-}; 
+};
 
 void Robot::initialize()
-{ 
+{
   registerSystemSubtables();
   Subsystem::initSystems();
 };
 
 void Robot::registerSystemSubtables()
-{ 
+{
   RobotState::initializeState();
-  Telemetry::inst.registerSubtable( 
-     "Motor_Temps", 
-     { 
-      (EntrySet){"DriveFrontLeft",EntryType::DOUBLE}, 
-      (EntrySet){"DriveMidLeft",EntryType::DOUBLE}, 
-      (EntrySet){"DriveBackLeft",EntryType::DOUBLE}, 
-      (EntrySet){"DriveFrontRight",EntryType::DOUBLE}, 
-      (EntrySet){"DriveMidRight",EntryType::DOUBLE}, 
-      (EntrySet){"DriveBackRight",EntryType::DOUBLE}, 
-      (EntrySet){"IntakeMotor", EntryType::DOUBLE}, 
-      (EntrySet){"HopperMotor", EntryType::DOUBLE}, 
-      (EntrySet){"IndexerMotor", EntryType::DOUBLE}
-     }
-  );
+  Telemetry::inst.registerSubtable(
+      "Motor_Temps",
+      {(EntrySet){"DriveFrontLeft", EntryType::DOUBLE},
+       (EntrySet){"DriveMidLeft", EntryType::DOUBLE},
+       (EntrySet){"DriveBackLeft", EntryType::DOUBLE},
+       (EntrySet){"DriveFrontRight", EntryType::DOUBLE},
+       (EntrySet){"DriveMidRight", EntryType::DOUBLE},
+       (EntrySet){"DriveBackRight", EntryType::DOUBLE},
+       (EntrySet){"IntakeMotor", EntryType::DOUBLE},
+       (EntrySet){"HopperMotor", EntryType::DOUBLE},
+       (EntrySet){"IndexerMotor", EntryType::DOUBLE}});
 };
 
 void Robot::driverControl()
-{  
+{
   RobotState::setMode(ControlType::DRIVER);
-  double timestamp;  
+  double timestamp;
   timestamp = Brain.Timer.time();
-  while (true){  
-      Subsystem::updateSystems(); 
-      timelyWait(timestamp, 20); 
-      timestamp = Brain.Timer.time();
-  } 
-}; 
+  while (true)
+  {
+    Subsystem::updateSystems();
+    timelyWait(timestamp, 20);
+    timestamp = Brain.Timer.time();
+  }
+};
 
 void Robot::runTelemetryThread(bool showGraphics)
-{  
+{
   int timestamp = Brain.Timer.time();
   while (true)
-  {  
+  {
     RobotState::updateState();
     Subsystem::refreshTelemetry();
     if (showGraphics)
     {
       displayGraphicalData();
-    }  
+    }
     timelyWait(timestamp, 20);
     timestamp = Brain.Timer.time();
   }
-}; 
+};
 
-void Robot::stopEverything(){  
+void Robot::stopEverything()
+{
   RobotState::setMode(ControlType::STOPPED);
   Subsystem::stopAll();
 }
@@ -147,11 +146,10 @@ void Robot::setAutonomousCommand(std::vector<CommandInterface *> comm)
 };
 
 void Robot::autonControl()
-{  
-  RobotState::setMode(ControlType::MANUAL); 
-  for (CommandInterface* command : Robot::autonomousCommand){ 
-    command->run(); 
-  }  
-  
+{
+  RobotState::setMode(ControlType::MANUAL);
+  for (CommandInterface *command : Robot::autonomousCommand)
+  {
+    command->run();
+  }
 };
- 

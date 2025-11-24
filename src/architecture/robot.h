@@ -1,39 +1,34 @@
 #ifndef __ROBOT_H__
 #define __ROBOT_H__
 
-#include <vector> 
-using std::vector; 
-
+#include <vector>
+using std::vector;
 
 class CommandInterface;
 
 class Robot
 {
 
-private: 
-
+private:
    void registerSystemSubtables(); // Sets up the system data table (handling input values such as axises and buttons from both controllers)
-   
+
    vector<CommandInterface *> autonomousCommand;
 
 public:
    Robot();
 
-   void initialize(); //All subsysytems in the subsystem list as a result of their instantiation are initialized here (Motor prep / sensor calibration)
+   void initialize(); // All subsysytems in the subsystem list as a result of their instantiation are initialized here (Motor prep / sensor calibration)
 
    void driverControl(); // Drive the robot using input
 
-   void autonControl(); //Runs a series of commands that have been prior set by the "setAutonomusCommand" method
-   
-   void setAutonomousCommand(vector<CommandInterface *> comm); //Sets up the autonomous command that is to be ran in autoncontrol:  
-                                                                    //Like building blocks (Put one command on top of the other)
+   void autonControl(); // Runs a series of commands that have been prior set by the "setAutonomusCommand" method
+
+   void setAutonomousCommand(vector<CommandInterface *> comm); // Sets up the autonomous command that is to be ran in autoncontrol:
+                                                               // Like building blocks (Put one command on top of the other)
    void stopEverything();
 
-   void runTelemetryThread(bool showGraphics); //A constant loop of information logging fom the subsystems (drivebase, intake, etc),  
-                                               //and the system (controller axises, buttons) happening on a different thread
-   
-}; 
-
-
+   void runTelemetryThread(bool showGraphics); // A constant loop of information logging fom the subsystems (drivebase, intake, etc),
+                                               // and the system (controller axises, buttons) happening on a different thread
+};
 
 #endif

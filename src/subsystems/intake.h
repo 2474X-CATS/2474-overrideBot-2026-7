@@ -4,38 +4,36 @@
 
 #include "vex.h"
 
+class Intake : public Subsystem
+{
+public:
+    using Subsystem::get;
 
-class Intake : public Subsystem {
-public: 
-    using Subsystem::get;  
-
-    static Intake* globalRef; 
+    static Intake *globalRef;
 
     Intake() : Subsystem(
-                    "intake",
-                    {(EntrySet){"isOn", EntryType::BOOL}
-                    }), 
-                    intakeMotor(vex::motor(vex::PORT17, false))
-                    { 
-                        globalRef = this;
-                    }  
-    void init() override; 
-    void periodic() override; 
+                   "intake",
+                   {(EntrySet){"isOn", EntryType::BOOL}}),
+               intakeMotor(vex::motor(vex::PORT17, false))
+    {
+        globalRef = this;
+    }
+    void init() override;
+    void periodic() override;
     void updateTelemetry() override;
-    void stop() override; 
+    void stop() override;
 
-private:   
-    static double ABSOLUTE_INTAKE_SPEED; 
-    vex::motor intakeMotor;  
+private:
+    static double ABSOLUTE_INTAKE_SPEED;
+    vex::motor intakeMotor;
 
-    //vex::distance channelSensor; 
+    // vex::distance channelSensor;
 
-    bool shouldIntake(); 
-    bool shouldOuttake();  
-    
-    void intake(); 
+    bool shouldIntake();
+    bool shouldOuttake();
+
+    void intake();
     void outtake();
-    
 };
 
 #endif

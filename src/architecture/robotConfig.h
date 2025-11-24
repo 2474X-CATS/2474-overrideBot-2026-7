@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vex.h" 
+#include "vex.h"
 
 extern vex::brain Brain;
 
@@ -12,14 +12,13 @@ extern vex::brain Brain;
 
 //-------
 
-// Constants: PLACE HERE [using extern] 
+// Constants: PLACE HERE [using extern]
 
-extern double ROBOT_WIDTH_MM; 
-extern double ROBOT_LENGTH_MM; 
+extern double ROBOT_WIDTH_MM;
+extern double ROBOT_LENGTH_MM;
 
-extern double TILE_SIZE_MM; 
+extern double TILE_SIZE_MM;
 
 //-------
 
-void vexcodeInit();  
-
+void vexcodeInit();

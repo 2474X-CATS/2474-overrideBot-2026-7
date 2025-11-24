@@ -1,11 +1,11 @@
 #include "vex.h"
 #include "hopper.h"
-// this function runs once when robot starts 
+// this function runs once when robot starts
 
-Hopper* Hopper::globalRef = nullptr; 
+Hopper *Hopper::globalRef = nullptr;
 
 void Hopper::init()
-{  
+{
     hopperMotor.setStopping(vex::brakeType::brake);     // makes motor hold still when stopped
     hopperMotor.setVelocity(0, vex::percentUnits::pct); // start off stopped
     set<bool>("isOn", true);                            // says the hopper is ready to go
@@ -14,11 +14,12 @@ void Hopper::init()
 // if you had a dashboard you could send data from here
 void Hopper::updateTelemetry()
 {
-    Telemetry::inst.placeValueAt<double>(hopperMotor.temperature(), "Motor_Temps","HopperMotor"); 
+    Telemetry::inst.placeValueAt<double>(hopperMotor.temperature(), "Motor_Temps", "HopperMotor");
 }
 
 void Hopper::periodic()
 {
+
     if (shouldDispenseCubes()) // Checks if you should outtake cubes from the hopper
     {
         dispenseCubes();
@@ -31,28 +32,29 @@ void Hopper::periodic()
     {
         stop(); // Checks if you should stop the hopper motor
     }
-   
 }
 
-void Hopper::dispenseCubes(){ 
-     hopperMotor.setVelocity(-100, vex::percentUnits::pct); 
-     hopperMotor.spin(vex::directionType::fwd); 
-} 
-
-void Hopper::mixHopper(){ 
-    hopperMotor.setVelocity(100, vex::percentUnits::pct); 
-    hopperMotor.spin(vex::directionType::fwd);
-}  
-
-void Hopper::stop(){ 
-    hopperMotor.setVelocity(0, vex::percentUnits::pct); 
+void Hopper::dispenseCubes()
+{
+    hopperMotor.setVelocity(-100, vex::percentUnits::pct);
     hopperMotor.spin(vex::directionType::fwd);
 }
 
+void Hopper::mixHopper()
+{
+    hopperMotor.setVelocity(100, vex::percentUnits::pct);
+    hopperMotor.spin(vex::directionType::fwd);
+}
+
+void Hopper::stop()
+{
+    hopperMotor.setVelocity(0, vex::percentUnits::pct);
+    hopperMotor.spin(vex::directionType::fwd);
+}
 
 bool Hopper::shouldDispenseCubes()
 {
-    return RobotState::getStateOf("scoring_high") || RobotState::getStateOf("scoring_mid") || RobotState::getStateOf("scoring_low"); 
+    return RobotState::getStateOf("scoring_high") || RobotState::getStateOf("scoring_mid") || RobotState::getStateOf("scoring_low");
 }
 
 bool Hopper::shouldMixHopper()

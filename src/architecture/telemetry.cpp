@@ -1,13 +1,10 @@
 #include "telemetry.h"
 
-#include <sstream> 
-using std::ostringstream;  
+#include <sstream>
+using std::ostringstream;
 
-#include <stdexcept>   
-using std::__throw_logic_error; 
-
-
-
+#include <stdexcept>
+using std::__throw_logic_error;
 
 Telemetry Telemetry::inst;
 
@@ -157,8 +154,9 @@ bool Telemetry::getValueAt<bool>(std::string directory, std::string entryKey)
         __throw_logic_error("Template type must match registered type for this table entry");
         return false;
     }
-}; 
+};
 
-void Telemetry::deleteSubtable(string tableKey){ 
+void Telemetry::deleteSubtable(string tableKey)
+{
     table.erase(tableKey);
 };

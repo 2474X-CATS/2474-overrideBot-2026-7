@@ -7,36 +7,34 @@ class Hopper : public Subsystem
 {
 public:
     using Subsystem ::get;
-    
-    static Hopper* globalRef; 
+
+    static Hopper *globalRef;
 
     Hopper() : Subsystem(
                    "hopper",
-                   {(EntrySet){"isOn", EntryType::BOOL}} 
-               ), 
-               hopperMotor(vex::motor(vex::PORT18, false)) 
-               //containerSensor(vex::distance(vex::PORT22))
-    { 
+                   {(EntrySet){"isOn", EntryType::BOOL}}),
+               hopperMotor(vex::motor(vex::PORT18, false))
+    // containerSensor(vex::distance(vex::PORT22))
+    {
         globalRef = this;
     }
-   
-    void init() override;           
-    void periodic() override;       
-    void updateTelemetry() override; 
-    void stop() override;  
 
-private:   
-    vex::motor hopperMotor; 
-    //vex::distance containerSensor;  
+    void init() override;
+    void periodic() override;
+    void updateTelemetry() override;
+    void stop() override;
 
-    bool shouldDispenseCubes();  
-    bool shouldMixHopper();   
+private:
+    vex::motor hopperMotor;
+    // vex::distance containerSensor;
 
-    void dispenseCubes(); 
+    bool shouldDispenseCubes();
+    bool shouldMixHopper();
+
+    void dispenseCubes();
     void mixHopper();
 
     // this figures out what the driver wants the hopper to do
-   
 };
 
 #endif
