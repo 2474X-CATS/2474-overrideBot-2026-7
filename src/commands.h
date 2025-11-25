@@ -288,6 +288,8 @@ CommandInterface *AlignWithLocation(int locationIndex, double distance, PathType
 CommandInterface *Score(Goal_Pos pos, double duration);
 CommandInterface *IntakeCubes(double duration);
 CommandInterface *EnableMatchloader(bool enabled);
-CommandInterface *Wait(double duration);
+CommandInterface *Wait(double duration); 
+
+CommandInterface* RamForward(double percentage, double duration);
 
 #endif

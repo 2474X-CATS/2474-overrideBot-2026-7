@@ -9,7 +9,8 @@
 #include "subsystems/intake.h"
 #include "subsystems/matchloader.h"
 #include "subsystems/hooks.h"
-#include "helpers/location.h"
+#include "helpers/autoConfig.h"
+
 #include "commands.h"
 
 using namespace vex;
@@ -122,8 +123,19 @@ int main()
   Hopper hopper;
   Hooks hooks;
 
-  robot.initialize();
+  robot.initialize(); 
 
+  runAutonomousMaker();
+  
+  /*
   driveCommandMatch(
-      closedSide());
+      {  
+         RamForward(1, 2000)
+      }
+  );  
+  */ 
+
+
+  
+
 }

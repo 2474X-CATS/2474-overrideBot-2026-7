@@ -404,5 +404,10 @@ CommandInterface *EnableMatchloader(bool out)
 CommandInterface *Wait(double duration)
 {
     return WaitFor::getCommand(duration);
-}
+};
+
+CommandInterface* RamForward(double percentage, double duration){ 
+    return DriveForwardForTime::getCommand(percentage, duration);
+};  
+
 /////////////////////////////////////////////////////////////////////
