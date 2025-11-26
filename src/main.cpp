@@ -125,7 +125,7 @@ int main()
 
   robot.initialize(); 
 
-  runAutonomousMaker();
+  freeDrive();
   
   /*
   driveCommandMatch(
