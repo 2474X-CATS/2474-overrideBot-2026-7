@@ -59,5 +59,5 @@ bool Hopper::shouldDispenseCubes()
 
 bool Hopper::shouldMixHopper()
 {
-    return false;
+    return RobotState::getStateOf("mixing_hopper");
 }

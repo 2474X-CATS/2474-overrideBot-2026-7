@@ -17,7 +17,7 @@ private:
   static double DRIVE_WHEEL_RADIUS_MM;
 
   vex::rotation encoderLinear;
-  vex::rotation encoderAngular;
+  vex::inertial driveGyro;
 
   vex::motor driveFrontLeft;
   vex::motor driveMidLeft;
@@ -56,7 +56,7 @@ public:
                                                   (EntrySet){"Current_Location", EntryType::STRING},
                                               }),
                                           encoderLinear(vex::rotation(vex::PORT15)),
-                                          encoderAngular(vex::rotation(vex::PORT16)),
+                                          driveGyro(vex::PORT20),
                                           driveFrontLeft(vex::motor(vex::PORT1, vex::ratio18_1, true)),
                                           driveMidLeft(vex::motor(vex::PORT2, vex::ratio18_1, true)),
                                           driveBackLeft(vex::motor(vex::PORT4, vex::ratio18_1)),
@@ -65,8 +65,8 @@ public:
                                           driveMidRight(vex::motor(vex::PORT9, vex::ratio18_1, true)),
                                           leftDriveMotors(vex::motor_group(driveFrontLeft, driveBackLeft, driveMidLeft)),
                                           rightDriveMotors(vex::motor_group(driveFrontRight, driveBackRight, driveMidRight)),
-                                          startX((tileX - 1) * TILE_SIZE_MM),
-                                          startY((tileY - 1) * TILE_SIZE_MM)
+                                          startX((tileX) * TILE_SIZE_MM),
+                                          startY((tileY) * TILE_SIZE_MM)
   {
     globalRef = this;
   };

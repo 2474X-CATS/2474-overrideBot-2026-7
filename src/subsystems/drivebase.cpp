@@ -7,8 +7,8 @@
 
 Drivebase *Drivebase::globalRef = nullptr;
 
-double Drivebase::ENCODER_WHEEL_RADIUS_MM = 24.9;
-double Drivebase::ENCODER_DIST_FROM_CENTER = 17.654 * 2; // 17.665
+double Drivebase::ENCODER_WHEEL_RADIUS_MM = 25.4;
+double Drivebase::ENCODER_DIST_FROM_CENTER = 19.02231081; // 17.665
 double Drivebase::DRIVE_WHEEL_RADIUS_MM = 76.2;
 
 // array<Location*, 14> Drivebase::locations;
@@ -117,8 +117,15 @@ void Drivebase::init()
 {
 
    encoderLinear.setPosition(0, vex::rotationUnits::rev);
-   encoderAngular.setPosition(0, vex::rotationUnits::rev);
-   encoderLinear.setReversed(true);
+   encoderLinear.setReversed(true); 
+
+   
+   driveGyro.calibrate();  
+
+   while (driveGyro.isCalibrating()){ 
+      vex::this_thread::yield(); 
+   }
+   
 
    leftDriveMotors.setStopping(vex::brakeType::brake);
    rightDriveMotors.setStopping(vex::brakeType::brake);
@@ -127,15 +134,15 @@ void Drivebase::init()
    powerPID.I = 0.075;
    powerPID.D = 0.1;
    powerPID.iLimit = 750;
-   powerPID.errorTolerance = 1;
+   powerPID.errorTolerance = 0.1;
    //------------------------------
-   turnPID.P = 1.4;
-   turnPID.I = 0.05;
-   turnPID.D = 0;
+   turnPID.P = 1.9;
+   turnPID.I = 0.03;
+   turnPID.D = 0.0;
    turnPID.iLimit = 180;
    turnPID.errorTolerance = 0.5;
 
-   set<double>("Pos_X", startX - ROBOT_WIDTH_MM / 2);
+   set<double>("Pos_X", startX + ROBOT_WIDTH_MM / 2);
    set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2);
    set<double>("Angle_Degrees_CCW", 90);
    set<string>("Current_Location", "NONE");
@@ -152,33 +159,16 @@ void Drivebase::updateTelemetry()
    double y = get<double>("Pos_Y");
    double currentAngle = get<double>("Angle_Degrees_CCW");
 
-   double rpmToDist = (2 * M_PI * ENCODER_WHEEL_RADIUS_MM);
+   currentAngle = 90 - driveGyro.heading(vex::rotationUnits::deg);
 
-   double angularVelocity;
-
-   /*
-   angularVelocity = -(rightDriveMotors.velocity(vex::velocityUnits::rpm) + leftDriveMotors.velocity(vex::velocityUnits::rpm)) / 2 / 60 / 50;
-   angularVelocity *= (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI);
-   angularVelocity /= (ROBOT_WIDTH_MM * M_PI);
-   angularVelocity *= 360;
-   */
-
-   angularVelocity = -(((encoderAngular.velocity(vex::velocityUnits::rpm) / 60 / 50) * rpmToDist) / (M_PI * ENCODER_DIST_FROM_CENTER)) * (180);
-
-   currentAngle += angularVelocity;
-
-   if (currentAngle > 360)
+   if (currentAngle < 0)
    {
-      currentAngle = currentAngle - 360;
-   }
-   else if (currentAngle < 0)
-   {
-      currentAngle = 360 + currentAngle;
-   }
+      currentAngle += 360;
+   } 
 
    set<double>("Angle_Degrees_CCW", currentAngle);
 
-   double hypotenuse = (encoderLinear.velocity(vex::velocityUnits::rpm) * rpmToDist) / 3000;
+   double hypotenuse = (encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_RADIUS_MM) / 3000;
 
    double angleRadians = get<double>("Angle_Degrees_CCW") * (2 * M_PI) / 360;
 
@@ -187,7 +177,6 @@ void Drivebase::updateTelemetry()
 
    set<double>("Pos_X", x);
    set<double>("Pos_Y", y);
-
    set<string>("Current_Location", "NONE");
 
    for (int index = 0; index < 14; index++)
@@ -217,9 +206,9 @@ void Drivebase::updateTelemetry()
    //---------------------------------------------------------
 
    Brain.Screen.printAt(20, 100, "X: %f", get<double>("Pos_X"));
-   Brain.Screen.printAt(20, 125, "Y: %f", get<double>("Pos_Y"));
-   Brain.Screen.printAt(20, 150, "Angle Heading: %f", get<double>("Angle_Degrees_CCW"));
-   // Brain.Screen.printAt(20,200, get<string>("Current_Location").c_str());
+   Brain.Screen.printAt(20, 125, "Y: %f", get<double>("Pos_Y")); 
+   Brain.Screen.printAt(20, 150, "Angle Heading: %f", get<double>("Angle_Degrees_CCW")); 
+   Brain.Screen.printAt(20,200, get<string>("Current_Location").c_str());
 };
 
 Location *Drivebase::getLocation(int index)
@@ -228,7 +217,11 @@ Location *Drivebase::getLocation(int index)
 }
 
 void Drivebase::arcadeDrive(double speed, double rotation)
-{
+{ 
+   if (fabs(speed) < 2 && fabs(rotation) < 2){
+      stop(); 
+      return; 
+   }
    speed = speed > 100 ? 100 : (speed < -100 ? -100 : speed);
    rotation = rotation > 100 ? 100 : (rotation < -100 ? -100 : rotation);
    leftDriveMotors.setVelocity((speed + rotation) * speedFactor, vex::percentUnits::pct);

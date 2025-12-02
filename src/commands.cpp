@@ -176,7 +176,8 @@ void DriveToSetpoint::start()
     double startingX = drivebaseRef.get<double>("Pos_X");
     double startingY = drivebaseRef.get<double>("Pos_Y");
 
-    double overallDist = hypot(startingX - setpointX, startingY - setpointY);
+    double overallDist = hypot(startingX - setpointX, startingY - setpointY); 
+    
     double overallAngle = fmod((atan2(startingY - setpointY, startingX - setpointX) / M_PI * 180 + 180), 360);
 
     double xDist = setpointX - startingX;

@@ -36,9 +36,7 @@ void startCommandMatch(std::vector<CommandInterface *> commandGroup)
                          { robot.autonControl(); });
   Competition.drivercontrol([]()
                             { robot.driverControl(); });
-  while (!Competition.isEnabled())
-    this_thread::yield();
-  robot.runTelemetryThread(true);
+  robot.runTelemetryThread(false);
 }
 
 void driveCommandMatch(std::vector<CommandInterface *> commandGroup)
@@ -89,13 +87,14 @@ vector<CommandInterface *> selfSufficent()
 vector<CommandInterface *> shortRun()
 {
   return {
-      AlignWithLocation(Zones::NAT_MID, TILE_SIZE_MM, PathType::MANHATTAN_YX, true),
-      DriveLinear(TILE_SIZE_MM * 0.85, false),
-      Score(Goal_Pos::MID_GOAL, 2000),
-      DriveLinear(-TILE_SIZE_MM * 0.3, false),
-      AlignWithLocation(Zones::NAT_LOW, TILE_SIZE_MM, PathType::EUCLIDEAN, true),
-      DriveLinear(TILE_SIZE_MM * 0.75, false),
-      Score(Goal_Pos::LOW_GOAL, 2500)};
+      AlignWithLocation(Zones::NAT_MID, TILE_SIZE_MM * 0.9, PathType::EUCLIDEAN, true),    
+      DriveLinear(TILE_SIZE_MM * 0.35, false), 
+      Score(Goal_Pos::MID_GOAL, 2500), 
+      DriveLinear(-TILE_SIZE_MM * 0.4, false),
+      AlignWithLocation(Zones::NAT_LOW, TILE_SIZE_MM * 0.9, PathType::EUCLIDEAN, true),
+      DriveLinear(TILE_SIZE_MM * 0.4, false),
+      Score(Goal_Pos::LOW_GOAL, 2500)
+     };
 };
 
 int main()
@@ -114,8 +113,7 @@ int main()
     8: Free drive
   */
 
-  Drivebase drive = Drivebase(2.75, 0.75); // Tile location right 1 up 1
-
+  Drivebase drive = Drivebase(0,0); //Drivebase(2.75, 1); // Tile location right 1 up 1
   Intake intake;
   Matchloader matchloader;
   Indexer indexer;
@@ -125,17 +123,7 @@ int main()
 
   robot.initialize(); 
 
-  freeDrive();
-  
-  /*
-  driveCommandMatch(
-      {  
-         RamForward(1, 2000)
-      }
-  );  
-  */ 
 
-
-  
+  freeDrive(); 
 
 }
