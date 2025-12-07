@@ -124,23 +124,26 @@ void Drivebase::init()
 
    while (driveGyro.isCalibrating()){ 
       vex::this_thread::yield(); 
-   }
+   } 
+  
+   //driveGyro.datarate(20);  
    
+
 
    leftDriveMotors.setStopping(vex::brakeType::brake);
    rightDriveMotors.setStopping(vex::brakeType::brake);
 
-   powerPID.P = 1.25;
-   powerPID.I = 0.075;
-   powerPID.D = 0.1;
-   powerPID.iLimit = 750;
-   powerPID.errorTolerance = 0.1;
+   powerPID.P = 1;
+   powerPID.I = 0.0165;
+   powerPID.D = 0.0;
+   powerPID.iLimit = 500;
+   powerPID.errorTolerance = 0.125;
    //------------------------------
-   turnPID.P = 1.9;
-   turnPID.I = 0.03;
-   turnPID.D = 0.0;
-   turnPID.iLimit = 180;
-   turnPID.errorTolerance = 0.5;
+   turnPID.P = 2.5;
+   turnPID.I = 0.01;
+   turnPID.D = 0.05;
+   turnPID.iLimit = 270;
+   turnPID.errorTolerance = 0.15;
 
    set<double>("Pos_X", startX + ROBOT_WIDTH_MM / 2);
    set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2);
@@ -208,7 +211,8 @@ void Drivebase::updateTelemetry()
    Brain.Screen.printAt(20, 100, "X: %f", get<double>("Pos_X"));
    Brain.Screen.printAt(20, 125, "Y: %f", get<double>("Pos_Y")); 
    Brain.Screen.printAt(20, 150, "Angle Heading: %f", get<double>("Angle_Degrees_CCW")); 
-   Brain.Screen.printAt(20,200, get<string>("Current_Location").c_str());
+   Brain.Screen.printAt(20,200, get<string>("Current_Location").c_str()); 
+   Brain.Screen.clearLine(200);
 };
 
 Location *Drivebase::getLocation(int index)

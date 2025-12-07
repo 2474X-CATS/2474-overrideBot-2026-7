@@ -111,9 +111,9 @@ public:
                                                                                                                                           numOfOperations(setpoints.size() - 1) {};
 };
 
-class DriveToSetpoint : DrivePath
+class DriveToSetpoint : protected DrivePath
 {
-private:
+protected:
   double setpointX;
   double setpointY;
   double endingAngle;
@@ -133,17 +133,64 @@ public:
 
 protected:
   void start() override;
-};
+}; 
 
-class DriveForwardForTime : Command<Drivebase>
+class TurnToSetpoint : DriveToSetpoint
 {
-private:
-  Drivebase &drivebaseRef;
+
+public: 
+
+  static CommandInterface *getCommand(double setpointX, double setpointY)
+  {
+    return new TurnToSetpoint(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, *Hood::globalRef, setpointX, setpointY);
+  }
+
+  TurnToSetpoint(Drivebase &drive, Intake &intake, Indexer &indexer, Hood &hood, double setpointX, double setpointY) : DriveToSetpoint(drive, intake, indexer, hood, setpointX, setpointY, -1, PathType::EUCLIDEAN, false){};
+                                                                                                                                                                              
+protected:
+  void start() override;
+};  
+
+class CloseDistanceBetweenSetpoint : DriveToSetpoint
+{
+
+public: 
+ 
+  static CommandInterface *getCommand(double setpointX, double setpointY, double distFrom)
+  {
+    return new CloseDistanceBetweenSetpoint(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, *Hood::globalRef, setpointX, setpointY, distFrom);
+  }
+
+  CloseDistanceBetweenSetpoint(Drivebase &drive, Intake &intake, Indexer &indexer, Hood &hood, double setpointX, double setpointY, double distFrom) :  
+                         DriveToSetpoint(drive, intake, indexer, hood, setpointX, setpointY, -1, PathType::EUCLIDEAN, false), 
+                         distFrom(distFrom) {};
+                                                                                                                                                                              
+protected:
+  void start() override; 
+
+private: 
+  double distFrom; 
+
+}; 
+
+
+class DriveForwardForTime : Command<Drivebase, Intake, Indexer, Hood>
+{
+private: 
+
+  Drivebase &drivebaseRef;  
+
+  Intake &intakeRef; 
+  Indexer &indexerRef;   
+  Hood &hoodRef;
+
+
   double percentage;
 
   double startingTime;
 
-  double timeDuration;
+  double timeDuration; 
+  bool intaking;
 
 protected:
   void start() override;
@@ -152,15 +199,21 @@ protected:
   void end() override;
 
 public:
-  static CommandInterface *getCommand(double percentage, double timeDuration)
+  static CommandInterface *getCommand(double percentage, double timeDuration, bool intaking)
   {
-    return new DriveForwardForTime(*Drivebase::globalRef, percentage, timeDuration);
+    return new DriveForwardForTime(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, *Hood::globalRef, percentage, timeDuration, intaking);
   }
 
-  DriveForwardForTime(Drivebase &drivebase, double percentage, double timeDuration) : Command<Drivebase>(drivebase),
-                                                                                      drivebaseRef(drivebase),
+  DriveForwardForTime(Drivebase &drivebase, Intake &intake, Indexer &indexer, Hood &hood,  double percentage, double timeDuration, bool intaking) :  
+                                                                                      Command<Drivebase, Intake, Indexer, Hood>(drivebase, intake, indexer, hood),
+                                                                                      drivebaseRef(drivebase), 
+                                                                                      intakeRef(intake), 
+                                                                                      indexerRef(indexer), 
+                                                                                      hoodRef(hood),
                                                                                       percentage(percentage),
-                                                                                      timeDuration(timeDuration) {};
+                                                                                      timeDuration(timeDuration), 
+                                                                                      intaking(intaking)  
+                                                                                      {};
 
   ~DriveForwardForTime() override = default;
 };
@@ -284,12 +337,14 @@ protected:
 CommandInterface *DriveLinear(double distance, bool intaking);
 CommandInterface *TurnToHeading(double angle);
 CommandInterface *DriveToPoint(double setpointX, double setpointY, PathType pathType, bool intaking);
-CommandInterface *AlignWithLocation(int locationIndex, double distance, PathType pathType, bool intaking);
+CommandInterface *AlignWithLocation(int locationIndex, double distance, PathType pathType, bool intaking);  
+CommandInterface *GetWithinDistOfSetpoint(int locationIndex, double distFrom);
+CommandInterface *FaceLocation(int locationIndex); 
 CommandInterface *Score(Goal_Pos pos, double duration);
 CommandInterface *IntakeCubes(double duration);
 CommandInterface *EnableMatchloader(bool enabled);
 CommandInterface *Wait(double duration); 
 
-CommandInterface* RamForward(double percentage, double duration);
+CommandInterface* RamForward(double percentage, double duration, bool intaking);
 
 #endif

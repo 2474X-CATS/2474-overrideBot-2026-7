@@ -2,39 +2,47 @@
 #define __INDEXER_H__
 
 #include "../architecture/subsystem.h"
+#include "vex.h"
+
+typedef enum { 
+   HIGH, 
+   MID,  
+   STORAGE,
+   NONE
+} Feed; 
 
 class Indexer : public Subsystem
 {
 public:
    using Subsystem::get;
-
-   static Indexer *globalRef;
+   using Subsystem::getFromInputs;
+   
+   static Indexer* globalRef; 
 
    Indexer() : Subsystem(
                    "indexer",
-                   {(EntrySet){"isOn", EntryType::BOOL}}),
-               indexerMotor(vex::motor(vex::PORT19))
-   {
-      globalRef = this;
-   }
+                   { 
+                     (EntrySet){"isOn", EntryType::BOOL} 
+                   } 
+                  ) { 
+                     globalRef = this;
+                   } 
+               
    void init() override;
    void periodic() override;
-   void updateTelemetry() override;
-   void stop() override;
+   void updateTelemetry() override; 
+   void stop() override; 
 
+   
 protected:
-   using Subsystem::set;
+   using Subsystem::set;   
 
-private:
-   static double ABSOLUTE_INDEXER_SPEED;
+private: 
+   static double ABSOLUTE_INDEXER_SPEED; 
 
-   vex::motor indexerMotor;
-
-   bool shouldSpinOver();
-   bool shouldSpinUnder();
-
-   void spinOver();
+   void spinOver(); 
    void spinUnder();
+   
 };
 
 #endif

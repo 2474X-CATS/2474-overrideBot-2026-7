@@ -6,7 +6,7 @@ Matchloader *Matchloader::globalRef = nullptr;
 void Matchloader::init()
 {
     matchloaderPiston.close();
-    set<bool>("isOn", true);
+    set<bool>("isOn", true); 
 }
 
 void Matchloader::updateTelemetry()

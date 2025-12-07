@@ -35,7 +35,10 @@ void startCommandMatch(std::vector<CommandInterface *> commandGroup)
   Competition.autonomous([]()
                          { robot.autonControl(); });
   Competition.drivercontrol([]()
-                            { robot.driverControl(); });
+                            { robot.driverControl(); }); 
+  while (!Competition.isEnabled()){ 
+    this_thread::yield();
+  }
   robot.runTelemetryThread(false);
 }
 
@@ -87,13 +90,16 @@ vector<CommandInterface *> selfSufficent()
 vector<CommandInterface *> shortRun()
 {
   return {
-      AlignWithLocation(Zones::NAT_MID, TILE_SIZE_MM * 0.9, PathType::EUCLIDEAN, true),    
-      DriveLinear(TILE_SIZE_MM * 0.35, false), 
-      Score(Goal_Pos::MID_GOAL, 2500), 
-      DriveLinear(-TILE_SIZE_MM * 0.4, false),
-      AlignWithLocation(Zones::NAT_LOW, TILE_SIZE_MM * 0.9, PathType::EUCLIDEAN, true),
+      AlignWithLocation(Zones::NAT_MID, TILE_SIZE_MM * 0.9, PathType::EUCLIDEAN, true),  
+      FaceLocation(Zones::NAT_MID),    
+      GetWithinDistOfSetpoint(Zones::NAT_MID, 300), 
+      Score(Goal_Pos::MID_GOAL, 2500),  
+      RamForward(-0.25, 750, false),
+      AlignWithLocation(Zones::NAT_LOW, TILE_SIZE_MM, PathType::EUCLIDEAN, true)
+      /*
       DriveLinear(TILE_SIZE_MM * 0.4, false),
-      Score(Goal_Pos::LOW_GOAL, 2500)
+      Score(Goal_Pos::LOW_GOAL, 2500) 
+      */
      };
 };
 
@@ -113,7 +119,7 @@ int main()
     8: Free drive
   */
 
-  Drivebase drive = Drivebase(0,0); //Drivebase(2.75, 1); // Tile location right 1 up 1
+  Drivebase drive = Drivebase(1,1); // Tile location right 1 up 1
   Intake intake;
   Matchloader matchloader;
   Indexer indexer;
@@ -123,7 +129,23 @@ int main()
 
   robot.initialize(); 
 
-
-  freeDrive(); 
+  /*
+  driveCommandMatch( 
+     { 
+      AlignWithLocation(Zones::NAT_ML_LEFT, TILE_SIZE_MM , PathType::MANHATTAN_XY, false),  
+      EnableMatchloader(true),
+      RamForward(0.25, 1000, true),   
+      IntakeCubes(1500),
+      RamForward(-0.25, 750, false),
+      EnableMatchloader(false),
+      FaceLocation(Zones::NAT_HIGH_LEFT),    
+      GetWithinDistOfSetpoint(Zones::NAT_HIGH_LEFT, 295), 
+      Score(Goal_Pos::HIGH_GOAL, 2000)
+     }
+  ); 
+  */ 
+ driveCommandMatch( 
+  shortRun()
+ );
 
 }

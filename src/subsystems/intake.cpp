@@ -38,7 +38,7 @@ bool Intake::shouldIntake()
 
 bool Intake::shouldOuttake()
 {
-    return RobotState::getStateOf("scoring_low");
+    return RobotState::getStateOf("scoring_low") || RobotState::getStateOf("reverse_intake");
 }
 
 void Intake::intake()
@@ -49,7 +49,7 @@ void Intake::intake()
 
 void Intake::outtake()
 {
-    intakeMotor.setVelocity(ABSOLUTE_INTAKE_SPEED * 0.5, vex::velocityUnits::rpm);
+    intakeMotor.setVelocity(ABSOLUTE_INTAKE_SPEED, vex::velocityUnits::rpm);
     intakeMotor.spin(vex::directionType::fwd);
 }
 

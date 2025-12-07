@@ -203,25 +203,45 @@ void DriveToSetpoint::start()
         break;
     }
 
-    if (endingAngle != -1)
+    if (endingAngle != -1 && pathType != PathType::EUCLIDEAN)
         setpoints.push_back(endingAngle);
 
     numOfOperations = setpoints.size() - 1;
 }
 
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////// 
+
+void TurnToSetpoint::start(){ 
+   DriveToSetpoint::start(); 
+   setpoints.pop_back(); 
+   numOfOperations--;
+};  
+
+void CloseDistanceBetweenSetpoint::start(){ 
+   DriveToSetpoint::start(); 
+   operationsIndex++; 
+   setpoints[1] = setpoints[1] - distFrom;
+}; 
 
 ////////////////////////////////////////////////////////////
 
 void DriveForwardForTime::start()
 {
-    drivebaseRef.setSpeedFactor(1);
-    startingTime = Brain.Timer.time();
+    drivebaseRef.setSpeedFactor(1); 
+    startingTime = Brain.Timer.time();  
+    if (intaking)
+      RobotState::manuallyModifyState("intaking_to_hopper", true); 
+    else { 
+      RobotState::manuallyModifyState("intaking_to_hopper", false);
+    }
 };
 
 void DriveForwardForTime::periodic()
 {
-    drivebaseRef.arcadeDrive(percentage * 100, 0);
+    drivebaseRef.arcadeDrive(percentage * 100, 0); 
+    intakeRef.periodic(); 
+    indexerRef.periodic(); 
+    hoodRef.periodic(); 
 };
 
 bool DriveForwardForTime::isOver()
@@ -230,7 +250,8 @@ bool DriveForwardForTime::isOver()
 }
 
 void DriveForwardForTime::end()
-{
+{ 
+    RobotState::manuallyModifyState("intaking_to_hopper", false);
     drivebaseRef.stop();
     drivebaseRef.setSpeedFactor(0.85);
 }
@@ -387,6 +408,12 @@ CommandInterface *AlignWithLocation(int locationIndex, double distance, PathType
     return DriveToSetpoint::getCommand(setpoint[0], setpoint[1], Drivebase::getLocation(locationIndex)->getPerfectEntranceAngle(), pathType, intaking);
 };
 
+CommandInterface *FaceLocation(int locationIndex)
+{
+    array<double, 2> setpoint = Drivebase::getLocation(locationIndex)->getProjectedSetpoint(0);
+    return TurnToSetpoint::getCommand(setpoint[0], setpoint[1]);
+};
+
 CommandInterface *Score(Goal_Pos pos, double duration)
 {
     return ScoreOnGoal::getCommand(pos, duration);
@@ -407,8 +434,13 @@ CommandInterface *Wait(double duration)
     return WaitFor::getCommand(duration);
 };
 
-CommandInterface* RamForward(double percentage, double duration){ 
-    return DriveForwardForTime::getCommand(percentage, duration);
-};  
+CommandInterface* RamForward(double percentage, double duration, bool intaking){ 
+    return DriveForwardForTime::getCommand(percentage, duration, intaking);
+};   
+
+CommandInterface* GetWithinDistOfSetpoint(int locationIndex, double distFrom){  
+    array<double, 2> setpoint = Drivebase::getLocation(locationIndex)->getProjectedSetpoint(0);
+    return CloseDistanceBetweenSetpoint::getCommand(setpoint[0], setpoint[1], distFrom);
+}
 
 /////////////////////////////////////////////////////////////////////

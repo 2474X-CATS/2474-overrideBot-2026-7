@@ -30,6 +30,7 @@ void Indexer::periodic()
   {
     stop();
   }
+
 };
 
 bool Indexer::shouldSpinOver()
@@ -50,7 +51,7 @@ void Indexer::spinOver()
 
 void Indexer::spinUnder()
 {
-  indexerMotor.setVelocity(ABSOLUTE_INDEXER_SPEED * 0.75, vex::velocityUnits::rpm);
+  indexerMotor.setVelocity(ABSOLUTE_INDEXER_SPEED, vex::velocityUnits::rpm);
   indexerMotor.spin(vex::directionType::fwd);
 }
 

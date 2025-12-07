@@ -80,7 +80,8 @@ void RobotState::initializeState()
         (EntrySet){"matchloader_out", EntryType::BOOL},
         (EntrySet){"toggling_hood", EntryType::BOOL},
         (EntrySet){"toggling_descore", EntryType::BOOL},  
-        (EntrySet){"mixing_hopper", EntryType::BOOL}
+        (EntrySet){"mixing_hopper", EntryType::BOOL}, 
+        (EntrySet){"reverse_intake", EntryType::BOOL}
       });
 }
 
@@ -93,7 +94,8 @@ void RobotState::updateRegular()
    Telemetry::inst.placeValueAt<bool>(Controller.ButtonL2.pressing(), "robot_state", "matchloader_out");
    Telemetry::inst.placeValueAt<bool>(Controller.ButtonL1.pressing(), "robot_state", "toggling_hood");
    Telemetry::inst.placeValueAt<bool>(Controller.ButtonX.pressing(), "robot_state", "toggling_descore"); 
-   Telemetry::inst.placeValueAt<bool>(Controller.ButtonDown.pressing(), "robot_state", "mixing_hopper");
+   Telemetry::inst.placeValueAt<bool>(Controller.ButtonDown.pressing(), "robot_state", "mixing_hopper"); 
+   Telemetry::inst.placeValueAt<bool>(Controller.ButtonB.pressing(), "robot_state", "reverse_intake");
 }
 
 void RobotState::updateStopped()
@@ -105,7 +107,8 @@ void RobotState::updateStopped()
    Telemetry::inst.placeValueAt<bool>(false, "robot_state", "matchloader_out");
    Telemetry::inst.placeValueAt<bool>(false, "robot_state", "toggling_hood");
    Telemetry::inst.placeValueAt<bool>(false, "robot_state", "toggling_descore"); 
-   Telemetry::inst.placeValueAt<bool>(false, "robot_state", "mixing_hopper");
+   Telemetry::inst.placeValueAt<bool>(false, "robot_state", "mixing_hopper"); 
+   Telemetry::inst.placeValueAt<bool>(false, "robot_state", "reverse_intake");
 };
 
 bool RobotState::getStateOf(string key)
