@@ -92,17 +92,6 @@ void Robot::initialize()
 void Robot::registerSystemSubtables()
 {
   RobotState::initializeState();
-  Telemetry::inst.registerSubtable(
-      "Motor_Temps",
-      {(EntrySet){"DriveFrontLeft", EntryType::DOUBLE},
-       (EntrySet){"DriveMidLeft", EntryType::DOUBLE},
-       (EntrySet){"DriveBackLeft", EntryType::DOUBLE},
-       (EntrySet){"DriveFrontRight", EntryType::DOUBLE},
-       (EntrySet){"DriveMidRight", EntryType::DOUBLE},
-       (EntrySet){"DriveBackRight", EntryType::DOUBLE},
-       (EntrySet){"IntakeMotor", EntryType::DOUBLE},
-       (EntrySet){"HopperMotor", EntryType::DOUBLE},
-       (EntrySet){"IndexerMotor", EntryType::DOUBLE}});
 };
 
 void Robot::driverControl()
@@ -123,7 +112,8 @@ void Robot::runTelemetryThread(bool showGraphics)
   int timestamp = Brain.Timer.time();
   while (true)
   {
-    RobotState::updateState();
+    RobotState::updateState(); 
+    RobotState::vibrate();
     Subsystem::refreshTelemetry();
     if (showGraphics)
     {

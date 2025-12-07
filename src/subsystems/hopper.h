@@ -3,6 +3,7 @@
 
 #include "../architecture/subsystem.h"
 
+
 class Hopper : public Subsystem
 {
 public:
@@ -12,9 +13,10 @@ public:
 
     Hopper() : Subsystem(
                    "hopper",
-                   {(EntrySet){"isOn", EntryType::BOOL}}),
+                   {  
+                    (EntrySet){"detects_jam", EntryType::BOOL}
+                   }),
                hopperMotor(vex::motor(vex::PORT18, false))
-    // containerSensor(vex::distance(vex::PORT22))
     {
         globalRef = this;
     }
@@ -26,15 +28,17 @@ public:
 
 private:
     vex::motor hopperMotor;
-    // vex::distance containerSensor;
+    
+    static double ABSOLUTE_HOPPER_SPEED;
 
     bool shouldDispenseCubes();
     bool shouldMixHopper();
 
     void dispenseCubes();
-    void mixHopper();
+    void mixHopper(); 
 
-    // this figures out what the driver wants the hopper to do
+    double getExpectedVelocity(); 
+    
 };
 
 #endif

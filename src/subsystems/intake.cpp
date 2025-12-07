@@ -28,7 +28,7 @@ void Intake::periodic()
 
 void Intake::updateTelemetry()
 {
-    Telemetry::inst.placeValueAt<double>(intakeMotor.temperature(), "Motor_Temps", "IntakeMotor");
+    return;
 }
 
 bool Intake::shouldIntake()

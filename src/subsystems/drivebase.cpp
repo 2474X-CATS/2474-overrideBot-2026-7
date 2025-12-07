@@ -126,10 +126,7 @@ void Drivebase::init()
       vex::this_thread::yield(); 
    } 
   
-   //driveGyro.datarate(20);  
-   
-
-
+  
    leftDriveMotors.setStopping(vex::brakeType::brake);
    rightDriveMotors.setStopping(vex::brakeType::brake);
 
@@ -148,7 +145,7 @@ void Drivebase::init()
    set<double>("Pos_X", startX + ROBOT_WIDTH_MM / 2);
    set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2);
    set<double>("Angle_Degrees_CCW", 90);
-   set<string>("Current_Location", "NONE");
+  
 };
 
 void Drivebase::periodic()
@@ -180,39 +177,26 @@ void Drivebase::updateTelemetry()
 
    set<double>("Pos_X", x);
    set<double>("Pos_Y", y);
-   set<string>("Current_Location", "NONE");
+   
+   double temperatureSum = 0;  
 
-   for (int index = 0; index < 14; index++)
-   {
-      if (Drivebase::locations[index] != nullptr)
-      {
-         Location *currentLocation = Drivebase::locations[index];
-         if (currentLocation->isRobotVisiting())
-         {
-            set<string>("Current_Location", currentLocation->getName());
-            break;
-         }
-      }
-      else
-      {
-         continue;
-      }
-   }
+   temperatureSum += driveFrontLeft.temperature(vex::temperatureUnits::celsius); 
+   temperatureSum += driveFrontRight.temperature(vex::temperatureUnits::celsius); 
+   temperatureSum += driveMidLeft.temperature(vex::temperatureUnits::celsius); 
+   temperatureSum += driveMidRight.temperature(vex::temperatureUnits::celsius); 
+   temperatureSum += driveBackLeft.temperature(vex::temperatureUnits::celsius); 
+   temperatureSum += driveBackRight.temperature(vex::temperatureUnits::celsius); 
 
-   Telemetry::inst.placeValueAt<double>(driveFrontLeft.temperature(), "Motor_Temps", "DriveFrontLeft");
-   Telemetry::inst.placeValueAt<double>(driveFrontRight.temperature(), "Motor_Temps", "DriveFrontRight");
-   Telemetry::inst.placeValueAt<double>(driveMidLeft.temperature(), "Motor_Temps", "DriveMidLeft");
-   Telemetry::inst.placeValueAt<double>(driveMidRight.temperature(), "Motor_Temps", "DriveMidRight");
-   Telemetry::inst.placeValueAt<double>(driveBackLeft.temperature(), "Motor_Temps", "DriveBackLeft");
-   Telemetry::inst.placeValueAt<double>(driveBackRight.temperature(), "Motor_Temps", "DriveBackRight");
+   double avgTemp = temperatureSum / 6.0;
+   
+   set<bool>("overheating", avgTemp >= MOTOR_TEMP_LIMIT_CELSIUS); 
 
    //---------------------------------------------------------
 
    Brain.Screen.printAt(20, 100, "X: %f", get<double>("Pos_X"));
    Brain.Screen.printAt(20, 125, "Y: %f", get<double>("Pos_Y")); 
    Brain.Screen.printAt(20, 150, "Angle Heading: %f", get<double>("Angle_Degrees_CCW")); 
-   Brain.Screen.printAt(20,200, get<string>("Current_Location").c_str()); 
-   Brain.Screen.clearLine(200);
+  
 };
 
 Location *Drivebase::getLocation(int index)

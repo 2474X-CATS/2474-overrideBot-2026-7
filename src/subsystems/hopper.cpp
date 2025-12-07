@@ -4,17 +4,17 @@
 
 Hopper *Hopper::globalRef = nullptr;
 
+double Hopper::ABSOLUTE_HOPPER_SPEED = 300;
+
 void Hopper::init()
 {
-    hopperMotor.setStopping(vex::brakeType::brake);     // makes motor hold still when stopped
-    hopperMotor.setVelocity(0, vex::percentUnits::pct); // start off stopped
-    set<bool>("isOn", true);                            // says the hopper is ready to go
+    hopperMotor.setStopping(vex::brakeType::brake);      
 }
 
-// if you had a dashboard you could send data from here
+
 void Hopper::updateTelemetry()
 {
-    Telemetry::inst.placeValueAt<double>(hopperMotor.temperature(), "Motor_Temps", "HopperMotor");
+    set<bool>("detects_jam", fabs(getExpectedVelocity() - hopperMotor.velocity(vex::velocityUnits::rpm)) > 1);
 }
 
 void Hopper::periodic()
@@ -36,13 +36,13 @@ void Hopper::periodic()
 
 void Hopper::dispenseCubes()
 {
-    hopperMotor.setVelocity(-100, vex::percentUnits::pct);
+    hopperMotor.setVelocity(ABSOLUTE_HOPPER_SPEED, vex::velocityUnits::rpm);
     hopperMotor.spin(vex::directionType::fwd);
 }
 
 void Hopper::mixHopper()
 {
-    hopperMotor.setVelocity(100, vex::percentUnits::pct);
+    hopperMotor.setVelocity(-ABSOLUTE_HOPPER_SPEED, vex::velocityUnits::rpm);
     hopperMotor.spin(vex::directionType::fwd);
 }
 
@@ -61,3 +61,15 @@ bool Hopper::shouldMixHopper()
 {
     return RobotState::getStateOf("mixing_hopper");
 }
+
+double Hopper::getExpectedVelocity(){ 
+    double output; 
+    if (shouldDispenseCubes()) 
+      output = ABSOLUTE_HOPPER_SPEED; 
+    else if (shouldMixHopper()) 
+      output = -ABSOLUTE_HOPPER_SPEED; 
+    else { 
+      output = 0;
+    } 
+    return output; 
+};

@@ -15,16 +15,22 @@ class Indexer : public Subsystem
 {
 public:
    using Subsystem::get;
-   using Subsystem::getFromInputs;
    
    static Indexer* globalRef; 
 
    Indexer() : Subsystem(
                    "indexer",
                    { 
-                     (EntrySet){"isOn", EntryType::BOOL} 
+                     (EntrySet){"detects_block_high", EntryType::BOOL},  
+                     (EntrySet){"detects_block_mid", EntryType::BOOL},
+                     (EntrySet){"is_block_blue", EntryType::BOOL}, 
+                     (EntrySet){"detects_jam", EntryType::BOOL}
                    } 
-                  ) { 
+                  ), 
+                  indexerMotor(vex::motor(vex::PORT19)), 
+                  colorSensor(vex::optical(vex::PORT10)), 
+                  distanceSensor(vex::distance(vex::PORT7))
+                  { 
                      globalRef = this;
                    } 
                
@@ -37,11 +43,32 @@ public:
 protected:
    using Subsystem::set;   
 
-private: 
-   static double ABSOLUTE_INDEXER_SPEED; 
+private:   
+
+   vex::motor indexerMotor;  
+   vex::optical colorSensor;  
+   vex::distance distanceSensor;
+
+   static double ABSOLUTE_INDEXER_SPEED;  
+
+   static double BLUE_HUE; 
+   static double RED_HUE;   
+
+   static double DISTANCE_THRESHOLD;
+
+   bool detectsBlock();
 
    void spinOver(); 
-   void spinUnder();
+   void spinUnder();  
+
+   bool shouldSpinOver(); 
+   bool shouldSpinUnder(); 
+
+   bool sensesValidBlock(); 
+   bool sensesInvalidBlock(); 
+
+   double getExpectedVelocity(); 
+
    
 };
 

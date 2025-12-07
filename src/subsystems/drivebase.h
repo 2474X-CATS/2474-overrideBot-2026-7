@@ -52,8 +52,8 @@ public:
                                               {
                                                   (EntrySet){"Pos_X", EntryType::DOUBLE},
                                                   (EntrySet){"Pos_Y", EntryType::DOUBLE},
-                                                  (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE},
-                                                  (EntrySet){"Current_Location", EntryType::STRING},
+                                                  (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE}, 
+                                                  (EntrySet){"overheating", EntryType::BOOL}
                                               }),
                                           encoderLinear(vex::rotation(vex::PORT15)),
                                           driveGyro(vex::PORT20),

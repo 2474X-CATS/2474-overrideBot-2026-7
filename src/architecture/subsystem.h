@@ -104,19 +104,26 @@ class RobotState
 private:
   static ControlType mode; // 1 is updating based on controller 2 is null state values 3 is manually set states (for auton)
   static bool axisesEnabled;
+  
+  static std::string vibrationCode; 
 
   static void updateStopped();
-  static void updateRegular();
+  static void updateRegular(); 
+
+  static void disableVibrations();  
+  static void setVibrationCode(string code);
 
 public:
   static void manuallyModifyState(string key, bool val);
-  static bool getStateOf(string key);
+  static bool getStateOf(string key); 
   static void setMode(ControlType control);
   static int getAxisState(AxisType axisType);
 
   static void initializeState();
 
-  static void updateState();
+  static void updateState(); 
+
+  static void vibrate();  
 };
 
 //----------------------------------------------------------------------

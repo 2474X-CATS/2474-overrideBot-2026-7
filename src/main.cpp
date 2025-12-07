@@ -127,7 +127,9 @@ int main()
   Hopper hopper;
   Hooks hooks;
 
-  robot.initialize(); 
+  robot.initialize();  
+
+  RobotState::manuallyModifyState("is_color_Blue", true);
 
   /*
   driveCommandMatch( 
