@@ -4,13 +4,16 @@
 Hood *Hood::globalRef = nullptr;
 
 void Hood::init()
-{
-  set<bool>("isOn", true);
+{ 
+  set<bool>("isOn", true); 
+  if (RobotState::getStateOf("scoring_high")){ 
+    set<double>("timestampHigh", Brain.Timer.time(vex::sec)); 
+  }
 }
 
 void Hood::periodic()
-{ 
-  if (shouldOpen()){ 
+{  
+  if (shouldOpen() || (Brain.Timer.time(vex::sec) - get<double>("timestampHigh") <= 3)){  
     highPiston.close(); 
   } else { 
     highPiston.open();
@@ -38,6 +41,9 @@ void Hood::periodic()
   }
   else if (shouldOpen()) // Checks if the hood should close towards the hopper side
   { 
+    open();
+  } else {  
+
     open();
   }
 }

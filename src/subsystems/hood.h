@@ -13,7 +13,10 @@ public:
 
     Hood() : Subsystem(
                  "hood",
-                 {(EntrySet){"isOn", EntryType::BOOL}}),
+                 { 
+                    (EntrySet){"isOn", EntryType::BOOL}, 
+                    (EntrySet){"timestampHigh", EntryType::DOUBLE} 
+                }),
              hoodPiston(vex::pneumatics(Brain.ThreeWirePort.G)), 
              highPiston(vex::pneumatics(Brain.ThreeWirePort.C))
     {

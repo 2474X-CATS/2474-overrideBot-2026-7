@@ -41,7 +41,9 @@ public:
 
   bool atSetpoint(double position);
 
-  double getSetpoint();
+  double getSetpoint(); 
+
+  double getDerivative();
 
   void setSetpoint(double setpoint);
 

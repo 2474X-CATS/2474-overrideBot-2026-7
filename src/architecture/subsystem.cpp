@@ -107,12 +107,6 @@ void RobotState::updateRegular()
     
    manuallyModifyState("experiencing_jam", Telemetry::inst.getValueAt<bool>("indexer", "detects_jam") || Telemetry::inst.getValueAt<bool>("hopper", "detects_jam"));
    
-   if (getExternalState("indexer", "is_block_blue")){ 
-      setVibrationCode("-");
-   } else { 
-      disableVibrations();
-   }
-
    if (!getStateOf("robot_is_loading")){    
       if (Controller.ButtonA.pressing()){ 
         manuallyModifyState("loading_high", true);

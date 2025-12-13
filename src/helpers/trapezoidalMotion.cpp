@@ -89,4 +89,12 @@ void TrapezoidalMotionProfile::setVelocityTolerance(double velTol){
 
 bool TrapezoidalMotionProfile::atGoal(double currentPosition, double currentVelocity){ 
    return fabs(currentPosition - setpoint) < tolerancePos && fabs(currentVelocity) < toleranceVel;
-};
+}; 
+
+double TrapezoidalMotionProfile::getTotalDuration(){ 
+   return accelTime + cruiseTime + decelTime;
+}; 
+
+double TrapezoidalMotionProfile::getStartTime(){ 
+   return startingTimestamp; 
+}

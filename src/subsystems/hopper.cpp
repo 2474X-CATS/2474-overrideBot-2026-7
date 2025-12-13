@@ -27,12 +27,12 @@ void Hopper::periodic()
         spinAtPercent(-1);
     }
     else if (RobotState::getStateOf("mixing_hopper"))
-    { // Checks if you should run hopper motor away from outtake
+    { 
         spinAtPercent(1); 
     }
     else
     { 
-        if (!get<bool>("primed")){ 
+        if (!get<bool>("primed") && !(Telemetry::inst.getValueAt<bool>("indexer", "detects_blocks_mid") || Telemetry::inst.getValueAt<bool>("indexer", "detects_blocks_high")) ){ 
           spinAtPercent(-0.05);
         } else { 
           stop();

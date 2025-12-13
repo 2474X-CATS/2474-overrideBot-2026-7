@@ -44,7 +44,7 @@ typedef enum
 class DrivePath : public Command<Drivebase, Intake, Indexer, Hood>
 {
 
-protected:
+protected: 
   Drivebase &drivebaseRef;
 
   Intake &intakeRef;
@@ -57,7 +57,18 @@ protected:
   bool turningFirst;
 
   pidcontroller *turnPID = nullptr;
-  pidcontroller *drivePID = nullptr;
+  pidcontroller *drivePID = nullptr; 
+
+  /* 
+  Temporary  
+  */ 
+  
+  double lastDriveTimestamp;  
+  static double ARBITRARY_SPEED;  
+  double timeDuration;
+
+
+  //-----------------------
 
   bool initialized;
 
@@ -110,6 +121,35 @@ public:
                                                                                                                                           operationsIndex(0),
                                                                                                                                           numOfOperations(setpoints.size() - 1) {};
 };
+
+class TrapezoidalDriveForward : Command<Drivebase> { 
+
+   private:   
+   
+     Drivebase &drivebaseRef; 
+     TrapezoidalMotionProfile profile; 
+     double distance;    
+
+   protected:  
+
+     void start() override;
+     void periodic() override;
+     bool isOver() override;
+     void end() override; 
+
+   public:    
+      static CommandInterface* getCommand(double distance){ 
+         return new TrapezoidalDriveForward(*Drivebase::globalRef, distance);
+      }
+
+      TrapezoidalDriveForward(Drivebase& drive, double distance) : 
+      Command<Drivebase>(drive), 
+      drivebaseRef(drive), 
+      distance(distance)
+      {};  
+
+
+} 
 
 class DriveToSetpoint : protected DrivePath
 {

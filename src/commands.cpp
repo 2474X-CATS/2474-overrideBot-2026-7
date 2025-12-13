@@ -2,6 +2,8 @@
 
 ////////////////////////////////////////////////////////////
 
+double DrivePath::ARBITRARY_SPEED = 350; 
+
 void DrivePath::start()
 {
     return;
@@ -92,27 +94,33 @@ bool DrivePath::isTurning()
 
 bool DrivePath::isDriveOver()
 {
-    return drivePID->atSetpoint(getDrivingError());
+    return Brain.Timer.time(vex::sec) - lastDriveTimestamp >= timeDuration;//drivePID->atSetpoint(getDrivingError());
 }
 
 void DrivePath::initializeDrive()
 {
-
+    
     isGoingForward = setpoints.at(operationsIndex) > 0;
 
     startingPoint[0] = drivebaseRef.get<double>("Pos_X");
     startingPoint[1] = drivebaseRef.get<double>("Pos_Y");
-
+   
     drivePID = new pidcontroller(drivebaseRef.getPowerPID(), fabs(setpoints.at(operationsIndex)));
-    drivePID->setLastTimestamp(Brain.Timer.time());
+    drivePID->setLastTimestamp(Brain.Timer.time()); 
+
+    lastDriveTimestamp = Brain.Timer.time(vex::sec);  
+    timeDuration = fabs(setpoints.at(operationsIndex)) / ARBITRARY_SPEED;  
+
 }
 
 void DrivePath::drive()
-{
-    double output = fabs(drivePID->calculate(getDrivingError(), Brain.Timer.time()));
+{  
+    double output; 
+    //output = fabs(drivePID->calculate(getDrivingError(), Brain.Timer.time())); 
+    output = ARBITRARY_SPEED; 
     if (!isGoingForward)
         output *= -1;
-    drivebaseRef.manualDriveForward(output);
+    drivebaseRef.manualDriveForward(output); 
 }
 
 double DrivePath::getDrivingError()
@@ -254,7 +262,27 @@ void DriveForwardForTime::end()
     RobotState::manuallyModifyState("intaking_to_hopper", false);
     drivebaseRef.stop();
     drivebaseRef.setSpeedFactor(0.85);
-}
+} 
+//////////////////////////////////////////////////////////////////////////////// 
+
+void TrapezoidalDriveForward::start(){ 
+    profile = TrapezoidalMotionProfile(drivebaseRef.getMotionConstants(), distance, Brain.Timer.time(vex::sec)); 
+};  
+
+void TrapezoidalDriveForward::periodic(){ 
+    TrapezoidalSetpoint currentSetpoint = profile.generateSetpoint(Brain.Timer.time(vex::sec)); 
+    drivebaseRef.manualDriveForward(currentSetpoint.velocity);  
+}; 
+
+bool TrapezoidalDriveForward::isOver(){ 
+    return (Brain.Timer.time(vex::sec) - profile.getStartTime()) >= profile.getTotalDuration(); 
+}; 
+
+void TrapezoidalDriveForward::end(){ 
+    drivebaseRef.stop(); 
+}; 
+
+
 ////////////////////////////////////////////////////////////////////////////////
 void IntakeToHopper::start()
 {

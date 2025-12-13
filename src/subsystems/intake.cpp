@@ -19,8 +19,12 @@ void Intake::periodic()
     {
         spinAtPercent(-1); //Upwards
     } 
-    else if ( RobotState::getStateOf("intaking_to_hopper")){ 
-        spinAtPercent(-0.6);
+    else if ( RobotState::getStateOf("intaking_to_hopper")){  
+        if (RobotState::getStateOf("color_sensitive"))
+          spinAtPercent(-0.6); 
+        else { 
+          spinAtPercent(-1); 
+        }
     }
     else if (RobotState::getStateOf("scoring_low") || RobotState::getStateOf("reverse_intake"))
     {

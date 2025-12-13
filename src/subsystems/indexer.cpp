@@ -12,8 +12,9 @@ double Indexer::DISTANCE_THRESHOLD = 10;
 
 void Indexer::init()
 {
-  indexerMotor.setBrake(vex::brake);  
-  colorSensor.setLightPower(50); 
+  indexerMotor.setBrake(vex::brake);   
+
+  colorSensor.setLightPower(100); 
   colorSensor.setLight(vex::ledState::on); 
   colorSensor.integrationTime(20);
 };
@@ -23,7 +24,6 @@ void Indexer::updateTelemetry()
   set<bool>("detects_blocks_high", distanceSensor.objectDistance(vex::distanceUnits::cm) < DISTANCE_THRESHOLD);  
   set<bool>("detects_blocks_mid", colorSensor.isNearObject());   
   set<bool>("detects_jam", fabs(indexerMotor.velocity(vex::velocityUnits::rpm) - getExpectedVelocity()) > 1); 
-
 };
 
 void Indexer::periodic()

@@ -2,7 +2,11 @@
 #define __DRIVEBASE_H_
 
 #include "../architecture/subsystem.h"
-#include "../helpers/pidcontroller.h"
+#include "../helpers/pidcontroller.h"  
+
+#include "../helpers/trapezoidalMotion.h" 
+#include "../helpers/feedForward.h" 
+
 #include "../helpers/location.h"
 #include <set>
 #include "vex.h"
@@ -32,12 +36,22 @@ private:
 
   //==========================================
   PIDConstants powerPID;
-  PIDConstants turnPID;
+  PIDConstants turnPID;  
+
+  FFConstants ffConsts; 
+
+  TrapezoidConstants trapConsts;
 
   double startX, startY;
   double speedFactor = 1;
 
-  static Location *locations[];
+  static Location *locations[]; 
+
+  double totalEntries = 0; 
+
+  double accumulatedVelocity = 0; 
+  double accumulatedAcceleration = 0;  
+  double accumulatedVoltage = 0;
 
 protected:
   using Subsystem::set;
@@ -53,7 +67,8 @@ public:
                                                   (EntrySet){"Pos_X", EntryType::DOUBLE},
                                                   (EntrySet){"Pos_Y", EntryType::DOUBLE},
                                                   (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE}, 
-                                                  (EntrySet){"overheating", EntryType::BOOL}
+                                                  (EntrySet){"overheating", EntryType::BOOL}, 
+                                                  (EntrySet){"Last_Velocity", EntryType::DOUBLE}
                                               }),
                                           encoderLinear(vex::rotation(vex::PORT15)),
                                           driveGyro(vex::PORT20),
@@ -86,7 +101,10 @@ public:
 
   PIDConstants getTurningPID();
 
-  PIDConstants getPowerPID();
+  PIDConstants getPowerPID(); 
+
+  TrapezoidConstants getMotionConstants();  
+  
 };
 
 #endif

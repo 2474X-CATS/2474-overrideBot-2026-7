@@ -9,7 +9,7 @@
 #include "subsystems/intake.h"
 #include "subsystems/matchloader.h"
 #include "subsystems/hooks.h"
-#include "helpers/autoConfig.h"
+
 
 #include "commands.h"
 
@@ -36,9 +36,11 @@ void startCommandMatch(std::vector<CommandInterface *> commandGroup)
                          { robot.autonControl(); });
   Competition.drivercontrol([]()
                             { robot.driverControl(); }); 
+  /*
   while (!Competition.isEnabled()){ 
     this_thread::yield();
-  }
+  } 
+  */
   robot.runTelemetryThread(false);
 }
 
@@ -50,58 +52,45 @@ void driveCommandMatch(std::vector<CommandInterface *> commandGroup)
   robot.driverControl();                     // Free drive
 }
 
-vector<CommandInterface *> closedSide()
-{
-  return {
-      AlignWithLocation(Zones::NAT_MID, TILE_SIZE_MM, PathType::EUCLIDEAN, true),
-      DriveLinear(TILE_SIZE_MM * 0.9, false),
-      Score(Goal_Pos::MID_GOAL, 1000),
-      AlignWithLocation(Zones::NAT_ML_LEFT, TILE_SIZE_MM * 0.75, PathType::EUCLIDEAN, false),
+
+vector<CommandInterface*> safeRun(){ 
+    return { 
+      DrivePath::getCommand({105, TILE_SIZE_MM * 1.1, 210, TILE_SIZE_MM * 1.32, 90, TILE_SIZE_MM / 4 + 20}, true, true), 
+      Score(Goal_Pos::HIGH_GOAL, 2500), 
+      DriveLinear(-175, false)
+    };
+} 
+
+vector<CommandInterface*> safeRunInverted(){ 
+    return {  
+      DrivePath::getCommand({79, TILE_SIZE_MM * 1.1, 330, TILE_SIZE_MM * 1.36, 92}, true, true),
+      DriveLinear(TILE_SIZE_MM / 3 + 80, false),
+      Score(Goal_Pos::HIGH_GOAL, 2500), 
+      DriveLinear(-175, false)
+    };
+} 
+
+vector<CommandInterface*> autonSkills(){ 
+    return { 
+      DriveLinear(TILE_SIZE_MM * 1.4, false), 
+      TurnToHeading(180),  
       EnableMatchloader(true),
-      DriveLinear(TILE_SIZE_MM * 0.875, false),
-      IntakeCubes(3000),
-      AlignWithLocation(Zones::NAT_HIGH_LEFT, TILE_SIZE_MM * 0.5, PathType::EUCLIDEAN, false),
-      EnableMatchloader(false),
-      DriveLinear(TILE_SIZE_MM * 0.35, false),
-      Score(Goal_Pos::HIGH_GOAL, 2000)};
+      DriveLinear(TILE_SIZE_MM * 0.8, true), 
+      IntakeCubes(2000), 
+      DriveLinear(-175, false), 
+      TurnToHeading(2), 
+      EnableMatchloader(false), 
+      DriveLinear(TILE_SIZE_MM, true), 
+      Score(Goal_Pos::HIGH_GOAL, 5000),  
+      DriveLinear(-175, false), 
+      TurnToHeading(270), 
+      DriveLinear(TILE_SIZE_MM * 2.1, false), 
+      TurnToHeading(180), 
+      RamForward(1, 6000, true), 
+    };
 }
 
-vector<CommandInterface *> selfSufficent()
-{
-  return {
-      AlignWithLocation(Zones::NAT_ML_LEFT, TILE_SIZE_MM, PathType::EUCLIDEAN, false),
-      EnableMatchloader(true),
-      DriveLinear(TILE_SIZE_MM * 0.85, false),
-      IntakeCubes(2000),
-      AlignWithLocation(Zones::NAT_HIGH_LEFT, TILE_SIZE_MM * 0.5, PathType::EUCLIDEAN, false),
-      EnableMatchloader(false),
-      DriveLinear(TILE_SIZE_MM * 0.4, false),
-      Score(Goal_Pos::HIGH_GOAL, 2000),
-      DriveLinear(-TILE_SIZE_MM * 0.3, false),
-      AlignWithLocation(Zones::NAT_MID, TILE_SIZE_MM, PathType::EUCLIDEAN, true),
-      DriveLinear(TILE_SIZE_MM * 0.85, false),
-      Score(Goal_Pos::MID_GOAL, 2000),
-      DriveLinear(-TILE_SIZE_MM * 0.3, false),
-      AlignWithLocation(Zones::NAT_LOW, TILE_SIZE_MM, PathType::EUCLIDEAN, true),
-      DriveLinear(TILE_SIZE_MM * 0.75, false),
-      Score(Goal_Pos::LOW_GOAL, 2500)};
-}
 
-vector<CommandInterface *> shortRun()
-{
-  return {
-      AlignWithLocation(Zones::NAT_MID, TILE_SIZE_MM * 0.9, PathType::EUCLIDEAN, true),  
-      FaceLocation(Zones::NAT_MID),    
-      GetWithinDistOfSetpoint(Zones::NAT_MID, 300), 
-      Score(Goal_Pos::MID_GOAL, 2500),  
-      RamForward(-0.25, 750, false),
-      AlignWithLocation(Zones::NAT_LOW, TILE_SIZE_MM, PathType::EUCLIDEAN, true)
-      /*
-      DriveLinear(TILE_SIZE_MM * 0.4, false),
-      Score(Goal_Pos::LOW_GOAL, 2500) 
-      */
-     };
-};
 
 int main()
 {
@@ -119,7 +108,7 @@ int main()
     8: Free drive
   */
 
-  Drivebase drive = Drivebase(1,1); // Tile location right 1 up 1
+  Drivebase drive = Drivebase(2,1/3); // Tile location right 1 up 1
   Intake intake;
   Matchloader matchloader;
   Indexer indexer;
@@ -130,9 +119,10 @@ int main()
   robot.initialize();  
 
   RobotState::manuallyModifyState("is_team_color_blue", true);
-  RobotState::manuallyModifyState("color_sensitive", true); 
-
-  freeDrive();
+  RobotState::manuallyModifyState("color_sensitive", false); 
   
+  startCommandMatch( 
+    autonSkills()
+  );
 
 }
