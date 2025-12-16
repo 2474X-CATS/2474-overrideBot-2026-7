@@ -266,17 +266,23 @@ void DriveForwardForTime::end()
 //////////////////////////////////////////////////////////////////////////////// 
 
 void TrapezoidalDriveForward::start(){ 
-    profile = TrapezoidalMotionProfile(drivebaseRef.getMotionConstants(), distance, Brain.Timer.time(vex::sec)); 
+    profile = new TrapezoidalMotionProfile(drivebaseRef.getMotionConstants(), distance, Brain.Timer.time(vex::sec));  
+    controller = new TrajectoryController(drivebaseRef.getPowerPID(), drivebaseRef.getFFLinear(), *profile);   
+    startingPos = {drivebaseRef.get<double>("Pos_X"), drivebaseRef.get<double>("Pos_Y")};
 };  
 
 void TrapezoidalDriveForward::periodic(){ 
-    TrapezoidalSetpoint currentSetpoint = profile.generateSetpoint(Brain.Timer.time(vex::sec)); 
-    drivebaseRef.manualDriveForward(currentSetpoint.velocity);  
+    controller->refreshSetpoints(Brain.Timer.time(vex::sec));
+    drivebaseRef.voltageDriveForward(controller->calculate(getDistTraveled())); 
 }; 
 
 bool TrapezoidalDriveForward::isOver(){ 
-    return (Brain.Timer.time(vex::sec) - profile.getStartTime()) >= profile.getTotalDuration(); 
-}; 
+    return controller->atGoal();
+};  
+
+double TrapezoidalDriveForward::getDistTraveled(){ 
+    return hypot(startingPos[0] - drivebaseRef.get<double>("Pos_X"), startingPos[1] - drivebaseRef.get<double>("Pos_Y"));
+}
 
 void TrapezoidalDriveForward::end(){ 
     drivebaseRef.stop(); 

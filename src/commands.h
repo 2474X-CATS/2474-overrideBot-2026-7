@@ -7,7 +7,9 @@
 #include "subsystems/matchloader.h"
 #include "subsystems/indexer.h"
 #include "subsystems/hopper.h"
-#include "architecture/command.h"
+#include "architecture/command.h" 
+
+#include "helpers/trajectorycontroller.h"
 
 typedef enum
 {
@@ -126,9 +128,14 @@ class TrapezoidalDriveForward : Command<Drivebase> {
 
    private:   
    
-     Drivebase &drivebaseRef; 
-     TrapezoidalMotionProfile profile; 
-     double distance;    
+     Drivebase &drivebaseRef;  
+
+     TrapezoidalMotionProfile* profile;   
+     TrajectoryController* controller;   
+     array<double, 2> startingPos;
+     
+     double distance;
+     double getDistTraveled(); 
 
    protected:  
 
@@ -144,12 +151,13 @@ class TrapezoidalDriveForward : Command<Drivebase> {
 
       TrapezoidalDriveForward(Drivebase& drive, double distance) : 
       Command<Drivebase>(drive), 
-      drivebaseRef(drive), 
+      drivebaseRef(drive),
       distance(distance)
-      {};  
+      { 
+        
+      };   
 
-
-} 
+};
 
 class DriveToSetpoint : protected DrivePath
 {

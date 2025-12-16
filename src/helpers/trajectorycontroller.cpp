@@ -6,7 +6,7 @@ double TrajectoryController::calculateFFOutput(){
 };
 
 double TrajectoryController::calculatePDOutput(double currentPosition){ 
-    return controller->calculate(currentPosition - setpointPos, Brain.Timer.time(vex::sec)); 
+    return controller->calculate(currentPosition - setpointPos, Brain.Timer.time()); 
 }; 
 
 double TrajectoryController::calculate(double currentPosition){ 

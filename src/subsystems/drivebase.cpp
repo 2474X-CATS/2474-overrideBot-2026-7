@@ -141,12 +141,17 @@ void Drivebase::init()
    //turnPID.iLimit = 270;
    turnPID.errorTolerance = 1; 
    //-------------------------- 
-   ffConsts.kS = 0.1; 
-   ffConsts.kV = 0.2; 
-   ffConsts.kA = 0.3; 
+   ffConstsLinear.kS = 0.1; 
+   ffConstsLinear.kV = 0.2; 
+   ffConstsLinear.kA = 0.3;  
    //-------------------------- 
-   trapConsts.maxVelocity = 1000; 
-   trapConsts.maxAcceleration = 10;
+   ffConstsAngular.kS = 0.1; 
+   ffConstsAngular.kV = 0.2; 
+   ffConstsAngular.kA = 0.3;
+   //-------------------------- 
+   trapConsts.maxVelocity = 1000;  
+   trapConsts.maxAcceleration = 10; 
+   //-------------------------- 
 
    set<double>("Pos_X", startX + ROBOT_WIDTH_MM / 2);
    set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2);
@@ -164,9 +169,8 @@ void Drivebase::updateTelemetry()
 {
    double x = get<double>("Pos_X");
    double y = get<double>("Pos_Y");
-   double currentAngle = get<double>("Angle_Degrees_CCW");
-
-   currentAngle = 90 - driveGyro.heading(vex::rotationUnits::deg);
+   
+   double currentAngle = 90 - driveGyro.heading(vex::rotationUnits::deg);
 
    if (currentAngle < 0)
    {
@@ -176,8 +180,7 @@ void Drivebase::updateTelemetry()
    set<double>("Angle_Degrees_CCW", currentAngle);
 
    double hypotenuse; 
-   //hypotenuse = ((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_RADIUS_MM) / 3000);
-   hypotenuse = ((leftDriveMotors.velocity(vex::velocityUnits::rpm) + rightDriveMotors.velocity(vex::velocityUnits::rpm)) / 2 / 3000 * (2 * M_PI * DRIVE_WHEEL_RADIUS_MM)); 
+   hypotenuse = ((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_RADIUS_MM) / 3000);
    double angleRadians = get<double>("Angle_Degrees_CCW") * (2 * M_PI) / 360;
 
    x += (hypotenuse * cos(angleRadians));
@@ -206,7 +209,7 @@ void Drivebase::updateTelemetry()
    Brain.Screen.printAt(20, 150, "Angle Heading: %f", get<double>("Angle_Degrees_CCW"));  
    
    /*
-   double currentVelocity = encoderLinear.velocity(vex::velocityUnits::rpm) / 60 * 2 * M_PI * ENCODER_WHEEL_RADIUS_MM; 
+   double currentVelocity = (encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_RADIUS_MM) / 3000; 
    double currentAcceleration = (currentVelocity - get<double>("Last_Velocity")) / 0.02;
    
    totalEntries++; 
@@ -266,6 +269,32 @@ void Drivebase::manualTurnClockwise(double turnDeg)
       leftDriveMotors.spin(vex::directionType::fwd);
       rightDriveMotors.spin(vex::directionType::fwd);
    }
+}; 
+
+void Drivebase::voltageDriveForward(double volts)
+{
+   volts = volts > 12.0 ? 12.0 : (volts < -12.0 ? -12.0 : volts);
+   leftDriveMotors.setVelocity((volts / 12.0) * 100.0, vex::velocityUnits::pct);
+   rightDriveMotors.setVelocity(-(volts / 12.0) * 100.0, vex::velocityUnits::pct);
+   leftDriveMotors.spin(vex::directionType::fwd);
+   rightDriveMotors.spin(vex::directionType::fwd); 
+};
+
+void Drivebase::voltageTurnClockwise(double volts)
+{
+   volts = volts > 12.0 ? 12.0 : (volts < -12.0 ? -12.0 : volts);
+   leftDriveMotors.setVelocity((volts / 12.0) * 100.0, vex::velocityUnits::pct);
+   rightDriveMotors.setVelocity((volts / 12.0) * 100.0, vex::velocityUnits::pct);
+   if (volts < 0)
+   {
+      leftDriveMotors.spin(vex::directionType::rev);
+      rightDriveMotors.spin(vex::directionType::rev);
+   }
+   else
+   {
+      leftDriveMotors.spin(vex::directionType::fwd);
+      rightDriveMotors.spin(vex::directionType::fwd);
+   }
 };
 
 void Drivebase::stop()
@@ -283,6 +312,14 @@ PIDConstants Drivebase::getTurningPID()
 {
    return this->turnPID;
 }; 
+
+FFConstants Drivebase::getFFAngular(){ 
+   return ffConstsAngular;
+} 
+
+FFConstants Drivebase::getFFLinear(){ 
+   return ffConstsLinear;
+} 
 
 TrapezoidConstants Drivebase::getMotionConstants(){ 
    return this->trapConsts; 

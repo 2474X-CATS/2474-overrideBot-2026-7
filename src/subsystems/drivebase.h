@@ -38,7 +38,8 @@ private:
   PIDConstants powerPID;
   PIDConstants turnPID;  
 
-  FFConstants ffConsts; 
+  FFConstants ffConstsLinear;  
+  FFConstants ffConstsAngular; 
 
   TrapezoidConstants trapConsts;
 
@@ -46,12 +47,15 @@ private:
   double speedFactor = 1;
 
   static Location *locations[]; 
-
+  
+  /*
   double totalEntries = 0; 
-
   double accumulatedVelocity = 0; 
   double accumulatedAcceleration = 0;  
-  double accumulatedVoltage = 0;
+  double accumulatedVoltage = 0;  
+
+  USED FOR FINDING FEED FORWARD VALUES
+  */ 
 
 protected:
   using Subsystem::set;
@@ -68,7 +72,7 @@ public:
                                                   (EntrySet){"Pos_Y", EntryType::DOUBLE},
                                                   (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE}, 
                                                   (EntrySet){"overheating", EntryType::BOOL}, 
-                                                  (EntrySet){"Last_Velocity", EntryType::DOUBLE}
+                                                  //(EntrySet){"Last_Velocity", EntryType::DOUBLE}
                                               }),
                                           encoderLinear(vex::rotation(vex::PORT15)),
                                           driveGyro(vex::PORT20),
@@ -91,17 +95,26 @@ public:
   void updateTelemetry() override;
   void stop() override;
 
-  void arcadeDrive(double speed, double rotation);
-  void manualDriveForward(double speedMM);
-  void manualTurnClockwise(double turnDeg);
+  void arcadeDrive(double speed, double rotation); 
 
+  void manualDriveForward(double speedMM);
+  void manualTurnClockwise(double turnDeg); 
+  
+  void voltageDriveForward(double volts); 
+  void voltageTurnClockwise(double volts);   
+
+ 
   void setSpeedFactor(double speedFactor);
 
   static Location *getLocation(int index);
 
   PIDConstants getTurningPID();
 
-  PIDConstants getPowerPID(); 
+  PIDConstants getPowerPID();  
+
+  FFConstants getFFLinear(); 
+
+  FFConstants getFFAngular();
 
   TrapezoidConstants getMotionConstants();  
   
