@@ -10,41 +10,43 @@
 #include "../helpers/location.h"
 #include <set>
 #include "vex.h"
-// #include "../helpers/location.h"
+
 
 class Drivebase : public Subsystem
 {
 private:
-  // Motor initialization
   static double ENCODER_WHEEL_RADIUS_MM;
-  static double ENCODER_DIST_FROM_CENTER;
-  static double DRIVE_WHEEL_RADIUS_MM;
+  //static double ENCODER_DIST_FROM_CENTER;
+  static double DRIVE_WHEEL_RADIUS_MM; 
 
-  //vex::rotation encoderLinear;
-  //vex::inertial driveGyro;
+  vex::rotation encoderLinear;
+  vex::inertial driveGyro;
 
   vex::motor driveFrontLeft;
   vex::motor driveMidLeft;
   vex::motor driveBackLeft;
-
+  
+  vex::motor driveFrontRight; 
+  vex::motor driveMidRight; 
   vex::motor driveBackRight;
-  vex::motor driveFrontRight;
-  vex::motor driveMidRight;
 
   vex::motor_group leftDriveMotors;
-  vex::motor_group rightDriveMotors;
+  vex::motor_group rightDriveMotors; 
+  
+  /*
+  vex::motor testMotor8; 
+  vex::motor testMotor7;  
+  */ 
 
   //==========================================
-  //PIDConstants powerPID;
+  
   PIDConstants turnPID;  
-
-  //FFConstants ffConstsLinear;  
-  //FFConstants ffConstsAngular; 
 
   TrapezoidConstants trapConsts; 
 
   double startX, startY;
-  double speedFactor = 1;
+  double linearSpeedFactor = 1; 
+  double angularSpeedFactor = 0.8; 
 
   static Location *locations[]; 
   
@@ -67,17 +69,25 @@ public:
                                                   (EntrySet){"Pos_Y", EntryType::DOUBLE},
                                                   (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE}, 
                                                   (EntrySet){"overheating", EntryType::BOOL}
-                                              }),
-                                          //encoderLinear(vex::rotation(vex::PORT15)),
-                                          //driveGyro(vex::PORT20),
+                                              }), 
+
+                                          encoderLinear(vex::rotation(vex::PORT15)),
+                                          driveGyro(vex::PORT20), 
+                                          
                                           driveFrontLeft(vex::motor(vex::PORT1, vex::ratio18_1)),
-                                          driveMidLeft(vex::motor(vex::PORT2, vex::ratio18_1)),
-                                          driveBackLeft(vex::motor(vex::PORT3, vex::ratio18_1)),
-                                          driveBackRight(vex::motor(vex::PORT4, vex::ratio18_1)),
-                                          driveFrontRight(vex::motor(vex::PORT5, vex::ratio18_1)),
-                                          driveMidRight(vex::motor(vex::PORT6, vex::ratio18_1)),
-                                          leftDriveMotors(vex::motor_group(driveFrontLeft, driveBackLeft, driveMidLeft)),
-                                          rightDriveMotors(vex::motor_group(driveFrontRight, driveBackRight, driveMidRight)),
+                                          driveMidLeft(vex::motor(vex::PORT2, vex::ratio18_1, true)),
+                                          driveBackLeft(vex::motor(vex::PORT3, vex::ratio18_1)), 
+                                          
+                                          driveFrontRight(vex::motor(vex::PORT4, vex::ratio18_1)), 
+                                          driveMidRight(vex::motor(vex::PORT5, vex::ratio18_1, true)),
+                                          driveBackRight(vex::motor(vex::PORT6, vex::ratio18_1)),
+                                           
+                                          leftDriveMotors(vex::motor_group(driveFrontLeft, driveMidLeft, driveBackLeft)),
+                                          rightDriveMotors(vex::motor_group(driveFrontRight, driveMidRight, driveBackRight)), 
+                                          
+                                          //testMotor7(vex::motor(vex::PORT7)), 
+                                          //testMotor8(vex::motor(vex::PORT8)), 
+
                                           startX((tileX) * TILE_SIZE_MM),
                                           startY((tileY) * TILE_SIZE_MM)
   {
@@ -97,15 +107,9 @@ public:
   void voltageDriveForward(double volts); 
   void voltageTurnClockwise(double volts);   
 
-  void setSpeedFactor(double speedFactor);
-
   static Location *getLocation(int index);
 
   PIDConstants getTurningPID();
-
-  //FFConstants getFFLinear(); 
-
-  //FFConstants getFFAngular();
 
   TrapezoidConstants getMotionConstants();  
   

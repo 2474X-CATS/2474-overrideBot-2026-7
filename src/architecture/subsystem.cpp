@@ -76,18 +76,23 @@ void RobotState::initializeState()
    Telemetry::inst.registerSubtable(
        "robot_state",
        { 
-        (EntrySet){"intaking_to_hopper", EntryType::BOOL},
         (EntrySet){"scoring_high", EntryType::BOOL},
         (EntrySet){"scoring_mid", EntryType::BOOL},
-        (EntrySet){"scoring_low", EntryType::BOOL},
-        (EntrySet){"matchloader_out", EntryType::BOOL},
-        (EntrySet){"toggling_hood", EntryType::BOOL},
-        (EntrySet){"toggling_descore", EntryType::BOOL},  
-        (EntrySet){"mixing_hopper", EntryType::BOOL}, 
-        (EntrySet){"reverse_intake", EntryType::BOOL},  
+        (EntrySet){"scoring_low", EntryType::BOOL}, 
 
+        (EntrySet){"matchloader_out", EntryType::BOOL},
+        
+        (EntrySet){"toggling_descore", EntryType::BOOL},  
+          
         (EntrySet){"is_team_color_blue", EntryType::BOOL},  
-        (EntrySet){"color_sensitive", EntryType::BOOL}
+        (EntrySet){"color_sensitive", EntryType::BOOL}, 
+       
+        /*
+       
+        */ 
+
+        (EntrySet){"k_inversion_held", EntryType::BOOL},
+        (EntrySet){"is_drive_inverted", EntryType::BOOL}
       });
 }
 
@@ -95,26 +100,34 @@ void RobotState::updateRegular()
 {  
    manuallyModifyState("scoring_high", Controller.ButtonR2.pressing()); 
    manuallyModifyState("scoring_mid", Controller.ButtonR1.pressing());
-   manuallyModifyState("scoring_low", Controller.ButtonRight.pressing());   
-   manuallyModifyState("intaking_to_hopper", Controller.ButtonY.pressing());
-   manuallyModifyState("reverse_intake", Controller.ButtonB.pressing());  
-   manuallyModifyState("mixing_hopper", Controller.ButtonDown.pressing());  
-   manuallyModifyState("toggling_hood", Controller.ButtonL1.pressing()); 
-   manuallyModifyState("matchloader_out", Controller.ButtonL2.pressing());
-   manuallyModifyState("toggling_descore", Controller.ButtonX.pressing());
+   manuallyModifyState("scoring_low", Controller.ButtonRight.pressing());  
+   manuallyModifyState("toggling_descore", Controller.ButtonX.pressing());   
+   
+   if (Controller.ButtonL1.pressing()){ 
+      manuallyModifyState("k_inversion_held", true);  
+   } else { 
+      if (getStateOf("k_inversion_held")){ 
+         manuallyModifyState("k_inversion_held", false); 
+         manuallyModifyState("is_drive_inverted", !getStateOf("is_drive_inverted")); 
+      }
+   }
+  
+   manuallyModifyState("matchloader_out", Controller.ButtonL2.pressing());  
+ 
 }
 
 void RobotState::updateStopped()
-{
-   manuallyModifyState("intaking_to_hopper", false); 
-   manuallyModifyState("scoring_high", false);
+{  
+   manuallyModifyState("scoring_high", false); 
    manuallyModifyState("scoring_mid", false);
-   manuallyModifyState("scoring_low", false); 
-   manuallyModifyState("matchloader_out", false);
-   manuallyModifyState("toggling_hood", false);
-   manuallyModifyState("toggling_descore", false); 
-   manuallyModifyState("mixing_hopper", false); 
-   manuallyModifyState("reverse_intake", false);   
+   manuallyModifyState("scoring_low", false);  
+   manuallyModifyState("toggling_descore", false);   
+   
+   manuallyModifyState("matchloader_out", false); 
+
+   manuallyModifyState("k_inversion_held", false); 
+   manuallyModifyState("is_drive_inverted", false);
+   
 };
 
 bool RobotState::getStateOf(string key)

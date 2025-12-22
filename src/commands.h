@@ -51,7 +51,6 @@ protected:
   bool initialized;
 
   bool isCounterClockwise;
-
   bool isGoingForward;
   double startingPoint[2];
 
@@ -71,7 +70,6 @@ protected:
   bool isDriving();
 
   double getAngularError();
-
 
   void drivePeriodic();
   void turnPeriodic();
