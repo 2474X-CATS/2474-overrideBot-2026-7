@@ -1,7 +1,8 @@
 #include "commands.h"
+#include <sstream>
 
-////////////////////////////////////////////////////////////
-
+//--------------------------------------- 
+// A COMBINATION OF DRIVING FORWARD AND TURNING COMMANDS 
 
 void DrivePath::start()
 {
@@ -160,7 +161,20 @@ double DrivePath::getAngularError()
     }
 
     return dist;
+} 
+
+string DrivePath::repr(){ 
+    stringstream ss; 
+    ss << "Path " << turningFirst << "," << intaking << "["; 
+    for (double setpoint : setpoints){ 
+       ss << setpoint << ","; 
+    } 
+    ss << "]"; 
+    return ss.str(); 
 }
+
+//--------------------------------------- 
+// PURSUE A CERTAIN (X,Y) POSITION USING ONE OF THREE PATH TYPES
 
 void DriveToSetpoint::start()
 {
@@ -199,23 +213,31 @@ void DriveToSetpoint::start()
         setpoints.push_back(endingAngle);
 
     numOfOperations = setpoints.size() - 1;
+} 
+
+string DriveToSetpoint::repr(){ 
+   stringstream ss;   
+   ss << "Reach " << setpointX << "," << setpointY << "," << pathType;
+   return ss.str();
 }
 
-//////////////////////////////////////////////////////////// 
+//--------------------------------------- 
+// TURN THE ROBOT SO THAT IT S FACING A CERTAIN (X,Y) POSITION
 
 void TurnToSetpoint::start(){ 
    DriveToSetpoint::start(); 
    setpoints.pop_back(); 
    numOfOperations--;
-};  
+};   
 
-void CloseDistanceBetweenSetpoint::start(){ 
-   DriveToSetpoint::start(); 
-   operationsIndex++; 
-   setpoints[1] = setpoints[1] - distFrom;
-}; 
+string TurnToSetpoint::repr(){ 
+   stringstream ss;  
+   ss << "Face " << setpointX << "," << setpointY;
+   return ss.str();
+}
 
-////////////////////////////////////////////////////////////
+//--------------------------------------- 
+// DRIVES THE ROBOT FORWARD OR BACKWARD AT A CERTAIN SPEED PERCENTAGE
 
 void DriveForwardForTime::start()
 { 
@@ -238,9 +260,17 @@ void DriveForwardForTime::end()
 {  
     RobotState::manuallyModifyState("intaking", false);
     drivebaseRef.stop();
-} 
+}   
 
-//////////////////////////////////////////////////////////////////////////////// 
+string DriveForwardForTime::repr(){ 
+    stringstream ss; 
+    ss << "DFFT " << percentage <<  "," << timeDuration; 
+    return ss.str();
+}
+
+
+//--------------------------------------- 
+// INTAKE CUBES FOR STORAGE FOR A CERTAIN AMOUNT OF TIME
 
 void IntakeCubes::start()
 { 
@@ -261,15 +291,19 @@ bool IntakeCubes::isOver()
 void IntakeCubes::end()
 {
     RobotState::manuallyModifyState("intaking", false);
+} 
+
+string IntakeCubes::repr(){ 
+    stringstream ss;  
+    ss << "Intake " << timeDuration;
+    return ss.str(); 
 }
 
-////////////////////////////////////////////////////////////
+//--------------------------------------- 
+// SCORE ON EITHER A HIGH, MID, OR LOW GOAL FOR A CERTAIN AMOUNT OF TIME
 
 void ScoreOnGoal::start()
 {
-    // Top: 1
-    // Mid: 2
-    // Low: 3
     switch (goal)
     {
     case 1:
@@ -314,9 +348,16 @@ void ScoreOnGoal::end()
     default:
         break;
     }
+} 
+
+string ScoreOnGoal::repr(){ 
+    stringstream ss;  
+    ss << "Score " << goal << "," << timeDuration; 
+    return ss.str();
 }
 
-////////////////////////////////////////////////////////////
+//--------------------------------------- 
+// EXTENDS OR RETRACTS THE MATCHLOADER MECHANISM
 
 void DeployMatchloader::start()
 {
@@ -337,10 +378,17 @@ bool DeployMatchloader::isOver()
 void DeployMatchloader::end()
 {
     return;
-}
+} 
 
-////////////////////////////////////////////////////////////
+string DeployMatchloader::repr(){ 
+   stringstream ss;  
+   ss << "ML" << "," << isOut; 
+   return ss.str(); 
+};
 
+
+//--------------------------------------- 
+// BLOCKS THE ROUTINE FROM RUNNING FOR A CERTAIN AMOUNT OF TIME
 
 void WaitFor::start()
 {
@@ -360,7 +408,17 @@ bool WaitFor::isOver()
 void WaitFor::end()
 {
     return;
-} 
+}  
+
+string WaitFor::repr(){ 
+   stringstream ss; 
+   ss << "Wait " << timeDuration; 
+   return ss.str();
+}
+
+
+//--------------------------------------- 
+// MODIFIES THE STATE OF THE ROBOT 
 
 void ModifyRobotState::start()
 {
@@ -382,65 +440,11 @@ void ModifyRobotState::end()
     return;
 }
 
-////////////////////////////////////////////////////////////
-
-CommandInterface *DriveLinear(double distance, bool intaking)
-{
-    return DrivePath::getCommand({distance}, false, intaking);
-};
-
-CommandInterface *TurnToHeading(double angle)
-{
-    return DrivePath::getCommand({angle}, true, false);
-};
-
-CommandInterface *DriveToPoint(double setpointX, double setpointY, PathType pathType, bool intaking)
-{ 
-    return DriveToSetpoint::getCommand(setpointX, setpointY, -1, pathType, intaking);
-};
-
-CommandInterface *AlignWithLocation(int locationIndex, double distance, PathType pathType, bool intaking)
-{
-    array<double, 2> setpoint = Drivebase::getLocation(locationIndex)->getProjectedSetpoint(distance);
-    return DriveToSetpoint::getCommand(setpoint[0], setpoint[1], Drivebase::getLocation(locationIndex)->getPerfectEntranceAngle(), pathType, intaking);
-};
-
-CommandInterface *FaceLocation(int locationIndex)
-{
-    array<double, 2> setpoint = Drivebase::getLocation(locationIndex)->getProjectedSetpoint(0);
-    return TurnToSetpoint::getCommand(setpoint[0], setpoint[1]);
-};
-
-CommandInterface* RamForward(double percentage, double duration, bool intaking){ 
-    return DriveForwardForTime::getCommand(percentage, duration, intaking);
-};   
-
-CommandInterface* GetWithinDistOfSetpoint(int locationIndex, double distFrom, bool intaking){  
-    array<double, 2> setpoint = Drivebase::getLocation(locationIndex)->getProjectedSetpoint(0);
-    return CloseDistanceBetweenSetpoint::getCommand(setpoint[0], setpoint[1], distFrom, intaking);
+string ModifyRobotState::repr(){ 
+    stringstream ss; 
+    ss << "Transform " << entryKey << "," << value;
+    return ss.str();
 } 
-
-
-CommandInterface *CollectCubes(double timeDuration){ 
-    return IntakeCubes::getCommand(timeDuration); 
-};   
-
-CommandInterface *Score(Goal_Pos pos, double timeDuration){ 
-    return ScoreOnGoal::getCommand(pos, timeDuration);  
-}; 
-
-CommandInterface *EnableMatchloader(bool out){ 
-    return DeployMatchloader::getCommand(out);
-};  
-
-CommandInterface *SetRobotState(string key, bool val){ 
-    return ModifyRobotState::getCommand(key, val);
-}; 
-
-CommandInterface *Wait(double duration)
-{
-    return WaitFor::getCommand(duration);
-};  
 
 
 

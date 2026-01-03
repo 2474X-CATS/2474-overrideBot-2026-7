@@ -23,8 +23,8 @@ class Indexer : public Subsystem {
             (EntrySet){"is_on", EntryType::BOOL}
         }
      ), 
-     indexerMotor(vex::motor(vex::PORT1)), 
-     indexerHatch(vex::pneumatics(Brain.ThreeWirePort.B))
+     indexerMotor(vex::motor(vex::PORT8)), 
+     indexerHatch(vex::pneumatics(Brain.ThreeWirePort.F))
      { 
        globalRef = this; 
      } 

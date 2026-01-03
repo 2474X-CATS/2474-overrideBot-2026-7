@@ -4,20 +4,21 @@
 /*
 #include "subsystems/drivebase.h" 
 #include "subsystems/indexer.h"
-#include "subsystems/hood.h"
-#include "subsystems/hopper.h"
 #include "subsystems/intake.h"
 #include "subsystems/matchloader.h"
 #include "subsystems/hooks.h"  
 */ 
 
+#include "subsystems/wedge.h"
 #include "subsystems/hooks.h" 
 #include "commands.h"
+#include "helpers/autonInit.h"
 
 using namespace vex;
 
 competition Competition;
 Robot robot;
+
 
 void runTelemetry()
 {
@@ -51,20 +52,39 @@ void driveCommandMatch(std::vector<CommandInterface *> commandGroup)
   robot.driverControl();                     // Free drive
 }
 
+void testGraphics(){  
+  Field(275, 10);
+  ColorPicker(220,200);  
+  SidePicker(360,200);
+  Sprite::frameLoop(); 
+}
+
 
 int main()
-{
+{ 
 
   vexcodeInit();
   
-  Drivebase drive = Drivebase(2,1/3); // Tile location right 1 up 1
+  Drivebase drive = Drivebase(0,0); // Tile location right 0 up 0
+  Intake intake; 
+  Indexer indexer;
   Matchloader matchloader;  
-  Hooks hooks; 
+  Hooks hooks;     
+  Wedge wedge; 
+  
+  robot.initialize();   
 
-  robot.initialize();  
   RobotState::manuallyModifyState("is_team_color_blue", true);
   RobotState::manuallyModifyState("color_sensitive", false); 
   
-  freeDrive();
- 
+  freeDrive(); 
+  
+  /*
+  driveCommandMatch( 
+    { 
+       DrivePath::getCommand({TILE_SIZE_MM}, false, false)
+    } 
+  ); 
+  */
+
 }

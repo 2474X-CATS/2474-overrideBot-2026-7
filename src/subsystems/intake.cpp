@@ -13,21 +13,22 @@ void Intake::init(){
 void Intake::periodic(){ 
 
    if (RobotState::getStateOf("intaking") || RobotState::getStateOf("scoring_high") || RobotState::getStateOf("scoring_mid")){ 
-      intakeConveyor.setVelocity(ABSOLUTE_CONVEYOR_SPEED, vex::velocityUnits::rpm); //Inwards
+      intakeConveyor.setVelocity(-ABSOLUTE_CONVEYOR_SPEED, vex::velocityUnits::rpm); //Inwards
       intakeConveyor.spin(vex::directionType::fwd); 
    } else if (RobotState::getStateOf("scoring_low")){ 
-      intakeConveyor.setVelocity(-ABSOLUTE_CONVEYOR_SPEED, vex::velocityUnits::rpm); //Outwards
+      intakeConveyor.setVelocity(ABSOLUTE_CONVEYOR_SPEED, vex::velocityUnits::rpm); //Outwards
       intakeConveyor.spin(vex::directionType::fwd);
    } else { 
       intakeConveyor.setVelocity(0, vex::percentUnits::pct); 
       intakeConveyor.spin(vex::directionType::fwd);
    } 
-
+   
    if (RobotState::getStateOf("intaking") || RobotState::getStateOf("scoring_mid")){ 
      intakeStopper.open(); 
    } else { 
      intakeStopper.close(); 
-   } 
+   }  
+   
 
 } 
 

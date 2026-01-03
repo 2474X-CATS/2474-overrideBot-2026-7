@@ -8,7 +8,7 @@ void Matchloader::init(){
 }  
 
 void Matchloader::periodic(){ 
-   mlPiston.set(RobotState::getStateOf("matchloader_out")); 
+   mlPiston.set(!RobotState::getStateOf("matchloader_out")); 
 } 
 
 void Matchloader::updateTelemetry(){ 

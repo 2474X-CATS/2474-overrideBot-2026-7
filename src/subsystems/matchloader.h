@@ -21,7 +21,7 @@ class Matchloader : public Subsystem {
             (EntrySet){"is_on", EntryType::BOOL}
         }
      ), 
-     mlPiston(vex::pneumatics(Brain.ThreeWirePort.D))
+     mlPiston(vex::pneumatics(Brain.ThreeWirePort.H))
      { 
        globalRef = this; 
      } 

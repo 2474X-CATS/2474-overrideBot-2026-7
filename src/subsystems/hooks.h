@@ -7,8 +7,7 @@
 class Hooks : public Subsystem {  
 
    private:   
-    vex::pneumatics hookPiston1;  
-    vex::pneumatics hookPiston2;  
+    vex::pneumatics hookPiston;
 
    public:  
      using Subsystem::get;  
@@ -22,8 +21,7 @@ class Hooks : public Subsystem {
             (EntrySet){"is_on", EntryType::BOOL}
         }
      ), 
-     hookPiston1(vex::pneumatics(Brain.ThreeWirePort.D)), 
-     hookPiston2(vex::pneumatics(Brain.ThreeWirePort.B))
+     hookPiston(vex::pneumatics(Brain.ThreeWirePort.C)) 
      { 
        globalRef = this; 
      } 

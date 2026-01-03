@@ -5,9 +5,8 @@
 #include "subsystems/intake.h" 
 #include "subsystems/indexer.h"
 #include "subsystems/matchloader.h" 
-
 #include "architecture/command.h" 
-#include "helpers/trajectorycontroller.h"
+
 
 typedef enum
 {
@@ -36,10 +35,17 @@ typedef enum
 
 typedef enum
 {
-  EUCLIDEAN,
+  EUCLIDEAN = 1,
   MANHATTAN_XY,
   MANHATTAN_YX
 } PathType;
+
+
+
+
+
+//--------------------------------------- 
+// A COMBINATION OF DRIVING FORWARD AND TURNING COMMANDS 
 
 class DrivePath : public Command<Drivebase, Intake>
 {
@@ -85,25 +91,29 @@ protected:
   void start() override;
   void periodic() override;
   bool isOver() override;
-  void end() override;
+  void end() override;  
+  virtual string repr() override; 
 
 public:
   static CommandInterface *getCommand(vector<double> setpoints, bool turningFirst, bool intaking)
   {
     return new DrivePath(*Drivebase::globalRef, *Intake::globalRef, setpoints, turningFirst, intaking);
-  }
+  } 
 
   DrivePath(Drivebase &drive, Intake &intake, vector<double> setpoints, bool turningFirst, bool intaking) : Command<Drivebase, Intake>(drive, intake),
                                                                              drivebaseRef(drive), 
                                                                              intakeRef(intake),  
-                                                                             intaking(intaking),
-                                                                             setpoints(setpoints), 
-                                                                             turningFirst(turningFirst), 
+                                                                             setpoints(setpoints),  
+                                                                             turningFirst(turningFirst),
+                                                                             intaking(intaking), 
                                                                              initialized(false),
                                                                              operationsIndex(0),
                                                                              numOfOperations(setpoints.size() - 1) {};
 };
 
+
+//--------------------------------------- 
+// PURSUE A CERTAIN (X,Y) POSITION USING ONE OF THREE PATH TYPES 
 
 class DriveToSetpoint : protected DrivePath
 {
@@ -126,9 +136,12 @@ public:
                                                                                                                  pathType(pathType) {};
 
 protected:
-  void start() override;
+  void start() override; 
+  string repr() override; 
 }; 
 
+//--------------------------------------- 
+// TURN THE ROBOT SO THAT IT S FACING A CERTAIN (X,Y) POSITION
 
 class TurnToSetpoint : DriveToSetpoint
 {
@@ -143,30 +156,12 @@ public:
   TurnToSetpoint(Drivebase &drive, Intake &intake, double setpointX, double setpointY) : DriveToSetpoint(drive, intake, setpointX, setpointY, -1, PathType::EUCLIDEAN, false){};
                                                                                                                                                                               
 protected:
-  void start() override;
+  void start() override; 
+  string repr() override; 
 };  
 
-class CloseDistanceBetweenSetpoint : DriveToSetpoint
-{
-
-public: 
- 
-  static CommandInterface *getCommand(double setpointX, double setpointY, double distFrom, bool intaking)
-  {
-    return new CloseDistanceBetweenSetpoint(*Drivebase::globalRef, *Intake::globalRef,  setpointX, setpointY, distFrom, intaking);
-  }
-
-  CloseDistanceBetweenSetpoint(Drivebase &drive, Intake &intake, double setpointX, double setpointY, double distFrom, bool intaking) :  
-                         DriveToSetpoint(drive, intake, setpointX, setpointY, -1, PathType::EUCLIDEAN, intaking), 
-                         distFrom(distFrom) {};
-                                                                                                                                                                              
-protected:
-  void start() override; 
-
-private: 
-  double distFrom; 
-}; 
-
+//--------------------------------------- 
+// DRIVES THE ROBOT FORWARD OR BACKWARD AT A CERTAIN SPEED PERCENTAGE 
 
 class DriveForwardForTime : Command<Drivebase, Intake>
 {
@@ -186,7 +181,8 @@ protected:
   void start() override;
   void periodic() override;
   bool isOver() override;
-  void end() override;
+  void end() override; 
+  string repr() override; 
 
 public:
   static CommandInterface *getCommand(double percentage, double timeDuration, bool intaking)
@@ -206,6 +202,8 @@ public:
   ~DriveForwardForTime() override = default;
 }; 
 
+//--------------------------------------- 
+// INTAKE CUBES FOR STORAGE FOR A CERTAIN AMOUNT OF TIME
 
 class IntakeCubes : public Command<Intake>
 {
@@ -219,7 +217,8 @@ protected:
   void start() override;
   void periodic() override;
   bool isOver() override;
-  void end() override;
+  void end() override; 
+  string repr() override; 
 
 public:
   static CommandInterface *getCommand(double timeDuration)
@@ -233,6 +232,9 @@ public:
 
   ~IntakeCubes() override = default;
 };
+
+//--------------------------------------- 
+// SCORE ON EITHER A HIGH, MID, OR LOW GOAL FOR A CERTAIN AMOUNT OF TIME
 
 class ScoreOnGoal : public Command<Intake, Indexer>
 {
@@ -262,9 +264,13 @@ protected:
   void start() override;
   void periodic() override;
   bool isOver() override;
-  void end() override;
+  void end() override; 
+  string repr() override;  
+
 };
 
+//--------------------------------------- 
+// EXTENDS OR RETRACTS THE MATCHLOADER MECHANISM
 
 class DeployMatchloader : Command<Matchloader>
 {
@@ -277,7 +283,8 @@ protected:
   void start() override;
   void periodic() override;
   bool isOver() override;
-  void end() override;
+  void end() override;  
+  string repr() override; 
 
 public:
   static CommandInterface *getCommand(bool out)
@@ -291,6 +298,10 @@ public:
 
   ~DeployMatchloader() override = default;
 };
+
+
+//--------------------------------------- 
+// BLOCKS THE ROUTINE FROM RUNNING FOR A CERTAIN AMOUNT OF TIME 
 
 class WaitFor : Command<DummySystem>
 {
@@ -313,8 +324,13 @@ protected:
   void start() override;
   void periodic() override;
   bool isOver() override;
-  void end() override;
+  void end() override; 
+  string repr() override; 
 }; 
+
+
+//--------------------------------------- 
+// MODIFIES THE STATE OF THE ROBOT 
 
 class ModifyRobotState : Command<DummySystem>
 { 
@@ -339,32 +355,9 @@ protected:
   void start() override;
   void periodic() override;
   bool isOver() override;
-  void end() override;
+  void end() override; 
+  string repr() override; 
 };
-
-
-CommandInterface *DriveLinear(double distance, bool intaking);
-CommandInterface *TurnToHeading(double angle);
-CommandInterface *DriveToPoint(double setpointX, double setpointY, PathType pathType, bool intaking);
-CommandInterface *AlignWithLocation(int locationIndex, double distance, PathType pathType, bool intaking);  
-CommandInterface *GetWithinDistOfSetpoint(int locationIndex, double distFrom, bool intaking);
-CommandInterface *FaceLocation(int locationIndex);  
-CommandInterface *RamForward(double percentage, double duration, bool intaking);  
-
-CommandInterface *CollectCubes(double timeDuration);   
-
-CommandInterface *Score(Goal_Pos pos, double timeDuration); 
-
-CommandInterface *EnableMatchloader(bool out);  
-
-
-CommandInterface *Wait(double duration);   
-
-CommandInterface *SetRobotState(string key, bool val); 
- 
-
-
-
 
 
 

@@ -23,8 +23,8 @@ class Intake : public Subsystem {
             (EntrySet){"is_on", EntryType::BOOL}
         }
      ), 
-     intakeStopper(vex::pneumatics(Brain.ThreeWirePort.D)), 
-     intakeConveyor(vex::motor(vex::PORT10))
+     intakeStopper(vex::pneumatics(Brain.ThreeWirePort.E)), 
+     intakeConveyor(vex::motor(vex::PORT7))
      { 
        globalRef = this; 
      } 

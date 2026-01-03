@@ -7,8 +7,9 @@
 
 Drivebase *Drivebase::globalRef = nullptr;
 
-double Drivebase::ENCODER_WHEEL_RADIUS_MM = 25.4;
-double Drivebase::ENCODER_DIST_FROM_CENTER = 19.02231081; // 17.665
+double Drivebase::ENCODER_WHEEL_ROT_RADIUS_MM = 69.85;  
+double Drivebase::ENCODER_WHEEL_LIN_RADIUS_MM = 25.4;  
+double Drivebase::ENCODER_DIST_FROM_CENTER = 91.3417 / 2; // 17.665
 double Drivebase::DRIVE_WHEEL_RADIUS_MM = 69.85;
 
 Location *Drivebase::locations[14] = {
@@ -118,7 +119,12 @@ void Drivebase::init()
    encoderAngular.setPosition(0, vex::rotationUnits::rev);   
 
    leftDriveMotors.setStopping(vex::brakeType::brake);
-   rightDriveMotors.setStopping(vex::brakeType::brake);
+   rightDriveMotors.setStopping(vex::brakeType::brake); 
+
+   driveGyro.calibrate(); 
+   while (driveGyro.isCalibrating()){ 
+      vex::this_thread::yield();
+   }
    
    //------------------------------
    turnPID.P = 2.8;
@@ -149,7 +155,8 @@ void Drivebase::updateTelemetry()
    double y = get<double>("Pos_Y");
    
    double currentAngle; 
-   currentAngle = 90 - fmod((encoderAngular.position(vex::rotationUnits::rev) * 2 * ENCODER_WHEEL_RADIUS_MM * M_PI) / (2 * ENCODER_DIST_FROM_CENTER * M_PI) * 360, 360);  
+   //currentAngle = 90 - fmod((encoderAngular.position(vex::rotationUnits::rev) * 2 * ENCODER_WHEEL_ROT_RADIUS_MM * M_PI) / (2 * ENCODER_DIST_FROM_CENTER * M_PI) * 360, 360);  
+   currentAngle = fmod((90 - driveGyro.angle(vex::rotationUnits::deg)) + 360, 360); 
 
    if (RobotState::getStateOf("is_drive_inverted")){ 
       currentAngle += 180;
@@ -165,7 +172,7 @@ void Drivebase::updateTelemetry()
    set<double>("Angle_Degrees_CCW", currentAngle); 
    
    double hypotenuse; 
-   hypotenuse = ((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_RADIUS_MM) / 3000); 
+   hypotenuse = -((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 3000); 
 
    if (RobotState::getStateOf("is_drive_inverted")){ 
       hypotenuse *= -1;
@@ -193,13 +200,11 @@ void Drivebase::updateTelemetry()
    set<bool>("overheating", avgTemp >= MOTOR_TEMP_LIMIT_CELSIUS); 
 
    //---------------------------------------------------------
-   /*
+   
    Brain.Screen.printAt(20, 100, "X: %f", get<double>("Pos_X"));
    Brain.Screen.printAt(20, 125, "Y: %f", get<double>("Pos_Y")); 
    Brain.Screen.printAt(20, 150, "Angle Heading: %f", get<double>("Angle_Degrees_CCW"));  
-   */
  
-   
 };
 
 Location *Drivebase::getLocation(int index)
@@ -221,10 +226,6 @@ void Drivebase::arcadeDrive(double speed, double rotation)
    rotation = rotation > 100 ? 100 : (rotation < -100 ? -100 : rotation); 
 
    speed = RobotState::getStateOf("is_drive_inverted") ? speed * -1: speed;    
-    
-   if (speed == 0 && RobotState::getStateOf("is_drive_inverted")){ 
-     rotation *= -1; 
-   } 
 
    leftDriveMotors.setVelocity((speed + rotation), vex::percentUnits::pct);
    rightDriveMotors.setVelocity((speed - rotation), vex::percentUnits::pct);  
@@ -239,7 +240,7 @@ void Drivebase::manualDriveForward(double speedMM)
    if (RobotState::getStateOf("is_drive_inverted")){ 
       speedMM *= -1; 
    }
-   double netSpeed = speedMM / (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI) * 60;  
+   double netSpeed = speedMM / (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI) * 60;   
    leftDriveMotors.setVelocity(netSpeed, vex::velocityUnits::rpm);
    rightDriveMotors.setVelocity(-netSpeed, vex::velocityUnits::rpm);
    leftDriveMotors.spin(vex::directionType::fwd);

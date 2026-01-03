@@ -83,19 +83,19 @@ void RobotState::initializeState()
         (EntrySet){"matchloader_out", EntryType::BOOL},
         
         (EntrySet){"k_descore_held", EntryType::BOOL},
-        (EntrySet){"descore_out", EntryType::BOOL},  
-          
+        (EntrySet){"descore_out", EntryType::BOOL},   
+
         (EntrySet){"is_team_color_blue", EntryType::BOOL},  
         (EntrySet){"color_sensitive", EntryType::BOOL},  
-
-        (EntrySet){"intaking", EntryType::BOOL},
-       
-        /*
-       
-        */ 
+        (EntrySet){"intaking", EntryType::BOOL}, 
 
         (EntrySet){"k_inversion_held", EntryType::BOOL},
-        (EntrySet){"is_drive_inverted", EntryType::BOOL}
+        (EntrySet){"is_drive_inverted", EntryType::BOOL}, 
+
+        (EntrySet){"k_double_park_held", EntryType::BOOL}, 
+        (EntrySet){"elevated", EntryType::BOOL},  
+        (EntrySet){"release_grip", EntryType::BOOL}
+
       });
 }
 
@@ -105,9 +105,9 @@ void RobotState::updateRegular()
    manuallyModifyState("scoring_mid", Controller.ButtonR1.pressing());
    manuallyModifyState("scoring_low", Controller.ButtonRight.pressing()); 
    
-   manuallyModifyState("intaking", Controller.ButtonA.pressing()); 
+   manuallyModifyState("intaking", Controller.ButtonY.pressing()); 
    
-   if (Controller.ButtonL1.pressing()){ 
+   if (Controller.ButtonUp.pressing()){ 
       manuallyModifyState("k_inversion_held", true);  
    } else { 
       if (getStateOf("k_inversion_held")){ 
@@ -116,16 +116,26 @@ void RobotState::updateRegular()
       }
    } 
    
-   if (Controller.ButtonX.pressing()){ 
+   if (Controller.ButtonL1.pressing()){ 
       manuallyModifyState("k_descore_held", true);  
    } else { 
       if (getStateOf("k_descore_held")){ 
          manuallyModifyState("k_descore_held", false); 
          manuallyModifyState("descore_out", !getStateOf("descore_out")); 
       }
+   }  
+
+   if (Controller.ButtonX.pressing()){ 
+      manuallyModifyState("k_double_park_held", true);  
+   } else { 
+      if (getStateOf("k_double_park_held")){ 
+         manuallyModifyState("k_double_park_held", false); 
+         manuallyModifyState("elevated", !getStateOf("elevated")); 
+      }
    } 
 
-   manuallyModifyState("matchloader_out", Controller.ButtonL2.pressing());  
+   manuallyModifyState("matchloader_out", Controller.ButtonL2.pressing());   
+   manuallyModifyState("release_grip",Controller.ButtonB.pressing()); 
 }
 
 void RobotState::updateStopped()
@@ -136,8 +146,8 @@ void RobotState::updateStopped()
 
    manuallyModifyState("matchloader_out", false); 
 
-   manuallyModifyState("k_inversion_held", false);  
-   manuallyModifyState("k_descore_out", false); 
+   manuallyModifyState("k_inversion_held", false);   
+   manuallyModifyState("k_descore_held", false);
    manuallyModifyState("descore_out", false); 
 
    manuallyModifyState("intaking", false); 

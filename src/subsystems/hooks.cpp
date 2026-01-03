@@ -8,8 +8,7 @@ void Hooks::init(){
 }  
 
 void Hooks::periodic(){ 
-   hookPiston1.set(RobotState::getStateOf("descore_out")); 
-   hookPiston2.set(RobotState::getStateOf("descore_out"));
+   hookPiston.set(RobotState::getStateOf("descore_out")); 
 } 
 
 void Hooks::updateTelemetry(){ 
@@ -17,6 +16,5 @@ void Hooks::updateTelemetry(){
 } 
 
 void Hooks::stop(){ 
-   hookPiston1.set(false); 
-   hookPiston2.set(false);
+   hookPiston.set(false);
 }
