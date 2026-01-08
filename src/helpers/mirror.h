@@ -30,9 +30,10 @@ FrameData getFrameFromString(string str);
 class AbsorbtiveMirror
 {
 
-private:
+private: 
     static int AUTONFRAMES;
-    static int SKILLFRAMES;
+    static int SKILLFRAMES; 
+    
     int maximumFrames;
     int writtenFrames = 0;
     FILE *writeStream;

@@ -41,7 +41,9 @@ private:
 
   double startX, startY;
   double linearSpeedFactor = 1; 
-  double angularSpeedFactor = 0.8; 
+  double angularSpeedFactor = 0.8;  
+
+  double lastTimestamp = 0;
 
   static Location *locations[]; 
   
@@ -66,18 +68,17 @@ public:
                                           encoderAngular(vex::rotation(vex::PORT10)),  
                                           driveGyro(vex::inertial(vex::PORT18)),
 
-                                          driveFrontLeft(vex::motor(vex::PORT1, vex::ratio18_1)),
-                                          driveMidLeft(vex::motor(vex::PORT2, vex::ratio18_1, true)),
-                                          driveBackLeft(vex::motor(vex::PORT3, vex::ratio18_1)),  
+                                          driveFrontLeft(vex::motor(vex::PORT1, vex::ratio6_1)),
+                                          driveMidLeft(vex::motor(vex::PORT2, vex::ratio6_1, true)),
+                                          driveBackLeft(vex::motor(vex::PORT3, vex::ratio6_1)),  
 
-                                          driveFrontRight(vex::motor(vex::PORT4, vex::ratio18_1)), 
-                                          driveMidRight(vex::motor(vex::PORT5, vex::ratio18_1, true)),
-                                          driveBackRight(vex::motor(vex::PORT6, vex::ratio18_1)),
+                                          driveFrontRight(vex::motor(vex::PORT4, vex::ratio6_1)), 
+                                          driveMidRight(vex::motor(vex::PORT5, vex::ratio6_1, true)),
+                                          driveBackRight(vex::motor(vex::PORT6, vex::ratio6_1)),
                                            
                                           leftDriveMotors(vex::motor_group(driveFrontLeft, driveMidLeft, driveBackLeft)),
                                           rightDriveMotors(vex::motor_group(driveFrontRight, driveMidRight, driveBackRight)), 
                                         
-
                                           startX((tileX) * TILE_SIZE_MM),
                                           startY((tileY) * TILE_SIZE_MM)
   {

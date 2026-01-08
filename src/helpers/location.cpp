@@ -80,7 +80,6 @@ vector<double> Location::getEuclideanAlignmentPath(double distFrom)
 
 vector<double> Location::getTaxicabAlignmentPath(double distFrom, bool xFirst)
 {
-
    array<double, 2> setpoint;
    setpoint = getProjectedSetpoint(distFrom);
 

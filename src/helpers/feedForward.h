@@ -8,6 +8,7 @@ typedef struct {
    double kA; // increase velocity
 } FFConstants; 
 
+
 class FeedForward {   
 
     double kS; 

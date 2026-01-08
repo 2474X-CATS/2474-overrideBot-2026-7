@@ -65,7 +65,7 @@ int main()
 
   vexcodeInit();
   
-  Drivebase drive = Drivebase(0,0); // Tile location right 0 up 0
+  Drivebase drive = Drivebase(1,1); // Tile location right 0 up 0
   Intake intake; 
   Indexer indexer;
   Matchloader matchloader;  
@@ -77,7 +77,12 @@ int main()
   RobotState::manuallyModifyState("is_team_color_blue", true);
   RobotState::manuallyModifyState("color_sensitive", false); 
   
-  freeDrive();
+  driveCommandMatch({ 
+     ModifyRobotState::getCommand("is_drive_inverted", true), 
+     DeployMatchloader::getCommand(false),  
+     TurnToSetpoint::getCommand(TILE_SIZE_MM * 2, TILE_SIZE_MM * 2), 
+     DrivePath::getCommand({TILE_SIZE_MM * 1.2}, false, true)
+  });
   
 
 }

@@ -12,9 +12,12 @@ void Intake::init(){
 
 void Intake::periodic(){ 
 
-   if (RobotState::getStateOf("intaking") || RobotState::getStateOf("scoring_high") || RobotState::getStateOf("scoring_mid")){ 
+   if (RobotState::getStateOf("intaking") || RobotState::getStateOf("scoring_high")){ 
       intakeConveyor.setVelocity(-ABSOLUTE_CONVEYOR_SPEED, vex::velocityUnits::rpm); //Inwards
       intakeConveyor.spin(vex::directionType::fwd); 
+   } else if (RobotState::getStateOf("scoring_mid")){ 
+      intakeConveyor.setVelocity(-ABSOLUTE_CONVEYOR_SPEED * 0.8, vex::velocityUnits::rpm); //Outwards
+      intakeConveyor.spin(vex::directionType::fwd);
    } else if (RobotState::getStateOf("scoring_low")){ 
       intakeConveyor.setVelocity(ABSOLUTE_CONVEYOR_SPEED, vex::velocityUnits::rpm); //Outwards
       intakeConveyor.spin(vex::directionType::fwd);

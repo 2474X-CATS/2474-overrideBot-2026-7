@@ -12,12 +12,12 @@ vex::brain Brain;
 //-------
 // Constants: PLACE HERE [regularly]
 
-double ROBOT_WIDTH_MM = 406.4;// mm
-double ROBOT_LENGTH_MM = 381; // mm 
+double ROBOT_WIDTH_MM = 381; //mm
+double ROBOT_LENGTH_MM = 406.4; //mm 
 
 double MOTOR_TEMP_LIMIT_CELSIUS = 55.0;
 
-double TILE_SIZE_MM = (3.6576 / 6) * 1000; // mm
+double TILE_SIZE_MM = (3.6576 / 6) * 1000; //mm
 
 void vexcodeInit() {
 

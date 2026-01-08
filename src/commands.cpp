@@ -145,7 +145,7 @@ void DrivePath::turn()
     {
         output *= -1;
     }
-    drivebaseRef.manualTurnClockwise(-output);
+    drivebaseRef.manualTurnClockwise(output);
 }
 
 double DrivePath::getAngularError()

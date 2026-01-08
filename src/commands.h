@@ -127,7 +127,7 @@ public:
   static CommandInterface *getCommand(double setpointX, double setpointY, double endingAngle, PathType pathType, bool intaking)
   {
     return new DriveToSetpoint(*Drivebase::globalRef, *Intake::globalRef, setpointX, setpointY, endingAngle, pathType, intaking);
-  }
+  } 
 
   DriveToSetpoint(Drivebase &drive, Intake &intake, double setpointX, double setpointY, double endingAngle, PathType pathType, bool intaking) : DrivePath(drive, intake, {}, true, intaking),
                                                                                                                  setpointX(setpointX),

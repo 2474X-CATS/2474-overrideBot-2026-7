@@ -145,7 +145,7 @@ void RobotState::updateStopped()
    manuallyModifyState("scoring_low", false);  
 
    manuallyModifyState("matchloader_out", false); 
-
+   
    manuallyModifyState("k_inversion_held", false);   
    manuallyModifyState("k_descore_held", false);
    manuallyModifyState("descore_out", false); 
