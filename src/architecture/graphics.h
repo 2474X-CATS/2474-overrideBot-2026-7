@@ -2,7 +2,10 @@
 #define __GRAPHICS__H__ 
 
 #include "vex.h"   
-#include <vector>
+#include <vector>  
+
+#include <string> 
+using std::string;
 
 extern void drawRectangle(int x, int y, int width, int height, uint32_t color);
 
@@ -10,11 +13,13 @@ extern void drawEllipse(int x , int y, int radius, uint32_t color);
 
 extern void drawLine(int x1, int y1, int x2, int y2, uint32_t color);
 
-extern void renderText(char* str, int x, int y, uint32_t color);
+extern void renderText(string text, int x, int y, uint32_t penColor, uint32_t highlightColor, vex::fontType font);
 
 extern int getMouseX();
 
-extern int getMouseY();
+extern int getMouseY(); 
+
+extern void drawLogo();
 
 class Sprite {   
 
@@ -85,7 +90,23 @@ class ColoredBlock : public Sprite {
     void mousePressed(int mx, int my) override; 
 
     void mouseReleased() override;
+}; 
+
+class ExitBlock : public Sprite {  
+
+    public: 
+      ExitBlock(int x, int y) : 
+      Sprite(x,y,125, 50){}; 
+
+      void draw() override;  
+
+      void update() override; 
+
+      void mousePressed(int mx, int my) override; 
+
+      void mouseReleased() override;
 };
+
 
 
 #endif 

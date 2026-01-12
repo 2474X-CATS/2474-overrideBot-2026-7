@@ -34,7 +34,6 @@ class TrapezoidalMotionProfile {
       double toleranceVel = 0.0; 
       double tolerancePos = 0.0; 
 
-      double calculatePosition(double time); 
       double calculateVelocity(double time); 
       double calculateAcceleration(double time);  
 
@@ -57,7 +56,9 @@ class TrapezoidalMotionProfile {
       void setVelocityTolerance(double velTol);   
 
       double getTotalDuration(); 
-      double getStartTime();  
+      double getStartTime();   
+
+      double calculatePosition(double time); 
 
       bool atGoal(double currentPosition, double currentVelocity); 
 

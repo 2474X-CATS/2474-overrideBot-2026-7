@@ -15,13 +15,12 @@ void Indexer::periodic(){
      indexerMotor.setVelocity(-ABSOLUTE_INDEXER_SPEED, vex::velocityUnits::rpm); 
      indexerMotor.spin(vex::directionType::fwd); 
    } else if (RobotState::getStateOf("scoring_mid")){ 
-     indexerMotor.setVelocity(ABSOLUTE_INDEXER_SPEED, vex::velocityUnits::rpm); 
+     indexerMotor.setVelocity(ABSOLUTE_INDEXER_SPEED * 0.5, vex::velocityUnits::rpm); 
      indexerMotor.spin(vex::directionType::fwd);
    } else { 
      indexerMotor.setVelocity(0, vex::percentUnits::pct); 
      indexerMotor.spin(vex::directionType::fwd);
    }  
-
    if (RobotState::getStateOf("scoring_high")){ 
      indexerHatch.close();
    } else { 
@@ -34,7 +33,8 @@ void Indexer::updateTelemetry(){
    return;
 } 
 
-void Indexer::stop(){ 
-   indexerMotor.stop(); 
+void Indexer::stop(){  
+   indexerMotor.setVelocity(0, vex::percentUnits::pct); 
+   indexerMotor.spin(vex::directionType::fwd);
    indexerHatch.open();
 }

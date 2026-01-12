@@ -19,44 +19,107 @@ using namespace vex;
 competition Competition;
 Robot robot;
 
-
 void runTelemetry()
 {
-  robot.runTelemetryThread(false);
+  robot.runTelemetryThread(false); 
+} 
+
+void pauseUntilReady(){ 
+  while (!RobotState::getStateOf("ready")){ 
+    this_thread::yield();
+  }
 }
 
-void freeDrive()
-{
-  thread telemetryThread = thread(runTelemetry);
-  robot.driverControl();
-}
-
-void startCommandMatch(std::vector<CommandInterface *> commandGroup)
-{
-  robot.setAutonomousCommand(commandGroup);
+int scheduleCallbacks(){  
+  pauseUntilReady();
   Competition.autonomous([]()
                          { robot.autonControl(); });
   Competition.drivercontrol([]()
                             { robot.driverControl(); });  
-  while (!Competition.isEnabled()){ 
-    this_thread::yield();
-  }  
+  drawLogo();
+  return 0;
+}
+
+void freeDrive()
+{  
+  drawLogo();
+  RobotState::manuallyModifyState("ready", true); 
+  thread telemetryThread = thread(runTelemetry);
+  robot.driverControl();
+}
+
+void configurateAutonomous(vector<CommandInterface*> leftSide, vector<CommandInterface*> rightSide){ 
+  ColorPicker colorChooser = ColorPicker(220-125,200-50);  
+  SidePicker sidePicker = SidePicker(360-125,200-50);  
+  ExitBlock(160, 65);
+  
+  Sprite::frameLoop();   
+
+  drawLogo();
+  
+  if (sidePicker.getIsLeft()){ 
+    robot.setAutonomousCommand(leftSide);
+  } else { 
+    robot.setAutonomousCommand(rightSide); 
+  }    
+
+  RobotState::manuallyModifyState("is_team_color_blue", colorChooser.getIsBlue());
+}  
+
+void testAuto(vector<CommandInterface*> auton){ 
+  robot.setAutonomousCommand(auton);
+  thread telemThread = thread(runTelemetry);   
+  pauseUntilReady(); 
+  drawLogo();
+  robot.autonControl();                      
+  robot.driverControl();
+} 
+
+void startCommandSkillsMatch(vector<CommandInterface*> commandGroup){  
+  robot.setAutonomousCommand(commandGroup); 
+  thread callbackWait = thread(scheduleCallbacks);
   robot.runTelemetryThread(false);
 }
 
-void driveCommandMatch(std::vector<CommandInterface *> commandGroup)
+void startCommandCompetitiveMatch(vector<CommandInterface *> leftCommandGroup, vector<CommandInterface *> rightCommandGroup)
 {
-  robot.setAutonomousCommand(commandGroup);  // Registers the autonomous routine
-  thread telemThread = thread(runTelemetry); // Start data logging
-  robot.autonControl();                      // Runs the autonomous command
-  robot.driverControl();                     // Free drive
+  configurateAutonomous(leftCommandGroup, rightCommandGroup);
+  thread callbackWait = thread(scheduleCallbacks);
+  robot.runTelemetryThread(false); 
 }
 
-void testGraphics(){  
-  Field(275, 10);
-  ColorPicker(220,200);  
-  SidePicker(360,200);
-  Sprite::frameLoop(); 
+void driveCommandMatch(vector<CommandInterface *> leftCommandGroup, vector<CommandInterface*> rightCommandGroup)
+{  
+  configurateAutonomous(leftCommandGroup, rightCommandGroup);
+  thread telemThread = thread(runTelemetry);   
+  pauseUntilReady();
+  robot.autonControl();                      
+  robot.driverControl();                     
+}
+
+
+vector<CommandInterface*> closed_side_left(){ 
+   return { 
+       DeployMatchloader::getCommand(false),
+       DriveToLocation(Zones::NAT_MID, TILE_SIZE_MM * 1.35, PathType::EUCLIDEAN, true),   
+       DeployMatchloader::getCommand(true), 
+       DriveForwardForTime::getCommand(0.4, 500, true),
+       IntakeCubes::getCommand(750),   
+       DeployMatchloader::getCommand(false),
+       ModifyRobotState::getCommand("is_drive_inverted", true),  
+       TurnToLocation(Zones::NAT_MID), 
+       DrivePath::getCommand({TILE_SIZE_MM * 0.45}, false, false),  
+       ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 2000),    
+       ModifyRobotState::getCommand("is_drive_inverted", false), 
+       DrivePath::getCommand({1300}, false, false), 
+       TurnToLocation(Zones::NAT_ML_LEFT),  
+       DeployMatchloader::getCommand(true), 
+       WaitFor::getCommand(1000), 
+       DriveForwardForTime::getCommand(0.125, 1000, true),
+       IntakeCubes::getCommand(500),   
+       ModifyRobotState::getCommand("is_drive_inverted", true),   
+       DriveToLocation(Zones::NAT_HIGH_LEFT, TILE_SIZE_MM * 0.5, PathType::EUCLIDEAN, false)
+   };
 }
 
 
@@ -65,7 +128,7 @@ int main()
 
   vexcodeInit();
   
-  Drivebase drive = Drivebase(1,1); // Tile location right 0 up 0
+  Drivebase drive = Drivebase(0,0); // Tile location right 0 up 0
   Intake intake; 
   Indexer indexer;
   Matchloader matchloader;  
@@ -74,15 +137,17 @@ int main()
   
   robot.initialize();   
 
-  RobotState::manuallyModifyState("is_team_color_blue", true);
   RobotState::manuallyModifyState("color_sensitive", false); 
   
-  driveCommandMatch({ 
-     ModifyRobotState::getCommand("is_drive_inverted", true), 
-     DeployMatchloader::getCommand(false),  
-     TurnToSetpoint::getCommand(TILE_SIZE_MM * 2, TILE_SIZE_MM * 2), 
-     DrivePath::getCommand({TILE_SIZE_MM * 1.2}, false, true)
-  });
-  
+  RobotState::manuallyModifyState("descore_out",true); 
+  hooks.periodic();  
+
+  //---------------------------------------------------------------
+
+  testAuto( 
+    { 
+      Calibrate::getCommand(Field_Wall::UP, 0.2, 1000)
+    }
+  );
 
 }

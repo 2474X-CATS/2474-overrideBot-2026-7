@@ -32,20 +32,6 @@ class SidePicker : public Sprite {
       void mousePressed(int mx, int my) override; 
       void mouseReleased() override;
         
-}; 
-
-class Field : public Sprite { 
-   public:  
-      Field(int x, int y) : 
-          Sprite(x, y, 180, 180){}; 
-      
-      void draw() override; 
-      void update() override; 
-      void mousePressed(int mx, int my) override; 
-      void mouseReleased() override;   
-
-      std::array<int, 2> normalizeCoordinates(int fx, int fy); 
-      int getTileSize();
-};  
+};
 
 

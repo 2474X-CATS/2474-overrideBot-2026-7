@@ -56,7 +56,8 @@ typedef enum
 {
   DRIVER,
   MANUAL,
-  STOPPED
+  STOPPED, 
+  INITIALIZATION
 } ControlType;
 
 class Subsystem
@@ -108,7 +109,8 @@ private:
   static std::string vibrationCode; 
 
   static void updateStopped();
-  static void updateRegular(); 
+  static void updateRegular();  
+  static void updateInitializing();
 
   static void disableVibrations();  
   static void setVibrationCode(string code);

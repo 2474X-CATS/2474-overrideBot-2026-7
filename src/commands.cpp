@@ -29,7 +29,9 @@ bool DrivePath::isOver()
 
 void DrivePath::end()
 {
-   RobotState::manuallyModifyState("intaking", false);
+   RobotState::manuallyModifyState("intaking", false); 
+   drivebaseRef.stop(); 
+   intakeRef.stop();
 }
 
 void DrivePath::drivePeriodic()
@@ -140,26 +142,31 @@ void DrivePath::initializeTurn()
 
 void DrivePath::turn()
 {
-    double output = turnPID->calculate(getAngularError(), Brain.Timer.time());
+    double output = turnPID->calculate(getAngularError(), Brain.Timer.time()); 
+    /*
     if (isCounterClockwise)
     {
         output *= -1;
-    }
-    drivebaseRef.manualTurnClockwise(output);
+    } 
+    */
+    drivebaseRef.manualTurnClockwise(-output);
 }
 
 double DrivePath::getAngularError()
 {
     double currentAngle = drivebaseRef.get<double>("Angle_Degrees_CCW");
     double angleSetpoint = setpoints.at(operationsIndex);
-
-    double dist = currentAngle > angleSetpoint ? (360 - currentAngle) + angleSetpoint : angleSetpoint - currentAngle;
-
-    if (!isCounterClockwise)
-    {
-        dist = (360 - dist);
-    }
-
+    
+    double dist; 
+    //double dist = currentAngle > angleSetpoint ? (360 - currentAngle) + angleSetpoint : angleSetpoint - currentAngle;
+    
+    dist = angleSetpoint - currentAngle; 
+    if (dist > 180){  
+        dist = -(360 - dist);
+    } else if (dist < -180){ 
+        dist = (360 + dist);
+    } 
+    
     return dist;
 } 
 
@@ -259,14 +266,43 @@ bool DriveForwardForTime::isOver()
 void DriveForwardForTime::end()
 {  
     RobotState::manuallyModifyState("intaking", false);
-    drivebaseRef.stop();
+    drivebaseRef.stop(); 
+    intakeRef.stop();
 }   
 
 string DriveForwardForTime::repr(){ 
     stringstream ss; 
     ss << "DFFT " << percentage <<  "," << timeDuration; 
     return ss.str();
+}  
+
+//----------------------------------------------------- 
+
+void Calibrate::start()
+{ 
+    RobotState::manuallyModifyState("calibrating", true); //Asuume facing somewhat towards wall
+    drivebaseRef.setCalibratingWall(wall);  
+    startingTime = Brain.Timer.time(vex::msec);
+};
+
+void Calibrate::periodic()
+{
+    drivebaseRef.arcadeDrive(percentage * 100, 0); 
+};
+
+bool Calibrate::isOver()
+{
+    return (Brain.Timer.time(vex::msec) - startingTime) >= durationMilliseconds; //Set off by drivebase's internal systems
 }
+
+void Calibrate::end()
+{   
+    RobotState::manuallyModifyState("k_calibrating", true);
+    drivebaseRef.stop();
+}   
+
+
+
 
 
 //--------------------------------------- 
@@ -290,7 +326,8 @@ bool IntakeCubes::isOver()
 
 void IntakeCubes::end()
 {
-    RobotState::manuallyModifyState("intaking", false);
+    RobotState::manuallyModifyState("intaking", false); 
+    intakeRef.stop();
 } 
 
 string IntakeCubes::repr(){ 
@@ -347,7 +384,10 @@ void ScoreOnGoal::end()
         break;
     default:
         break;
-    }
+    } 
+    intakeRef.stop(); 
+    indexerRef.stop(); 
+    
 } 
 
 string ScoreOnGoal::repr(){ 
@@ -447,4 +487,12 @@ string ModifyRobotState::repr(){
 } 
 
 
+CommandInterface* DriveToLocation(int zoneIndex, double dist, PathType pathType, bool intaking){ 
+  std::array<double, 2> setpoint = Drivebase::globalRef->getLocation(zoneIndex)->getProjectedSetpoint(dist); 
+  return DriveToSetpoint::getCommand(setpoint[0], setpoint[1], -1, pathType, intaking);
+}
 
+CommandInterface* TurnToLocation(int zoneIndex){ 
+  std::array<double, 2> setpoint = Drivebase::globalRef->getLocation(zoneIndex)->getProjectedSetpoint(0); 
+  return TurnToSetpoint::getCommand(setpoint[0], setpoint[1]);
+}

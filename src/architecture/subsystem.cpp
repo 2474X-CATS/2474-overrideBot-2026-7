@@ -51,7 +51,7 @@ Subsystem *Subsystem::getSubsystem(int index)
 vex::controller Controller = vex::controller(vex::controllerType::primary);
 
 bool RobotState::axisesEnabled = false;
-ControlType RobotState::mode = ControlType::STOPPED; 
+ControlType RobotState::mode = ControlType::INITIALIZATION; 
 
 string RobotState::vibrationCode = ":)";  
 
@@ -64,6 +64,9 @@ void RobotState::updateState()
       break;
    case STOPPED:
       updateStopped();
+      break;  
+   case INITIALIZATION: 
+      updateInitializing(); 
       break;
    case MANUAL:
    default:
@@ -75,7 +78,13 @@ void RobotState::initializeState()
 {
    Telemetry::inst.registerSubtable(
        "robot_state",
-       { 
+       {    
+        (EntrySet){"calibrating", EntryType::BOOL},  
+        (EntrySet){"k_calibrating", EntryType::BOOL},
+
+        (EntrySet){"k_ready", EntryType::BOOL},
+        (EntrySet){"ready", EntryType::BOOL}, 
+
         (EntrySet){"scoring_high", EntryType::BOOL},
         (EntrySet){"scoring_mid", EntryType::BOOL},
         (EntrySet){"scoring_low", EntryType::BOOL}, 
@@ -95,12 +104,17 @@ void RobotState::initializeState()
         (EntrySet){"k_double_park_held", EntryType::BOOL}, 
         (EntrySet){"elevated", EntryType::BOOL},  
         (EntrySet){"release_grip", EntryType::BOOL}
-
       });
 }
 
 void RobotState::updateRegular()
-{  
+{   
+   if (RobotState::getExternalState("drivebase", "overheating")){ 
+      setVibrationCode(".."); 
+   } else { 
+      disableVibrations();
+   } 
+
    manuallyModifyState("scoring_high", Controller.ButtonR2.pressing()); 
    manuallyModifyState("scoring_mid", Controller.ButtonR1.pressing());
    manuallyModifyState("scoring_low", Controller.ButtonRight.pressing()); 
@@ -151,7 +165,18 @@ void RobotState::updateStopped()
    manuallyModifyState("descore_out", false); 
 
    manuallyModifyState("intaking", false); 
-};
+}; 
+
+void RobotState::updateInitializing(){ 
+   if (Controller.ButtonA.pressing()){ 
+      manuallyModifyState("k_ready", true);
+   } else { 
+      if (getStateOf("k_ready")){  
+         manuallyModifyState("k_ready", false); 
+         manuallyModifyState("ready", true);
+      }
+   }
+}
 
 bool RobotState::getStateOf(string key)
 {

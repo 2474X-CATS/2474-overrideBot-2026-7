@@ -41,9 +41,6 @@ typedef enum
 } PathType;
 
 
-
-
-
 //--------------------------------------- 
 // A COMBINATION OF DRIVING FORWARD AND TURNING COMMANDS 
 
@@ -62,13 +59,13 @@ protected:
   pidcontroller *turnPID = nullptr;
   TrapezoidalMotionProfile *drivingProfile = nullptr;
 
-  bool initialized;
+  bool initialized = false;
 
   bool isCounterClockwise;
   bool isGoingForward;
   double startingPoint[2];
 
-  int operationsIndex;
+  int operationsIndex = 0;
   int numOfOperations;
 
   void initializeDrive();
@@ -106,8 +103,6 @@ public:
                                                                              setpoints(setpoints),  
                                                                              turningFirst(turningFirst),
                                                                              intaking(intaking), 
-                                                                             initialized(false),
-                                                                             operationsIndex(0),
                                                                              numOfOperations(setpoints.size() - 1) {};
 };
 
@@ -200,7 +195,42 @@ public:
                                                                                       {};
 
   ~DriveForwardForTime() override = default;
+};  
+
+class Calibrate : Command<Drivebase>
+{
+private: 
+
+  Drivebase &drivebaseRef;  
+  double percentage;   
+  double durationMilliseconds;
+  double startingTime;
+  Field_Wall wall;
+
+protected:
+  void start() override;
+  void periodic() override;
+  bool isOver() override;
+  void end() override; 
+
+public:
+  static CommandInterface *getCommand(Field_Wall wall, double percentageOutput, double durationMillis)
+  {
+    return new Calibrate(*Drivebase::globalRef, wall, percentageOutput, durationMillis);
+  }
+
+  Calibrate(Drivebase &drivebase, Field_Wall wall, double percentageOutput, double durationMillis) :  
+                                                                                      Command<Drivebase>(drivebase),  
+                                                                                      drivebaseRef(drivebase),  
+                                                                                      percentage(percentageOutput),  
+                                                                                      durationMilliseconds(durationMillis),
+                                                                                      wall(wall)
+                                                                                      {};
+
+  ~Calibrate() override = default;
 }; 
+
+
 
 //--------------------------------------- 
 // INTAKE CUBES FOR STORAGE FOR A CERTAIN AMOUNT OF TIME
@@ -359,6 +389,9 @@ protected:
   string repr() override; 
 };
 
+CommandInterface* DriveToLocation(int zoneIndex, double dist, PathType pathType, bool intaking);
+
+CommandInterface* TurnToLocation(int zoneIndex);
 
 
 #endif
