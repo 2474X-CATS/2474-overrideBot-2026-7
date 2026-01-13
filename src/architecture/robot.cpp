@@ -137,9 +137,12 @@ void Robot::setAutonomousCommand(std::vector<CommandInterface *> comm)
 
 void Robot::autonControl()
 {
-  RobotState::setMode(ControlType::MANUAL);
+  RobotState::setMode(ControlType::MANUAL); 
+  RobotState::manuallyModifyState("in_autonomous", true);
   for (CommandInterface *command : Robot::autonomousCommand)
   {
     command->run();
-  }
+  }  
+  RobotState::manuallyModifyState("in_autonomous", false);
+
 };

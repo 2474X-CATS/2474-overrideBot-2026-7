@@ -31,7 +31,14 @@ void pauseUntilReady(){
 }
 
 int scheduleCallbacks(){  
-  pauseUntilReady();
+  double startingTime = Brain.Timer.time(vex::sec); 
+
+  while (Brain.Timer.time(vex::sec) - startingTime < 30){ 
+     this_thread::yield();
+  }  
+
+  RobotState::manuallyModifyState("ready", true); 
+
   Competition.autonomous([]()
                          { robot.autonControl(); });
   Competition.drivercontrol([]()
@@ -100,25 +107,26 @@ void driveCommandMatch(vector<CommandInterface *> leftCommandGroup, vector<Comma
 
 vector<CommandInterface*> closed_side_left(){ 
    return { 
-       DeployMatchloader::getCommand(false),
        DriveToLocation(Zones::NAT_MID, TILE_SIZE_MM * 1.35, PathType::EUCLIDEAN, true),   
        DeployMatchloader::getCommand(true), 
        DriveForwardForTime::getCommand(0.4, 500, true),
-       IntakeCubes::getCommand(750),   
+       IntakeCubes::getCommand(225),   
        DeployMatchloader::getCommand(false),
        ModifyRobotState::getCommand("is_drive_inverted", true),  
        TurnToLocation(Zones::NAT_MID), 
        DrivePath::getCommand({TILE_SIZE_MM * 0.45}, false, false),  
        ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 2000),    
-       ModifyRobotState::getCommand("is_drive_inverted", false), 
-       DrivePath::getCommand({1300}, false, false), 
+       ModifyRobotState::getCommand("is_drive_inverted", false),  
+       DrivePath::getCommand({50}, false, false),
+       DriveToLocation(Zones::NAT_ML_LEFT, TILE_SIZE_MM * 0.925, PathType::EUCLIDEAN, false),  
        TurnToLocation(Zones::NAT_ML_LEFT),  
        DeployMatchloader::getCommand(true), 
-       WaitFor::getCommand(1000), 
-       DriveForwardForTime::getCommand(0.125, 1000, true),
+       WaitFor::getCommand(500), 
+       DriveForwardForTime::getCommand(0.1, 1300, true),
        IntakeCubes::getCommand(500),   
        ModifyRobotState::getCommand("is_drive_inverted", true),   
-       DriveToLocation(Zones::NAT_HIGH_LEFT, TILE_SIZE_MM * 0.5, PathType::EUCLIDEAN, false)
+       DriveToLocation(Zones::NAT_HIGH_LEFT, TILE_SIZE_MM * 0.2, PathType::EUCLIDEAN, false), 
+       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000)
    };
 }
 
@@ -128,7 +136,7 @@ int main()
 
   vexcodeInit();
   
-  Drivebase drive = Drivebase(0,0); // Tile location right 0 up 0
+  Drivebase drive = Drivebase(1,1); // Tile location right 0 up 0
   Intake intake; 
   Indexer indexer;
   Matchloader matchloader;  
@@ -139,15 +147,20 @@ int main()
 
   RobotState::manuallyModifyState("color_sensitive", false); 
   
-  RobotState::manuallyModifyState("descore_out",true); 
+  RobotState::manuallyModifyState("descore_out",true);  
+  RobotState::manuallyModifyState("matchloader_out", false); 
+
+  matchloader.periodic();
   hooks.periodic();  
 
   //---------------------------------------------------------------
+  
+  testAuto({ 
+    DriveToLocation(Zones::NAT_MID, TILE_SIZE_MM * 0.75, PathType::EUCLIDEAN, true)
+  }); 
 
   testAuto( 
-    { 
-      Calibrate::getCommand(Field_Wall::UP, 0.2, 1000)
-    }
+    closed_side_left()
   );
 
 }

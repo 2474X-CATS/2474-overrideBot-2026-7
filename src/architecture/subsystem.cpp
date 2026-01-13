@@ -83,14 +83,14 @@ void RobotState::initializeState()
         (EntrySet){"k_calibrating", EntryType::BOOL},
 
         (EntrySet){"k_ready", EntryType::BOOL},
-        (EntrySet){"ready", EntryType::BOOL}, 
+        (EntrySet){"ready", EntryType::BOOL},  
+
+        (EntrySet){"in_autonomous", EntryType::BOOL},
 
         (EntrySet){"scoring_high", EntryType::BOOL},
         (EntrySet){"scoring_mid", EntryType::BOOL},
         (EntrySet){"scoring_low", EntryType::BOOL}, 
-
         (EntrySet){"matchloader_out", EntryType::BOOL},
-        
         (EntrySet){"k_descore_held", EntryType::BOOL},
         (EntrySet){"descore_out", EntryType::BOOL},   
 
@@ -108,17 +108,19 @@ void RobotState::initializeState()
 }
 
 void RobotState::updateRegular()
-{   
+{    
+   /*
    if (RobotState::getExternalState("drivebase", "overheating")){ 
       setVibrationCode(".."); 
    } else { 
       disableVibrations();
    } 
-
+   */ 
+  
    manuallyModifyState("scoring_high", Controller.ButtonR2.pressing()); 
    manuallyModifyState("scoring_mid", Controller.ButtonR1.pressing());
-   manuallyModifyState("scoring_low", Controller.ButtonRight.pressing()); 
-   
+   manuallyModifyState("scoring_low", Controller.ButtonRight.pressing());  
+
    manuallyModifyState("intaking", Controller.ButtonY.pressing()); 
    
    if (Controller.ButtonUp.pressing()){ 

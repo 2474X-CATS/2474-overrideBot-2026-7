@@ -128,12 +128,13 @@ void Drivebase::init()
    
    //------------------------------ 
    
-   turnPID.P = 2.75; 
-   turnPID.I = 0.22;
-   turnPID.D = 0.1;
-   turnPID.errorTolerance = 0.35;  
+   turnPID.P = 2.53; 
+   turnPID.I = 3;//1//0.275;//0.25
+   turnPID.D = 0.125/48; 
+   turnPID.iLimit = 3.5;//10
+   turnPID.errorTolerance = 0.5;  
    
-   //--------------------------  
+   //--------------------------  >
  
    trapConsts.maxVelocity = 1234;  
    trapConsts.maxAcceleration = 1234;  
@@ -154,34 +155,38 @@ void Drivebase::periodic()
 }
 
 void Drivebase::updateTelemetry()
-{   
+{    
+   double x; 
+   double y;
+   set<double>("Angle_Degrees_CCW", calculateAngle()); 
+
    if (RobotState::getStateOf("ready")){ 
       leftDriveMotors.setStopping(vex::brakeType::brake); 
-      rightDriveMotors.setStopping(vex::brakeType::brake);
-   }
+      rightDriveMotors.setStopping(vex::brakeType::brake); 
 
-   double x = get<double>("Pos_X");
-   double y = get<double>("Pos_Y"); 
+      x = get<double>("Pos_X");
+      y = get<double>("Pos_Y"); 
 
-   double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp;
+      double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp;
    
-   double currentAngle; 
-   currentAngle = calculateAngle();
-   set<double>("Angle_Degrees_CCW", currentAngle); 
-   
-   double hypotenuse; 
-   hypotenuse = -((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime); 
+      double hypotenuse; 
+      hypotenuse = -((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime); 
 
-   if (RobotState::getStateOf("is_drive_inverted")){ 
-      hypotenuse *= -1;
+      if (RobotState::getStateOf("is_drive_inverted")){ 
+        hypotenuse *= -1;
+      } 
+
+      double angleRadians = get<double>("Angle_Degrees_CCW") * (2 * M_PI) / 360;
+
+      x += (hypotenuse * cos(angleRadians));
+      y += (hypotenuse * sin(angleRadians));
+ 
+   } else {  
+      x = encoderAngular.position(vex::rotationUnits::rev) * (2 * M_PI * ENCODER_WHEEL_ROT_RADIUS_MM); 
+      y = encoderLinear.position(vex::rotationUnits::rev) * (2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM); 
    } 
 
-   double angleRadians = get<double>("Angle_Degrees_CCW") * (2 * M_PI) / 360;
-
-   x += (hypotenuse * cos(angleRadians));
-   y += (hypotenuse * sin(angleRadians));
-
-   set<double>("Pos_X", x);
+   set<double>("Pos_X", x); 
    set<double>("Pos_Y", y); 
    
    

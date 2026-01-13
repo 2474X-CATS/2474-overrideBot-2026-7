@@ -14,8 +14,12 @@ void Indexer::periodic(){
    if (RobotState::getStateOf("scoring_high")){ 
      indexerMotor.setVelocity(-ABSOLUTE_INDEXER_SPEED, vex::velocityUnits::rpm); 
      indexerMotor.spin(vex::directionType::fwd); 
-   } else if (RobotState::getStateOf("scoring_mid")){ 
-     indexerMotor.setVelocity(ABSOLUTE_INDEXER_SPEED * 0.5, vex::velocityUnits::rpm); 
+   } else if (RobotState::getStateOf("scoring_mid")){  
+     if (RobotState::getStateOf("in_autonomous")){ 
+       indexerMotor.setVelocity(ABSOLUTE_INDEXER_SPEED * 0.25, vex::velocityUnits::rpm);
+     } else { 
+       indexerMotor.setVelocity(ABSOLUTE_INDEXER_SPEED * 0.5, vex::velocityUnits::rpm);
+     }
      indexerMotor.spin(vex::directionType::fwd);
    } else { 
      indexerMotor.setVelocity(0, vex::percentUnits::pct); 
