@@ -156,18 +156,16 @@ void Drivebase::periodic()
 
 void Drivebase::updateTelemetry()
 {    
-   double x; 
-   double y;
-   set<double>("Angle_Degrees_CCW", calculateAngle()); 
+   double x = get<double>("Pos_X");
+   double y = get<double>("Pos_Y"); 
+
+   set<double>("Angle_Degrees_CCW", calculateAngle());   
+
+   double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp;
 
    if (RobotState::getStateOf("ready")){ 
       leftDriveMotors.setStopping(vex::brakeType::brake); 
-      rightDriveMotors.setStopping(vex::brakeType::brake); 
-
-      x = get<double>("Pos_X");
-      y = get<double>("Pos_Y"); 
-
-      double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp;
+      rightDriveMotors.setStopping(vex::brakeType::brake);  
    
       double hypotenuse; 
       hypotenuse = -((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime); 
@@ -181,13 +179,40 @@ void Drivebase::updateTelemetry()
       x += (hypotenuse * cos(angleRadians));
       y += (hypotenuse * sin(angleRadians));
  
-   } else {  
-      x = encoderAngular.position(vex::rotationUnits::rev) * (2 * M_PI * ENCODER_WHEEL_ROT_RADIUS_MM); 
-      y = encoderLinear.position(vex::rotationUnits::rev) * (2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM); 
+   } else {   
+      //If this works replace old odom logic with this as with the rotation wheel it accounts for drift that may occur (Swerve odometry essentially)
+      double xTrans = 0; 
+      double yTrans = 0; 
+
+      double horizontalVelocity = -encoderAngular.velocity(vex::velocityUnits::rpm) * (2 * M_PI * ENCODER_WHEEL_ROT_RADIUS_MM) / 60 * deltaTime; 
+      double verticalVelocity = -encoderLinear.velocity(vex::velocityUnits::rpm) * (2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime; 
+       
+      double vertAngle = (get<double>("Angle_Degrees_CCW")); 
+
+      double horiAngle = vertAngle - 90;  
+      if (horiAngle < 0){ 
+         horiAngle = 360 + horiAngle;
+      }
+      
+      vertAngle = vertAngle * (2 * M_PI) / 360; 
+      horiAngle = horiAngle * (2 * M_PI) / 360;  
+
+      xTrans += horizontalVelocity * cos(horiAngle); 
+      yTrans += horizontalVelocity * sin(horiAngle);  
+
+      xTrans += verticalVelocity * cos(vertAngle); 
+      yTrans += verticalVelocity * sin(vertAngle); 
+
+      x += xTrans; 
+      y += yTrans;
+
    } 
 
    set<double>("Pos_X", x); 
-   set<double>("Pos_Y", y); 
+   set<double>("Pos_Y", y);  
+
+   Brain.Screen.printAt(20, 100, "Position X: %f", x); 
+   Brain.Screen.printAt(20, 125, "Position Y: %f", y);
    
    
    double temperatureSum = 0;  

@@ -136,7 +136,7 @@ int main()
 
   vexcodeInit();
   
-  Drivebase drive = Drivebase(1,1); // Tile location right 0 up 0
+  Drivebase drive = Drivebase(0,0); // Tile location right 0 up 0
   Intake intake; 
   Indexer indexer;
   Matchloader matchloader;  
@@ -156,11 +156,9 @@ int main()
   //---------------------------------------------------------------
   
   testAuto({ 
-    DriveToLocation(Zones::NAT_MID, TILE_SIZE_MM * 0.75, PathType::EUCLIDEAN, true)
+    DriveToLocation(Zones::NAT_ML_LEFT, TILE_SIZE_MM * 0.75, PathType::EUCLIDEAN, true)
   }); 
 
-  testAuto( 
-    closed_side_left()
-  );
+  
 
 }

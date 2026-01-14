@@ -7,7 +7,8 @@ void Wedge::init(){
    stop(); 
 }  
 
-void Wedge::periodic(){    
+void Wedge::periodic(){     
+   
    wedgePiston2.set(RobotState::getStateOf("elevated")); 
    wedgePiston1.set(RobotState::getStateOf("elevated")); 
 
