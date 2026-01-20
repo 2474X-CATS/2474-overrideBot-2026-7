@@ -177,7 +177,6 @@ void Drivebase::updateTelemetry()
    set<double>("Angle_Degrees_CCW", angle);   
 
    if (!RobotState::getStateOf("ready")){   
-
     if (RobotState::getStateOf("configurable")){ 
        if (RobotState::getStateOf("starting_left")){ 
          x = (TILE_SIZE_MM * 2 + 430 - ROBOT_WIDTH_MM);

@@ -1,4 +1,5 @@
 #include "autonInit.h" 
+#include "math.h"
 
 void ColorPicker::draw(){  
     uint32_t currentColor = isBlue ? globalColor.blue : globalColor.red;
@@ -79,20 +80,44 @@ void ExitBlock::mouseReleased(){
 
 //------------------------------------------------------------------------------------  
 
-void LoadingScreen::draw(){ 
-    drawEllipse(x,y,width, globalColor.red);
+void LoadingScreen::draw(){   
+    if (pressed){ 
+        drawEllipse(x+width/2,y+width/2,width, globalColor.rgb(64, 64, 64));
+    } else { 
+        drawEllipse(x+width/2,y+width/2,width, globalColor.rgb(128, 128, 128));
+    }  
+
+    double hypotenuse = width/4*3;  
+    double currentAngle = angle; 
+    
+  
+    for (int i = 0; i < 9; i ++){ 
+       drawEllipse( 
+         static_cast<int>((x+width/2.0) + hypotenuse * cos(currentAngle / 360.0 * M_PI)), 
+         static_cast<int>((y+width/2.0) + hypotenuse * sin(currentAngle / 360.0 * M_PI)), 
+         20,  
+         globalColor.rgb( 
+            static_cast<int>(255 / 6.0 * 1.0), 
+            static_cast<int>(255 / 6.0 * 1.0), 
+            static_cast<int>(255 / 6.0 * 1.0)
+         )
+       );  
+       currentAngle -= 90;
+    }
+
 } 
 
 void LoadingScreen::update(){ 
-    return; 
+    angle += 10;
 } 
 
-void LoadingScreen::mousePressed(int mx, int my){ 
+void LoadingScreen::mousePressed(int mx, int my){  
+
     return;
 } 
 
 void LoadingScreen::mouseReleased(){ 
-    return;
+    Sprite::running = false;
 }
 
 

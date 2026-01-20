@@ -34,12 +34,6 @@ void nothingMethod(){
    return;
 } 
 
-
-
-#include "vex.h"
-
-using namespace vex;
-
 void drawLogoBlue() { 
 
     static const char* imageColors[] = {
@@ -108,6 +102,7 @@ void drawLogo(bool isColorBlue){
     drawLogoRed(); 
   }
 }
+
 
 bool Sprite::running = true; 
 std::vector<Sprite*> Sprite::allSprites; 
@@ -188,7 +183,7 @@ void Sprite::frameLoop(){
         redraw();  
         refreshSpriteLogic();  
         filterDead();
-        vex::wait(30, vex::msec);  
+        vex::wait(60, vex::msec);  
        } 
    Brain.Screen.clearScreen(); 
    allSprites.clear(); 

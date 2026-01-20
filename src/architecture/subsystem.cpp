@@ -109,14 +109,6 @@ void RobotState::initializeState()
 
 void RobotState::updateRegular()
 {    
-   /*
-   if (RobotState::getExternalState("drivebase", "overheating")){ 
-      setVibrationCode(".."); 
-   } else { 
-      disableVibrations();
-   } 
-   */ 
-  
    manuallyModifyState("scoring_high", Controller.ButtonR2.pressing()); 
    manuallyModifyState("scoring_mid", Controller.ButtonR1.pressing());
    manuallyModifyState("scoring_low", Controller.ButtonRight.pressing());  

@@ -25,17 +25,20 @@ void pauseUntilReady(){
 } 
 
 void awaitStartingSignal(){ 
-  return;
+  LoadingScreen(); 
+  Sprite::frameLoop();
 }
 
 int scheduleCallbacks(){   
    
   //Add a pause where you press a button to start    
-
+  
   Competition.autonomous([]()
                          { robot.autonControl(); });
   Competition.drivercontrol([]()
                             { robot.driverControl(); });   
+  
+  awaitStartingSignal(); 
 
   drawLogo(RobotState::getStateOf("is_team_color_blue"));
   return 0;
@@ -94,7 +97,7 @@ void driveCommandMatch(vector<CommandInterface *> leftCommandGroup, vector<Comma
 {  
   configurateAutonomous(leftCommandGroup, rightCommandGroup);    
   thread telemThread = thread(runTelemetry);   
-  //Add a pause where you press a button to start
+  awaitStartingSignal();
   drawLogo(RobotState::getStateOf("is_team_color_blue"));
   robot.autonControl();                      
   robot.driverControl();                     
@@ -235,7 +238,9 @@ int main()
 
   vexcodeInit();
   
-  Drivebase drive = Drivebase(0,0); 
+
+  
+  Drivebase drive = Drivebase(0,0);  
 
   Intake intake; 
   Indexer indexer;
@@ -249,59 +254,14 @@ int main()
 
   //---------------------------------------------------------------  
   
+
   driveCommandMatch( 
     closed_side_left(), 
     closed_side_right()
-  );
+  ); 
   
-  /*
-  testAuto( 
-    { 
-      DrivePath::getCommand({90}, true, false),   
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({15}, true, false),   
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({30}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({45}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({60}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({75}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),  
-      WaitFor::getCommand(500), 
-      DrivePath::getCommand({270}, true, false),
-      //DrivePath::getCommand({15+180+90}, true, false),   
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({30+180+90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({45+180+90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({60+180+90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({75+180+90}, true, false),  
-      WaitFor::getCommand(500),
-      DrivePath::getCommand({90}, true, false),
-    }
-  );  
-  */
+  
+  
   
 
 

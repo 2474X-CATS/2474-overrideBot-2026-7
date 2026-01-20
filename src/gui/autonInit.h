@@ -1,4 +1,4 @@
-#include "../architecture/graphics.h" 
+#include "graphics.h" 
 #include <array> 
 
 class ColorPicker : public Sprite {  
@@ -34,9 +34,8 @@ class ExitBlock : public Sprite {
 
 class SidePicker : public Sprite { 
     private: 
-      bool isLeft = true; 
-    public:  
-      
+      bool isLeft = true;  
+    public: 
       bool getIsLeft();  
 
       SidePicker(int x, int y): 
@@ -49,13 +48,12 @@ class SidePicker : public Sprite {
         
 };  
 
-class LoadingScreen : public Sprite { 
+class LoadingScreen : public Sprite {  
+    private: 
+      double angle; 
     public:  
-      
-      bool getIsLeft();  
-
-      LoadingScreen(int x, int y): 
-         Sprite(140, 20, 200, 200){};   
+      LoadingScreen(): 
+         Sprite(190, 70, 100, 100){};   
     
       void draw() override;  
       void update() override; 
