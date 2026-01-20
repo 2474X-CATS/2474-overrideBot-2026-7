@@ -78,14 +78,16 @@ void RobotState::initializeState()
 {
    Telemetry::inst.registerSubtable(
        "robot_state",
-       {    
+       {     
+        (EntrySet){"starting_left", EntryType::BOOL},  
+        (EntrySet){"configurable", EntryType::BOOL},
+        (EntrySet){"is_team_color_blue", EntryType::BOOL},  
+        (EntrySet){"color_sensitive", EntryType::BOOL},   
+        (EntrySet){"ready", EntryType::BOOL},  
+        (EntrySet){"in_autonomous", EntryType::BOOL}, 
+
         (EntrySet){"calibrating", EntryType::BOOL},  
         (EntrySet){"k_calibrating", EntryType::BOOL},
-
-        (EntrySet){"k_ready", EntryType::BOOL},
-        (EntrySet){"ready", EntryType::BOOL},  
-
-        (EntrySet){"in_autonomous", EntryType::BOOL},
 
         (EntrySet){"scoring_high", EntryType::BOOL},
         (EntrySet){"scoring_mid", EntryType::BOOL},
@@ -93,14 +95,13 @@ void RobotState::initializeState()
         (EntrySet){"matchloader_out", EntryType::BOOL},
         (EntrySet){"descore_out", EntryType::BOOL},   
 
-        (EntrySet){"is_team_color_blue", EntryType::BOOL},  
-        (EntrySet){"color_sensitive", EntryType::BOOL},  
         (EntrySet){"intaking", EntryType::BOOL}, 
 
         (EntrySet){"k_inversion_held", EntryType::BOOL},
         (EntrySet){"is_drive_inverted", EntryType::BOOL}, 
 
-        (EntrySet){"k_double_park_held", EntryType::BOOL}, 
+        (EntrySet){"k_double_park_held", EntryType::BOOL},  
+
         (EntrySet){"elevated", EntryType::BOOL},  
         (EntrySet){"release_grip", EntryType::BOOL}
       });
@@ -151,25 +152,14 @@ void RobotState::updateStopped()
    manuallyModifyState("scoring_high", false); 
    manuallyModifyState("scoring_mid", false);
    manuallyModifyState("scoring_low", false);  
-
    manuallyModifyState("matchloader_out", false); 
-   
    manuallyModifyState("k_inversion_held", false);    
-   
    manuallyModifyState("descore_out", false); 
-
    manuallyModifyState("intaking", false); 
 }; 
 
 void RobotState::updateInitializing(){ 
-   if (Controller.ButtonA.pressing()){ 
-      manuallyModifyState("k_ready", true);
-   } else { 
-      if (getStateOf("k_ready")){  
-         manuallyModifyState("k_ready", false); 
-         manuallyModifyState("ready", true);
-      }
-   }
+   return;
 }
 
 bool RobotState::getStateOf(string key)

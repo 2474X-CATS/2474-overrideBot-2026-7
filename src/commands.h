@@ -61,7 +61,7 @@ protected:
 
   bool initialized = false;
 
-  bool isCounterClockwise;
+  //bool isCounterClockwise;
   bool isGoingForward;
   double startingPoint[2];
 
@@ -100,10 +100,10 @@ public:
   DrivePath(Drivebase &drive, Intake &intake, vector<double> setpoints, bool turningFirst, bool intaking) : Command<Drivebase, Intake>(drive, intake),
                                                                              drivebaseRef(drive), 
                                                                              intakeRef(intake),  
-                                                                             setpoints(setpoints),  
-                                                                             turningFirst(turningFirst),
-                                                                             intaking(intaking), 
-                                                                             numOfOperations(setpoints.size() - 1) {};
+                                                                             setpoints(setpoints),   
+                                                                             turningFirst(turningFirst), 
+                                                                             intaking(intaking),
+                                                                             numOfOperations(setpoints.size() - 1){};
 };
 
 

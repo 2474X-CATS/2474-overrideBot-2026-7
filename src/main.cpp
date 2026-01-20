@@ -1,18 +1,11 @@
 #include "vex.h"
 #include "architecture/robot.h"
 #include <iostream>
-/*
-#include "subsystems/drivebase.h" 
-#include "subsystems/indexer.h"
-#include "subsystems/intake.h"
-#include "subsystems/matchloader.h"
-#include "subsystems/hooks.h"  
-*/ 
 
 #include "subsystems/wedge.h"
 #include "subsystems/hooks.h" 
 #include "commands.h"
-#include "helpers/autonInit.h"
+#include "gui/autonInit.h"
 
 using namespace vex;
 
@@ -29,50 +22,57 @@ void pauseUntilReady(){
   while (!RobotState::getStateOf("ready")){ 
     this_thread::yield();
   }
+} 
+
+void awaitStartingSignal(){ 
+  return;
 }
 
-int scheduleCallbacks(){  
-  //double startingTime = Brain.Timer.time(vex::sec); 
-
-  RobotState::manuallyModifyState("ready", true); 
+int scheduleCallbacks(){   
+   
+  //Add a pause where you press a button to start    
 
   Competition.autonomous([]()
                          { robot.autonControl(); });
   Competition.drivercontrol([]()
-                            { robot.driverControl(); });  
-  drawLogo();
+                            { robot.driverControl(); });   
+
+  drawLogo(RobotState::getStateOf("is_team_color_blue"));
   return 0;
 }
 
-void freeDrive()
-{  
-  //drawLogo();
-  RobotState::manuallyModifyState("ready", true); 
-  thread telemetryThread = thread(runTelemetry);
-  robot.driverControl();
-}
+
 
 void configurateAutonomous(vector<CommandInterface*> leftSide, vector<CommandInterface*> rightSide){ 
+  RobotState::manuallyModifyState("configurable", true);  
+
   ColorPicker colorChooser = ColorPicker(220-125,200-50);  
   SidePicker sidePicker = SidePicker(360-125,200-50);  
   ExitBlock(160, 65);
   Sprite::frameLoop();   
  
+  RobotState::manuallyModifyState("starting_left", sidePicker.getIsLeft()); 
+
   if (sidePicker.getIsLeft()){ 
-    robot.setAutonomousCommand(leftSide);  
-    Drivebase::globalRef->setStartingPos(TILE_SIZE_MM * 2 + 430 - ROBOT_WIDTH_MM, 425);
+    robot.setAutonomousCommand(leftSide);   
   } else { 
     robot.setAutonomousCommand(rightSide);   
-    Drivebase::globalRef->setStartingPos(TILE_SIZE_MM * 3 + 200, 425);
   }    
 
   RobotState::manuallyModifyState("is_team_color_blue", colorChooser.getIsBlue());
 }  
 
-void testAuto(vector<CommandInterface*> auton){ 
-  robot.setAutonomousCommand(auton);
+void testDrive()
+{  
+  RobotState::manuallyModifyState("ready", true); 
+  thread telemetryThread = thread(runTelemetry);
+  robot.driverControl();
+} 
+
+void testAuto(vector<CommandInterface*> auton){  
+  robot.setAutonomousCommand(auton); 
+  RobotState::manuallyModifyState("ready", true);
   thread telemThread = thread(runTelemetry);   
-  pauseUntilReady(); 
   robot.autonControl();                      
   robot.driverControl();
 } 
@@ -80,7 +80,6 @@ void testAuto(vector<CommandInterface*> auton){
 void startCommandSkillsMatch(vector<CommandInterface*> commandGroup){  
   robot.setAutonomousCommand(commandGroup);  
   scheduleCallbacks(); 
-  drawLogo();
   robot.runTelemetryThread(false);
 }
 
@@ -88,15 +87,15 @@ void startCommandCompetitiveMatch(vector<CommandInterface *> leftCommandGroup, v
 {
   configurateAutonomous(leftCommandGroup, rightCommandGroup);
   scheduleCallbacks(); 
-  drawLogo();
   robot.runTelemetryThread(false); 
 }
 
 void driveCommandMatch(vector<CommandInterface *> leftCommandGroup, vector<CommandInterface*> rightCommandGroup)
 {  
-  configurateAutonomous(leftCommandGroup, rightCommandGroup);   
-  RobotState::manuallyModifyState("ready", true); 
-  thread telemThread = thread(runTelemetry);
+  configurateAutonomous(leftCommandGroup, rightCommandGroup);    
+  thread telemThread = thread(runTelemetry);   
+  //Add a pause where you press a button to start
+  drawLogo(RobotState::getStateOf("is_team_color_blue"));
   robot.autonControl();                      
   robot.driverControl();                     
 }
@@ -156,114 +155,79 @@ vector<CommandInterface*> auto_skills(){
        DriveForwardForTime::getCommand(0.4, 500, true),  
        IntakeCubes::getCommand(500),       
        
-
        ModifyRobotState::getCommand("is_drive_inverted", true),
        DriveToLocation(Zones::NAT_HIGH_RIGHT, (ROBOT_LENGTH_MM / 2) + 250, PathType::EUCLIDEAN, false),  //Score low cubes on 4-high
        TurnToLocation(Zones::NAT_HIGH_RIGHT),    
        CloseDistanceBetween(Zones::NAT_HIGH_RIGHT, 100, 0, false),   
        ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),  
        
-
        ModifyRobotState::getCommand("is_drive_inverted", false),  
        DriveToLocation(Zones::NAT_ML_RIGHT, TILE_SIZE_MM * 0.925, PathType::EUCLIDEAN, false), // Matchload cubes from 4
        TurnToLocation(Zones::NAT_ML_RIGHT), 
        DriveForwardForTime::getCommand(0.25, 500, true),
-       IntakeCubes::getCommand(1500),      
-       DrivePath::getCommand({-500}, false, false),  
-       DeployMatchloader::getCommand(false),      
+       IntakeCubes::getCommand(1500),    
 
-       ModifyRobotState::getCommand("is_drive_inverted", true),
-       DriveToLocation(Zones::NAT_HIGH_LEFT, TILE_SIZE_MM * 0.925, PathType::MANHATTAN_XY, false),  
-       
-       
-       /*
-       ModifyRobotState::getCommand("is_drive_inverted", false), 
-       DriveToLocation(Zones::NAT_ML_LEFT, TILE_SIZE_MM * 0.925, PathType::EUCLIDEAN, false), 
-       TurnToLocation(Zones::NAT_ML_LEFT), 
-       DeployMatchloader::getCommand(true), 
-       DriveForwardForTime::getCommand(0.4, 500, true),  
-       IntakeCubes::getCommand(1000), 
-      
-      
-       ModifyRobotState::getCommand("is_drive_inverted", true),  
-       DriveToLocation(Zones::NAT_HIGH_LEFT, (ROBOT_LENGTH_MM / 2) - 100, PathType::EUCLIDEAN, true), 
-       TurnToLocation(Zones::NAT_HIGH_LEFT),  
-       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000),   
-       DeployMatchloader::getCommand(false),
-       
-       ModifyRobotState::getCommand("is_drive_inverted", false), 
-       DrivePath::getCommand({250}, false, false), 
-       DriveToLocation(Zones::NAT_PARK, TILE_SIZE_MM * 1.1, PathType::MANHATTAN_XY, false), 
-       DriveForwardForTime::getCommand(1, 3000, true)
-
-       
-       
-
-
-       //DriveToSetpoint::getCommand(TILE_SIZE_MM * 4 + (ROBOT_WIDTH_MM/2), TILE_SIZE_MM * 4 + ROBOT_LENGTH_MM, -1, PathType::MANHATTAN_XY, false), 
-       
-
-       
-       DriveToLocation(Zones::FAR_HIGH_RIGHT, ROBOT_LENGTH_MM, PathType::MANHATTAN_XY, false), 
-       TurnToLocation(Zones::FAR_HIGH_RIGHT),  
-       CloseDistanceBetween(Zones::FAR_HIGH_RIGHT, 100, 0, true),
-       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000), 
-       ModifyRobotState::getCommand("is_drive_inverted", false),
-
-       DriveToLocation(Zones::FAR_ML_RIGHT, TILE_SIZE_MM * 0.925, PathType::EUCLIDEAN, false),  
-       DeployMatchloader::getCommand(true),
-       TurnToLocation(Zones::FAR_ML_RIGHT),  //Matchloading from 1-ml
-       DriveForwardForTime::getCommand(0.25, 500, true),
-       IntakeCubes::getCommand(1500),  
-       ModifyRobotState::getCommand("is_drive_inverted", true),   
-       */
-        
-       /*
-       DrivePath::getCommand({250}, false, false),   
-       DriveToLocation(Zones::NAT_HIGH_RIGHT, ROBOT_LENGTH_MM / 2 - 100, PathType::EUCLIDEAN, true), //Score on 1-high w matchloaded cubes
-       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000),  
-       ModifyRobotState::getCommand("is_drive_inverted", false), 
-       
-
-       DrivePath::getCommand({ROBOT_LENGTH_MM/2}, false, false), 
-       DriveToLocation(Zones::FAR_ML_LEFT, TILE_SIZE_MM * 0.925, PathType::MANHATTAN_XY, false), // Drive across field to matchloader and collect cubes from 2-side ml
-       TurnToLocation(Zones::FAR_ML_LEFT),  
-       DriveForwardForTime::getCommand(0.25, 500, true),
-       IntakeCubes::getCommand(1500),  
-       ModifyRobotState::getCommand("is_drive_inverted", true),  
-
-       DrivePath::getCommand({250}, false, false), 
-       DriveToSetpoint::getCommand(TILE_SIZE_MM * 2 - (ROBOT_WIDTH_MM/2), TILE_SIZE_MM + (ROBOT_LENGTH_MM / 2) - 250, -1, PathType::MANHATTAN_XY, false), 
-       DriveToLocation(Zones::NAT_HIGH_LEFT, ROBOT_LENGTH_MM / 2 - 100, PathType::MANHATTAN_XY, false), 
-       TurnToLocation(Zones::NAT_HIGH_LEFT), // Drive to the other side of the the field 3-side 
-       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),  
-       ModifyRobotState::getCommand("is_drive_inverted", false),  //Score cubes onto 3-side high 
-
-       DriveToLocation(Zones::NAT_ML_LEFT, TILE_SIZE_MM * 0.925, PathType::EUCLIDEAN, false), // Matchload from 3-side
-       TurnToLocation(Zones::NAT_ML_LEFT),
-       DriveForwardForTime::getCommand(0.25, 500, true),
-       IntakeCubes::getCommand(1500),   
        ModifyRobotState::getCommand("is_drive_inverted", true), 
-       DrivePath::getCommand({250}, false, false),
-       DriveToLocation(Zones::NAT_HIGH_LEFT, ROBOT_LENGTH_MM / 2 - 100, PathType::EUCLIDEAN, false), //Align with high goal 3-side  
-       TurnToLocation(Zones::NAT_HIGH_LEFT), 
-       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000), //Align with high goal 3-side   
+       DrivePath::getCommand({300}, false, false),  
+       DeployMatchloader::getCommand(false),       
+       DriveToSetpoint::getCommand((TILE_SIZE_MM * 5) + (ROBOT_WIDTH_MM / 2) + 250, (TILE_SIZE_MM * 4) + ((ROBOT_LENGTH_MM / 4) * 3), -1, PathType::MANHATTAN_XY, false),  
+       DriveToLocation(Zones::FAR_HIGH_RIGHT, TILE_SIZE_MM * 0.925, PathType::MANHATTAN_XY, false), 
+       TurnToLocation(Zones::FAR_HIGH_RIGHT), 
+       CloseDistanceBetween(Zones::FAR_HIGH_RIGHT, 100, 0, false),  
+       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500), //Go to the other side (1) and score 
+       DeployMatchloader::getCommand(true), 
 
-       ModifyRobotState::getCommand("is_drive_inverted", true), //Try to park and clear 
-       DrivePath::getCommand({ROBOT_LENGTH_MM / 2}, false, false), 
-       DriveToLocation(Zones::NAT_PARK, TILE_SIZE_MM, PathType::MANHATTAN_XY, false), 
-       DriveForwardForTime::getCommand(0.75, 5000, true) 
-       */
+       ModifyRobotState::getCommand("is_drive_inverted", false),  
+       TurnToLocation(Zones::FAR_ML_RIGHT), 
+       CloseDistanceBetween(Zones::FAR_ML_RIGHT, TILE_SIZE_MM * 0.925, 0, false),  //Matchload from other side (1)
+       DriveForwardForTime::getCommand(0.25, 500, true),
+       IntakeCubes::getCommand(1500), 
+
+       ModifyRobotState::getCommand("is_drive_inverted", true),  
+       DrivePath::getCommand({250}, false, false), 
+       TurnToLocation(Zones::FAR_HIGH_RIGHT), 
+       CloseDistanceBetween(Zones::FAR_HIGH_RIGHT, 100, 0, false), // Score on high goal side (1)
+       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500), 
+       
+       ModifyRobotState::getCommand("is_drive_inverted", false), 
+       DrivePath::getCommand({250}, false, false),  
+       DriveToLocation(Zones::FAR_ML_LEFT, TILE_SIZE_MM * 0.925, PathType::MANHATTAN_XY, false),  
+       TurnToLocation(Zones::FAR_ML_LEFT),   
+       DriveForwardForTime::getCommand(0.25, 500, true),
+       IntakeCubes::getCommand(1500),  
+       
+       ModifyRobotState::getCommand("is_drive_inverted", true), 
+       DrivePath::getCommand({250}, false, false), 
+       DeployMatchloader::getCommand(false), 
+       DriveToSetpoint::getCommand(TILE_SIZE_MM / 2, TILE_SIZE_MM + (ROBOT_LENGTH_MM/2), -1, PathType::MANHATTAN_XY, false), 
+       DriveToLocation(Zones::NAT_HIGH_LEFT, TILE_SIZE_MM * 0.925, PathType::MANHATTAN_XY, false), 
+       TurnToLocation(Zones::NAT_HIGH_LEFT), 
+       CloseDistanceBetween(Zones::NAT_HIGH_LEFT, 100, 0, false), 
+       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500), 
+       DeployMatchloader::getCommand(true), 
+
+       ModifyRobotState::getCommand("is_drive_inverted", false), 
+       DrivePath::getCommand({250}, false, false), 
+       TurnToLocation(Zones::NAT_ML_LEFT),  
+       CloseDistanceBetween(Zones::NAT_ML_LEFT, TILE_SIZE_MM * 0.925, 0, false),  
+       DriveForwardForTime::getCommand(0.25, 500, true),
+       IntakeCubes::getCommand(1500), 
+
+       ModifyRobotState::getCommand("is_drive_inverted", true), 
+       DrivePath::getCommand({250}, false, false), 
+       TurnToLocation(Zones::NAT_HIGH_LEFT), 
+       CloseDistanceBetween(Zones::NAT_HIGH_LEFT, 100, 0, false), 
+       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500), 
+       DeployMatchloader::getCommand(false),  
+       
+       ModifyRobotState::getCommand("is_drive_inverted", false), 
+       DrivePath::getCommand({250}, false, false),
+       DriveToLocation(Zones::NAT_PARK, TILE_SIZE_MM * 1.1, PathType::MANHATTAN_XY, false), 
+       DriveForwardForTime::getCommand(1, 3000, true), 
+       IntakeCubes::getCommand(5000)
    }; 
 
 } 
-
-vector<CommandInterface*> meta_skills(){ 
-  return { 
-    //DriveForwardForTime::getCommand(0.9, 2000, true) 
-    IntakeCubes::getCommand(250)
-  };
-}
 
 
 int main()
@@ -271,8 +235,7 @@ int main()
 
   vexcodeInit();
   
-  //Drivebase drive = Drivebase((TILE_SIZE_MM * 2 + 430 - ROBOT_WIDTH_MM) / TILE_SIZE_MM, 425 / TILE_SIZE_MM); //Left Side
-  Drivebase drive = Drivebase( (TILE_SIZE_MM * 3 + 200) / TILE_SIZE_MM, 425 / TILE_SIZE_MM); //Right Side
+  Drivebase drive = Drivebase(0,0); 
 
   Intake intake; 
   Indexer indexer;
@@ -286,7 +249,10 @@ int main()
 
   //---------------------------------------------------------------  
   
-  freeDrive();  
+  driveCommandMatch( 
+    closed_side_left(), 
+    closed_side_right()
+  );
   
   /*
   testAuto( 

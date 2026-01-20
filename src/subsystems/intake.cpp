@@ -1,6 +1,6 @@
 #include "intake.h"
 
-double Intake::ABSOLUTE_CONVEYOR_SPEED = 200;
+double Intake::ABSOLUTE_CONVEYOR_SPEED = -200;
 Intake *Intake::globalRef = nullptr;
 
 void Intake::init()

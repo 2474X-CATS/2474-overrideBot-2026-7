@@ -2,11 +2,11 @@
 #define __DRIVEBASE_H_
 
 #include "../architecture/subsystem.h"
-#include "../helpers/pidcontroller.h"  
+#include "../control/pidcontroller.h"  
 
-#include "../helpers/trapezoidalMotion.h" 
+#include "../control/trapezoidalMotion.h" 
 
-#include "../helpers/location.h"
+#include "../utilities/location.h"
 #include <set>
 #include "vex.h"
 
@@ -64,7 +64,7 @@ private:
   double linearSpeedFactor = 1; 
   double angularSpeedFactor = 0.8;   
 
-  double angleOffset = 0;
+  //double angleOffset = 0;
 
   double lastTimestamp = 0;  
   
@@ -126,8 +126,6 @@ public:
   
   void setCalibratingStructure(Alignment_Structure struc);  
 
-  void setStartingPos(double x, double y);
-  
   static Location *getLocation(int index);
   PIDConstants getTurningPID();
   TrapezoidConstants getMotionConstants();  

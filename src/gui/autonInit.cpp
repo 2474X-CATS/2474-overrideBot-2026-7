@@ -54,6 +54,45 @@ void SidePicker::mouseReleased(){
 
 bool SidePicker::getIsLeft(){ 
     return isLeft; 
+} 
+
+
+//------------------------------------------------------------------------------------  
+
+void ExitBlock::draw(){ 
+  drawRectangle(x, y, width, height, Sprite::globalColor.green);  
+  renderText("Continue", x+(width/6), y+((height/3)*2), Sprite::globalColor.black, Sprite::globalColor.green, vex::fontType::mono20);
+} 
+
+void ExitBlock::update(){ 
+  return;
+} 
+
+void ExitBlock::mousePressed(int mx, int my){ 
+  return;
+}
+
+void ExitBlock::mouseReleased(){ 
+  Sprite::running = false;
+}
+
+
+//------------------------------------------------------------------------------------  
+
+void LoadingScreen::draw(){ 
+    drawEllipse(x,y,width, globalColor.red);
+} 
+
+void LoadingScreen::update(){ 
+    return; 
+} 
+
+void LoadingScreen::mousePressed(int mx, int my){ 
+    return;
+} 
+
+void LoadingScreen::mouseReleased(){ 
+    return;
 }
 
 

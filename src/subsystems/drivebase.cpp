@@ -132,14 +132,6 @@ void Drivebase::init()
    driveGyro.setHeading(90, vex::rotationUnits::deg);
    
    //------------------------------ 
-   
-   /*
-   turnPID.P = 2.53; 
-   turnPID.I = 5;
-   turnPID.D = 0.125/48; 
-   turnPID.iLimit = 3.5;
-   turnPID.errorTolerance = 0.9;   
-   */ 
 
    turnPID.P = 2.6; 
    turnPID.I = 7.5;
@@ -155,7 +147,7 @@ void Drivebase::init()
    //-------------------------- 
 
    set<double>("Pos_X", startX + ROBOT_WIDTH_MM / 2);
-   set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2);
+   set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2); 
    set<double>("Angle_Degrees_CCW", 90);     
 
    lastTimestamp = Brain.Timer.time(vex::sec);  
@@ -174,31 +166,46 @@ void Drivebase::updateTelemetry()
    double y = get<double>("Pos_Y"); 
    
    double angle; 
-   angle = driveGyro.angle(vex::rotationUnits::deg); 
+   angle = driveGyro.angle(vex::rotationUnits::deg);  
 
    if (RobotState::getStateOf("is_drive_inverted")){ 
       angle += 180;
    }  
    
-   angle = fmod(angle, 360);
-   set<double>("Angle_Degrees_CCW", angle);  
+   angle = fmod(angle, 360); 
 
-   double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp;
+   set<double>("Angle_Degrees_CCW", angle);   
 
-   leftDriveMotors.setStopping(vex::brakeType::brake); 
-   rightDriveMotors.setStopping(vex::brakeType::brake);  
+   if (!RobotState::getStateOf("ready")){   
+
+    if (RobotState::getStateOf("configurable")){ 
+       if (RobotState::getStateOf("starting_left")){ 
+         x = (TILE_SIZE_MM * 2 + 430 - ROBOT_WIDTH_MM);
+       } else { 
+         x = (TILE_SIZE_MM * 3 + 200);
+       } 
+       x += (ROBOT_WIDTH_MM / 2);
+       y = 425 + (ROBOT_LENGTH_MM / 2); 
+    } 
+
+   } else { 
+      double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp;
+
+      leftDriveMotors.setStopping(vex::brakeType::brake); 
+      rightDriveMotors.setStopping(vex::brakeType::brake);  
    
-   double hypotenuse; 
-   hypotenuse = -((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime); 
+      double hypotenuse; 
+      hypotenuse = -((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime); 
 
-   if (RobotState::getStateOf("is_drive_inverted")){ 
-      hypotenuse *= -1;
-   } 
+      if (RobotState::getStateOf("is_drive_inverted")){ 
+        hypotenuse *= -1;
+      } 
 
-   double angleRadians = get<double>("Angle_Degrees_CCW") * (2 * M_PI) / 360;
+      double angleRadians = get<double>("Angle_Degrees_CCW") * (2 * M_PI) / 360;
 
-   x += (hypotenuse * cos(angleRadians));
-   y += (hypotenuse * sin(angleRadians));
+      x += (hypotenuse * cos(angleRadians));
+      y += (hypotenuse * sin(angleRadians)); 
+   }
      
 
    set<double>("Pos_X", x); 
@@ -217,7 +224,6 @@ void Drivebase::updateTelemetry()
    
    set<bool>("overheating", avgTemp >= MOTOR_TEMP_LIMIT_CELSIUS);   
 
-   //Brain.Screen.printAt(20, 125, "Angle: %f", get<double>("Angle_Degrees_CCW")); 
 
    if (RobotState::getStateOf("k_calibrating")){  
        if (RobotState::getStateOf("calibrating")){ 
@@ -415,11 +421,6 @@ PIDConstants Drivebase::getTurningPID()
 TrapezoidConstants Drivebase::getMotionConstants(){ 
    return this->trapConsts; 
 }; 
-
-void Drivebase::setStartingPos(double x, double y){ 
-  set<double>("Pos_X", x); 
-  set<double>("Pos_Y", y);
-}
 
 void Drivebase::setCalibratingStructure(Alignment_Structure struc){ 
    this->calibratingWall = struc;

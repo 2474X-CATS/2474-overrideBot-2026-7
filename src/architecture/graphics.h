@@ -19,7 +19,7 @@ extern int getMouseX();
 
 extern int getMouseY(); 
 
-extern void drawLogo();
+extern void drawLogo(bool isColorBlue);
 
 class Sprite {   
 
@@ -92,20 +92,6 @@ class ColoredBlock : public Sprite {
     void mouseReleased() override;
 }; 
 
-class ExitBlock : public Sprite {  
-
-    public: 
-      ExitBlock(int x, int y) : 
-      Sprite(x,y,125, 50){}; 
-
-      void draw() override;  
-
-      void update() override; 
-
-      void mousePressed(int mx, int my) override; 
-
-      void mouseReleased() override;
-};
 
 
 

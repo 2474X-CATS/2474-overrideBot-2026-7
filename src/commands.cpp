@@ -121,20 +121,7 @@ bool DrivePath::isTurnOver()
 }
 
 void DrivePath::initializeTurn()
-{
-    double startAngle = drivebaseRef.get<double>("Angle_Degrees_CCW");
-
-    double angleSetpoint = setpoints.at(operationsIndex);
-
-    double normalDist = startAngle > angleSetpoint ? (360 - startAngle) + angleSetpoint : angleSetpoint - startAngle;
-    isCounterClockwise = true;
-
-    if (normalDist > 180)
-    {
-        isCounterClockwise = false;
-        normalDist = 360 - normalDist;
-    }
-
+{  
     turnPID = new pidcontroller(drivebaseRef.getTurningPID(), 0);
     turnPID->setLastTimestamp(Brain.Timer.time()); 
 
