@@ -46,7 +46,6 @@
 				"${vex_sdkIncludes}",
 				"${workspaceFolder}/include",
 				"${workspaceFolder}/src/**"
-				//"${workspaceFolder}/src/architecture/**"
 			],
 			"compilerPath": "${vex_compilerPath}",
 			"cStandard": "gnu99",

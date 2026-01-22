@@ -38,10 +38,12 @@ private:
   static double ENCODER_WHEEL_ROT_RADIUS_MM; 
   static double ENCODER_WHEEL_LIN_RADIUS_MM; 
   static double ENCODER_DIST_FROM_CENTER;
-  static double DRIVE_WHEEL_RADIUS_MM; 
+  static double DRIVE_WHEEL_RADIUS_MM;  
+  static double MID_ALIGNER_LENGTH; 
+  static double HIGH_ALIGNER_LENGTH;
 
   vex::rotation encoderLinear;
-  vex::rotation encoderAngular; 
+  //vex::rotation encoderAngular; 
 
   vex::inertial driveGyro;
 
@@ -64,15 +66,12 @@ private:
   double linearSpeedFactor = 1; 
   double angularSpeedFactor = 0.8;   
 
-  //double angleOffset = 0;
-
   double lastTimestamp = 0;  
   
   Alignment_Structure calibratingWall = Alignment_Structure::NONE;
 
   static Location *locations[];    
-  static double MID_ALIGNER_LENGTH; 
-  static double HIGH_ALIGNER_LENGTH;
+  
 
   void calibrate(Alignment_Structure struc);  
 
@@ -84,17 +83,16 @@ public:
 
   static Drivebase *globalRef;
 
-  Drivebase(double tileX, double tileY) : Subsystem(
+  Drivebase(double startX, double startY) : Subsystem(
                                               "drivebase",
                                               {
                                                   (EntrySet){"Pos_X", EntryType::DOUBLE},
                                                   (EntrySet){"Pos_Y", EntryType::DOUBLE},
                                                   (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE}, 
-                                                  (EntrySet){"overheating", EntryType::BOOL}, 
-                                                  (EntrySet){"has_collided", EntryType::BOOL}
+                                                  (EntrySet){"overheating", EntryType::BOOL}
                                               }), 
                                           encoderLinear(vex::rotation(vex::PORT9)),
-                                          encoderAngular(vex::rotation(vex::PORT10)),  
+                                          //encoderAngular(vex::rotation(vex::PORT10)),  
                                           driveGyro(vex::inertial(vex::PORT16)),
                                           driveFrontLeft(vex::motor(vex::PORT1, vex::ratio6_1)),
                                           driveMidLeft(vex::motor(vex::PORT2, vex::ratio6_1, true)),
@@ -104,9 +102,8 @@ public:
                                           driveBackRight(vex::motor(vex::PORT15, vex::ratio6_1)),
                                           leftDriveMotors(vex::motor_group(driveFrontLeft, driveMidLeft, driveBackLeft)),
                                           rightDriveMotors(vex::motor_group(driveFrontRight, driveMidRight, driveBackRight)), 
-                                        
-                                          startX((tileX) * TILE_SIZE_MM),
-                                          startY((tileY) * TILE_SIZE_MM)
+                                          startX(startX),
+                                          startY(startY)
   {
     globalRef = this;
   };
@@ -124,7 +121,9 @@ public:
   void voltageDriveForward(double volts); 
   void voltageTurnClockwise(double volts);  
   
-  void setCalibratingStructure(Alignment_Structure struc);  
+  void setCalibratingStructure(Alignment_Structure struc);   
+  void setStartingPos(double x, double y); 
+
 
   static Location *getLocation(int index);
   PIDConstants getTurningPID();

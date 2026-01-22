@@ -1,6 +1,6 @@
 #include "intake.h"
 
-double Intake::ABSOLUTE_CONVEYOR_SPEED = -200;
+double Intake::ABSOLUTE_CONVEYOR_SPEED = 200;
 Intake *Intake::globalRef = nullptr;
 
 void Intake::init()
@@ -13,10 +13,8 @@ void Intake::init()
 
 void Intake::periodic()
 {
-
    if (RobotState::getStateOf("intaking"))
    { 
-
       intakeConveyor.setVelocity(-ABSOLUTE_CONVEYOR_SPEED * 1.5, vex::velocityUnits::rpm); // Inwards
       intakeConveyor.spin(vex::directionType::fwd);
    }  
@@ -26,12 +24,7 @@ void Intake::periodic()
    }
    else if (get<bool>("mid_scoring_engaged"))
    {   
-      double delay;
-      if (RobotState::getStateOf("in_autonomous")){ 
-         delay = 300;
-      } else { 
-         delay = 150;
-      }
+      double delay = 150; 
       if (Brain.Timer.time(vex::msec) - get<double>("last_engaged_millis") >= delay){ 
           intakeConveyor.setVelocity(-ABSOLUTE_CONVEYOR_SPEED * 0.8, vex::velocityUnits::rpm); // Outwards
           intakeConveyor.spin(vex::directionType::fwd);

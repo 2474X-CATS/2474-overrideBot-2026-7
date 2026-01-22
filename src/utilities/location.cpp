@@ -61,10 +61,6 @@ double Location::getPerfectEntranceAngle()
 
 vector<double> Location::getEuclideanAlignmentPath(double distFrom)
 {
-   // First turn to angle
-   // Then drive to the distance
-   // repeat
-
    array<double, 2> setpoint;
    setpoint = getProjectedSetpoint(distFrom);
 

@@ -119,12 +119,13 @@ void Drivebase::init()
 {  
    
    encoderLinear.setPosition(0, vex::rotationUnits::rev);
-   encoderAngular.setPosition(0, vex::rotationUnits::rev);   
+   //encoderAngular.setPosition(0, vex::rotationUnits::rev);   
 
    leftDriveMotors.setStopping(vex::brakeType::coast);
    rightDriveMotors.setStopping(vex::brakeType::coast); 
 
-   driveGyro.calibrate();  
+   driveGyro.calibrate();   
+
    while (driveGyro.isCalibrating()){ 
       vex::this_thread::yield();
    }  
@@ -133,22 +134,18 @@ void Drivebase::init()
    
    //------------------------------ 
 
-   turnPID.P = 2.6; 
-   turnPID.I = 7.5;
-   turnPID.D = 0.05; 
-   turnPID.iLimit = 3.5;
+   turnPID.P = 2.5; 
+   turnPID.I = 0.5;
+   turnPID.D = 0.0; 
    turnPID.errorTolerance = 1;
    
    //--------------------------  >
  
    trapConsts.maxVelocity = 1234;  
-   trapConsts.maxAcceleration = 1234;  
-   
+   trapConsts.maxAcceleration = 1234 * (5/3);     
    //-------------------------- 
-
-   set<double>("Pos_X", startX + ROBOT_WIDTH_MM / 2);
-   set<double>("Pos_Y", startY + ROBOT_LENGTH_MM / 2); 
-   set<double>("Angle_Degrees_CCW", 90);     
+   
+   setStartingPos(startX, startY);
 
    lastTimestamp = Brain.Timer.time(vex::sec);  
    
@@ -176,18 +173,7 @@ void Drivebase::updateTelemetry()
 
    set<double>("Angle_Degrees_CCW", angle);   
 
-   if (!RobotState::getStateOf("ready")){   
-    if (RobotState::getStateOf("configurable")){ 
-       if (RobotState::getStateOf("starting_left")){ 
-         x = (TILE_SIZE_MM * 2 + 430 - ROBOT_WIDTH_MM);
-       } else { 
-         x = (TILE_SIZE_MM * 3 + 200);
-       } 
-       x += (ROBOT_WIDTH_MM / 2);
-       y = 425 + (ROBOT_LENGTH_MM / 2); 
-    } 
-
-   } else { 
+   if (RobotState::getStateOf("ready")){ 
       double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp;
 
       leftDriveMotors.setStopping(vex::brakeType::brake); 
@@ -200,7 +186,7 @@ void Drivebase::updateTelemetry()
         hypotenuse *= -1;
       } 
 
-      double angleRadians = get<double>("Angle_Degrees_CCW") * (2 * M_PI) / 360;
+      double angleRadians = angle * (2 * M_PI) / 360;
 
       x += (hypotenuse * cos(angleRadians));
       y += (hypotenuse * sin(angleRadians)); 
@@ -234,7 +220,8 @@ void Drivebase::updateTelemetry()
    } 
 
    //---------------------------------------------------------
-   lastTimestamp = Brain.Timer.time(vex::sec); 
+   lastTimestamp = Brain.Timer.time(vex::sec);  
+   
 };
 
 
@@ -416,6 +403,11 @@ PIDConstants Drivebase::getTurningPID()
 {
    return this->turnPID;
 }; 
+
+void Drivebase::setStartingPos(double x, double y){  
+   set<double>("Pos_X", x + (ROBOT_WIDTH_MM/2)); 
+   set<double>("Pos_Y", y + (ROBOT_LENGTH_MM/2)); 
+}
 
 TrapezoidConstants Drivebase::getMotionConstants(){ 
    return this->trapConsts; 

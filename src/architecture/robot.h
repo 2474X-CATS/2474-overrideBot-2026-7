@@ -10,7 +10,6 @@ class Robot
 {
 
 private:
-   void registerSystemSubtables(); // Sets up the system data table (handling input values such as axises and buttons from both controllers)
 
    vector<CommandInterface *> autonomousCommand;
 
@@ -27,7 +26,7 @@ public:
                                                                // Like building blocks (Put one command on top of the other)
    void stopEverything();
 
-   void runTelemetryThread(bool showGraphics); // A constant loop of information logging fom the subsystems (drivebase, intake, etc),
+   void runTelemetryThread(); // A constant loop of information logging fom the subsystems (drivebase, intake, etc),
                                                // and the system (controller axises, buttons) happening on a different thread
 };
 

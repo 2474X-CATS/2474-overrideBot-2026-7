@@ -24,7 +24,7 @@ class Intake : public Subsystem {
             (EntrySet){"last_engaged_millis", EntryType::DOUBLE}
         }
      ), 
-     intakeConveyor(vex::motor(vex::PORT8))
+     intakeConveyor(vex::motor(vex::PORT7))
      { 
        globalRef = this; 
      } 

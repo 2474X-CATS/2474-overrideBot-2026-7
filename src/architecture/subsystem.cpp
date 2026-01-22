@@ -78,9 +78,7 @@ void RobotState::initializeState()
 {
    Telemetry::inst.registerSubtable(
        "robot_state",
-       {     
-        (EntrySet){"starting_left", EntryType::BOOL},  
-        (EntrySet){"configurable", EntryType::BOOL},
+       {    
         (EntrySet){"is_team_color_blue", EntryType::BOOL},  
         (EntrySet){"color_sensitive", EntryType::BOOL},   
         (EntrySet){"ready", EntryType::BOOL},  
@@ -99,11 +97,6 @@ void RobotState::initializeState()
 
         (EntrySet){"k_inversion_held", EntryType::BOOL},
         (EntrySet){"is_drive_inverted", EntryType::BOOL}, 
-
-        (EntrySet){"k_double_park_held", EntryType::BOOL},  
-
-        (EntrySet){"elevated", EntryType::BOOL},  
-        (EntrySet){"release_grip", EntryType::BOOL}
       });
 }
 
@@ -126,17 +119,8 @@ void RobotState::updateRegular()
    
    manuallyModifyState("descore_out", Controller.ButtonL1.pressing()); 
 
-   if (Controller.ButtonX.pressing()){ 
-      manuallyModifyState("k_double_park_held", true);  
-   } else { 
-      if (getStateOf("k_double_park_held")){ 
-         manuallyModifyState("k_double_park_held", false); 
-         manuallyModifyState("elevated", !getStateOf("elevated")); 
-      }
-   } 
-
    manuallyModifyState("matchloader_out", Controller.ButtonL2.pressing());   
-   manuallyModifyState("release_grip",Controller.ButtonB.pressing()); 
+    
 }
 
 void RobotState::updateStopped()

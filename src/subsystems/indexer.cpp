@@ -26,7 +26,7 @@ void Indexer::periodic(){
      indexerMotor.spin(vex::directionType::fwd);
    }   
 
-   if (RobotState::getStateOf("scoring_high") && Brain.Timer.time(vex::msec) - get<double>("last_long_goal_pressed") <= 1000){ 
+   if (Brain.Timer.time(vex::msec) - get<double>("last_long_goal_pressed") <= 1000){ 
      indexerHatch.open();
    } else { 
      indexerHatch.close();

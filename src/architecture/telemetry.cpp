@@ -29,7 +29,8 @@ void Telemetry::placeValueAt<string>(string val, string directory, string entryK
     if (table.at(directory).count(entryKey) == 0){  
         string errorMessage = "MODIFY Error: (" + directory + ", " + entryKey + ")";
         Brain.Screen.print(errorMessage.c_str()); 
-        Brain.Screen.newLine();
+        Brain.Screen.newLine(); 
+        return;
     }   
     if (table.at(directory).at(entryKey).type == EntryType::STRING)
     {
@@ -46,7 +47,8 @@ void Telemetry::placeValueAt<int>(int val, string directory, string entryKey)
     if (table.at(directory).count(entryKey) == 0){  
         string errorMessage = "MODIFY Error: (" + directory + ", " + entryKey + ")";
         Brain.Screen.print(errorMessage.c_str()); 
-        Brain.Screen.newLine();
+        Brain.Screen.newLine(); 
+        return;
     }   
     if (table.at(directory).at(entryKey).type == EntryType::INT)
     {
@@ -66,7 +68,8 @@ void Telemetry::placeValueAt<double>(double val, string directory, string entryK
     if (table.at(directory).count(entryKey) == 0){  
         string errorMessage = "MODIFY Error: (" + directory + ", " + entryKey + ")";
         Brain.Screen.print(errorMessage.c_str()); 
-        Brain.Screen.newLine();
+        Brain.Screen.newLine(); 
+        return;
     }   
 
     if (table.at(directory).at(entryKey).type == EntryType::DOUBLE)
@@ -87,7 +90,8 @@ void Telemetry::placeValueAt<bool>(bool val, string directory, string entryKey)
     if (table.at(directory).count(entryKey) == 0){  
         string errorMessage = "MODIFY Error : (" + directory + ", " + entryKey + ")";
         Brain.Screen.print(errorMessage.c_str()); 
-        Brain.Screen.newLine();
+        Brain.Screen.newLine(); 
+        return;
     }  
 
     if (table.at(directory).at(entryKey).type == EntryType::BOOL)
