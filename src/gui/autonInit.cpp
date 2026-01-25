@@ -68,7 +68,7 @@ bool SidePicker::getIsLeft(){
 void ExitBlock::draw(){  
   int32_t backdrop = pressed ? globalColor.rgb(150,150,150) : globalColor.rgb(200,200,200);
   drawRectangle(x, y, width, height, backdrop);  
-  renderText("Continue", x+10, y+((height/3)*2), Sprite::globalColor.black, backdrop, vex::fontType::mono20);
+  renderText("Continue", x+(width/4)+10, y+((height/3)*2), Sprite::globalColor.black, backdrop, vex::fontType::mono20);
 } 
 
 void ExitBlock::update(){ 
@@ -131,7 +131,7 @@ void LoadingScreen::mouseReleased(){
 
 
 RoutineCatalog::RoutineCatalog(int x, int y, std::vector<AutonOption> autosShell) :  
-Sprite(x, y, 200, (autosShell.size()) * 30)
+Sprite(x, y, 200, (autosShell.size()) * 30 + 35)
 { 
   autos.push_back( 
     (AutonOption){"", "", -1, false, false}
@@ -142,10 +142,13 @@ Sprite(x, y, 200, (autosShell.size()) * 30)
 
   chosenIndex = 0;
 }; 
+ 
+void RoutineCatalog::draw(){   
 
-void RoutineCatalog::draw(){  
-  int referenceY = y;  
-  renderText("", 0, 0, globalColor.transparent, globalColor.transparent, vex::fontType::mono12);
+  drawRectangle(x, y, width, 34, globalColor.white); 
+  renderText("Choose your routine", x+5, y + 22, globalColor.black, globalColor.white, vex::fontType::mono20); 
+
+  int referenceY = y + 35;   
   for (int i = 1; i < autos.size() ; i++){  
     renderCell(autos.at(i), referenceY);
     referenceY += 30;
@@ -170,8 +173,10 @@ void RoutineCatalog::update(){
   return;
 } 
 
-void RoutineCatalog::mousePressed(int mx, int my){ 
-  chosenIndex = ((my - y) / 30); 
+void RoutineCatalog::mousePressed(int mx, int my){   
+  if (my > y + 35){ 
+    chosenIndex = ((my - (y + 35)) / 30);
+  }
 } 
 
 void RoutineCatalog::mouseReleased(){ 

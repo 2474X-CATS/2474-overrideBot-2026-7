@@ -31,7 +31,7 @@ class ExitBlock : public Sprite {
 
     public: 
       ExitBlock(int x, int y) : 
-      Sprite(x,y,100, 50){}; 
+      Sprite(x,y,200, 50){}; 
 
       void draw() override;  
 

@@ -71,8 +71,13 @@ void testDrive()
   robot.driverControl();
 }
 
-void testAuto(vector<CommandInterface *> auton)
-{
+void testAuto(vector<CommandInterface *> auton, bool startingLeft)
+{ 
+  if (startingLeft){ 
+    Drivebase::globalRef->setStartingPos((TILE_SIZE_MM * 2 + 430 - ROBOT_WIDTH_MM), 425); 
+  } else { 
+    Drivebase::globalRef->setStartingPos((TILE_SIZE_MM * 3 + 200), 425);
+  }
   robot.setAutonomousCommand(auton);
   thread telemThread = thread(runTelemetry);
   robot.autonControl();
@@ -81,12 +86,11 @@ void testAuto(vector<CommandInterface *> auton)
 
 void configurateAutonomous(vector<Routine> routines)
 {
-
   ColorPicker colorChooser = ColorPicker(135 + 115, 200);
   SidePicker sidePicker = SidePicker(235 + 115, 200);
   RoutineCatalog catalog = RoutineCatalog(10, 10, getOptionVector(routines));
   AutonDisplay(250, 80, &catalog, &sidePicker);
-  ExitBlock(300, 10);
+  ExitBlock(250, 10);
   Sprite::frameLoop();
 
   int sideIndex;
@@ -336,7 +340,7 @@ int main()
 
   //--------------------DONT MODIFY (MOSTLY)-----------------
 
-  Drivebase drive = Drivebase((TILE_SIZE_MM * 3 + 200), 425 / TILE_SIZE_MM);
+  Drivebase drive = Drivebase(0,0);
   Intake intake;
   Indexer indexer;
   Matchloader matchloader;
@@ -373,7 +377,6 @@ int main()
       } 
   );
 
-  
 
   //-----------------------PROTOCOL------------------------
 

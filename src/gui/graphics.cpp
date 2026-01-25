@@ -15,8 +15,6 @@ void drawLine(int x1, int y1, int x2, int y2, uint32_t color){
     Brain.Screen.drawLine(x1, y1, x2, y2); 
 };
 
-const char* stringFormatCode = "%s"; 
-
 void renderText(string text, int x, int y, uint32_t penColor, uint32_t highlightColor, vex::fontType font){  
     Brain.Screen.setPenColor(penColor);  
     Brain.Screen.setFillColor(highlightColor);
@@ -24,13 +22,6 @@ void renderText(string text, int x, int y, uint32_t penColor, uint32_t highlight
     Brain.Screen.printAt(x, y, text.c_str());
 };   
 
-int getMouseX(){ 
-    return Brain.Screen.xPosition();
-} 
-
-int getMouseY(){ 
-    return Brain.Screen.yPosition(); 
-}
 
 void nothingMethod(){ 
    return;

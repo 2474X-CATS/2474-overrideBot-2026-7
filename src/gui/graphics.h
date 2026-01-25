@@ -15,10 +15,6 @@ extern void drawLine(int x1, int y1, int x2, int y2, uint32_t color);
 
 extern void renderText(string text, int x, int y, uint32_t penColor, uint32_t highlightColor, vex::fontType font);
 
-extern int getMouseX();
-
-extern int getMouseY(); 
-
 extern void drawLogo(bool isColorBlue);
 
 class Sprite {   
