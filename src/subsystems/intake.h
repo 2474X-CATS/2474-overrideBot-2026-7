@@ -7,7 +7,8 @@
 class Intake : public Subsystem {  
 
    private:   
-    vex::motor intakeConveyor;
+    vex::motor intakeConveyor; 
+    vex::pneumatics lowGoalFilter;
 
    public:  
      using Subsystem::get;  
@@ -24,7 +25,8 @@ class Intake : public Subsystem {
             (EntrySet){"last_engaged_millis", EntryType::DOUBLE}
         }
      ), 
-     intakeConveyor(vex::motor(vex::PORT7))
+     intakeConveyor(vex::motor(vex::PORT7)),  
+     lowGoalFilter(vex::pneumatics(Brain.ThreeWirePort.E))
      { 
        globalRef = this; 
      } 

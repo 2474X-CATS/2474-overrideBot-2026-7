@@ -5,7 +5,6 @@ Intake *Intake::globalRef = nullptr;
 
 void Intake::init()
 {
-
    intakeConveyor.setBrake(vex::brakeType::brake);
    set<bool>("is_on", true);
    stop();
@@ -40,7 +39,14 @@ void Intake::periodic()
    else
    {
       stop();
+   }  
+
+   if (RobotState::getStateOf("scoring_low")){ 
+      lowGoalFilter.open();
+   } else { 
+      lowGoalFilter.close();
    }
+
 }
 
 void Intake::updateTelemetry()
