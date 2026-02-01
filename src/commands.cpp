@@ -126,7 +126,6 @@ void DrivePath::initializeTurn()
 {  
     turnPID = new pidcontroller(drivebaseRef.getTurningPID(), 0);
     turnPID->setLastTimestamp(Brain.Timer.time()); 
-
 }
 
 void DrivePath::turn()
@@ -305,7 +304,7 @@ void DriveForwardForTime::start()
 
 void DriveForwardForTime::periodic()
 {
-    drivebaseRef.arcadeDrive(percentage * 100, 0);  
+    drivebaseRef.arcadeDrive(-percentage * 100, 0);  
     intakeRef.periodic();
 };
 
@@ -341,7 +340,7 @@ void Calibrate::start()
 
 void Calibrate::periodic()
 {
-    drivebaseRef.arcadeDrive(percentage * 100, 0); 
+    drivebaseRef.arcadeDrive(-percentage * 100, 0); 
 };
 
 bool Calibrate::isOver()
@@ -546,7 +545,7 @@ void DisengageHighGoal::start()
 
 void DisengageHighGoal::periodic()
 {
-    drivebaseRef.arcadeDrive(-percentage * 100, 0);  
+    drivebaseRef.arcadeDrive(percentage * 100, 0);  
     intakeRef.periodic(); 
     indexerRef.periodic();
 };
