@@ -21,7 +21,7 @@ class Hooks : public Subsystem {
             (EntrySet){"is_on", EntryType::BOOL}
         }
      ), 
-     hookPiston(vex::pneumatics(Brain.ThreeWirePort.C)) 
+     hookPiston(vex::pneumatics(Brain.ThreeWirePort.A)) 
      { 
        globalRef = this; 
      } 

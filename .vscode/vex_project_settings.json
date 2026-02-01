@@ -4,12 +4,12 @@
 		"json": 2
 	},
 	"project": {
-		"name": "Auto Skills",
-		"description": "Testing robot intialization using graphics",
+		"name": "Comp",
+		"description": "...",
 		"creationDate": "7/14/2025, 12:27:36 PM",
 		"platform": "V5",
 		"language": "cpp",
-		"slot": 2,
+		"slot": 8,
 		"sdkVersion": "V5_20240802_15_00_00",
 		"cpp": {
 			"includePath": [],

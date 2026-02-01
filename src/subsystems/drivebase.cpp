@@ -142,7 +142,7 @@ void Drivebase::init()
    //--------------------------  >
  
    trapConsts.maxVelocity = 1234;  
-   trapConsts.maxAcceleration = 1234 * 1.6;     
+   trapConsts.maxAcceleration = 1234 * 1.5;     
    //-------------------------- 
    
    setStartingPos(startX, startY);
@@ -161,19 +161,19 @@ void Drivebase::updateTelemetry()
    
    double x = get<double>("Pos_X");
    double y = get<double>("Pos_Y"); 
+
+   if (RobotState::getStateOf("ready")){   
+      double angle; 
+      angle = driveGyro.angle(vex::rotationUnits::deg);    
+
+      if (RobotState::getStateOf("is_drive_inverted")){ 
+        angle += 180;
+      }  
    
-   double angle; 
-   angle = driveGyro.angle(vex::rotationUnits::deg);    
+      angle = fmod(angle, 360); 
 
-   if (RobotState::getStateOf("is_drive_inverted")){ 
-      angle += 180;
-   }  
-   
-   angle = fmod(angle, 360); 
+      set<double>("Angle_Degrees_CCW", angle); 
 
-   set<double>("Angle_Degrees_CCW", angle);   
-
-   if (RobotState::getStateOf("ready")){ 
       double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp;
 
       leftDriveMotors.setStopping(vex::brakeType::brake); 
@@ -197,7 +197,6 @@ void Drivebase::updateTelemetry()
       y += (hypotenuse * sin(angleRadians)); 
    }
      
-
    set<double>("Pos_X", x); 
    set<double>("Pos_Y", y);  
    

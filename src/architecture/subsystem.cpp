@@ -92,7 +92,7 @@ void RobotState::initializeState()
         (EntrySet){"scoring_mid", EntryType::BOOL},
         (EntrySet){"scoring_low", EntryType::BOOL}, 
         (EntrySet){"matchloader_out", EntryType::BOOL},
-        (EntrySet){"descore_out", EntryType::BOOL},   
+        (EntrySet){"descore_in", EntryType::BOOL},   
 
         (EntrySet){"intaking", EntryType::BOOL}, 
 
@@ -118,7 +118,7 @@ void RobotState::updateRegular()
       }
    } 
    
-   manuallyModifyState("descore_out", Controller.ButtonL1.pressing()); 
+   manuallyModifyState("descore_in", Controller.ButtonL1.pressing()); 
 
    manuallyModifyState("matchloader_out", Controller.ButtonL2.pressing());   
     
@@ -131,7 +131,7 @@ void RobotState::updateStopped()
    manuallyModifyState("scoring_low", false);  
    manuallyModifyState("matchloader_out", false); 
    manuallyModifyState("k_inversion_held", false);    
-   manuallyModifyState("descore_out", false); 
+   manuallyModifyState("descore_in", false); 
    manuallyModifyState("intaking", false); 
 }; 
 

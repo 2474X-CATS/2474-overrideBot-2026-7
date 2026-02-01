@@ -22,8 +22,8 @@ void Intake::periodic()
       intakeConveyor.spin(vex::directionType::fwd);
    }
    else if (get<bool>("mid_scoring_engaged"))
-   {   
-      double delay = 150; 
+   {    
+      double delay = 250; 
       if (Brain.Timer.time(vex::msec) - get<double>("last_engaged_millis") >= delay){ 
           intakeConveyor.setVelocity(-ABSOLUTE_CONVEYOR_SPEED * 0.8, vex::velocityUnits::rpm); // Outwards
           intakeConveyor.spin(vex::directionType::fwd);
@@ -40,12 +40,13 @@ void Intake::periodic()
    {
       stop();
    }  
-
+   /*
    if (RobotState::getStateOf("scoring_low")){ 
       lowGoalFilter.open();
    } else { 
       lowGoalFilter.close();
-   }
+   } 
+   */
 
 }
 
@@ -68,5 +69,6 @@ void Intake::updateTelemetry()
 void Intake::stop()
 {
    intakeConveyor.setVelocity(0, vex::percentUnits::pct);
-   intakeConveyor.spin(vex::directionType::fwd);
+   intakeConveyor.spin(vex::directionType::fwd); 
+   lowGoalFilter.close();
 }

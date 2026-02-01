@@ -29,7 +29,7 @@ void Robot::driverControl()
 { 
   RobotState::setMode(ControlType::DRIVER);  
   RobotState::manuallyModifyState("ready", true);
-  RobotState::manuallyModifyState("is_drive_inverted", true);
+  RobotState::manuallyModifyState("is_drive_inverted", false);
   double timestamp;
   timestamp = Brain.Timer.time();
   while (true)

@@ -136,7 +136,7 @@ void Sprite::globalMousePressed()
   int my = Brain.Screen.yPosition();
   for (Sprite *sprite : allSprites)
   {
-    if ((mx >= sprite->x && mx <= sprite->x + sprite->width) && (my >= sprite->y && my <= sprite->y + sprite->height))
+    if ((mx > sprite->x && mx < sprite->x + sprite->width) && (my > sprite->y && my < sprite->y + sprite->height))
     {
       sprite->pressed = true;
       sprite->mousePressed(mx, my);

@@ -239,7 +239,50 @@ string TurnToSetpoint::repr(){
    return ss.str();
 }
 
-// 
+//  
+
+void AlignWithX::start(){  
+
+   DriveToSetpoint::start(); 
+   double angleDiff = fabs(drivebaseRef.get<double>("Angle_Degrees_CCW") - setpoints.at(0)); 
+    
+   if (angleDiff > 180){  
+     angleDiff = 360 - angleDiff;
+   } 
+   
+   if (angleDiff > 90){ 
+     setpoints[0] = fmod(setpoints[0] + 180, 360); 
+     setpoints[1] = setpoints[1] * -1;
+   }
+   
+   setpoints.pop_back();  
+   setpoints.pop_back();
+   numOfOperations -= 2; 
+
+};    
+
+//  
+
+void AlignWithY::start(){   
+
+   DriveToSetpoint::start();  
+   double angleDiff = fabs(drivebaseRef.get<double>("Angle_Degrees_CCW") - setpoints.at(0)); 
+    
+   if (angleDiff > 180){  
+     angleDiff = 360 - angleDiff;
+   } 
+   
+   if (angleDiff > 90){ 
+     setpoints[0] = fmod(setpoints[0] + 180, 360); 
+     setpoints[1] = setpoints[1] * -1;
+   }  
+
+   setpoints.pop_back();  
+   setpoints.pop_back();
+   numOfOperations -= 2;
+};
+
+//
 
 void CloseDistance::start(){ 
    DriveToSetpoint::start();  
@@ -253,12 +296,16 @@ void CloseDistance::start(){
 void DriveForwardForTime::start()
 { 
     RobotState::manuallyModifyState("intaking", intaking);
-    startingTime = Brain.Timer.time(vex::msec);   
+    startingTime = Brain.Timer.time(vex::msec);     
+
+    if (RobotState::getStateOf("is_drive_inverted")){ 
+       percentage *= -1;
+    }
 };
 
 void DriveForwardForTime::periodic()
 {
-    drivebaseRef.arcadeDrive(-percentage * 100, 0);  
+    drivebaseRef.arcadeDrive(percentage * 100, 0);  
     intakeRef.periodic();
 };
 
@@ -286,7 +333,10 @@ void Calibrate::start()
 { 
     RobotState::manuallyModifyState("calibrating", true); //Asuume facing somewhat towards wall
     drivebaseRef.setCalibratingStructure(wall);  
-    startingTime = Brain.Timer.time(vex::msec);
+    startingTime = Brain.Timer.time(vex::msec);   
+    if (RobotState::getStateOf("is_drive_inverted")){ 
+       percentage *= -1;
+    }
 };
 
 void Calibrate::periodic()
@@ -482,6 +532,37 @@ string WaitFor::repr(){
    ss << "Wait " << timeDuration; 
    return ss.str();
 }
+
+//--------------------------------------- 
+
+void DisengageHighGoal::start()
+{ 
+    RobotState::manuallyModifyState("scoring_high", true);
+    startingTime = Brain.Timer.time(vex::msec);  
+    if (RobotState::getStateOf("is_drive_inverted")){ 
+       percentage *= -1;
+    }  
+};
+
+void DisengageHighGoal::periodic()
+{
+    drivebaseRef.arcadeDrive(-percentage * 100, 0);  
+    intakeRef.periodic(); 
+    indexerRef.periodic();
+};
+
+bool DisengageHighGoal::isOver()
+{
+    return Brain.Timer.time(vex::msec) - startingTime >= timeDuration;
+}
+
+void DisengageHighGoal::end()
+{  
+    RobotState::manuallyModifyState("scoring_high", false);
+    drivebaseRef.stop(); 
+    intakeRef.stop(); 
+    indexerRef.stop();
+}   
 
 
 //--------------------------------------- 

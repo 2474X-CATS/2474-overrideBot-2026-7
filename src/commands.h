@@ -136,7 +136,40 @@ public:
 protected:
   void start() override; 
   string repr() override; 
-}; 
+};  
+
+
+//-------------------------------------------------------------------------------------------------------------
+
+class AlignWithX : protected DriveToSetpoint
+{
+public:
+  static CommandInterface *getCommand(double setpointX)
+  {
+    return new AlignWithX(*Drivebase::globalRef, *Intake::globalRef, setpointX);
+  } 
+
+  AlignWithX(Drivebase &drive, Intake &intake, double setpointX) : 
+  DriveToSetpoint(drive, intake, setpointX, 0, -1, PathType::MANHATTAN_XY, false) {};
+                                                                                                                 
+  void start() override; 
+};  
+
+//-------------------------------------------------------------------------------------------------------------
+
+class AlignWithY : protected DriveToSetpoint
+{
+public:
+  static CommandInterface *getCommand(double setpointY)
+  {
+    return new AlignWithY(*Drivebase::globalRef, *Intake::globalRef, setpointY);
+  } 
+
+  AlignWithY(Drivebase &drive, Intake &intake, double setpointY) : 
+  DriveToSetpoint(drive, intake, 0, setpointY, -1, PathType::MANHATTAN_YX, false) {}
+                                                                                                                 
+  void start() override; 
+};  
 
 //--------------------------------------- 
 // TURN THE ROBOT SO THAT IT S FACING A CERTAIN (X,Y) POSITION
@@ -378,6 +411,44 @@ public:
 
   ~DeployDescore() override = default;
 }; 
+
+//------------------------------------------------------------
+class DisengageHighGoal : Command<Drivebase, Intake, Indexer>
+{
+private: 
+
+  Drivebase &drivebaseRef;  
+  Intake &intakeRef;  
+  Indexer &indexerRef;
+
+  double percentage;
+  double startingTime;
+  double timeDuration; 
+
+protected:
+  void start() override;
+  void periodic() override;
+  bool isOver() override;
+  void end() override; 
+
+public:
+  static CommandInterface *getCommand(double percentage, double timeDuration)
+  {
+    return new DisengageHighGoal(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, percentage, timeDuration);
+  }
+
+  DisengageHighGoal(Drivebase &drivebase, Intake &intake, Indexer &indexer, double percentage, double timeDuration) :  
+                                                                                      Command<Drivebase, Intake, Indexer>(drivebase, intake, indexer),  
+                                                                                      drivebaseRef(drivebase),  
+                                                                                      intakeRef(intake), 
+                                                                                      indexerRef(indexer),
+                                                                                      percentage(percentage),
+                                                                                      timeDuration(timeDuration)  
+                                                                                      {};
+
+  ~DisengageHighGoal() override = default;
+};   
+
 
 
 
