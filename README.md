@@ -25,15 +25,15 @@ Utilities — helpers like Location for field positioning.
 📁 File Structure
 src/ 
 ├── main.cpp<br/>
-├── commands.cpp / commands.h       # Command manager and registry
+├── commands.cpp / commands.h  # Command manager and registry <br/>
 ├── architecture/
-│   ├── command.cpp / command.h <br/>       # Base command interface
-│   ├── subsystem.cpp / subsystem.h <br/>   # Base subsystem interface
-│   ├── robot.cpp / robot.h <br/>         # Central robot controller
-│   ├── telemetry.cpp / telemetry.h <br/>   # Telemetry and diagnostics
+│   ├── command.cpp / command.h  # Base command interface <br/>
+│   ├── subsystem.cpp / subsystem.h  # Base subsystem interface <br/>
+│   ├── robot.cpp / robot.h  # Central robot controller <br/>
+│   ├── telemetry.cpp / telemetry.h  # Telemetry and diagnostics <br/>
 ├── utilities/ <br/>
-│   └── location.cpp / location.h <br/>    # Robot field position helper
-├── subsystems/ <br/>
+│   └── location.cpp / location.h # Robot field position helper <br/>
+├── subsystems/ <br/> 
 │   ├── drivebase.cpp / drivebase.h <br/>
 │   ├── intake.cpp / intake.h <br/>
 │   ├── indexer.cpp / indexer.h <br/>
