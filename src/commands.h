@@ -141,35 +141,72 @@ protected:
 
 //-------------------------------------------------------------------------------------------------------------
 
-class AlignWithX : protected DriveToSetpoint
+class FlatAlignWithX : protected DriveToSetpoint
 {
 public:
   static CommandInterface *getCommand(double setpointX)
   {
-    return new AlignWithX(*Drivebase::globalRef, *Intake::globalRef, setpointX);
+    return new FlatAlignWithX(*Drivebase::globalRef, *Intake::globalRef, setpointX);
   } 
 
-  AlignWithX(Drivebase &drive, Intake &intake, double setpointX) : 
+  FlatAlignWithX(Drivebase &drive, Intake &intake, double setpointX) : 
   DriveToSetpoint(drive, intake, setpointX, 0, -1, PathType::MANHATTAN_XY, false) {};
                                                                                                                  
   void start() override; 
 };  
 
-//-------------------------------------------------------------------------------------------------------------
 
-class AlignWithY : protected DriveToSetpoint
+class FlatAlignWithY : protected DriveToSetpoint
 {
 public:
   static CommandInterface *getCommand(double setpointY)
   {
-    return new AlignWithY(*Drivebase::globalRef, *Intake::globalRef, setpointY);
+    return new FlatAlignWithY(*Drivebase::globalRef, *Intake::globalRef, setpointY);
   } 
 
-  AlignWithY(Drivebase &drive, Intake &intake, double setpointY) : 
+  FlatAlignWithY(Drivebase &drive, Intake &intake, double setpointY) : 
   DriveToSetpoint(drive, intake, 0, setpointY, -1, PathType::MANHATTAN_YX, false) {}
                                                                                                                  
   void start() override; 
-};  
+};     
+
+//-------------------------------------------------------------------------------------------------------------
+
+class SlantedAlignWithY : protected DrivePath
+{ 
+private: 
+  double setpointY;
+public:
+  static CommandInterface *getCommand(double setpointY)
+  {
+    return new SlantedAlignWithY(*Drivebase::globalRef, *Intake::globalRef, setpointY);
+  } 
+
+  SlantedAlignWithY(Drivebase &drive, Intake &intake, double setpointY) : 
+  DrivePath({}, false, false), 
+  setpointY(setpointY){}
+                                                                                                                 
+  void start() override; 
+};    
+
+class SlantedAlignWithX : protected DrivePath
+{ 
+private: 
+  double setpointX;
+public:
+  static CommandInterface *getCommand(double setpointX)
+  {
+    return new SlantAlignWithX(*Drivebase::globalRef, *Intake::globalRef, setpointX);
+  } 
+
+  SlantedAlignWithX(Drivebase &drive, Intake &intake, double setpointX) : 
+  DrivePath({}, false, false), 
+  setpointX(setpointX) {}
+                                                                                                                 
+  void start() override; 
+}; 
+
+
 
 //--------------------------------------- 
 // TURN THE ROBOT SO THAT IT S FACING A CERTAIN (X,Y) POSITION

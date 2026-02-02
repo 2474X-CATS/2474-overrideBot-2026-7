@@ -240,7 +240,7 @@ string TurnToSetpoint::repr(){
 
 //  
 
-void AlignWithX::start(){  
+void FlatAlignWithX::start(){  
 
    DriveToSetpoint::start(); 
    double angleDiff = fabs(drivebaseRef.get<double>("Angle_Degrees_CCW") - setpoints.at(0)); 
@@ -260,9 +260,8 @@ void AlignWithX::start(){
 
 };    
 
-//  
 
-void AlignWithY::start(){   
+void FlatAlignWithY::start(){   
 
    DriveToSetpoint::start();  
    double angleDiff = fabs(drivebaseRef.get<double>("Angle_Degrees_CCW") - setpoints.at(0)); 
@@ -281,6 +280,24 @@ void AlignWithY::start(){
    numOfOperations -= 2;
 };
 
+// 
+/*
+void SlantedAlignWithX::start(){   
+
+   double heading = drivebaseRef.get<double>("Angle_Degrees_CCW") / 360.0 * (2 * M_PI);  
+
+   double xPos = drivebaseRef.get<double>("Pos_X"); 
+    
+   double xDiff = setpointX - xPos;  
+   double yDiff = xDiff / tan(heading); 
+   
+   double dist 
+   
+   setpoints.push_back(dist);
+
+   numOfOperations += 1;
+} 
+   */
 //
 
 void CloseDistance::start(){ 
