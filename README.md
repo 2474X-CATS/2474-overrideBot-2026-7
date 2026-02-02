@@ -23,26 +23,26 @@ Telemetry Layer — centralized diagnostics and sensor reporting.
 Utilities — helpers like Location for field positioning.
 
 📁 File Structure
-src/
-├── main.cpp
-├── commands.cpp / commands.h         # Command manager and registry
+src/ 
+├── main.cpp<br/>
+├── commands.cpp / commands.h       # Command manager and registry
 ├── architecture/
-│   ├── command.cpp / command.h       # Base command interface
-│   ├── subsystem.cpp / subsystem.h   # Base subsystem interface
-│   ├── robot.cpp / robot.h           # Central robot controller
-│   ├── telemetry.cpp / telemetry.h   # Telemetry and diagnostics
-├── utilities/
-│   └── location.cpp / location.h     # Robot field position helper
-├── subsystems/
-│   ├── drivebase.cpp / drivebase.h
-│   ├── intake.cpp / intake.h
-│   ├── indexer.cpp / indexer.h
-│   ├── matchloader.cpp / matchloader.h
-│   └── hooks.cpp / hooks.h
-└── control/
-    ├── feedforward.cpp / feedforward.h
-    ├── pidcontroller.cpp / pidcontroller.h
-    └── trajectorycontroller.cpp / trajectorycontroller.h
+│   ├── command.cpp / command.h <br/>       # Base command interface
+│   ├── subsystem.cpp / subsystem.h <br/>   # Base subsystem interface
+│   ├── robot.cpp / robot.h <br/>         # Central robot controller
+│   ├── telemetry.cpp / telemetry.h <br/>   # Telemetry and diagnostics
+├── utilities/ <br/>
+│   └── location.cpp / location.h <br/>    # Robot field position helper
+├── subsystems/ <br/>
+│   ├── drivebase.cpp / drivebase.h <br/>
+│   ├── intake.cpp / intake.h <br/>
+│   ├── indexer.cpp / indexer.h <br/>
+│   ├── matchloader.cpp / matchloader.h <br/>
+│   └── hooks.cpp / hooks.h <br/>
+└── control/ <br/>
+    ├── feedforward.cpp / feedforward.h <br/>
+    ├── pidcontroller.cpp / pidcontroller.h <br/>
+    └── trajectorycontroller.cpp / trajectorycontroller.h <br/>
 
 🏗 Architecture Overview
 
