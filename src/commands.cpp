@@ -281,23 +281,47 @@ void FlatAlignWithY::start(){
 };
 
 // 
-/*
+
 void SlantedAlignWithX::start(){   
 
    double heading = drivebaseRef.get<double>("Angle_Degrees_CCW") / 360.0 * (2 * M_PI);  
 
    double xPos = drivebaseRef.get<double>("Pos_X"); 
-    
+  
    double xDiff = setpointX - xPos;  
-   double yDiff = xDiff / tan(heading); 
+   double yDiff = xDiff * tan(heading); 
    
-   double dist 
+   double dist = sqrt(pow(xDiff, 2) + pow(yDiff, 2)); 
+
+   if (copysign(1, cos(heading)) != copysign(1, xDiff)){ 
+    dist *= -1;
+   }
+
+   setpoints.push_back(dist);
+
+   numOfOperations += 1;
+}  
+
+void SlantedAlignWithY::start(){   
+
+   double heading = drivebaseRef.get<double>("Angle_Degrees_CCW") / 360.0 * (2 * M_PI);  
+
+   double yPos = drivebaseRef.get<double>("Pos_Y");  
+
+   double yDiff = setpointY - yPos;  
+   double xDiff = yDiff / tan(heading); 
    
+   double dist = sqrt(pow(xDiff, 2) + pow(yDiff, 2)); 
+
+   if (copysign(1, sin(heading)) != copysign(1, yDiff)){ 
+    dist *= -1;
+   }
+
    setpoints.push_back(dist);
 
    numOfOperations += 1;
 } 
-   */
+
 //
 
 void CloseDistance::start(){ 
