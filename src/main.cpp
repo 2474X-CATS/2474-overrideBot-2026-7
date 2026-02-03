@@ -251,7 +251,6 @@ vector<CommandInterface *> auto_skills()
       Calibrate::getCommand(Alignment_Structure::FOREIGN_HIGH_RIGHT, 0.25, 1000),
       ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500), 
       DisengageHighGoal::getCommand(0.2, 500),
-       
       
       FlatAlignWithY::getCommand(TILE_SIZE_MM * 4.5), 
       FlatAlignWithX::getCommand(TILE_SIZE_MM),
@@ -264,9 +263,6 @@ vector<CommandInterface *> auto_skills()
       DriveForwardForTime::getCommand(0.2, 750, true),
       IntakeCubes::getCommand(1500),   
 
-
-      //--------------------------------------------------------------------------------  
-    
       ModifyRobotState::getCommand("is_drive_inverted", true),  
       FlatAlignWithY::getCommand(TILE_SIZE_MM * 5), 
       FlatAlignWithX::getCommand(TILE_SIZE_MM * 1.5), 
@@ -334,8 +330,8 @@ int main()
 
   routines.push_back(
       (Routine){
-          "Side Isolation",
-          "If the robot is on the left side: Mid Score -> High Score, if right: High Score",
+          "Standard 1/2 AWP",
+          "If on the left side: [4 blocks in mid - matchload 3 cubes - 3 blocks in long]. If right: [matchload 3 cubes - 7 blocks in long]",
           {
            closed_side_left(),
            closed_side_right()
@@ -343,23 +339,10 @@ int main()
       } 
   );  
   
-  /*
-  routines.push_back(
-      (Routine){
-          "Solo AWP",
-          "Achieve the autonomus win point independently. (Use when alliance doesn't have an auto)",
-          {
-           empty(),
-           solo_awp_right()
-          } 
-      } 
-  );
-  */
 
   //-----------------------PROTOCOL------------------------
 
- //drive.setStartingPos((TILE_SIZE_MM * 3 + 200), 425);
- //startCommandCompetitiveMatch(routines);
+
  testAuto( 
   { 
      DrivePath::getCommand({135}, true, false), 
