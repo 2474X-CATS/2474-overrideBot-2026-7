@@ -29,7 +29,8 @@ void Robot::driverControl()
 { 
   RobotState::setMode(ControlType::DRIVER);  
   RobotState::manuallyModifyState("ready", true);
-  RobotState::manuallyModifyState("is_drive_inverted", false);
+  RobotState::manuallyModifyState("is_drive_inverted", false); 
+  RobotState::manuallyModifyState("in_autonomous", false); 
   double timestamp;
   timestamp = Brain.Timer.time();
   while (true)
@@ -72,7 +73,6 @@ void Robot::autonControl()
   for (CommandInterface *command : Robot::autonomousCommand)
   {
     command->run();
-  }  
-  RobotState::manuallyModifyState("in_autonomous", false); 
+  }   
 
 };

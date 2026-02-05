@@ -360,6 +360,7 @@ public:
 //--------------------------------------- 
 // SCORE ON EITHER A HIGH, MID, OR LOW GOAL FOR A CERTAIN AMOUNT OF TIME
 
+
 class ScoreOnGoal : public Command<Intake, Indexer>
 {
 private:
@@ -390,6 +391,21 @@ protected:
   bool isOver() override;
   void end() override; 
   string repr() override;  
+}; 
+
+class DiscriminateScoreOnHighGoal : public ScoreOnGoal { 
+   public: 
+     static CommandInterface *getCommand()
+     {
+       return new DiscriminateScoreOnHighGoal(*Intake::globalRef, *Indexer::globalRef);
+     } 
+     
+     DiscriminateScoreOnHighGoal(Intake &intake, Indexer &indexer) :  
+     ScoreOnGoal(intake, indexer, Goal_Pos::HIGH_GOAL, 0)
+     {}; 
+
+     bool isOver() override; 
+     //void end() override; 
 
 };
 

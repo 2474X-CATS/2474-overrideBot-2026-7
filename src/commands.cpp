@@ -141,7 +141,6 @@ void DrivePath::turn()
 
 double DrivePath::getAngularError()
 {  
-
     double currentAngle = drivebaseRef.get<double>("Angle_Degrees_CCW");   
 
     double angleSetpoint = setpoints.at(operationsIndex); 
@@ -286,7 +285,10 @@ void SlantedAlignWithX::start(){
    double heading = drivebaseRef.get<double>("Angle_Degrees_CCW") / 360.0 * (2 * M_PI);  
    double xPos = drivebaseRef.get<double>("Pos_X"); 
    double xDiff = setpointX - xPos;  
-   double dist = xDiff / cos(heading);
+   double dist = xDiff / cos(heading); 
+   if (!RobotState::getStateOf("is_counterclockwise")){ 
+    dist *= -1;
+   }
    setpoints.push_back(dist);
    numOfOperations += 1;
 }  
@@ -461,6 +463,13 @@ string ScoreOnGoal::repr(){
     ss << "Score " << goal << "," << timeDuration; 
     return ss.str();
 }
+
+//------------------------------------ 
+
+bool DiscriminateScoreOnHighGoal::isOver(){ 
+    return RobotState::getStateOf("blocking"); 
+}
+
 
 //--------------------------------------- 
 // EXTENDS OR RETRACTS THE MATCHLOADER MECHANISM

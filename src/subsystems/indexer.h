@@ -8,7 +8,8 @@ class Indexer : public Subsystem {
 
    private:   
     vex::motor indexerMotor;  
-    vex::pneumatics indexerHatch;  
+    vex::pneumatics indexerHatch;   
+    vex::optical colorSensor;
 
    public:  
      using Subsystem::get;  
@@ -21,11 +22,13 @@ class Indexer : public Subsystem {
         "indexer", 
         { 
             (EntrySet){"is_on", EntryType::BOOL}, 
-            (EntrySet){"last_long_goal_pressed", EntryType::DOUBLE}
+            (EntrySet){"last_long_goal_pressed", EntryType::DOUBLE}, 
+            (EntrySet){"detects_correct_color", EntryType::BOOL}
         }
      ), 
      indexerMotor(vex::motor(vex::PORT17)), 
-     indexerHatch(vex::pneumatics(Brain.ThreeWirePort.F))
+     indexerHatch(vex::pneumatics(Brain.ThreeWirePort.F)), 
+     colorSensor(vex::optical(vex::PORT14))
      { 
        globalRef = this; 
      } 
@@ -33,7 +36,8 @@ class Indexer : public Subsystem {
      void init() override;
      void periodic() override;
      void updateTelemetry() override;
-     void stop() override;
+     void stop() override; 
+
 
    protected:  
      using Subsystem::set; 

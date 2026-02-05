@@ -135,7 +135,7 @@ void Drivebase::init()
    //------------------------------ 
 
    turnPID.P = 2.5; 
-   turnPID.I = 0.7;
+   turnPID.I = 0.85;//0.7;
    turnPID.D = 0.0; 
    turnPID.errorTolerance = 1;
    
@@ -367,28 +367,28 @@ void Drivebase::calibrate(Alignment_Structure struc){
       break; 
      case NEARBY_MID: 
       loc = getLocation(4); 
-      supposedAngle = loc->getPerfectEntranceAngle();
+      supposedAngle = -1;//loc->getPerfectEntranceAngle();
       calibrationPoint = loc->getProjectedSetpoint(ROBOT_LENGTH_MM/2 + MID_ALIGNER_LENGTH); 
       set<double>("Pos_X", calibrationPoint.at(0)); 
       set<double>("Pos_Y", calibrationPoint.at(1)); 
       break; 
      case NEARBY_LOW:  
       loc = getLocation(5);
-      supposedAngle = loc->getPerfectEntranceAngle();
+      supposedAngle = -1;//loc->getPerfectEntranceAngle();
       calibrationPoint = loc->getProjectedSetpoint(ROBOT_LENGTH_MM/2 + MID_ALIGNER_LENGTH); 
       set<double>("Pos_X", calibrationPoint.at(0)); 
       set<double>("Pos_Y", calibrationPoint.at(1));   
       break;
      case FOREIGN_MID: 
       loc = getLocation(11);
-      supposedAngle = loc->getPerfectEntranceAngle();
+      supposedAngle = -1;//loc->getPerfectEntranceAngle();
       calibrationPoint = loc->getProjectedSetpoint(ROBOT_LENGTH_MM/2 + MID_ALIGNER_LENGTH); 
       set<double>("Pos_X", calibrationPoint.at(0)); 
       set<double>("Pos_Y", calibrationPoint.at(1));   
       break;
      case FOREIGN_LOW: 
       loc = getLocation(12);
-      supposedAngle = loc->getPerfectEntranceAngle();
+      supposedAngle = -1;//loc->getPerfectEntranceAngle();
       calibrationPoint = loc->getProjectedSetpoint(ROBOT_LENGTH_MM/2 + MID_ALIGNER_LENGTH); 
       set<double>("Pos_X", calibrationPoint.at(0)); 
       set<double>("Pos_Y", calibrationPoint.at(1));   
@@ -398,14 +398,20 @@ void Drivebase::calibrate(Alignment_Structure struc){
       supposedAngle = -1; 
       break;
    }   
+   
+   supposedAngle = -1;
 
    if (supposedAngle == -1){ 
       return; 
    } 
 
+   if (!RobotState::getStateOf("is_counterclockwise")){   
+        supposedAngle += (90 - supposedAngle) * 2 + 360;  
+   } 
+
    if (RobotState::getStateOf("is_drive_inverted")){ 
       supposedAngle += 180;
-   }  
+   }   
 
    supposedAngle = fmod(supposedAngle, 360);
    
@@ -419,7 +425,8 @@ PIDConstants Drivebase::getTurningPID()
 
 void Drivebase::setStartingPos(double x, double y){  
    set<double>("Pos_X", x + (ROBOT_WIDTH_MM/2)); 
-   set<double>("Pos_Y", y + (ROBOT_LENGTH_MM/2)); 
+   set<double>("Pos_Y", y + (ROBOT_LENGTH_MM/2));  
+   driveGyro.setHeading(90, vex::rotationUnits::deg);
 }
 
 TrapezoidConstants Drivebase::getMotionConstants(){ 
