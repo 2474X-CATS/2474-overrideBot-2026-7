@@ -9,7 +9,8 @@ class Indexer : public Subsystem {
    private:   
     vex::motor indexerMotor;  
     vex::pneumatics indexerHatch;   
-    vex::optical colorSensor;
+    vex::optical colorSensor; 
+    double lastBlockTimestamp = 0;
 
    public:  
      using Subsystem::get;  
@@ -23,7 +24,8 @@ class Indexer : public Subsystem {
         { 
             (EntrySet){"is_on", EntryType::BOOL}, 
             (EntrySet){"last_long_goal_pressed", EntryType::DOUBLE}, 
-            (EntrySet){"detects_correct_color", EntryType::BOOL}
+            (EntrySet){"detects_correct_color", EntryType::BOOL}, 
+            (EntrySet){"detects_block", EntryType::BOOL}
         }
      ), 
      indexerMotor(vex::motor(vex::PORT17)), 

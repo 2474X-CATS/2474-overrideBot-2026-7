@@ -364,10 +364,6 @@ public:
 class ScoreOnGoal : public Command<Intake, Indexer>
 {
 private:
-  Intake &intakeRef;
-  Indexer &indexerRef;
-
-  double startingTime;
   double timeDuration;
   int goal;
 
@@ -385,7 +381,12 @@ public:
 
   ~ScoreOnGoal() override = default;
 
-protected:
+protected: 
+  Intake &intakeRef;
+  Indexer &indexerRef; 
+  
+  double startingTime; 
+  
   void start() override;
   void periodic() override;
   bool isOver() override;
@@ -393,7 +394,7 @@ protected:
   string repr() override;  
 }; 
 
-class DiscriminateScoreOnHighGoal : public ScoreOnGoal { 
+class DiscriminateScoreOnHighGoal : public ScoreOnGoal {  
    public: 
      static CommandInterface *getCommand()
      {
@@ -404,7 +405,7 @@ class DiscriminateScoreOnHighGoal : public ScoreOnGoal {
      ScoreOnGoal(intake, indexer, Goal_Pos::HIGH_GOAL, 0)
      {}; 
 
-     bool isOver() override; 
+     bool isOver() override;  
      //void end() override; 
 
 };

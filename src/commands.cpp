@@ -479,8 +479,9 @@ string ScoreOnGoal::repr(){
 
 //------------------------------------ 
 
-bool DiscriminateScoreOnHighGoal::isOver(){ 
-    return RobotState::getStateOf("blocking"); 
+bool DiscriminateScoreOnHighGoal::isOver(){  
+    //300 ms grace period
+    return (Brain.Timer.time(vex::msec) - startingTime > 300) && ( (!indexerRef.get<bool>("detects_block")) || (!indexerRef.get<bool>("detects_correct_color")) );
 }
 
 

@@ -22,8 +22,6 @@ void Indexer::periodic(){
      }
    }   
 
-   RobotState::manuallyModifyState("blocked", !ableToScore);
-
    if (ableToScore && RobotState::getStateOf("scoring_high")){ 
      indexerMotor.setVelocity(-ABSOLUTE_INDEXER_SPEED, vex::velocityUnits::rpm); 
      indexerMotor.spin(vex::directionType::fwd); 
@@ -47,7 +45,7 @@ void Indexer::periodic(){
 } 
 
 void Indexer::updateTelemetry(){  
-
+   
    if (RobotState::getStateOf("scoring_high")){ 
     set<double>("last_long_goal_pressed", Brain.Timer.time(vex::msec));
    }  
@@ -58,7 +56,12 @@ void Indexer::updateTelemetry(){
    } else { 
       intolerableColor = vex::blue;
    } 
-   
+  
+   if (colorSensor.isNearObject()){ 
+    lastBlockTimestamp = Brain.Timer.time(vex::msec);
+   } 
+
+   set<bool>("detects_block", Brain.Timer.time(vex::msec) - lastBlockTimestamp < 200); // 200 ms tolerance
    set<bool>("detects_correct_color", colorSensor.color() != intolerableColor); 
    
 }  

@@ -84,8 +84,6 @@ void RobotState::initializeState()
         (EntrySet){"ready", EntryType::BOOL},  
         (EntrySet){"in_autonomous", EntryType::BOOL},  
         (EntrySet){"is_counterclockwise", EntryType::BOOL},   
-
-        (EntrySet){"blocked", EntryType::BOOL},
         
         (EntrySet){"calibrating", EntryType::BOOL},  
         (EntrySet){"k_calibrating", EntryType::BOOL},
