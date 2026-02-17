@@ -308,11 +308,7 @@ void SlantedAlignWithX::start(){
    double xDiff = setpointX - xPos;    
    double dist = xDiff / cos(heading);   
    
-   if (RobotState::getStateOf("is_drive_inverted")){ 
-      dist *= -1;
-   } 
-
-   setpoints.push_back(-dist);
+   setpoints.push_back(dist);
    numOfOperations += 1;
 }  
 
