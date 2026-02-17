@@ -554,7 +554,7 @@ int main()
 
   routines.push_back(
       (Routine){
-          "Standard Play",
+          "Default [WHEN IN DOUBT]",
           "If on the left side: [4 blocks in mid - matchload 3 cubes - 3 blocks in long]. If right: [matchload 3 cubes - 7 blocks in long]",
           {
            closed_side_left(),
@@ -577,7 +577,7 @@ int main()
   routines.push_back( 
      (Routine){ 
         "2/3 AWP", 
-        "Symmetrical: Grab near cubes then score on the center goal: (mid : left, low right) then score matchloaded cubes on high", 
+        "Symmetrical: Grab near cubes, score on the center goal: (mid : left, low right), then score matchloaded cubes on high", 
         { 
           closed_side_left(), 
           closed_side_right()
@@ -588,7 +588,7 @@ int main()
   routines.push_back( 
     (Routine){ 
       "Control Rush", 
-      "Symmetrical: Score 3 blocks on the high goal, push to control then camp. [USE WISELY]", 
+      "Symmetrical: Score 3 blocks on the high goal, push to control then camp. [USE STRATEGICALLY]", 
       { 
         controlRushLeft(), 
         controlRushRight(), 
@@ -635,10 +635,5 @@ int main()
    },
    false
  );   
-
- 
- 
- 
- 
 
 }
