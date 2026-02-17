@@ -110,8 +110,16 @@ void configurateAutonomous(vector<Routine> routines)
   RobotState::manuallyModifyState("is_team_color_blue", colorChooser.getIsBlue());
 }
 
-void startCommandSkillsMatch(vector<CommandInterface *> commandGroup)
-{
+void startCommandSkillsMatch(vector<CommandInterface *> commandGroup, bool startingLeft)
+{ 
+  if (startingLeft)
+  {
+    Drivebase::globalRef->setStartingPos((TILE_SIZE_MM * 2 + 430 - ROBOT_WIDTH_MM), 425);
+  }
+  else
+  {
+    Drivebase::globalRef->setStartingPos((TILE_SIZE_MM * 3 + 200), 425);
+  }
   robot.setAutonomousCommand(commandGroup);
   thread callBackTrigger = thread(scheduleCallbacks);
   robot.runTelemetryThread();
@@ -591,7 +599,7 @@ int main()
   routines.push_back( 
     (Routine){ 
         "Center Goal Clean", 
-        "Score a combined 7 blocks on center goals - order depends on side [left mid, right low]", 
+        "Symmetrical: Score a combined 7 blocks on center goals - order depends on side [left mid, right low]", 
         { 
           centerCleanUpLeft(), 
           centerCleanUpRight()
@@ -615,8 +623,9 @@ int main()
   //-----------------------PROTOCOL------------------------
 
 
- //startCommandCompetitiveMatch(routines);    
- 
+ //startCommandCompetitiveMatch(routines); //Uncomment when loading up for a comp   
+ //startCommandSkillsMatch(auto_skills(), false); //Uncomment when loading up for skills 
+
  testAuto( 
    { 
     DrivePath::getCommand({135}, true, false), 
@@ -627,23 +636,7 @@ int main()
    false
  );   
 
- /*
  
- testAuto( 
-  { 
-     DrivePath::getCommand({0}, true, false)
-  }, 
-  false
- ); 
- */
- /*
- Drivebase::globalRef->setStartingPos((TILE_SIZE_MM * 3 + 200), 425); 
- 
- startCommandSkillsMatch( 
-    auto_skills()
- );  
- */
- //startCommandCompetitiveMatch(routines);
  
  
  
