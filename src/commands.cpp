@@ -4,8 +4,6 @@
 //--------------------------------------- 
 // A COMBINATION OF DRIVING FORWARD AND TURNING COMMANDS 
 
-//bool DrivePath::isCounterClockwise = false;
-
 void DrivePath::start()
 { 
     referenceAngle = drivebaseRef.get<double>("Angle_Degrees_CCW");
@@ -143,7 +141,6 @@ void DrivePath::drive()
 
 }
 
-
 bool DrivePath::isTurnOver()
 {
     return turnPID->atSetpoint(getAngularError()) || setpoints.at(operationsIndex) == -1;
@@ -279,7 +276,6 @@ void FlatAlignWithX::start(){
 
 };    
 
-
 void FlatAlignWithY::start(){   
 
    DriveToSetpoint::start();  
@@ -391,9 +387,6 @@ void Calibrate::end()
 }   
 
 
-
-
-
 //--------------------------------------- 
 // INTAKE CUBES FOR STORAGE FOR A CERTAIN AMOUNT OF TIME
 
@@ -424,74 +417,6 @@ string IntakeCubes::repr(){
     ss << "Intake " << timeDuration;
     return ss.str(); 
 }
-
-//--------------------------------------- 
-// SCORE ON EITHER A HIGH, MID, OR LOW GOAL FOR A CERTAIN AMOUNT OF TIME
-
-void ScoreOnGoal::start()
-{
-    switch (goal)
-    {
-    case 1:
-        RobotState::manuallyModifyState("scoring_high", true);
-        break;
-    case 2:
-        RobotState::manuallyModifyState("scoring_mid", true);
-        break;
-    case 3:
-        RobotState::manuallyModifyState("scoring_low", true);
-        break;
-    default:
-        break;
-    }
-    startingTime = Brain.Timer.time();
-};
-
-void ScoreOnGoal::periodic()
-{
-    indexerRef.periodic();
-    intakeRef.periodic();
-}
-
-bool ScoreOnGoal::isOver()
-{
-    return Brain.Timer.time() - startingTime >= timeDuration;
-}
-
-void ScoreOnGoal::end()
-{
-    switch (goal)
-    {
-    case 1:
-        RobotState::manuallyModifyState("scoring_high", false);
-        break;
-    case 2:
-        RobotState::manuallyModifyState("scoring_mid", false);
-        break;
-    case 3:
-        RobotState::manuallyModifyState("scoring_low", false);
-        break;
-    default:
-        break;
-    } 
-    intakeRef.stop(); 
-    indexerRef.stop(); 
-    
-} 
-
-string ScoreOnGoal::repr(){ 
-    stringstream ss;  
-    ss << "Score " << goal << "," << timeDuration; 
-    return ss.str();
-}
-
-//------------------------------------ 
-
-bool DiscriminateScoreOnHighGoal::isOver(){  
-    //300 ms grace period
-    return (Brain.Timer.time(vex::msec) - startingTime > 300) && ( (!indexerRef.get<bool>("detects_block")) || (!indexerRef.get<bool>("detects_correct_color")) );
-}
-
 
 //--------------------------------------- 
 // EXTENDS OR RETRACTS THE MATCHLOADER MECHANISM
@@ -575,52 +500,6 @@ string WaitFor::repr(){
    ss << "Wait " << timeDuration; 
    return ss.str();
 }
-//--------------------------------------- 
-/*
-void AnchorHeading::start(){ 
-  Drivebase::globalRef->anchorAngle();
-};  
-
-void AnchorHeading::periodic(){ 
-  return;
-} 
-
-bool AnchorHeading::isOver(){ 
-  return true;
-} 
-
-void AnchorHeading::end(){ 
-  return;
-}  
-*/
-//--------------------------------------- 
-
-void DisengageHighGoal::start()
-{ 
-    RobotState::manuallyModifyState("scoring_high", true);
-    startingTime = Brain.Timer.time(vex::msec);  
-};
-
-void DisengageHighGoal::periodic()
-{
-    drivebaseRef.manualPercentageDrive(-percentage * 100);  
-    intakeRef.periodic(); 
-    indexerRef.periodic();
-};
-
-bool DisengageHighGoal::isOver()
-{
-    return Brain.Timer.time(vex::msec) - startingTime >= timeDuration;
-}
-
-void DisengageHighGoal::end()
-{  
-    RobotState::manuallyModifyState("scoring_high", false);
-    drivebaseRef.stop(); 
-    intakeRef.stop(); 
-    indexerRef.stop();
-}   
-
 
 //--------------------------------------- 
 // MODIFIES THE STATE OF THE ROBOT 

@@ -332,6 +332,7 @@ public:
 //--------------------------------------- 
 // INTAKE CUBES FOR STORAGE FOR A CERTAIN AMOUNT OF TIME
 
+
 class IntakeCubes : public Command<Intake>
 {
 private:
@@ -360,61 +361,6 @@ public:
   ~IntakeCubes() override = default;
 };
 
-//--------------------------------------- 
-// SCORE ON EITHER A HIGH, MID, OR LOW GOAL FOR A CERTAIN AMOUNT OF TIME
-
-
-class ScoreOnGoal : public Command<Intake, Indexer>
-{
-private:
-  double timeDuration;
-  int goal;
-
-public:
-  static CommandInterface *getCommand(int goal, double timeDuration)
-  {
-    return new ScoreOnGoal(*Intake::globalRef, *Indexer::globalRef, goal, timeDuration);
-  };
-
-  ScoreOnGoal(Intake &intake, Indexer &indexer, int goal, double timeDuration) : Command<Intake, Indexer>(intake, indexer),
-                                                                                                             intakeRef(intake),
-                                                                                                             indexerRef(indexer),
-                                                                                                             timeDuration(timeDuration),
-                                                                                                             goal(goal) {};
-
-  ~ScoreOnGoal() override = default;
-
-protected: 
-  Intake &intakeRef;
-  Indexer &indexerRef; 
-  
-  double startingTime; 
-  
-  void start() override;
-  void periodic() override;
-  bool isOver() override;
-  void end() override; 
-  string repr() override;  
-}; 
-
-class DiscriminateScoreOnHighGoal : public ScoreOnGoal {  
-   public: 
-     static CommandInterface *getCommand()
-     {
-       return new DiscriminateScoreOnHighGoal(*Intake::globalRef, *Indexer::globalRef);
-     } 
-     
-     DiscriminateScoreOnHighGoal(Intake &intake, Indexer &indexer) :  
-     ScoreOnGoal(intake, indexer, Goal_Pos::HIGH_GOAL, 0)
-     {}; 
-
-     bool isOver() override;  
-     //void end() override; 
-
-};
-
-//--------------------------------------- 
-// EXTENDS OR RETRACTS THE MATCHLOADER MECHANISM
 
 class DeployMatchloader : Command<Matchloader>
 {
@@ -468,44 +414,6 @@ public:
 
   ~DeployDescore() override = default;
 }; 
-
-//------------------------------------------------------------
-class DisengageHighGoal : Command<Drivebase, Intake, Indexer>
-{
-private: 
-
-  Drivebase &drivebaseRef;  
-  Intake &intakeRef;  
-  Indexer &indexerRef;
-
-  double percentage;
-  double startingTime;
-  double timeDuration; 
-
-protected:
-  void start() override;
-  void periodic() override;
-  bool isOver() override;
-  void end() override; 
-
-public:
-  static CommandInterface *getCommand(double percentage, double timeDuration)
-  {
-    return new DisengageHighGoal(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, percentage, timeDuration);
-  }
-
-  DisengageHighGoal(Drivebase &drivebase, Intake &intake, Indexer &indexer, double percentage, double timeDuration) :  
-                                                                                      Command<Drivebase, Intake, Indexer>(drivebase, intake, indexer),  
-                                                                                      drivebaseRef(drivebase),  
-                                                                                      intakeRef(intake), 
-                                                                                      indexerRef(indexer),
-                                                                                      percentage(percentage),
-                                                                                      timeDuration(timeDuration)  
-                                                                                      {};
-
-  ~DisengageHighGoal() override = default;
-};   
-
 
 
 
@@ -567,31 +475,8 @@ protected:
   void end() override; 
   string repr() override; 
 }; 
-/*
-class AnchorHeading : Command<DummySystem>
-{ 
-public:  
+ 
 
-
-  static CommandInterface *getCommand()
-  {
-    return new AnchorHeading();
-  }
-
-  AnchorHeading() :  
-                                 Command<DummySystem>(GLOBAL_DUMMY)
-                                 {};
-
-  ~AnchorHeading() override = default;
-
-protected:
-  void start() override;
-  void periodic() override;
-  bool isOver() override;
-  void end() override; 
-  
-};
-*/
 CommandInterface* DriveToLocation(int zoneIndex, double dist, PathType pathType, bool intaking); 
 
 CommandInterface* TurnToLocation(int zoneIndex); 

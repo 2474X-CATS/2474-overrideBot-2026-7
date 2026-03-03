@@ -5,8 +5,8 @@
 #include "../control/pidcontroller.h"  
 
 #include "../control/trapezoidalMotion.h" 
+#include "../utilities/location.h" 
 
-#include "../utilities/location.h"
 #include <set>
 #include "vex.h"
 

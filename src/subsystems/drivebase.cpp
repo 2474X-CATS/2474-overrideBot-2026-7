@@ -231,7 +231,7 @@ void Drivebase::updateTelemetry()
 
    //---------------------------------------------------------
    lastTimestamp = Brain.Timer.time(vex::sec);  
-   //Brain.Screen.printAt(20, 150, "Angle Degrees CCW: %.2f", get<double>("Angle_Degrees_CCW"));
+   
    
 };
 
