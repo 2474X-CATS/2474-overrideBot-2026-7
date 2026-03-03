@@ -372,7 +372,6 @@ vector<CommandInterface *> auto_skills()
       Calibrate::getCommand(Alignment_Structure::FOREIGN_HIGH_RIGHT, 0.45, 800),
       //ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000),    
       
-      
       //DisengageHighGoal::getCommand(0.25, 750),  
       
       ModifyRobotState::getCommand("is_drive_inverted", true),  

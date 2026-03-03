@@ -156,7 +156,6 @@ void Drivebase::init()
    
 };
 
-
 void Drivebase::periodic()
 {        
    arcadeDrive(((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL)), ((double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL)));   
