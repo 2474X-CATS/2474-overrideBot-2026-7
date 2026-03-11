@@ -22,7 +22,7 @@ array<double, 2> BezierCurve::generatePoint(double t){
   arr[0] = generateXPos(t); 
   arr[1] = generateYPos(t); 
   return arr;
-}  
+};
 
 void BezierCurve::generatePoint(double t, array<double, 2>& arr){ 
     arr[0] = generateXPos(t); 

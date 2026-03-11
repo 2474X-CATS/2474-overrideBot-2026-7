@@ -16,7 +16,7 @@ double Drivebase::DRIVE_WHEEL_RADIUS_MM = 3.25 * 25.4 / 2; //3.25in diam
 double Drivebase::MID_ALIGNER_LENGTH = 0; 
 double Drivebase::HIGH_ALIGNER_LENGTH = 0; 
 
-double Drivebase::MAX_RPM = (36/60) * 600; //Was 360
+double Drivebase::MAX_RPM = (36.0/60.0) * 600; //Was 360
 
 Location *Drivebase::locations[14] = {
     new Location(
@@ -138,15 +138,25 @@ void Drivebase::init()
    //------------------------------ 
 
    turnPID.P = 2.56; 
-   turnPID.I = 0.006;
+   turnPID.I = 0.0;
    turnPID.D = 0.07125; 
-   turnPID.errorTolerance = 1.25;
+   turnPID.errorTolerance = 1.25; 
    
    //--------------------------  >
  
    trapConsts.maxVelocity = (MAX_RPM * (2 * DRIVE_WHEEL_RADIUS_MM * M_PI)) / 60.0 * 0.98;// * (MAX_RPM / 600.0));
    trapConsts.maxAcceleration = trapConsts.maxVelocity / (0.875); // Reach max speed in 0.9 seconds   
    
+   array<array<double,2>, 3> points; 
+   points[0] = {(TILE_SIZE_MM * 3 + 200), 425};  
+   points[1] = {TILE_SIZE_MM,TILE_SIZE_MM*1.5}; 
+   points[2] = {TILE_SIZE_MM*4,TILE_SIZE_MM*2};
+
+   BezierCurve curve = BezierCurve(points);
+   testPath = new Path(&curve, trapConsts, turnPID, 750, 1000); 
+
+   testPath->setTimestamp(Brain.Timer.time());
+
    //-------------------------- 
    
    setStartingPos(startX, startY); 
@@ -158,7 +168,9 @@ void Drivebase::init()
 
 void Drivebase::periodic()
 {        
-   arcadeDrive(((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL))*-1, ((double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL)));   
+   //arcadeDrive(((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL))*-1, ((double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL)));    
+   PathFrameOutput output = testPath->calculateFrameOutput(get<double>("Pos_X"), get<double>("Pos_Y"), get<double>("Angle_Degrees_CCW"), Brain.Timer.time()); 
+   manualDriveWithCurvature(output.linearVelocity, output.angularVelocity); 
 }
 
 void Drivebase::updateTelemetry()
@@ -191,7 +203,7 @@ void Drivebase::updateTelemetry()
    
       double hypotenuse; 
       //hypotenuse = -((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime); 
-      hypotenuse = (leftDriveMotors.velocity(vex::velocityUnits::rpm) - rightDriveMotors.velocity(vex::velocityUnits::rpm)/2) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM / 60 * deltaTime;
+      hypotenuse = ((leftDriveMotors.velocity(vex::velocityUnits::rpm) - rightDriveMotors.velocity(vex::velocityUnits::rpm))/2) * 2 * M_PI * DRIVE_WHEEL_RADIUS_MM / 60 * deltaTime / (MAX_RPM/600.0);
       if (RobotState::getStateOf("is_drive_inverted")){ 
         hypotenuse *= -1;
       } 
@@ -273,7 +285,6 @@ void Drivebase::manualDriveForward(double speedMM, double centerAngle)
       speedMM *= -1; 
    }  
 
-   speedMM*=-1;//Delete later
 
    double netSpeed = speedMM / (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI) * 60;  
    netSpeed *= (600.0/MAX_RPM);     
@@ -282,13 +293,11 @@ void Drivebase::manualDriveForward(double speedMM, double centerAngle)
 
    if (centerAngle != -1){ 
      double angleDiff = centerAngle - currentAngle;  
-
      if (angleDiff > 180){  
       angleDiff = -(360 - angleDiff);
      } else if (angleDiff < -180){ 
       angleDiff = (360 + angleDiff);
      } 
-
      angleCorrection = ((DRIVE_WHEEL_RADIUS_MM * 2 * M_PI) * (angleDiff / 360.0)) * 3;  
    }
    
@@ -308,20 +317,28 @@ void Drivebase::manualPercentageDrive(double decimal){
    rightDriveMotors.spin(vex::directionType::fwd);
 }
 
-void Drivebase::manualTurnClockwise(double turnDeg)
+void Drivebase::manualTurnCounterclockwise(double turnDeg)
 { 
-   double rotationsPerMinutes = (((ROBOT_WIDTH_MM * M_PI) * (turnDeg / 360.0)) / (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI)) * 60;  
-   //rotationsPerMinutes *= (360.0 / (360 - 41)); 
-   //rotationsPerMinutes = rotationsPerMinutes > 450 ? 450 : (rotationsPerMinutes < -450 ? -450 : rotationsPerMinutes); 
-   
-   rotationsPerMinutes *= (600/MAX_RPM);
-   //rotationsPerMinutes = 0; 
-
+   double rotationsPerMinutes = (((ROBOT_WIDTH_MM * M_PI) * (turnDeg / 360.0)) / (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI)) * 60 * (600.0/MAX_RPM);   
    leftDriveMotors.setVelocity(rotationsPerMinutes, vex::velocityUnits::rpm);
    rightDriveMotors.setVelocity(rotationsPerMinutes, vex::velocityUnits::rpm);
    leftDriveMotors.spin(vex::directionType::fwd);
    rightDriveMotors.spin(vex::directionType::fwd);
 }; 
+
+void Drivebase::manualDriveWithCurvature(double speedMM, double turnDeg){ 
+   if (!RobotState::getStateOf("is_drive_inverted")){ 
+      speedMM *= -1; 
+   }   
+
+   double netLinSpeed = speedMM / (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI) * 60 * (600.0/MAX_RPM);   
+   double netRotSpeed = (((ROBOT_WIDTH_MM * M_PI) * (turnDeg / 360.0)) / (DRIVE_WHEEL_RADIUS_MM * 2 * M_PI)) * 60 * (600.0/MAX_RPM); 
+   
+   leftDriveMotors.setVelocity(netLinSpeed - netRotSpeed, vex::velocityUnits::rpm);
+   rightDriveMotors.setVelocity(netLinSpeed + netRotSpeed, vex::velocityUnits::rpm);
+   leftDriveMotors.spin(vex::directionType::rev);
+   rightDriveMotors.spin(vex::directionType::fwd); 
+}
 
 void Drivebase::voltageDriveForward(double volts)
 { 

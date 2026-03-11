@@ -9,14 +9,17 @@ void TrapezoidalMotionProfile::init(){
    if (accelDist > setpoint / 2){ 
      accelTime = sqrt((setpoint / maxAcceleration)); 
      accelDist = setpoint / 2; 
-     maxVelocity = accelTime * maxAcceleration; 
+     maxVelocity = accelTime * maxAcceleration;    
+
+     consts.maxVelocity = maxVelocity;
    }  
 
    decelDist = accelDist; 
    decelTime = accelTime; 
 
    cruiseDist = setpoint - accelDist - decelDist; 
-   cruiseTime = cruiseDist / maxVelocity;   
+   cruiseTime = cruiseDist / maxVelocity;    
+
 
 }; 
 
@@ -115,4 +118,16 @@ double TrapezoidalMotionProfile::getTotalDuration(){
 
 double TrapezoidalMotionProfile::getStartTime(){ 
    return startingTimestamp; 
+} 
+
+double TrapezoidalMotionProfile::getAccelDist(){ 
+   return accelDist;
+} 
+
+double TrapezoidalMotionProfile::getCruiseDist(){ 
+   return cruiseDist;
+} 
+
+TrapezoidConstants TrapezoidalMotionProfile::getConstants(){  
+   return consts;
 }

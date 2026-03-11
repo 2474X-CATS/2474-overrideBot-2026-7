@@ -5,7 +5,9 @@
 #include "../control/pidcontroller.h"  
 
 #include "../control/trapezoidalMotion.h" 
-#include "../utilities/location.h" 
+#include "../utilities/location.h"  
+
+#include "../control/path.h"
 
 #include <set>
 #include "vex.h"
@@ -61,9 +63,11 @@ private:
   vex::motor_group leftDriveMotors; 
   vex::motor_group rightDriveMotors;   
 
-  PIDConstants turnPID;   
+  PIDConstants turnPID;    
 
-  TrapezoidConstants trapConsts;  
+  TrapezoidConstants trapConsts; 
+  
+  Path* testPath = nullptr; 
 
   double startX, startY;
   double linearSpeedFactor = 1; 
@@ -119,7 +123,9 @@ public:
 
   void manualDriveForward(double speedMM, double centerAngle); 
   void manualPercentageDrive(double decimal);
-  void manualTurnClockwise(double turnDeg); 
+  void manualTurnCounterclockwise(double turnDeg);  
+
+  void manualDriveWithCurvature(double speedMM, double turnDeg);
   
   void voltageDriveForward(double volts); 
   void voltageTurnClockwise(double volts);  

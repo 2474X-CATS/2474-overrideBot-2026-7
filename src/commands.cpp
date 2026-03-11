@@ -153,24 +153,21 @@ void DrivePath::initializeTurn()
 }
 
 void DrivePath::turn()
-{
+{ 
     double output = turnPID->calculate(getAngularError(), Brain.Timer.time());  
     
     if (RobotState::getStateOf("is_counterclockwise"))
-       drivebaseRef.manualTurnClockwise(output); 
+       drivebaseRef.manualTurnCounterclockwise(output); 
     else { 
-       drivebaseRef.manualTurnClockwise(-output);
-    }
+       drivebaseRef.manualTurnCounterclockwise(-output);
+    } 
 }
 
 double DrivePath::getAngularError()
 {  
     double currentAngle = drivebaseRef.get<double>("Angle_Degrees_CCW");   
-
     double angleSetpoint = setpoints.at(operationsIndex); 
-
     double dist; 
-    
     dist = angleSetpoint - currentAngle; 
     if (dist > 180){  
         dist = -(360 - dist);

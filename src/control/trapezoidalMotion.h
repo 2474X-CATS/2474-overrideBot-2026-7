@@ -36,6 +36,8 @@ class TrapezoidalMotionProfile {
 
       double calculateVelocity(double time); 
       double calculateAcceleration(double time);  
+      
+      TrapezoidConstants consts;
 
       void init(); 
 
@@ -45,7 +47,8 @@ class TrapezoidalMotionProfile {
       maxVelocity(constants.maxVelocity), 
       maxAcceleration(constants.maxAcceleration), 
       setpoint(setpoint), 
-      startingTimestamp(startingTime)
+      startingTimestamp(startingTime),
+      consts(constants)
       { 
         init();
       };   
@@ -56,12 +59,17 @@ class TrapezoidalMotionProfile {
       void setVelocityTolerance(double velTol);   
 
       double getTotalDuration(); 
-      double getStartTime();   
+      double getStartTime();    
+
+      double getAccelDist(); 
+      double getCruiseDist();
 
       double calculatePosition(double time);  
       double convertPosToTime(double position);
 
-      bool atGoal(double currentPosition, double currentVelocity); 
+      bool atGoal(double currentPosition, double currentVelocity);  
+
+      TrapezoidConstants getConstants(); 
 
 };
 

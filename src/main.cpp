@@ -154,7 +154,7 @@ int main()
   //--------------------DONT MODIFY (MOSTLY)-----------------
 
   Drivebase drive = Drivebase(0,0); 
-  //Intake intake;
+  Intake intake;
   //Matchloader matchloader;
   //Hooks hooks;
 
@@ -255,10 +255,13 @@ int main()
 
  /*
  testAuto( 
-   renegade_right(),
+   { 
+    DrivePath::getCommand({TILE_SIZE_MM}, false, false)
+   },
    false
- );    
+ );     
  */
+ 
  
  
  

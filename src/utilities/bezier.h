@@ -23,7 +23,7 @@ class BezierCurve {
 
       array<double, 2> generatePoint(double t); 
       
-      void generatePoint(double t, array<double,2>& arr);
+      void generatePoint(double t, array<double, 2>& arr);
 
       double getPathLength();
  
