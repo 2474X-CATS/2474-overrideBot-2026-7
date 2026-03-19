@@ -134,7 +134,7 @@ public:
 
    static void linkLeftToRight(CirclePath *path1, CirclePath *path2);
 
-   void transformMetadata(PathMetadata metadata);
+   void transformMetadata(PathMetadata *metadata);
 
    void activate(PathMetadata metadata);
 

@@ -1226,9 +1226,9 @@ Discarded input sections
                 0x0000000000000000       0x68 build/src/control/circlePath.o
  .ARM.exidx.text._ZN10CirclePath15linkLeftToRightEPS_S0_
                 0x0000000000000000        0x8 build/src/control/circlePath.o
- .text._ZN10CirclePath17transformMetadataE12PathMetadata
-                0x0000000000000000        0xc build/src/control/circlePath.o
- .ARM.exidx.text._ZN10CirclePath17transformMetadataE12PathMetadata
+ .text._ZN10CirclePath17transformMetadataEP12PathMetadata
+                0x0000000000000000       0x1c build/src/control/circlePath.o
+ .ARM.exidx.text._ZN10CirclePath17transformMetadataEP12PathMetadata
                 0x0000000000000000        0x8 build/src/control/circlePath.o
  .comment       0x0000000000000000       0x2e build/src/control/circlePath.o
  .note.GNU-stack

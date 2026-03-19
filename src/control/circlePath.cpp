@@ -142,9 +142,9 @@ void CirclePath::linkLeftToRight(CirclePath *path1, CirclePath *path2)
   path2->setStartingVelocity(consensusVelocity);
 }
 
-void CirclePath::transformMetadata(PathMetadata data)
+void CirclePath::transformMetadata(PathMetadata *data)
 {
-  data.angleHeading = getEndingHeading();
-  data.positionX = getEndpointX();
-  data.positionY = getEndpointY();
+  data->angleHeading = getEndingHeading();
+  data->positionX = getEndpointX();
+  data->positionY = getEndpointY();
 }
