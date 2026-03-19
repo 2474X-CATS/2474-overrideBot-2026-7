@@ -53,7 +53,7 @@ int scheduleCallbacks()
 {
 
   // Add a pause where you press a button to start
-  //awaitStartingSignal(); 
+  // awaitStartingSignal();
 
   Competition.autonomous([]()
                          { robot.autonControl(); });
@@ -71,10 +71,13 @@ void testDrive()
 }
 
 void testAuto(vector<CommandInterface *> auton, bool startingLeft)
-{ 
-  if (startingLeft){ 
-    Drivebase::globalRef->setStartingPos((TILE_SIZE_MM * 2 + 430 - ROBOT_WIDTH_MM), 425); 
-  } else { 
+{
+  if (startingLeft)
+  {
+    Drivebase::globalRef->setStartingPos((TILE_SIZE_MM * 2 + 430 - ROBOT_WIDTH_MM), 425);
+  }
+  else
+  {
     Drivebase::globalRef->setStartingPos((TILE_SIZE_MM * 3 + 200), 425);
   }
   robot.setAutonomousCommand(auton);
@@ -111,7 +114,7 @@ void configurateAutonomous(vector<Routine> routines)
 }
 
 void startCommandSkillsMatch(vector<CommandInterface *> commandGroup, bool startingLeft)
-{  
+{
   RobotState::manuallyModifyState("in_skills", true);
   if (startingLeft)
   {
@@ -143,7 +146,6 @@ void driveCommandMatch(vector<Routine> routines)
   robot.driverControl();
 }
 
-
 //------------------------------>-------------------------------------------------------------------------------------------------------------------
 
 int main()
@@ -153,123 +155,84 @@ int main()
 
   //--------------------DONT MODIFY (MOSTLY)-----------------
 
-  Drivebase drive = Drivebase(TILE_SIZE_MM * 3 + 200, 425);  
+  Drivebase drive = Drivebase(TILE_SIZE_MM * 3 + 200, 425);
 
-  //Intake intake;
-  //Matchloader matchloader;
-  //Hooks hooks;
+  // Intake intake;
+  // Matchloader matchloader;
+  // Hooks hooks;
 
   robot.initialize();
 
-  RobotState::manuallyModifyState("color_sensitive", false); // <- We don't have color-sort currently
-  RobotState::manuallyModifyState("is_counterclockwise", false); //Adjust to match inertial sensor orientation
+  RobotState::manuallyModifyState("color_sensitive", false);     // <- We don't have color-sort currently
+  RobotState::manuallyModifyState("is_counterclockwise", false); // Adjust to match inertial sensor orientation
 
   //-------------------ROUTINE CREATION-------------------
-  
+
   vector<Routine> routines;
-  
+
   routines.push_back(
-    (Routine){
+      (Routine){
           "Default [WHEN IN DOUBT]",
           "If on the left side: >>[4 blocks in mid - matchload 3 cubes - 3 blocks in long]. If right: [matchload 3 cubes - 7 blocks in long]",
-          {
-           closed_side_left(),
-           renegade_right()
-          } 
-      } 
-  );  
+          {closed_side_left(),
+           renegade_right()}});
 
-  routines.push_back( 
-    (Routine){ 
-      "7 Block High", 
-      "Symmetrical: Gets middle cubes and matchloaded cubes and scores on the high goal", 
-      { 
-        renegade_left(), 
-        renegade_right(), 
-      }
-    }
-  );  
-
-  routines.push_back( 
-    (Routine){ 
-        "2/3 AWP", 
-        "Symmetrical: Grab near cubes, score on the center goal: (mid : left, low right), then score matchloaded cubes on high", 
-        { 
-          closed_side_left(), 
-          closed_side_right()
-        }
-     }
-  ); 
-
-  routines.push_back( 
-    (Routine){ 
-      "Control Rush", 
-      "Symmetrical: Score 3 blocks on the high goal, push to control then camp. [USE STRATEGICALLY]", 
-      { 
-        control_rush_left(), 
-        control_rush_right(), 
-      }
-    }
-  ); 
-   
   routines.push_back(
-    (Routine){ 
-        "Switcheroo", 
-        "Left ONLY: Switch the order of scoring for 7 block auto [high goal -> mid goal]", 
-        { 
-          switcheroo_left(), 
-          empty()
-        }
-     }
-  ); 
+      (Routine){
+          "7 Block High",
+          "Symmetrical: Gets middle cubes and matchloaded cubes and scores on the high goal",
+          {
+              renegade_left(),
+              renegade_right(),
+          }});
 
-  routines.push_back( 
-    (Routine){ 
-        "Center Goal Clean", 
-        "Symmetrical: Score a combined 7 blocks on center goals - order depends on side [left mid, right low]", 
-        { 
-          center_cleanup_left(), 
-          center_cleanup_right()
-        }
-    }
-  );
+  routines.push_back(
+      (Routine){
+          "2/3 AWP",
+          "Symmetrical: Grab near cubes, score on the center goal: (mid : left, low right), then score matchloaded cubes on high",
+          {closed_side_left(),
+           closed_side_right()}});
 
+  routines.push_back(
+      (Routine){
+          "Control Rush",
+          "Symmetrical: Score 3 blocks on the high goal, push to control then camp. [USE STRATEGICALLY]",
+          {
+              control_rush_left(),
+              control_rush_right(),
+          }});
 
-  routines.push_back(  
-    (Routine){ 
-      "Getting Carried", 
-      "Our alliance has a FOR SURE AWP: (left : nothing), (right : forward a smidge)", 
-      { 
-        do_nothing(), 
-        drive_forward()
-      } 
-    }
-  );
-  
-  
+  routines.push_back(
+      (Routine){
+          "Switcheroo",
+          "Left ONLY: Switch the order of scoring for 7 block auto [high goal -> mid goal]",
+          {switcheroo_left(),
+           empty()}});
+
+  routines.push_back(
+      (Routine){
+          "Center Goal Clean",
+          "Symmetrical: Score a combined 7 blocks on center goals - order depends on side [left mid, right low]",
+          {center_cleanup_left(),
+           center_cleanup_right()}});
+
+  routines.push_back(
+      (Routine){
+          "Getting Carried",
+          "Our alliance has a FOR SURE AWP: (left : nothing), (right : forward a smidge)",
+          {do_nothing(),
+           drive_forward()}});
+
   //-----------------------PROTOCOL------------------------
 
+  // startCommandCompetitiveMatch(routines);  //Uncomment when loading up for a comp
+  // startCommandSkillsMatch(auto_skills(), false);  //Uncomment when loading up for skills
+  testDrive(); // Uncomment when getting driver practice
 
- //startCommandCompetitiveMatch(routines);  //Uncomment when loading up for a comp   
- //startCommandSkillsMatch(auto_skills(), false);  //Uncomment when loading up for skills 
- testDrive();//Uncomment when getting driver practice 
-
- /*
- testAuto( 
-   closed_side_right(),
-   false
- );    
- */  
- 
- 
- 
- 
- 
- 
- 
- 
-    
- 
-
-
+  /*
+  testAuto(
+    closed_side_right(),
+    false
+  );
+  */
 }

@@ -51,9 +51,9 @@ Subsystem *Subsystem::getSubsystem(int index)
 vex::controller Controller = vex::controller(vex::controllerType::primary);
 
 bool RobotState::axisesEnabled = false;
-ControlType RobotState::mode = ControlType::INITIALIZATION; 
+ControlType RobotState::mode = ControlType::INITIALIZATION;
 
-string RobotState::vibrationCode = ":)";  
+string RobotState::vibrationCode = ":)";
 
 void RobotState::updateState()
 {
@@ -64,9 +64,9 @@ void RobotState::updateState()
       break;
    case STOPPED:
       updateStopped();
-      break;  
-   case INITIALIZATION: 
-      updateInitializing(); 
+      break;
+   case INITIALIZATION:
+      updateInitializing();
       break;
    case MANUAL:
    default:
@@ -78,67 +78,70 @@ void RobotState::initializeState()
 {
    Telemetry::inst.registerSubtable(
        "robot_state",
-       {    
-        (EntrySet){"is_team_color_blue", EntryType::BOOL},  
-        (EntrySet){"color_sensitive", EntryType::BOOL},   
-        (EntrySet){"ready", EntryType::BOOL},  
-        (EntrySet){"in_autonomous", EntryType::BOOL},  
-        (EntrySet){"is_counterclockwise", EntryType::BOOL},   
-        (EntrySet){"in_skills", EntryType::BOOL},  
-        
-        (EntrySet){"calibrating", EntryType::BOOL},  
-        (EntrySet){"k_calibrating", EntryType::BOOL},
+       {
+           (EntrySet){"is_team_color_blue", EntryType::BOOL},
+           (EntrySet){"color_sensitive", EntryType::BOOL},
+           (EntrySet){"ready", EntryType::BOOL},
+           (EntrySet){"in_autonomous", EntryType::BOOL},
+           (EntrySet){"is_counterclockwise", EntryType::BOOL},
+           (EntrySet){"in_skills", EntryType::BOOL},
 
-        (EntrySet){"scoring_high", EntryType::BOOL},
-        (EntrySet){"scoring_mid", EntryType::BOOL},
-        (EntrySet){"scoring_low", EntryType::BOOL}, 
-        (EntrySet){"matchloader_out", EntryType::BOOL},
-        (EntrySet){"descore_in", EntryType::BOOL},   
-        (EntrySet){"outtaking", EntryType::BOOL},
-        (EntrySet){"intaking", EntryType::BOOL}, 
+           (EntrySet){"calibrating", EntryType::BOOL},
+           (EntrySet){"k_calibrating", EntryType::BOOL},
 
-        (EntrySet){"k_inversion_held", EntryType::BOOL},
-        (EntrySet){"is_drive_inverted", EntryType::BOOL}, 
-      });
+           (EntrySet){"scoring_high", EntryType::BOOL},
+           (EntrySet){"scoring_mid", EntryType::BOOL},
+           (EntrySet){"scoring_low", EntryType::BOOL},
+           (EntrySet){"matchloader_out", EntryType::BOOL},
+           (EntrySet){"descore_in", EntryType::BOOL},
+           (EntrySet){"outtaking", EntryType::BOOL},
+           (EntrySet){"intaking", EntryType::BOOL},
+
+           (EntrySet){"k_inversion_held", EntryType::BOOL},
+           (EntrySet){"is_drive_inverted", EntryType::BOOL},
+       });
 }
 
 void RobotState::updateRegular()
-{    
-   manuallyModifyState("scoring_high", Controller.ButtonR2.pressing()); 
+{
+   manuallyModifyState("scoring_high", Controller.ButtonR2.pressing());
    manuallyModifyState("scoring_mid", Controller.ButtonR1.pressing());
-   manuallyModifyState("scoring_low", Controller.ButtonRight.pressing());  
+   manuallyModifyState("scoring_low", Controller.ButtonRight.pressing());
 
-   manuallyModifyState("intaking", Controller.ButtonY.pressing()); 
-   
-   if (Controller.ButtonUp.pressing()){ 
-      manuallyModifyState("k_inversion_held", true);  
-   } else { 
-      if (getStateOf("k_inversion_held")){ 
-         manuallyModifyState("k_inversion_held", false); 
-         manuallyModifyState("is_drive_inverted", !getStateOf("is_drive_inverted")); 
+   manuallyModifyState("intaking", Controller.ButtonY.pressing());
+
+   if (Controller.ButtonUp.pressing())
+   {
+      manuallyModifyState("k_inversion_held", true);
+   }
+   else
+   {
+      if (getStateOf("k_inversion_held"))
+      {
+         manuallyModifyState("k_inversion_held", false);
+         manuallyModifyState("is_drive_inverted", !getStateOf("is_drive_inverted"));
       }
-   }  
+   }
 
-   manuallyModifyState("outtaking", Controller.ButtonDown.pressing()); 
-   manuallyModifyState("descore_in", Controller.ButtonL1.pressing()); 
-   manuallyModifyState("matchloader_out", Controller.ButtonL2.pressing());   
-    
+   manuallyModifyState("outtaking", Controller.ButtonDown.pressing());
+   manuallyModifyState("descore_in", Controller.ButtonL1.pressing());
+   manuallyModifyState("matchloader_out", Controller.ButtonL2.pressing());
 }
 
 void RobotState::updateStopped()
-{    
+{
 
-   manuallyModifyState("scoring_high", false); 
+   manuallyModifyState("scoring_high", false);
    manuallyModifyState("scoring_mid", false);
-   manuallyModifyState("scoring_low", false);  
-   manuallyModifyState("matchloader_out", false); 
-   manuallyModifyState("k_inversion_held", false);    
-   manuallyModifyState("descore_in", false); 
-   manuallyModifyState("intaking", false);  
+   manuallyModifyState("scoring_low", false);
+   manuallyModifyState("matchloader_out", false);
+   manuallyModifyState("k_inversion_held", false);
+   manuallyModifyState("descore_in", false);
+   manuallyModifyState("intaking", false);
+};
 
-}; 
-
-void RobotState::updateInitializing(){ 
+void RobotState::updateInitializing()
+{
    return;
 }
 
@@ -147,20 +150,24 @@ bool RobotState::getStateOf(string key)
    return Telemetry::inst.getValueAt<bool>("robot_state", key);
 };
 
-bool RobotState::getExternalState(string subtable, string key){ 
+bool RobotState::getExternalState(string subtable, string key)
+{
    return Telemetry::inst.getValueAt<bool>(subtable, key);
 };
 
-void RobotState::vibrate(){  
+void RobotState::vibrate()
+{
    if (vibrationCode != ":)")
       Controller.rumble(vibrationCode.c_str());
-}; 
+};
 
-void RobotState::setVibrationCode(string code){ 
+void RobotState::setVibrationCode(string code)
+{
    vibrationCode = code;
-}; 
+};
 
-void RobotState::disableVibrations(){ 
+void RobotState::disableVibrations()
+{
    vibrationCode = ":)";
 }
 

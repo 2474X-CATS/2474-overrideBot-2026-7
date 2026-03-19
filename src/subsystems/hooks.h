@@ -1,39 +1,35 @@
-#ifndef __HOOKS_H__ 
-#define __HOOKS_H__ 
+#ifndef __HOOKS_H__
+#define __HOOKS_H__
 
-#include "../architecture/subsystem.h" 
-#include "vex.h" 
+#include "../architecture/subsystem.h"
+#include "vex.h"
 
-class Hooks : public Subsystem {  
+class Hooks : public Subsystem
+{
 
-   private:   
-    vex::pneumatics hookPiston;
+private:
+  vex::pneumatics hookPiston;
 
-   public:  
-     using Subsystem::get;  
-     
-     static Hooks* globalRef; 
+public:
+  using Subsystem::get;
 
-     Hooks(): 
-     Subsystem( 
-        "hooks", 
-        { 
-            (EntrySet){"is_on", EntryType::BOOL}
-        }
-     ), 
-     hookPiston(vex::pneumatics(Brain.ThreeWirePort.A)) 
-     { 
-       globalRef = this; 
-     } 
+  static Hooks *globalRef;
 
-     void init() override;
-     void periodic() override;
-     void updateTelemetry() override;
-     void stop() override;
+  Hooks() : Subsystem(
+                "hooks",
+                {(EntrySet){"is_on", EntryType::BOOL}}),
+            hookPiston(vex::pneumatics(Brain.ThreeWirePort.A))
+  {
+    globalRef = this;
+  }
 
-   protected:  
-     using Subsystem::set; 
+  void init() override;
+  void periodic() override;
+  void updateTelemetry() override;
+  void stop() override;
 
-}; 
+protected:
+  using Subsystem::set;
+};
 
 #endif

@@ -1,91 +1,88 @@
-#ifndef __TRAP_MOTION_H__ 
-#define __TRAP_MOTION_H__ 
+#ifndef __TRAP_MOTION_H__
+#define __TRAP_MOTION_H__
 
-typedef struct {  
-   double position; 
-   double velocity; 
-   double acceleration; 
-} TrapezoidalSetpoint;  
+typedef struct
+{
+  double position;
+  double velocity;
+  double acceleration;
+} TrapezoidalSetpoint;
 
-typedef struct { 
-  double maxVelocity; 
-  double maxAcceleration; 
+typedef struct
+{
+  double maxVelocity;
+  double maxAcceleration;
 } TrapezoidConstants;
 
-class TrapezoidalMotionProfile {  
-   
-    private: 
-      double accelDist; 
-      double accelTime; 
+class TrapezoidalMotionProfile
+{
 
-      double cruiseDist; 
-      double cruiseTime; 
+private:
+  double accelDist;
+  double accelTime;
 
-      double decelDist; 
-      double decelTime; 
-      
-      double maxVelocity; 
-      double maxAcceleration;   
+  double cruiseDist;
+  double cruiseTime;
 
-      int phaseOneDirection; 
-      int phaseTwoDirection;
+  double decelDist;
+  double decelTime;
 
-      double startingVelocity;
- 
-      double setpoint; 
+  double maxVelocity;
+  double maxAcceleration;
 
-      double startingTimestamp;  
+  int phaseOneDirection;
+  int phaseTwoDirection;
 
-      double toleranceVel = 0.0; 
-      double tolerancePos = 0.0; 
+  double startingVelocity;
 
-      double calculateVelocity(double time); 
-      double calculateAcceleration(double time);  
-      
-      TrapezoidConstants consts;
+  double setpoint;
 
+  double startingTimestamp;
 
-    public: 
+  double toleranceVel = 0.0;
+  double tolerancePos = 0.0;
 
-      TrapezoidalMotionProfile(TrapezoidConstants constants, double setpoint, double startingVelocity, double finalVelocity): 
-      maxVelocity(constants.maxVelocity), 
-      maxAcceleration(constants.maxAcceleration),  
-      startingVelocity(startingVelocity),
-      setpoint(setpoint), 
-      consts(constants)
-      {  
-        init(startingVelocity, finalVelocity);
-      };     
+  double calculateVelocity(double time);
+  double calculateAcceleration(double time);
 
-      void init(double startingVelocity, double finalVelocity); 
+  TrapezoidConstants consts;
 
-      TrapezoidalMotionProfile(TrapezoidConstants constants, double setpoint) : TrapezoidalMotionProfile(constants, setpoint, 0, 0) {}; 
-      
-      TrapezoidalMotionProfile(TrapezoidConstants constants, double setpoint, double startingVelocity) : TrapezoidalMotionProfile(constants, setpoint, startingVelocity, 0) {}; 
+public:
+  TrapezoidalMotionProfile(TrapezoidConstants constants, double setpoint, double startingVelocity, double finalVelocity) : maxVelocity(constants.maxVelocity),
+                                                                                                                           maxAcceleration(constants.maxAcceleration),
+                                                                                                                           startingVelocity(startingVelocity),
+                                                                                                                           setpoint(setpoint),
+                                                                                                                           consts(constants)
+  {
+    init(startingVelocity, finalVelocity);
+  };
 
-      TrapezoidalSetpoint generateSetpoint(double time);
+  void init(double startingVelocity, double finalVelocity);
 
-      void setPositionTolerance(double posTol); 
-      void setVelocityTolerance(double velTol);   
+  TrapezoidalMotionProfile(TrapezoidConstants constants, double setpoint) : TrapezoidalMotionProfile(constants, setpoint, 0, 0) {};
 
-      double getTotalDuration(); 
-      double getStartTime();    
+  TrapezoidalMotionProfile(TrapezoidConstants constants, double setpoint, double startingVelocity) : TrapezoidalMotionProfile(constants, setpoint, startingVelocity, 0) {};
 
-      double getAccelDist();  
-      double getDecelDist();
-      double getCruiseDist();
+  TrapezoidalSetpoint generateSetpoint(double time);
 
-      double calculatePosition(double time);  
+  void setPositionTolerance(double posTol);
+  void setVelocityTolerance(double velTol);
 
-      bool atGoal(double currentPosition, double currentVelocity);  
+  double getTotalDuration();
+  double getStartTime();
 
-      double getMaxVelocity(); 
-      double getMaxAcceleration(); 
+  double getAccelDist();
+  double getDecelDist();
+  double getCruiseDist();
 
-      void setLastTimestamp(double timestamp);
+  double calculatePosition(double time);
 
+  bool atGoal(double currentPosition, double currentVelocity);
+
+  double getMaxVelocity();
+  double getMaxAcceleration();
+
+  void setLastTimestamp(double timestamp);
 };
-
-
 
 #endif

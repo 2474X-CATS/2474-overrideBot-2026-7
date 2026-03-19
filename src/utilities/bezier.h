@@ -1,35 +1,31 @@
-#ifndef __BEZIER_H__ 
-#define __BEZIER_H__ 
+#ifndef __BEZIER_H__
+#define __BEZIER_H__
 
 #include <array>
-using std::array;  
+using std::array;
 
-class BezierCurve {  
-   private:   
-      
-      static int STANDARD_STEPS; 
+class BezierCurve
+{
+private:
+   static int STANDARD_STEPS;
 
-      array<array<double,2>, 3> points; 
-       
-      double approximateLength();
+   array<array<double, 2>, 3> points;
 
-      double generateXPos(double t); 
-      double generateYPos(double t);  
+   double approximateLength();
 
-      double pathLength;
+   double generateXPos(double t);
+   double generateYPos(double t);
 
-   public:  
-      BezierCurve(array<array<double,2>, 3> points);  
+   double pathLength;
 
-      array<double, 2> generatePoint(double t); 
-      
-      void generatePoint(double t, array<double, 2>& arr);
+public:
+   BezierCurve(array<array<double, 2>, 3> points);
 
-      double getPathLength();
+   array<double, 2> generatePoint(double t);
+
+   void generatePoint(double t, array<double, 2> &arr);
+
+   double getPathLength();
 };
 
-
-
-
-#endif 
-
+#endif

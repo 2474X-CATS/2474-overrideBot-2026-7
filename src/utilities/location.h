@@ -25,7 +25,7 @@ public:
                                                                                                                      perfectEntranceAngle(fmod(90 - perfEntranceAngle + 360, 360)), locationName(name) {};
 
   string getName();
-  array<double, 2> getProjectedSetpoint(double distFrom);  
+  array<double, 2> getProjectedSetpoint(double distFrom);
   double getPerfectEntranceAngle();
 
   bool isRobotVisiting(); // Is the robot facing the locations and is its heading within the angle threshold and if the two are touching
@@ -36,12 +36,10 @@ public:
 
   double getY();
   double getX();
-  double getRadius(); 
-  
-  
+  double getRadius();
+
   vector<double> getEuclideanAlignmentPath(double distFrom);
-  vector<double> getTaxicabAlignmentPath(double distFrom, bool xFirst); 
-  
+  vector<double> getTaxicabAlignmentPath(double distFrom, bool xFirst);
 
 private:
   static double getAngleDiff(double angle1, double angle2);

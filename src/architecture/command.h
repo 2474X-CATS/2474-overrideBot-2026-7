@@ -66,8 +66,8 @@ class CommandInterface
 { // Interface made for autonomous commands that use various types of subsystems
 public:
   virtual ~CommandInterface() = default;
-  virtual void run() = 0; // Establishes that at the very least a command has the ability to run 
-  virtual string repr(){return"";};
+  virtual void run() = 0; // Establishes that at the very least a command has the ability to run
+  virtual string repr() { return ""; };
 };
 
 template <typename T>
@@ -111,7 +111,7 @@ protected:
   virtual void start() = 0;
   virtual void periodic() = 0;
   virtual bool isOver() = 0;
-  virtual void end() = 0; 
+  virtual void end() = 0;
 };
 
 #endif
