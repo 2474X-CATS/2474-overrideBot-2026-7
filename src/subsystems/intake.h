@@ -1,44 +1,40 @@
-#ifndef __INTAKE_H__ 
-#define __INTAKE_H__ 
+#ifndef __INTAKE_H__
+#define __INTAKE_H__
 
-#include "../architecture/subsystem.h" 
-#include "vex.h" 
+#include "../architecture/subsystem.h"
+#include "vex.h"
 
-class Intake : public Subsystem {  
+class Intake : public Subsystem
+{
 
-   private:   
-    vex::motor intakeConveyor; 
-    vex::pneumatics lowGoalFilter;
+private:
+  vex::motor intakeConveyor;
+  vex::pneumatics lowGoalFilter;
 
-   public:  
-     using Subsystem::get;  
-     
-     static Intake* globalRef;  
-     static double ABSOLUTE_CONVEYOR_SPEED;
+public:
+  using Subsystem::get;
 
-     Intake(): 
-     Subsystem( 
-        "intake", 
-        { 
-            (EntrySet){"is_on", EntryType::BOOL},  
-            (EntrySet){"mid_scoring_engaged", EntryType::BOOL},
-            (EntrySet){"last_engaged_millis", EntryType::DOUBLE}
-        }
-     ), 
-     intakeConveyor(vex::motor(vex::PORT7)),  
-     lowGoalFilter(vex::pneumatics(Brain.ThreeWirePort.D))
-     { 
-       globalRef = this; 
-     } 
+  static Intake *globalRef;
+  static double ABSOLUTE_CONVEYOR_SPEED;
 
-     void init() override;
-     void periodic() override;
-     void updateTelemetry() override;
-     void stop() override;
+  Intake() : Subsystem(
+                 "intake",
+                 {(EntrySet){"is_on", EntryType::BOOL},
+                  (EntrySet){"mid_scoring_engaged", EntryType::BOOL},
+                  (EntrySet){"last_engaged_millis", EntryType::DOUBLE}}),
+             intakeConveyor(vex::motor(vex::PORT7)),
+             lowGoalFilter(vex::pneumatics(Brain.ThreeWirePort.D))
+  {
+    globalRef = this;
+  }
 
-   protected:  
-     using Subsystem::set; 
+  void init() override;
+  void periodic() override;
+  void updateTelemetry() override;
+  void stop() override;
 
-}; 
+protected:
+  using Subsystem::set;
+};
 
 #endif

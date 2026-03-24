@@ -13,35 +13,42 @@ void Intake::init()
 void Intake::periodic()
 {
    if (RobotState::getStateOf("intaking"))
-   { 
+   {
       intakeConveyor.setVelocity(-ABSOLUTE_CONVEYOR_SPEED * 2, vex::velocityUnits::rpm); // Inwards
       intakeConveyor.spin(vex::directionType::fwd);
-   }  
-   else if (RobotState::getStateOf("scoring_high")){  
+   }
+   else if (RobotState::getStateOf("scoring_high"))
+   {
       intakeConveyor.setVelocity(-ABSOLUTE_CONVEYOR_SPEED * 0.725, vex::velocityUnits::rpm); // Inwards
       intakeConveyor.spin(vex::directionType::fwd);
    }
    else if (get<bool>("mid_scoring_engaged"))
-   {    
-      double delay; 
-      double outputSpeed; 
-      double backTrackSpeed; 
+   {
+      double delay;
+      double outputSpeed;
+      double backTrackSpeed;
 
-      if (RobotState::getStateOf("in_skills")){  
-        delay = 225;
-        outputSpeed = ABSOLUTE_CONVEYOR_SPEED * 0.8; 
-        backTrackSpeed = ABSOLUTE_CONVEYOR_SPEED * 0.3;
-      } else { 
-        delay = 225; 
-        outputSpeed = ABSOLUTE_CONVEYOR_SPEED * 0.8; 
-        backTrackSpeed = ABSOLUTE_CONVEYOR_SPEED * 0.3;
+      if (RobotState::getStateOf("in_skills"))
+      {
+         delay = 225;
+         outputSpeed = ABSOLUTE_CONVEYOR_SPEED * 0.8;
+         backTrackSpeed = ABSOLUTE_CONVEYOR_SPEED * 0.3;
       }
-      
-      if (Brain.Timer.time(vex::msec) - get<double>("last_engaged_millis") >= delay){ 
-          intakeConveyor.setVelocity(-outputSpeed, vex::velocityUnits::rpm); // Outwards
-      } else { 
-          intakeConveyor.setVelocity(backTrackSpeed, vex::velocityUnits::rpm);
-      }  
+      else
+      {
+         delay = 225;
+         outputSpeed = ABSOLUTE_CONVEYOR_SPEED * 0.8;
+         backTrackSpeed = ABSOLUTE_CONVEYOR_SPEED * 0.3;
+      }
+
+      if (Brain.Timer.time(vex::msec) - get<double>("last_engaged_millis") >= delay)
+      {
+         intakeConveyor.setVelocity(-outputSpeed, vex::velocityUnits::rpm); // Outwards
+      }
+      else
+      {
+         intakeConveyor.setVelocity(backTrackSpeed, vex::velocityUnits::rpm);
+      }
 
       intakeConveyor.spin(vex::directionType::fwd);
    }
@@ -53,15 +60,16 @@ void Intake::periodic()
    else
    {
       stop();
-   }  
-   
-   if (RobotState::getStateOf("scoring_low")){ 
-      lowGoalFilter.close();
-   } else { 
-      lowGoalFilter.open();
-   } 
-   
+   }
 
+   if (RobotState::getStateOf("scoring_low"))
+   {
+      lowGoalFilter.close();
+   }
+   else
+   {
+      lowGoalFilter.open();
+   }
 }
 
 void Intake::updateTelemetry()
@@ -83,6 +91,6 @@ void Intake::updateTelemetry()
 void Intake::stop()
 {
    intakeConveyor.setVelocity(0, vex::percentUnits::pct);
-   intakeConveyor.spin(vex::directionType::fwd); 
+   intakeConveyor.spin(vex::directionType::fwd);
    lowGoalFilter.open();
 }

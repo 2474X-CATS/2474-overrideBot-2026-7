@@ -15,7 +15,7 @@ extern vex::brain Brain;
 // Constants: PLACE HERE [using extern]
 
 extern double ROBOT_WIDTH_MM;
-extern double ROBOT_LENGTH_MM; 
+extern double ROBOT_LENGTH_MM;
 
 extern double MOTOR_TEMP_LIMIT_CELSIUS;
 

@@ -1,39 +1,35 @@
-#ifndef __MATCHLOADER_H__ 
-#define __MATCHLOADER_H__ 
+#ifndef __MATCHLOADER_H__
+#define __MATCHLOADER_H__
 
-#include "../architecture/subsystem.h" 
-#include "vex.h" 
+#include "../architecture/subsystem.h"
+#include "vex.h"
 
-class Matchloader : public Subsystem {  
+class Matchloader : public Subsystem
+{
 
-   private:   
-    vex::pneumatics mlPiston; 
+private:
+  vex::pneumatics mlPiston;
 
-   public:  
-     using Subsystem::get;  
-     
-     static Matchloader* globalRef; 
+public:
+  using Subsystem::get;
 
-     Matchloader(): 
-     Subsystem( 
-        "matchloader", 
-        { 
-            (EntrySet){"is_on", EntryType::BOOL} 
-        }
-     ), 
-     mlPiston(vex::pneumatics(Brain.ThreeWirePort.H))
-     { 
-       globalRef = this; 
-     } 
+  static Matchloader *globalRef;
 
-     void init() override;
-     void periodic() override;
-     void updateTelemetry() override;
-     void stop() override;
+  Matchloader() : Subsystem(
+                      "matchloader",
+                      {(EntrySet){"is_on", EntryType::BOOL}}),
+                  mlPiston(vex::pneumatics(Brain.ThreeWirePort.H))
+  {
+    globalRef = this;
+  }
 
-   protected:  
-     using Subsystem::set; 
+  void init() override;
+  void periodic() override;
+  void updateTelemetry() override;
+  void stop() override;
 
-}; 
+protected:
+  using Subsystem::set;
+};
 
 #endif

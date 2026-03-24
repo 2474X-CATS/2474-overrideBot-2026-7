@@ -24,13 +24,12 @@ void Robot::initialize()
   Subsystem::initSystems();
 };
 
-
 void Robot::driverControl()
-{ 
-  RobotState::setMode(ControlType::DRIVER);  
+{
+  RobotState::setMode(ControlType::DRIVER);
   RobotState::manuallyModifyState("ready", true);
-  RobotState::manuallyModifyState("is_drive_inverted", false); 
-  RobotState::manuallyModifyState("in_autonomous", false); 
+  RobotState::manuallyModifyState("is_drive_inverted", false);
+  RobotState::manuallyModifyState("in_autonomous", false);
   double timestamp;
   timestamp = Brain.Timer.time();
   while (true)
@@ -46,7 +45,7 @@ void Robot::runTelemetryThread()
   int timestamp = Brain.Timer.time();
   while (true)
   {
-    RobotState::updateState(); 
+    RobotState::updateState();
     RobotState::vibrate();
     Subsystem::refreshTelemetry();
     timelyWait(timestamp, 20);
@@ -67,12 +66,11 @@ void Robot::setAutonomousCommand(std::vector<CommandInterface *> comm)
 
 void Robot::autonControl()
 {
-  RobotState::setMode(ControlType::MANUAL); 
-  RobotState::manuallyModifyState("in_autonomous", true); 
+  RobotState::setMode(ControlType::MANUAL);
+  RobotState::manuallyModifyState("in_autonomous", true);
   RobotState::manuallyModifyState("ready", true);
   for (CommandInterface *command : Robot::autonomousCommand)
   {
     command->run();
-  }   
-
+  }
 };

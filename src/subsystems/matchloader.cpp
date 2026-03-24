@@ -1,24 +1,31 @@
-#include "matchloader.h" 
+#include "matchloader.h"
 
-Matchloader *Matchloader::globalRef = nullptr; 
+Matchloader *Matchloader::globalRef = nullptr;
 
-void Matchloader::init(){ 
-   set<bool>("is_on", true);     
+void Matchloader::init()
+{
+   set<bool>("is_on", true);
    stop();
-}  
+}
 
-void Matchloader::periodic(){    
-   if (RobotState::getStateOf("matchloader_out")){ 
-     mlPiston.set(true);
-   } else { 
-     mlPiston.set(false);
+void Matchloader::periodic()
+{
+   if (RobotState::getStateOf("matchloader_out"))
+   {
+      mlPiston.set(true);
    }
-} 
+   else
+   {
+      mlPiston.set(false);
+   }
+}
 
-void Matchloader::updateTelemetry(){ 
+void Matchloader::updateTelemetry()
+{
    return;
-} 
+}
 
-void Matchloader::stop(){ 
+void Matchloader::stop()
+{
    mlPiston.close();
 }

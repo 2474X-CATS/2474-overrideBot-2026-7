@@ -1,20 +1,24 @@
-#include "hooks.h" 
+#include "hooks.h"
 
-Hooks *Hooks::globalRef = nullptr; 
+Hooks *Hooks::globalRef = nullptr;
 
-void Hooks::init(){ 
-   set<bool>("is_on", true);     
-   stop(); 
-}  
+void Hooks::init()
+{
+   set<bool>("is_on", true);
+   stop();
+}
 
-void Hooks::periodic(){ 
-   hookPiston.set(RobotState::getStateOf("descore_in")); 
-} 
+void Hooks::periodic()
+{
+   hookPiston.set(RobotState::getStateOf("descore_in"));
+}
 
-void Hooks::updateTelemetry(){ 
+void Hooks::updateTelemetry()
+{
    return;
-} 
+}
 
-void Hooks::stop(){ 
+void Hooks::stop()
+{
    hookPiston.set(true);
 }

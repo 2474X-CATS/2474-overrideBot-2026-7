@@ -25,13 +25,14 @@ void placeValueAt(T val, string directory, string entryKey)
 
 template <>
 void Telemetry::placeValueAt<string>(string val, string directory, string entryKey)
-{ 
-    if (table.at(directory).count(entryKey) == 0){  
+{
+    if (table.at(directory).count(entryKey) == 0)
+    {
         string errorMessage = "MODIFY Error: (" + directory + ", " + entryKey + ")";
-        Brain.Screen.print(errorMessage.c_str()); 
-        Brain.Screen.newLine(); 
+        Brain.Screen.print(errorMessage.c_str());
+        Brain.Screen.newLine();
         return;
-    }   
+    }
     if (table.at(directory).at(entryKey).type == EntryType::STRING)
     {
         table[directory][entryKey].value = val;
@@ -43,13 +44,14 @@ void Telemetry::placeValueAt<string>(string val, string directory, string entryK
 };
 template <>
 void Telemetry::placeValueAt<int>(int val, string directory, string entryKey)
-{ 
-    if (table.at(directory).count(entryKey) == 0){  
+{
+    if (table.at(directory).count(entryKey) == 0)
+    {
         string errorMessage = "MODIFY Error: (" + directory + ", " + entryKey + ")";
-        Brain.Screen.print(errorMessage.c_str()); 
-        Brain.Screen.newLine(); 
+        Brain.Screen.print(errorMessage.c_str());
+        Brain.Screen.newLine();
         return;
-    }   
+    }
     if (table.at(directory).at(entryKey).type == EntryType::INT)
     {
         ostringstream strVal;
@@ -64,13 +66,14 @@ void Telemetry::placeValueAt<int>(int val, string directory, string entryKey)
 
 template <>
 void Telemetry::placeValueAt<double>(double val, string directory, string entryKey)
-{ 
-    if (table.at(directory).count(entryKey) == 0){  
+{
+    if (table.at(directory).count(entryKey) == 0)
+    {
         string errorMessage = "MODIFY Error: (" + directory + ", " + entryKey + ")";
-        Brain.Screen.print(errorMessage.c_str()); 
-        Brain.Screen.newLine(); 
+        Brain.Screen.print(errorMessage.c_str());
+        Brain.Screen.newLine();
         return;
-    }   
+    }
 
     if (table.at(directory).at(entryKey).type == EntryType::DOUBLE)
     {
@@ -86,13 +89,14 @@ void Telemetry::placeValueAt<double>(double val, string directory, string entryK
 
 template <>
 void Telemetry::placeValueAt<bool>(bool val, string directory, string entryKey)
-{  
-    if (table.at(directory).count(entryKey) == 0){  
+{
+    if (table.at(directory).count(entryKey) == 0)
+    {
         string errorMessage = "MODIFY Error : (" + directory + ", " + entryKey + ")";
-        Brain.Screen.print(errorMessage.c_str()); 
-        Brain.Screen.newLine(); 
+        Brain.Screen.print(errorMessage.c_str());
+        Brain.Screen.newLine();
         return;
-    }  
+    }
 
     if (table.at(directory).at(entryKey).type == EntryType::BOOL)
     {
@@ -116,13 +120,14 @@ T getValueAt(string directory, string entryKey)
 
 template <>
 string Telemetry::getValueAt<string>(string directory, string entryKey)
-{ 
-    if (table.at(directory).count(entryKey) == 0){  
+{
+    if (table.at(directory).count(entryKey) == 0)
+    {
         string errorMessage = "RECEIVE Error : (" + directory + ", " + entryKey + ")";
-        Brain.Screen.print(errorMessage.c_str()); 
+        Brain.Screen.print(errorMessage.c_str());
         Brain.Screen.newLine();
         return "";
-    } 
+    }
 
     if (table.at(directory).at(entryKey).type == EntryType::STRING)
     {
@@ -138,13 +143,14 @@ string Telemetry::getValueAt<string>(string directory, string entryKey)
 
 template <>
 int Telemetry::getValueAt<int>(string directory, string entryKey)
-{ 
-    if (table.at(directory).count(entryKey) == 0){  
+{
+    if (table.at(directory).count(entryKey) == 0)
+    {
         string errorMessage = "RECEIVE Error: (" + directory + ", " + entryKey + ")";
-        Brain.Screen.print(errorMessage.c_str()); 
+        Brain.Screen.print(errorMessage.c_str());
         Brain.Screen.newLine();
         return 0;
-    } 
+    }
     if (table.at(directory).at(entryKey).type == EntryType::INT)
     {
         if (table.at(directory).at(entryKey).value == "None")
@@ -163,13 +169,14 @@ int Telemetry::getValueAt<int>(string directory, string entryKey)
 
 template <>
 double Telemetry::getValueAt<double>(string directory, string entryKey)
-{ 
-    if (table.at(directory).count(entryKey) == 0){  
+{
+    if (table.at(directory).count(entryKey) == 0)
+    {
         string errorMessage = "RECEIVE Error: (" + directory + ", " + entryKey + ")";
-        Brain.Screen.print(errorMessage.c_str()); 
+        Brain.Screen.print(errorMessage.c_str());
         Brain.Screen.newLine();
         return 0.0;
-    } 
+    }
     if (table.at(directory).at(entryKey).type == EntryType::DOUBLE)
     {
         if (table.at(directory).at(entryKey).value == "None")
@@ -187,13 +194,14 @@ double Telemetry::getValueAt<double>(string directory, string entryKey)
 
 template <>
 bool Telemetry::getValueAt<bool>(std::string directory, std::string entryKey)
-{ 
-    if (table.at(directory).count(entryKey) == 0){  
+{
+    if (table.at(directory).count(entryKey) == 0)
+    {
         string errorMessage = "RECEIVE Error: (" + directory + ", " + entryKey + ")";
-        Brain.Screen.print(errorMessage.c_str()); 
+        Brain.Screen.print(errorMessage.c_str());
         Brain.Screen.newLine();
         return false;
-    } 
+    }
     if (table.at(directory).at(entryKey).type == EntryType::BOOL)
     {
         if (table.at(directory).at(entryKey).value == "None")

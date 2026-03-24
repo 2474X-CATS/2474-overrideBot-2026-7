@@ -1,30 +1,27 @@
-#ifndef __FEED_FORWARD_H__ 
-#define __FEED_FORWARD_H__ 
+#ifndef __FEED_FORWARD_H__
+#define __FEED_FORWARD_H__
 
-
-typedef struct { 
-   double kS; //over come static friction
-   double kV; //maintain kinetic friction
+typedef struct
+{
+   double kS; // over come static friction
+   double kV; // maintain kinetic friction
    double kA; // increase velocity
-} FFConstants; 
+} FFConstants;
 
+class FeedForward
+{
 
-class FeedForward {   
+   double kS;
+   double kV;
+   double kA;
 
-    double kS; 
-    double kV; 
-    double kA; 
+public:
+   FeedForward(FFConstants consts) : kS(consts.kS),
+                                     kV(consts.kV),
+                                     kA(consts.kA) {};
 
-    public:   
-      FeedForward(FFConstants consts) : 
-      kS(consts.kS), 
-      kV(consts.kV), 
-      kA(consts.kA)
-      {};  
-
-      double calculate(double velocity);  
-      double calculate(double velocity, double accleration); 
-      
+   double calculate(double velocity);
+   double calculate(double velocity, double accleration);
 };
 
 #endif

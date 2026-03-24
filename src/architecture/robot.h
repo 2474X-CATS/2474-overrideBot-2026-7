@@ -10,7 +10,6 @@ class Robot
 {
 
 private:
-
    vector<CommandInterface *> autonomousCommand;
 
 public:
@@ -27,7 +26,7 @@ public:
    void stopEverything();
 
    void runTelemetryThread(); // A constant loop of information logging fom the subsystems (drivebase, intake, etc),
-                                               // and the system (controller axises, buttons) happening on a different thread
+                              // and the system (controller axises, buttons) happening on a different thread
 };
 
 #endif

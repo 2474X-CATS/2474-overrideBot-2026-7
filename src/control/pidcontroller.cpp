@@ -48,9 +48,10 @@ double pidcontroller::calculate(double position, double timestamp)
 void pidcontroller::setLastTimestamp(double timestamp)
 {
    lastTimestamp = timestamp;
-}; 
+};
 
-double pidcontroller::getDerivative(){ 
+double pidcontroller::getDerivative()
+{
    return derivative;
 }
 
