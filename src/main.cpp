@@ -155,11 +155,11 @@ int main()
 
   //--------------------DONT MODIFY (MOSTLY)-----------------
 
-  Drivebase drive = Drivebase(TILE_SIZE_MM * 3 + 200, 425);
+  Drivebase drive = Drivebase(0,0);
 
-  // Intake intake;
-  // Matchloader matchloader;
-  // Hooks hooks;
+  Intake intake;
+  Matchloader matchloader;
+  Hooks hooks;
 
   robot.initialize();
 
@@ -227,12 +227,19 @@ int main()
 
   // startCommandCompetitiveMatch(routines);  //Uncomment when loading up for a comp
   // startCommandSkillsMatch(auto_skills(), false);  //Uncomment when loading up for skills
-  testDrive(); // Uncomment when getting driver practice
+  //testDrive(); // Uncomment when getting driver practice
 
-  /*
-  testAuto(
-    closed_side_right(),
+  
+  testAuto( 
+    {
+      FollowSplinePath::getCommand( 
+        array<array<double,2>,2>{ 
+          array<double,2>{TILE_SIZE_MM * 4.5, TILE_SIZE_MM * 1.5}, 
+          array<double,2>{TILE_SIZE_MM * 5, TILE_SIZE_MM * 1.25}
+        }
+      )
+    },
     false
   );
-  */
+  
 }

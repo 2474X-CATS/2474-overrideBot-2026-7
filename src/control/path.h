@@ -84,6 +84,11 @@ public:
    bool completed(double x, double y);
 };
 
+typedef struct { 
+   array<double,2> endpoint; 
+   bool cuttingCorners;
+} BiarcEnum;
+
 class CirclePath
 {
 
@@ -117,9 +122,6 @@ private:
 
    double getAngularVelocity(double linearVelocity, double heading, double timestamp);
 
-   void setStartingVelocity(double velocity);
-   void setEndingVelocity(double velocity);
-
    double getMaximumVelocity();
 
    double getEndpointX();
@@ -127,14 +129,17 @@ private:
    double getEndingHeading();
 
 public:
-   CirclePath(array<double, 2> endPoint, bool cuttingCorners, PathMetadata metadata);
-   CirclePath(array<double, 2> endPoint, bool cuttingCorners);
+   CirclePath(BiarcEnum biarc, PathMetadata metadata);
+   CirclePath(BiarcEnum biarc);
 
    PathFrameOutput calculateFrameOutput(double x, double y, double heading, double timestamp);
 
    static void linkLeftToRight(CirclePath *path1, CirclePath *path2);
 
-   void transformMetadata(PathMetadata *metadata);
+   void transformMetadata(PathMetadata *metadata); 
+
+   void setStartingVelocity(double velocity);
+   void setEndingVelocity(double velocity);
 
    void activate(PathMetadata metadata);
 

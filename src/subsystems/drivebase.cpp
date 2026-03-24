@@ -143,22 +143,24 @@ void Drivebase::init()
 
    //------------------------------
 
-   turnPID.P = 0.5;
-   turnPID.I = 0.0;
-   turnPID.D = 0.0;
-   turnPID.errorTolerance = 0;
+   correctivePID.P = 1;
+   correctivePID.I = 0.0;
+   correctivePID.D = 0.025;
+   correctivePID.errorTolerance = 0;
 
-   //--------------------------  >
+   //--------------------------  > 
+   
+   turnPID.P = 2.6; 
+   turnPID.I = 0.00; 
+   turnPID.D = 0.00; 
+   turnPID.errorTolerance = 0.5;
 
-   trapConsts.maxVelocity = ((MAX_RPM * (2 * DRIVE_WHEEL_RADIUS_MM * M_PI)) / 60.0 * 0.98); // * (MAX_RPM / 600.0));
+   //-------------------------- >
+
+   trapConsts.maxVelocity = ((MAX_RPM * (2 * DRIVE_WHEEL_RADIUS_MM * M_PI)) / 60.0); // * (MAX_RPM / 600.0));
    trapConsts.maxAcceleration = trapConsts.maxVelocity * 0.9;                               // Reach max speed in 0.9 seconds
 
    //--------------------------
-
-   array<double, 2> sp = {get<double>("Pos_X"), get<double>("Pos_Y")};
-   array<double, 2> ep = {TILE_SIZE_MM * 5.2, TILE_SIZE_MM * 1.25};
-
-   // testPath->init(Brain.Timer.time());
 
    //--------------------------
 
@@ -167,20 +169,7 @@ void Drivebase::init()
 
 void Drivebase::periodic()
 {
-   // arcadeDrive(((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL))*-1, ((double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL)));
-   /*
-   double timestamp = Brain.Timer.time();
-   if (!testPath->completed(timestamp)){
-      PathFrameOutput output = testPath->calculateFrameOutput(
-         get<double>("Pos_X"),
-         get<double>("Pos_Y"),
-         get<double>("Angle_Degrees_CCW"),
-         Brain.Timer.time());
-      manualDriveWithCurvature(output.linearVelocity, output.angularVelocity);
-   } else {
-      stop();
-   }
-   */
+   arcadeDrive(((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL))*-1, ((double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL)));
 }
 
 void Drivebase::updateTelemetry()
@@ -504,6 +493,17 @@ TrapezoidConstants Drivebase::getMotionConstants()
 };
 
 void Drivebase::setCalibratingStructure(Alignment_Structure struc)
-{
+{ 
    this->calibratingWall = struc;
-};
+}; 
+
+PathMetadata Drivebase::getPathMetadata(){ 
+   PathMetadata data; 
+   data.positionX = get<double>("Pos_X"); 
+   data.positionY = get<double>("Pos_Y"); 
+   data.angleHeading = get<double>("Angle_Degrees_CCW"); 
+   data.pidConstants = correctivePID; 
+   data.motionConstants = trapConsts; 
+   data.maximumCentripetalAcceleration = pow(trapConsts.maxVelocity,2) / 500.0; 
+   return data;
+}

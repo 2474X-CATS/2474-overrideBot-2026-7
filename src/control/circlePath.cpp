@@ -1,15 +1,15 @@
 #include "path.h"
 #include "vex.h"
 
-CirclePath::CirclePath(array<double, 2> endPoint, bool cuttingCorners, PathMetadata metadata) : CirclePath(endPoint, cuttingCorners)
+CirclePath::CirclePath(BiarcEnum biarc, PathMetadata metadata) : CirclePath(biarc)
 {
   activate(metadata);
 };
 
-CirclePath::CirclePath(array<double, 2> endPoint, bool cuttingCorners)
+CirclePath::CirclePath(BiarcEnum biarc)
 {
-  this->endpoint = endPoint;
-  this->cuttingCorners = cuttingCorners;
+  this->endpoint = biarc.endpoint;
+  this->cuttingCorners = biarc.cuttingCorners;
 }
 
 void CirclePath::activate(PathMetadata metadata)
@@ -32,18 +32,19 @@ void CirclePath::activate(PathMetadata metadata)
   {
     straight = true;
     this->radius = 1e7;
-    this->arcLength = dist;
+    this->arcLength = dist;  
+    this->endingHeading = metadata.angleHeading;
   }
   else
-  {
+  {    
+    this->endingHeading = fmod(metadata.angleHeading + angleDiff * 2 + 360, 360); 
     angleDiff = angleDiff / 180 * M_PI;
     this->turningDirection = static_cast<int>(copysign(1, angleDiff));
     this->radius = dist / (2 * sin(angleDiff / 2));
-    this->arcLength = fabs(this->radius * angleDiff) + 100;
-    this->radius /= 2;
+    this->arcLength = fabs(this->radius * angleDiff);
+    this->radius /= 2;   
+    
   }
-
-  this->endingHeading = fmod(metadata.angleHeading + angleDiff + 360, 360);
 
   metadata.motionConstants.maxVelocity = std::min<double>(
       metadata.motionConstants.maxVelocity,

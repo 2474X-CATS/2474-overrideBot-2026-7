@@ -201,6 +201,61 @@ public:
   void start() override;
 };
 
+//------------------------------------------------------------------------------------------------------------- 
+class FollowCirclePath : Command<Drivebase> { 
+  private:  
+
+     vector<BiarcEnum> setpoints;   
+     vector<CirclePath> segments; 
+
+     int index = 0;  
+     int nSegments = 0; 
+
+     bool initialized = false;
+
+     Drivebase& drivebaseRef;   
+
+  public:    
+
+     static CommandInterface* getCommand(vector<BiarcEnum> setpoints){ 
+        return new FollowCirclePath(*Drivebase::globalRef, setpoints);
+     } 
+
+     FollowCirclePath(Drivebase& drivebase, vector<BiarcEnum> setpoints);
+     
+     void start() override; 
+     void periodic() override; 
+     bool isOver() override; 
+     void end() override;
+
+}; 
+
+class FollowSplinePath : Command<Drivebase> { 
+   private:  
+
+     Drivebase& drivebaseRef; 
+     HomingPath* path = nullptr;  
+     array<array<double,2>,2> waypoints; 
+
+   public:    
+
+     static CommandInterface* getCommand(array<array<double,2>,2> waypoints){ 
+         return new FollowSplinePath(*Drivebase::globalRef, waypoints);
+     }
+     
+     FollowSplinePath(Drivebase& drivebase, array<array<double,2>,2> waypoints) :  
+     Command<Drivebase>(drivebase),   
+     drivebaseRef(drivebase),
+     waypoints(waypoints){}; 
+
+     void start() override; 
+     void periodic() override; 
+     bool isOver() override; 
+     void end() override;
+
+
+};
+
 //---------------------------------------
 // TURN THE ROBOT SO THAT IT S FACING A CERTAIN (X,Y) POSITION
 

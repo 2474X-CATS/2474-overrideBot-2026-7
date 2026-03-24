@@ -58,12 +58,11 @@ private:
   // vex::motor driveMidRight;
   vex::motor driveBackRight;
 
-  CirclePath *testPath = nullptr;
-
   vex::motor_group leftDriveMotors;
   vex::motor_group rightDriveMotors;
 
-  PIDConstants turnPID;
+  PIDConstants turnPID; 
+  PIDConstants correctivePID;
 
   TrapezoidConstants trapConsts;
 
@@ -134,7 +133,9 @@ public:
 
   static Location *getLocation(int index);
   PIDConstants getTurningPID();
-  TrapezoidConstants getMotionConstants();
+  TrapezoidConstants getMotionConstants(); 
+  PathMetadata getPathMetadata(); 
+
 };
 
 #endif

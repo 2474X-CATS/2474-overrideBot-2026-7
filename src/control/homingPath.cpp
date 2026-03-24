@@ -2,7 +2,7 @@
 #include "vex.h"
 
 double HomingPath::TUNED_LDIST = hypot(ROBOT_LENGTH_MM * 1.5, ROBOT_WIDTH_MM * 1.5);
-double HomingPath::TUNED_L_SCALE = 0.3;
+double HomingPath::TUNED_L_SCALE = 1;
 double HomingPath::OPTIMUM_TOLERANCE = 100;
 
 HomingPath::HomingPath(BezierCurve *curve, TrapezoidConstants motionConstants, PIDConstants pidconstants, double lookAheadDistance, double k_scale, double maxCentripAccel, double distTolerance)

@@ -340,6 +340,96 @@ void CloseDistance::start()
     operationsIndex++;
 };
 
+//--------------------------------------- 
+
+FollowCirclePath::FollowCirclePath(Drivebase& drivebase, vector<BiarcEnum> setpoints) : 
+Command<Drivebase>(drivebase), 
+drivebaseRef(drivebase), 
+setpoints(setpoints)
+{ 
+  for (BiarcEnum biarc : setpoints){  
+    segments.push_back(CirclePath(biarc)); 
+    nSegments++;
+  } 
+} 
+
+
+void FollowCirclePath::start(){ 
+    
+    double maxVelocity = drivebaseRef.getMotionConstants().maxVelocity;
+    for (int i = 0; i < nSegments; i++){ 
+        
+       if (i > 0){ 
+         segments[i-1].setEndingVelocity(maxVelocity); 
+         segments[i].setStartingVelocity(maxVelocity); 
+       } 
+      
+    } 
+} 
+
+void FollowCirclePath::periodic(){  
+    double timestamp = Brain.Timer.time();
+    if (!initialized){  
+        segments.at(index).activate(drivebaseRef.getPathMetadata()); 
+        segments.at(index).init(timestamp);   
+        initialized = true;
+    } else { 
+        if (segments.at(index).completed(timestamp)){ 
+            initialized = false; 
+            index++;
+        } else { 
+            PathFrameOutput output = segments.at(index).calculateFrameOutput( 
+                drivebaseRef.get<double>("Pos_X"), 
+                drivebaseRef.get<double>("Pos_Y"), 
+                drivebaseRef.get<double>("Angle_Degrees_CCW"), 
+                timestamp
+            ); 
+            drivebaseRef.manualDriveWithCurvature(output.linearVelocity, output.angularVelocity);
+        }
+    }
+} 
+
+bool FollowCirclePath::isOver(){ 
+    return index >= nSegments;
+} 
+
+void FollowCirclePath::end(){  
+    Brain.Screen.print("HI");
+    return drivebaseRef.stop();
+}
+
+
+
+//--------------------------------------- 
+
+void FollowSplinePath::start(){ 
+    path = new HomingPath(waypoints, drivebaseRef.getPathMetadata()); 
+    path->init(Brain.Timer.time()); 
+} 
+
+void FollowSplinePath::periodic(){  
+
+    PathFrameOutput output = path->calculateFrameOutput( 
+        drivebaseRef.get<double>("Pos_X"), 
+        drivebaseRef.get<double>("Pos_Y"), 
+        drivebaseRef.get<double>("Angle_Degrees_CCW"), 
+        Brain.Timer.time()
+    ); 
+
+    drivebaseRef.manualDriveWithCurvature(output.linearVelocity, output.angularVelocity);
+} 
+
+bool FollowSplinePath::isOver(){ 
+    return path->completed(drivebaseRef.get<double>("Pos_X"), drivebaseRef.get<double>("Pos_Y"));
+} 
+
+void FollowSplinePath::end(){ 
+    drivebaseRef.stop();
+}
+
+
+
+
 //---------------------------------------
 // DRIVES THE ROBOT FORWARD OR BACKWARD AT A CERTAIN SPEED PERCENTAGE
 
