@@ -15,6 +15,7 @@ CirclePath::CirclePath(BiarcEnum biarc)
 void CirclePath::activate(PathMetadata metadata)
 {
   //this->projectedHeading = metadata.angleHeading;
+
   double dist = hypot(metadata.positionX - endpoint[0], metadata.positionY - endpoint[1]); 
 
   double targetHeading = fmod((atan2(endpoint[1] - metadata.positionY, endpoint[0] - metadata.positionX)) / M_PI * 180 + 360, 360); 
@@ -39,6 +40,7 @@ void CirclePath::activate(PathMetadata metadata)
   }
   else
   {     
+
     angleDiff = angleDiff / 180 * M_PI;
     this->turningDirection = static_cast<int>(copysign(1, angleDiff));
     this->radius = dist / (2 * sin(angleDiff / 2));
@@ -84,7 +86,7 @@ double CirclePath::calculateAngleCorrectionOutput(double positionX, double posit
   double desiredHeading = getDesiredHeading(positionX, positionY); 
   double angleDiff = desiredHeading - heading; 
   if (angleDiff > 180 || angleDiff < -180){ 
-    angleDiff = (360 - fabs(angleDiff)) * -1 * copysign(angleDiff);
+    angleDiff = (360 - fabs(angleDiff)) * -1 * copysign(1, angleDiff);
   } 
   return turnController->calculate(angleDiff, timestamp);
 }
@@ -97,6 +99,7 @@ double CirclePath::getAngularVelocity(double linearVelocity)
   }
 
   return fabs((linearVelocity / this->radius) / M_PI * 180) * turningDirection; 
+
 }
 
 PathFrameOutput CirclePath::calculateFrameOutput(double x, double y, double heading, double timestamp)

@@ -120,7 +120,7 @@ private:
 
    double endingHeading;
 
-   double getAngularVelocity(double linearVelocity, double heading, double timestamp);
+   double getAngularVelocity(double linearVelocity);
 
    double getMaximumVelocity();
 
