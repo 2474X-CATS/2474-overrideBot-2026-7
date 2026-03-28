@@ -30,7 +30,8 @@ bool DrivePath::isOver()
 
 void DrivePath::end()
 {
-    RobotState::manuallyModifyState("intaking", false);
+    RobotState::manuallyModifyState("intaking", false); 
+    RobotState::manuallyModifyState("odometry_enabled", true);
     drivebaseRef.stop();
     intakeRef.stop();
 }
@@ -103,15 +104,17 @@ void DrivePath::initializeDrive()
     isGoingForward = setpoints.at(operationsIndex) > 0;
     drivingProfile = new TrapezoidalMotionProfile(drivebaseRef.getMotionConstants(), abs(setpoints.at(operationsIndex)));
 
-    drivingProfile->setLastTimestamp(Brain.Timer.time());
-
     referenceAngle = drivebaseRef.get<double>("Angle_Degrees_CCW");
 
     startingPoint[0] = drivebaseRef.get<double>("Pos_X");
     startingPoint[1] = drivebaseRef.get<double>("Pos_Y");
 
     lastPoint[0] = startingPoint[0];
-    lastPoint[1] = startingPoint[1];
+    lastPoint[1] = startingPoint[1]; 
+    
+    RobotState::manuallyModifyState("odometry_enabled", true);
+
+    drivingProfile->setLastTimestamp(Brain.Timer.time()); 
 }
 
 void DrivePath::drive()
@@ -124,17 +127,17 @@ void DrivePath::drive()
 
     TrapezoidalSetpoint setpoint;
 
-    setpoint = drivingProfile->generateSetpoint(Brain.Timer.time(vex::sec));
+    setpoint = drivingProfile->generateSetpoint(Brain.Timer.time());
 
     output = setpoint.velocity;
 
     double positionError = setpoint.position - currentDist;
-    output += (positionError * 0.03);
+    //output += (positionError * 0.03);
 
     if (!isGoingForward)
         output *= -1;
 
-    drivebaseRef.manualDriveForward(output, referenceAngle);
+    drivebaseRef.manualDriveForward(output, -1);
 
     lastPoint[0] = drivebaseRef.get<double>("Pos_X");
     lastPoint[1] = drivebaseRef.get<double>("Pos_Y");
@@ -146,7 +149,8 @@ bool DrivePath::isTurnOver()
 }
 
 void DrivePath::initializeTurn()
-{
+{ 
+    RobotState::manuallyModifyState("odometry_enabled", false);
     turnPID = new pidcontroller(drivebaseRef.getTurningPID(), 0);
     turnPID->setLastTimestamp(Brain.Timer.time());
 }
@@ -342,10 +346,12 @@ void CloseDistance::start()
 
 //--------------------------------------- 
 
-FollowCirclePath::FollowCirclePath(Drivebase& drivebase, vector<BiarcEnum> setpoints) : 
-Command<Drivebase>(drivebase), 
-drivebaseRef(drivebase), 
-setpoints(setpoints)
+FollowCirclePath::FollowCirclePath(Drivebase& drivebase, Intake& intake, vector<BiarcEnum> setpoints, bool intaking) : 
+Command<Drivebase, Intake>(drivebase, intake), 
+drivebaseRef(drivebase),  
+intakeRef(intake), 
+setpoints(setpoints), 
+intaking(intaking)
 { 
   for (BiarcEnum biarc : setpoints){  
     segments.push_back(CirclePath(biarc)); 
@@ -363,8 +369,8 @@ void FollowCirclePath::start(){
          segments[i-1].setEndingVelocity(maxVelocity); 
          segments[i].setStartingVelocity(maxVelocity); 
        } 
-      
-    } 
+    }  
+    RobotState::manuallyModifyState("intaking", intaking); 
 } 
 
 void FollowCirclePath::periodic(){  
@@ -382,18 +388,20 @@ void FollowCirclePath::periodic(){
                 drivebaseRef.get<double>("Angular_Velocity"), 
                 timestamp
             ); 
-            drivebaseRef.manualDriveWithCurvature(output.linearVelocity, output.angularVelocity);
+            drivebaseRef.manualDriveWithCurvature(output.linearVelocity, output.angularVelocity); 
         }
-    }
+    }  
+    intakeRef.periodic();
 } 
 
 bool FollowCirclePath::isOver(){ 
     return index >= nSegments;
 } 
 
-void FollowCirclePath::end(){  
-    Brain.Screen.print("HI");
-    return drivebaseRef.stop();
+void FollowCirclePath::end(){
+    RobotState::manuallyModifyState("intaking", false);  
+    intakeRef.stop(); 
+    drivebaseRef.stop();
 }
 
 
@@ -517,6 +525,66 @@ string IntakeCubes::repr()
 {
     stringstream ss;
     ss << "Intake " << timeDuration;
+    return ss.str();
+}
+
+//---------------------------------------
+// SCORES BLOCKS ON A GOAL
+
+void ScoreOnGoal::start()
+{
+    switch (goal)
+    {
+    case 1:
+        RobotState::manuallyModifyState("scoring_high", true);
+        break;
+    case 2:
+        RobotState::manuallyModifyState("scoring_mid", true);
+        break;
+    case 3:
+        RobotState::manuallyModifyState("scoring_low", true);
+        break;
+    default:
+        break;
+    }
+    startingTime = Brain.Timer.time();
+};
+
+void ScoreOnGoal::periodic()
+{
+    indexerRef.periodic();
+    intakeRef.periodic();
+}
+
+bool ScoreOnGoal::isOver()
+{
+    return Brain.Timer.time() - startingTime >= timeDuration;
+}
+
+void ScoreOnGoal::end()
+{
+    switch (goal)
+    {
+    case 1:
+        RobotState::manuallyModifyState("scoring_high", false);
+        break;
+    case 2:
+        RobotState::manuallyModifyState("scoring_mid", false);
+        break;
+    case 3:
+        RobotState::manuallyModifyState("scoring_low", false);
+        break;
+    default:
+        break;
+    } 
+    intakeRef.stop(); 
+    indexerRef.stop(); 
+    
+} 
+
+string ScoreOnGoal::repr(){ 
+    stringstream ss;  
+    ss << "Score " << goal << "," << timeDuration; 
     return ss.str();
 }
 

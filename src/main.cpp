@@ -232,7 +232,8 @@ int main()
 
  //startCommandCompetitiveMatch(routines);  //Uncomment when loading up for a comp   
  //startCommandSkillsMatch(auto_skills(), false);  //Uncomment when loading up for skills 
- testDrive();//Uncomment when getting driver practice 
+ //testDrive();//Uncomment when getting driver practice 
+
 
  /*
  testAuto(  

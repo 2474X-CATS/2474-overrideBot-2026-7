@@ -5,6 +5,7 @@
 #include "vex.h"
 using namespace vex;
 
+/*
 void timelyWait(long lastTimestamp, long timeInterval)
 {
   long nextTimestamp = lastTimestamp + timeInterval;
@@ -13,6 +14,7 @@ void timelyWait(long lastTimestamp, long timeInterval)
     waitTime = 0;
   wait(waitTime, msec);
 }
+*/ 
 
 Robot::Robot() {
 
@@ -30,26 +32,26 @@ void Robot::driverControl()
   RobotState::manuallyModifyState("ready", true);
   RobotState::manuallyModifyState("is_drive_inverted", false);
   RobotState::manuallyModifyState("in_autonomous", false);
-  double timestamp;
-  timestamp = Brain.Timer.time();
+  //double timestamp;
+  //timestamp = Brain.Timer.time();
   while (true)
   {
     Subsystem::updateSystems();
-    timelyWait(timestamp, 20);
-    timestamp = Brain.Timer.time();
+    wait(20, vex::msec);
+    //timestamp = Brain.Timer.time();
   }
 };
 
 void Robot::runTelemetryThread()
 {
-  int timestamp = Brain.Timer.time();
+  //int timestamp = Brain.Timer.time();
   while (true)
   {
     RobotState::updateState();
     RobotState::vibrate();
     Subsystem::refreshTelemetry();
-    timelyWait(timestamp, 20);
-    timestamp = Brain.Timer.time();
+    wait(20, vex::msec);
+    //timestamp = Brain.Timer.time();
   }
 };
 

@@ -98,15 +98,18 @@ void RobotState::initializeState()
            (EntrySet){"intaking", EntryType::BOOL},
 
            (EntrySet){"k_inversion_held", EntryType::BOOL},
-           (EntrySet){"is_drive_inverted", EntryType::BOOL},
+           (EntrySet){"is_drive_inverted", EntryType::BOOL}, 
+           (EntrySet){"odometry_enabled", EntryType::BOOL} 
+
        });
 }
 
 void RobotState::updateRegular()
-{
+{ 
+   manuallyModifyState("odometry_enabled", false); 
    manuallyModifyState("scoring_high", Controller.ButtonR2.pressing());
    manuallyModifyState("scoring_mid", Controller.ButtonR1.pressing());
-   manuallyModifyState("scoring_low", Controller.ButtonRight.pressing());
+   manuallyModifyState("scoring_low", Controller.ButtonRight.pressing()); 
 
    manuallyModifyState("intaking", Controller.ButtonY.pressing());
 
@@ -137,7 +140,8 @@ void RobotState::updateStopped()
    manuallyModifyState("matchloader_out", false);
    manuallyModifyState("k_inversion_held", false);
    manuallyModifyState("descore_in", false);
-   manuallyModifyState("intaking", false);
+   manuallyModifyState("intaking", false); 
+   
 };
 
 void RobotState::updateInitializing()

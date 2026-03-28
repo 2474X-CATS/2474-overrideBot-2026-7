@@ -35,7 +35,8 @@ typedef enum
 } Alignment_Structure;
 
 class Drivebase : public Subsystem
-{
+{ 
+
 private:
   static double ENCODER_WHEEL_ROT_RADIUS_MM;
   static double ENCODER_WHEEL_LIN_RADIUS_MM;
@@ -45,17 +46,17 @@ private:
   static double HIGH_ALIGNER_LENGTH;
   static double MAX_RPM;
 
-  // vex::rotation encoderLinear;
-  // vex::rotation encoderAngular;
+  vex::rotation encoderLinear;
+  //vex::rotation encoderAngular;
 
   vex::inertial driveGyro;
 
   vex::motor driveFrontLeft;
-  // vex::motor driveMidLeft;
+  vex::motor driveMidLeft;
   vex::motor driveBackLeft;
 
   vex::motor driveFrontRight;
-  // vex::motor driveMidRight;
+  vex::motor driveMidRight;
   vex::motor driveBackRight;
 
   vex::motor_group leftDriveMotors;
@@ -66,14 +67,11 @@ private:
 
   TrapezoidConstants trapConsts; 
 
-  TrapezoidalMotionProfile* turningProfile = nullptr; 
-  errorcontroller* turningCont = nullptr;
-
-  double startX, startY;
   double linearSpeedFactor = 1;
   double angularSpeedFactor = 1;
 
-  double lastTimestamp = 0;
+  double lastTimestamp = 0; 
+  double startingTimestamp = 0;
 
   Alignment_Structure calibratingWall = Alignment_Structure::NONE;
 
@@ -91,32 +89,7 @@ public:
 
   static Drivebase *globalRef;
 
-  Drivebase(double startX, double startY) : Subsystem(
-                                                "drivebase",
-                                                {(EntrySet){"Pos_X", EntryType::DOUBLE},
-                                                 (EntrySet){"Pos_Y", EntryType::DOUBLE},
-                                                 (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE},
-                                                 (EntrySet){"last_heading", EntryType::DOUBLE},
-                                                 (EntrySet){"overheating", EntryType::BOOL}, 
-                                                 (EntrySet){"Angular_Velocity", EntryType::DOUBLE}, 
-                                                 (EntrySet){"Instantaneous_Speed", EntryType::DOUBLE}
-                                                }),
-                                            // encoderLinear(vex::rotation(vex::PORT9)),
-                                            // encoderAngular(vex::rotation(vex::PORT10)),
-                                            driveGyro(vex::inertial(vex::PORT20)),                  // Used to be port 16
-                                            driveFrontLeft(vex::motor(vex::PORT10, vex::ratio6_1)), // Used to be 1
-                                            // driveMidLeft(vex::motor(vex::PORT2, vex::ratio6_1, true)),
-                                            driveBackLeft(vex::motor(vex::PORT9, vex::ratio6_1)),   // Used to be 3
-                                            driveFrontRight(vex::motor(vex::PORT1, vex::ratio6_1)), // Used to be 4
-                                            // driveMidRight(vex::motor(vex::PORT5, vex::ratio6_1, true)),
-                                            driveBackRight(vex::motor(vex::PORT2, vex::ratio6_1)), // Used to be 15
-                                            leftDriveMotors(vex::motor_group(driveFrontLeft, driveBackLeft)),
-                                            rightDriveMotors(vex::motor_group(driveFrontRight, driveBackRight)),
-                                            startX(startX),
-                                            startY(startY)
-  {
-    globalRef = this;
-  };
+  Drivebase(double startX, double startY);
 
   void init() override;
   void periodic() override;

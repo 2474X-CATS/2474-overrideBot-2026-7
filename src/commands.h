@@ -3,7 +3,7 @@
 
 #include "subsystems/drivebase.h"
 #include "subsystems/intake.h"
-// #include "subsystems/indexer.h"
+#include "subsystems/indexer.h"
 #include "subsystems/matchloader.h"
 #include "subsystems/hooks.h"
 #include "architecture/command.h"
@@ -202,7 +202,7 @@ public:
 };
 
 //------------------------------------------------------------------------------------------------------------- 
-class FollowCirclePath : Command<Drivebase> { 
+class FollowCirclePath : Command<Drivebase, Intake> { 
   private:  
 
      vector<BiarcEnum> setpoints;   
@@ -211,17 +211,20 @@ class FollowCirclePath : Command<Drivebase> {
      int index = 0;  
      int nSegments = 0; 
 
-     bool initialized = false;
+     bool initialized = false;  
+     bool intaking;
 
-     Drivebase& drivebaseRef;   
+
+     Drivebase& drivebaseRef;  
+     Intake& intakeRef;  
 
   public:    
 
-     static CommandInterface* getCommand(vector<BiarcEnum> setpoints){ 
-        return new FollowCirclePath(*Drivebase::globalRef, setpoints);
+     static CommandInterface* getCommand(vector<BiarcEnum> setpoints, bool intaking){ 
+        return new FollowCirclePath(*Drivebase::globalRef, *Intake::globalRef, setpoints, intaking);
      } 
 
-     FollowCirclePath(Drivebase& drivebase, vector<BiarcEnum> setpoints);
+     FollowCirclePath(Drivebase& drivebase, Intake& intake, vector<BiarcEnum> setpoints, bool intaking);
      
      void start() override; 
      void periodic() override; 
@@ -392,6 +395,41 @@ public:
 
   ~IntakeCubes() override = default;
 };
+
+// SCORE ON EITHER A HIGH, MID, OR LOW GOAL FOR A CERTAIN AMOUNT OF TIME 
+
+class ScoreOnGoal : public Command<Intake, Indexer>
+{
+private:
+  double timeDuration;
+  int goal;
+
+public:
+  static CommandInterface *getCommand(int goal, double timeDuration)
+  {
+    return new ScoreOnGoal(*Intake::globalRef, *Indexer::globalRef, goal, timeDuration);
+  };
+
+  ScoreOnGoal(Intake &intake, Indexer &indexer, int goal, double timeDuration) : Command<Intake, Indexer>(intake, indexer),
+                                                                                                             intakeRef(intake),
+                                                                                                             indexerRef(indexer),
+                                                                                                             timeDuration(timeDuration),
+                                                                                                             goal(goal) {};
+
+  ~ScoreOnGoal() override = default;
+
+protected: 
+  Intake &intakeRef;
+  Indexer &indexerRef; 
+  
+  double startingTime; 
+  
+  void start() override;
+  void periodic() override;
+  bool isOver() override;
+  void end() override; 
+  string repr() override;  
+}; 
 
 class DeployMatchloader : Command<Matchloader>
 {

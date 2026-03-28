@@ -24,7 +24,7 @@ vector<CommandInterface *> closed_side_left()
       // TurnToLocation(Zones::NAT_MID, TILE_SIZE_MM * 0.3),
 
       DrivePath::getCommand({50, TILE_SIZE_MM * 0.95}, true, true),
-      // ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 2000),
+      ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 2000),
 
       ModifyRobotState::getCommand("is_drive_inverted", false),
       DriveForwardForTime::getCommand(0.2, 300, false),
@@ -39,7 +39,7 @@ vector<CommandInterface *> closed_side_left()
       WaitFor::getCommand(50),
       CloseDistanceBetween(Zones::NAT_HIGH_LEFT, 0, -125, true),
 
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1250),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1250),
       // DisengageHighGoal::getCommand(0.2, 750),
 
   };
@@ -57,7 +57,7 @@ vector<CommandInterface *> closed_side_right()
 
       TurnToLocation(Zones::NAT_LOW),
       DrivePath::getCommand({TILE_SIZE_MM * 0.8}, false, false),
-      // ScoreOnGoal::getCommand(Goal_Pos::LOW_GOAL, 2000),
+      ScoreOnGoal::getCommand(Goal_Pos::LOW_GOAL, 2000),
       DeployMatchloader::getCommand(true),
 
       SlantedAlignWithX::getCommand(TILE_SIZE_MM * 5),
@@ -71,7 +71,7 @@ vector<CommandInterface *> closed_side_right()
       TurnToLocation(Zones::NAT_HIGH_RIGHT),
       CloseDistanceBetween(Zones::NAT_HIGH_RIGHT, ROBOT_LENGTH_MM / 2, 0, true),
       Calibrate::getCommand(Alignment_Structure::NEARBY_HIGH_RIGHT, 0.2, 750),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1250),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1250),
       // DisengageHighGoal::getCommand(0.2, 500),
 
       DrivePath::getCommand({30}, true, false),
@@ -100,7 +100,7 @@ vector<CommandInterface *> switcheroo_left()
       WaitFor::getCommand(50),
       CloseDistanceBetween(Zones::NAT_HIGH_LEFT, 0, -75, true),
       Calibrate::getCommand(Alignment_Structure::NEARBY_HIGH_LEFT, 0.35, 100),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1000),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1000),
       DeployMatchloader::getCommand(false),
 
       ModifyRobotState::getCommand("is_drive_inverted", false),
@@ -116,7 +116,7 @@ vector<CommandInterface *> switcheroo_left()
       ModifyRobotState::getCommand("is_drive_inverted", true),
       TurnToLocation(Zones::NAT_MID),
       DrivePath::getCommand({TILE_SIZE_MM * 1.175}, false, false),
-      // ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 1500)
+      ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 1500)
 
   };
 }
@@ -143,7 +143,7 @@ vector<CommandInterface *> renegade_right()
       WaitFor::getCommand(50),
       CloseDistanceBetween(Zones::NAT_HIGH_RIGHT, -75, 0, true),
       Calibrate::getCommand(Alignment_Structure::NEARBY_HIGH_RIGHT, 0.3, 100),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),
       // DisengageHighGoal::getCommand(0.225, 700),
 
       DrivePath::getCommand({30}, true, false),
@@ -178,7 +178,7 @@ vector<CommandInterface *> renegade_left()
       WaitFor::getCommand(50),
       CloseDistanceBetween(Zones::NAT_HIGH_LEFT, -75, 0, true),
       Calibrate::getCommand(Alignment_Structure::NEARBY_HIGH_LEFT, 0.3, 100),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),
       // DisengageHighGoal::getCommand(0.225, 700),
 
       DrivePath::getCommand({30}, true, false),
@@ -210,7 +210,7 @@ vector<CommandInterface *> control_rush_left()
 
       CloseDistanceBetween(Zones::NAT_HIGH_LEFT, 0, -75, true),
       Calibrate::getCommand(Alignment_Structure::NEARBY_HIGH_LEFT, 0.2, 100),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),
       // DisengageHighGoal::getCommand(0.225, 700),
 
       DrivePath::getCommand({30}, true, false),
@@ -242,7 +242,7 @@ vector<CommandInterface *> control_rush_right()
 
       CloseDistanceBetween(Zones::NAT_HIGH_RIGHT, 0, -75, true),
       Calibrate::getCommand(Alignment_Structure::NEARBY_HIGH_RIGHT, 0.2, 100),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 1500),
       // DisengageHighGoal::getCommand(0.225, 700),
 
       DrivePath::getCommand({30}, true, false),
@@ -266,7 +266,7 @@ vector<CommandInterface *> center_cleanup_left()
 
       TurnToLocation(Zones::NAT_MID),
       DrivePath::getCommand({TILE_SIZE_MM * 0.8}, false, false),
-      // ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 2000),
+      ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 2000),
       ModifyRobotState::getCommand("is_drive_inverted", false),
 
       DrivePath::getCommand({TILE_SIZE_MM * 0.8}, false, false),
@@ -279,7 +279,7 @@ vector<CommandInterface *> center_cleanup_left()
 
       TurnToLocation(Zones::NAT_LOW),
       CloseDistanceBetween(Zones::NAT_LOW, ROBOT_LENGTH_MM / 2, 0, false),
-      // ScoreOnGoal::getCommand(Goal_Pos::LOW_GOAL, 1500),
+      ScoreOnGoal::getCommand(Goal_Pos::LOW_GOAL, 1500),
   };
 }
 
@@ -295,7 +295,7 @@ vector<CommandInterface *> center_cleanup_right()
 
       TurnToLocation(Zones::NAT_LOW),
       DrivePath::getCommand({TILE_SIZE_MM * 0.8}, false, false),
-      // ScoreOnGoal::getCommand(Goal_Pos::LOW_GOAL, 1500),
+      ScoreOnGoal::getCommand(Goal_Pos::LOW_GOAL, 1500),
 
       DrivePath::getCommand({-TILE_SIZE_MM * 0.8}, false, false),
       TurnToLocation(Zones::NAT_MID, TILE_SIZE_MM),
@@ -308,7 +308,7 @@ vector<CommandInterface *> center_cleanup_right()
 
       TurnToLocation(Zones::NAT_MID),
       CloseDistanceBetween(Zones::NAT_MID, ROBOT_LENGTH_MM / 2, 0, false),
-      // ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 2000),
+      ScoreOnGoal::getCommand(Goal_Pos::MID_GOAL, 2000)
   };
 }
 
@@ -326,7 +326,7 @@ vector<CommandInterface *> auto_skills()
       Calibrate::getCommand(Alignment_Structure::NEARBY_HIGH_RIGHT, 0.45, 400),
 
       DeployMatchloader::getCommand(true),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 500),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 500),
 
       ModifyRobotState::getCommand("is_drive_inverted", false),
       WaitFor::getCommand(50),
@@ -348,7 +348,7 @@ vector<CommandInterface *> auto_skills()
       ModifyRobotState::getCommand("is_drive_inverted", true),
       WaitFor::getCommand(50),
       Calibrate::getCommand(Alignment_Structure::FOREIGN_HIGH_RIGHT, 0.45, 1550),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000),
       // DisengageHighGoal::getCommand(0.1, 250),
       DeployMatchloader::getCommand(true),
 
@@ -363,7 +363,7 @@ vector<CommandInterface *> auto_skills()
       WaitFor::getCommand(50),
       CloseDistanceBetween(Zones::FAR_HIGH_RIGHT, ROBOT_LENGTH_MM / 2, 0, true),
       Calibrate::getCommand(Alignment_Structure::FOREIGN_HIGH_RIGHT, 0.45, 800),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000),
 
       // DisengageHighGoal::getCommand(0.25, 750),
 
@@ -393,7 +393,7 @@ vector<CommandInterface *> auto_skills()
       TurnToLocation(Zones::NAT_HIGH_LEFT),
 
       Calibrate::getCommand(Alignment_Structure::NEARBY_HIGH_LEFT, 0.4, 1300),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2000),
       // DisengageHighGoal::getCommand(0.2, 350),
 
       ModifyRobotState::getCommand("is_drive_inverted", false),
@@ -410,7 +410,7 @@ vector<CommandInterface *> auto_skills()
       ModifyRobotState::getCommand("is_drive_inverted", true),
       WaitFor::getCommand(50),
       Calibrate::getCommand(Alignment_Structure::NEARBY_HIGH_LEFT, 0.45, 500),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2250),
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 2250),
 
       DeployMatchloader::getCommand(false),
       // DisengageHighGoal::getCommand(0.1, 250),
@@ -420,7 +420,7 @@ vector<CommandInterface *> auto_skills()
       SlantedAlignWithY::getCommand(TILE_SIZE_MM),
       TurnToSetpoint::getCommand(TILE_SIZE_MM * 2.65, TILE_SIZE_MM * 0.1),
       DrivePath::getCommand({TILE_SIZE_MM * 2.35}, false, true),
-      // ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 750)
+      ScoreOnGoal::getCommand(Goal_Pos::HIGH_GOAL, 750)
   };
 }
 
