@@ -1,9 +1,10 @@
 #include "path.h"
 #include "vex.h"
 
+
 double HomingPath::TUNED_LDIST = hypot(ROBOT_LENGTH_MM * 1.5, ROBOT_WIDTH_MM * 1.5);
-double HomingPath::TUNED_L_SCALE = 1;
-double HomingPath::OPTIMUM_TOLERANCE = 100;
+double HomingPath::TUNED_L_SCALE = 0.35;
+double HomingPath::OPTIMUM_TOLERANCE = 75;
 
 HomingPath::HomingPath(BezierCurve *curve, TrapezoidConstants motionConstants, PIDConstants pidconstants, double lookAheadDistance, double k_scale, double maxCentripAccel, double distTolerance)
 {
@@ -45,20 +46,18 @@ PathFrameOutput HomingPath::calculateFrameOutput(double x, double y, double head
 
    double deltaTime = (timestamp - lastTimestamp) / 1000;
 
-   double dist = sqrt(pow(x - refPoint.point[0], 2) + pow(y - refPoint.point[1], 2)); // Distance between the setpoint and the current position
+   double dist = hypot(x - refPoint.point[0], y - refPoint.point[1]); 
    dist = std::max<double>(dist, 1e-6);
 
-   double desiredHeading = (atan2(refPoint.point[1] - y, refPoint.point[0] - x) + M_PI) / (2 * M_PI) * 360; // At that point the robot would face the setpoint
-   double angleDiff = desiredHeading - heading;                                                             // How much the robot needed to turn in order to face the setpoint
-   if (fabs(angleDiff) > 180)
-   {
-      angleDiff = (-1 * copysign(1, angleDiff)) * (360 - fabs(angleDiff));
-   }
-   double angularVelocity = turnController->calculate(angleDiff, Brain.Timer.time());
+   double desiredHeading = angleBetweenPts(refPoint.point[0], refPoint.point[1], x, y);
+   
+   double angleDiff = toRadians(angleDifference(desiredHeading, heading));                                                             
 
-   double linearVelocity = std::min<double>(lastVelocity + (getAcceleration() * deltaTime), curveProfile->getMaxVelocity()); // Only add a frame of acceleration
-   linearVelocity = std::min<double>(linearVelocity, deriveMaxVelocity(fabs(dist / std::max<double>(2 * sin(angleDiff / 360 * M_PI), 1e-6))));
-
+   double radius = fabs(dist / sin(angleDiff)); 
+   
+   double linearVelocity = std::min<double>(lastVelocity + (getAcceleration() * deltaTime), curveProfile->getMaxVelocity()); 
+   double angularVelocity = 2 * toDegrees(linearVelocity / radius) * copysign(1, angleDiff);
+   
    res.angularVelocity = angularVelocity;
    res.linearVelocity = linearVelocity;
 
@@ -86,7 +85,7 @@ BezierReferencePoint HomingPath::findReferencePoint(double x, double y, double l
    curve->generatePoint(pathProgress, coordinates);
 
    double fallbackT = pathProgress;
-   double smallestDist = sqrt(pow(x - coordinates[0], 2) + pow(y - coordinates[1], 2));
+   double smallestDist = hypot(x - coordinates[0], y - coordinates[1]);
 
    double t_interval = (1.0 / 500);
 
@@ -99,7 +98,7 @@ BezierReferencePoint HomingPath::findReferencePoint(double x, double y, double l
    while (currentT < 1)
    {
       curve->generatePoint(currentT, coordinates);
-      currentDist = sqrt(pow(x - coordinates[0], 2) + pow(y - coordinates[1], 2));
+      currentDist = hypot(x - coordinates[0], y - coordinates[1]);
 
       if (smallestDist == -1 || currentDist < smallestDist)
       {

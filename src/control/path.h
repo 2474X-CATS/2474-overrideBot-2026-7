@@ -4,7 +4,8 @@
 #include "../utilities/bezier.h"
 #include "trapezoidalMotion.h"
 #include "pidcontroller.h"
-#include "math.h"
+#include "math.h" 
+#include "../utilities/functools.h"
 
 typedef struct
 {
@@ -100,12 +101,12 @@ private:
 
    double initialHeading;
 
-   pidcontroller *turnController = nullptr;
+   errorcontroller *turnController = nullptr;
    TrapezoidalMotionProfile *profile = nullptr;
 
    double radius;
    double lastTimestamp = -1;
-   double lastOmega = 0;
+   //double lastOmega = 0;
 
    double arcLength;
 
@@ -116,23 +117,24 @@ private:
    bool cuttingCorners;
    array<double, 2> endpoint;
 
-   double projectedHeading;
+   //double projectedHeading;
 
    double endingHeading;
 
-   double getAngularVelocity(double linearVelocity, double heading, double timestamp);
+   double getAngularVelocity(double linearVelocity);
 
    double getMaximumVelocity();
 
    double getEndpointX();
    double getEndpointY();
-   double getEndingHeading();
+   double getEndingHeading();  
+
 
 public:
    CirclePath(BiarcEnum biarc, PathMetadata metadata);
    CirclePath(BiarcEnum biarc);
 
-   PathFrameOutput calculateFrameOutput(double x, double y, double heading, double timestamp);
+   PathFrameOutput calculateFrameOutput(double angularVelocity, double timestamp);
 
    static void linkLeftToRight(CirclePath *path1, CirclePath *path2);
 

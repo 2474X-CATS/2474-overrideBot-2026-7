@@ -94,7 +94,10 @@ public:
                                                  (EntrySet){"Pos_Y", EntryType::DOUBLE},
                                                  (EntrySet){"Angle_Degrees_CCW", EntryType::DOUBLE},
                                                  (EntrySet){"last_heading", EntryType::DOUBLE},
-                                                 (EntrySet){"overheating", EntryType::BOOL}}),
+                                                 (EntrySet){"overheating", EntryType::BOOL}, 
+                                                 (EntrySet){"Angular_Velocity", EntryType::DOUBLE}, 
+                                                 (EntrySet){"Instantaneous_Speed", EntryType::DOUBLE}
+                                                }),
                                             // encoderLinear(vex::rotation(vex::PORT9)),
                                             // encoderAngular(vex::rotation(vex::PORT10)),
                                             driveGyro(vex::inertial(vex::PORT20)),                  // Used to be port 16

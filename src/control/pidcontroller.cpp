@@ -1,4 +1,3 @@
-#include "math.h"
 #include <cstdlib>
 #include "pidcontroller.h"
 
@@ -65,4 +64,16 @@ void pidcontroller::reset()
    integral = 0;
    derivative = 0;
    prevError = 0;
+} 
+
+double errorcontroller::calculate(double currentRef,  double timestamp){  
+  if (referencePos == 0){ 
+   return 0;
+  }
+  return pidcontroller::calculate(referencePos - currentRef, timestamp);
+}  
+
+void errorcontroller::setReference(double ref){ 
+   this->referencePos = ref;
 }
+

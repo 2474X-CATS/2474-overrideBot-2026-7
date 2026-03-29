@@ -379,9 +379,7 @@ void FollowCirclePath::periodic(){
             index++;
         } else { 
             PathFrameOutput output = segments.at(index).calculateFrameOutput( 
-                drivebaseRef.get<double>("Pos_X"), 
-                drivebaseRef.get<double>("Pos_Y"), 
-                drivebaseRef.get<double>("Angle_Degrees_CCW"), 
+                drivebaseRef.get<double>("Angular_Velocity"), 
                 timestamp
             ); 
             drivebaseRef.manualDriveWithCurvature(output.linearVelocity, output.angularVelocity);

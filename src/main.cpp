@@ -165,7 +165,7 @@ int main()
 
   RobotState::manuallyModifyState("color_sensitive", false);     // <- We don't have color-sort currently
   RobotState::manuallyModifyState("is_counterclockwise", false); // Adjust to match inertial sensor orientation
-  RobotState::manuallyModifyState("odometry_enabled", true); 
+  //RobotState::manuallyModifyState("odometry_enabled", true); 
 
   //-------------------ROUTINE CREATION-------------------
 
@@ -237,11 +237,12 @@ int main()
  
  testAuto(  
   { 
-    FollowCirclePath::getCommand( 
+    FollowSplinePath::getCommand( 
       { 
-        (BiarcEnum){array<double, 2>{TILE_SIZE_MM * 3.725, TILE_SIZE_MM * 1.6}, true}
+        array<double,2>{TILE_SIZE_MM * 4, TILE_SIZE_MM * 2}, 
+        array<double,2>{TILE_SIZE_MM * 4, TILE_SIZE_MM * 2}
       }
-    )     
+    )
   }
   ,false);    
   

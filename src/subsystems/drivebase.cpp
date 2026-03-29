@@ -1,7 +1,9 @@
 #include "drivebase.h"
 #include "math.h"
 #include "../architecture/telemetry.h"
-#include <algorithm>
+#include <algorithm> 
+
+#include "../utilities/functools.h"
 
 //---Drivebase: SUBSYSTEM
 
@@ -174,10 +176,11 @@ void Drivebase::periodic()
 
 void Drivebase::updateTelemetry()
 {
+     
 
    double x = get<double>("Pos_X");
    double y = get<double>("Pos_Y");
-
+   
    // double angle = get<double>("Angle_Degrees_CCW");
 
    if (RobotState::getStateOf("ready"))
@@ -185,22 +188,33 @@ void Drivebase::updateTelemetry()
       double angle;
       angle = driveGyro.angle(vex::rotationUnits::deg);
 
-      set<double>("Angle_Degrees_CCW", transformAngle(angle));
+      set<double>("Angle_Degrees_CCW", transformAngle(angle)); 
+      
+      double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp; 
 
-      double deltaTime = Brain.Timer.time(vex::sec) - lastTimestamp;
+      double omega = angleDifference(angle, get<double>("last_heading"));  
+     
+      if (!RobotState::getStateOf("is_counterclockwise")){ 
+         omega *= -1;
+      }
+      
+      set<double>("Angular_Velocity", omega / deltaTime);
 
-      leftDriveMotors.setStopping(vex::brakeType::brake);
-      rightDriveMotors.setStopping(vex::brakeType::brake);
+      leftDriveMotors.setStopping(vex::brakeType::hold);
+      rightDriveMotors.setStopping(vex::brakeType::hold);
 
       double hypotenuse;
       // hypotenuse = -((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime);
       hypotenuse = ((leftDriveMotors.velocity(vex::velocityUnits::rpm) - rightDriveMotors.velocity(vex::velocityUnits::rpm)) / 2) * 2 * M_PI * DRIVE_WHEEL_RADIUS_MM / 60 * deltaTime * (MAX_RPM / 600);
+      
       if (RobotState::getStateOf("is_drive_inverted"))
       {
          hypotenuse *= -1;
-      }
+      }  
 
-      double angleRadians = transformAngle(get<double>("last_heading")) * (2 * M_PI) / 360;
+      set<double>("Instantaneous_Speed", fabs(hypotenuse));
+
+      double angleRadians = toRadians(transformAngle(get<double>("last_heading"))); // * (2 * M_PI) / 360;
 
       x += (hypotenuse * cos(angleRadians));
       y += (hypotenuse * sin(angleRadians));
@@ -275,16 +289,7 @@ void Drivebase::manualDriveForward(double speedMM, double centerAngle)
 
    if (centerAngle != -1)
    {
-      double angleDiff = centerAngle - currentAngle;
-      if (angleDiff > 180)
-      {
-         angleDiff = -(360 - angleDiff);
-      }
-      else if (angleDiff < -180)
-      {
-         angleDiff = (360 + angleDiff);
-      }
-      angleCorrection = ((DRIVE_WHEEL_RADIUS_MM * 2 * M_PI) * (angleDiff / 360.0)) * 3;
+      angleCorrection = ((DRIVE_WHEEL_RADIUS_MM * 2 * M_PI) * (angleDifference(centerAngle, currentAngle) / 360.0)) * 3;
    }
 
    leftDriveMotors.setVelocity(netSpeed - angleCorrection, vex::velocityUnits::rpm);
@@ -319,15 +324,15 @@ double Drivebase::transformAngle(double heading)
 
    if (RobotState::getStateOf("is_drive_inverted"))
    {
-      heading = fmod(heading + 180, 360);
+      heading = angleSum(heading, 180);
    }
 
    if (!RobotState::getStateOf("is_counterclockwise"))
    {
-      heading += (90 - heading) * 2 + 360;
+      heading = flipOrientation(heading);
    }
 
-   return fmod(heading, 360);
+   return heading;
 }
 
 void Drivebase::manualDriveWithCurvature(double speedMM, double turnDeg)
@@ -462,15 +467,13 @@ void Drivebase::calibrate(Alignment_Structure struc)
 
    if (!RobotState::getStateOf("is_counterclockwise"))
    {
-      supposedAngle += (90 - supposedAngle) * 2;
+      supposedAngle = flipOrientation(supposedAngle);
    }
 
    if (RobotState::getStateOf("is_drive_inverted"))
    {
-      supposedAngle += 180;
-   }
-
-   supposedAngle = fmod(supposedAngle, 360);
+      supposedAngle = angleSum(supposedAngle, 180);
+   } 
 
    driveGyro.setHeading(supposedAngle, vex::rotationUnits::deg);
 }
