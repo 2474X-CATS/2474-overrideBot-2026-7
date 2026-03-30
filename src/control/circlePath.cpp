@@ -87,14 +87,15 @@ PathFrameOutput CirclePath::calculateFrameOutput(double angularVelocity, double 
   PathFrameOutput output;
   if (activated)
   { 
-    double correctiveOmega = turnController->calculate(angularVelocity);
-
-    output.linearVelocity = profile->generateSetpoint(timestamp).velocity * drivingDirection;
+    double correctiveOmega = turnController->calculate(angularVelocity, timestamp);
     
-    output.angularVelocity = getAngularVelocity(output.linearVelocity); 
+    output.linearVelocity = profile->generateSetpoint(timestamp).velocity * drivingDirection;
+    output.angularVelocity = getAngularVelocity(output.linearVelocity);  
+
     turnController->setReference(output.angularVelocity);   
 
-    output.angularVelocity += correctiveOmega;
+    output.angularVelocity += correctiveOmega; 
+    
     this->lastTimestamp = timestamp;
   }
   return output;

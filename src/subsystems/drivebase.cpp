@@ -145,9 +145,9 @@ void Drivebase::init()
 
    //------------------------------
 
-   correctivePID.P = 1;
+   correctivePID.P = 0.25;
    correctivePID.I = 0.0;
-   correctivePID.D = 0.025;
+   correctivePID.D = 0.0;
    correctivePID.errorTolerance = 0;
 
    //--------------------------  > 
@@ -160,18 +160,24 @@ void Drivebase::init()
    //-------------------------- >
 
    trapConsts.maxVelocity = ((MAX_RPM * (2 * DRIVE_WHEEL_RADIUS_MM * M_PI)) / 60.0); // * (MAX_RPM / 600.0));
-   trapConsts.maxAcceleration = trapConsts.maxVelocity * 0.9;                               // Reach max speed in 0.9 seconds
+   trapConsts.maxAcceleration = trapConsts.maxVelocity;                               // Reach max speed in 0.9 seconds
+
+   //--------------------------
+   
+   turningProfile = new TrapezoidalMotionProfile(trapConsts, TILE_SIZE_MM);  
+   turningCont = new errorcontroller(correctivePID); 
 
    //--------------------------
 
-   //--------------------------
-
-   lastTimestamp = Brain.Timer.time(vex::sec);
+   lastTimestamp = Brain.Timer.time(vex::sec); 
+   turningProfile->setLastTimestamp(lastTimestamp * 1000);  
+   turningCont->setLastTimestamp(lastTimestamp * 1000); 
 };
 
 void Drivebase::periodic()
 {
    arcadeDrive(((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL))*-1, ((double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL)));
+   
 }
 
 void Drivebase::updateTelemetry()
@@ -180,8 +186,7 @@ void Drivebase::updateTelemetry()
 
    double x = get<double>("Pos_X");
    double y = get<double>("Pos_Y");
-   
-   // double angle = get<double>("Angle_Degrees_CCW");
+
 
    if (RobotState::getStateOf("ready"))
    {
@@ -200,8 +205,8 @@ void Drivebase::updateTelemetry()
       
       set<double>("Angular_Velocity", omega / deltaTime);
 
-      leftDriveMotors.setStopping(vex::brakeType::hold);
-      rightDriveMotors.setStopping(vex::brakeType::hold);
+      leftDriveMotors.setStopping(vex::brakeType::brake);
+      rightDriveMotors.setStopping(vex::brakeType::brake);
 
       double hypotenuse;
       // hypotenuse = -((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime);
@@ -212,7 +217,7 @@ void Drivebase::updateTelemetry()
          hypotenuse *= -1;
       }  
 
-      set<double>("Instantaneous_Speed", fabs(hypotenuse));
+      set<double>("Instantaneous_Speed", fabs(hypotenuse) / deltaTime);
 
       double angleRadians = toRadians(transformAngle(get<double>("last_heading"))); // * (2 * M_PI) / 360;
 
@@ -236,11 +241,11 @@ void Drivebase::updateTelemetry()
       }
    }
 
-   /*
-   Brain.Screen.printAt(20, 150, "Pos X: %.2f", get<double>("Pos_X"));
-   Brain.Screen.printAt(20, 175, "Pos Y: %.2f", get<double>("Pos_Y"));
+   
+   //Brain.Screen.printAt(20, 150, "Linear Velocity: %.2f", get<double>("Instantaneous_Speed"));
+   //Brain.Screen.printAt(20, 175, "Angular Velocity: %.2f", get<double>("Angular_Velocity"));
    Brain.Screen.printAt(20, 200, "Angle Degrees: %.2f", get<double>("Angle_Degrees_CCW"));
-   */
+   
 
    lastTimestamp = Brain.Timer.time(vex::sec);
 };

@@ -64,7 +64,10 @@ private:
   PIDConstants turnPID; 
   PIDConstants correctivePID;
 
-  TrapezoidConstants trapConsts;
+  TrapezoidConstants trapConsts; 
+
+  TrapezoidalMotionProfile* turningProfile = nullptr; 
+  errorcontroller* turningCont = nullptr;
 
   double startX, startY;
   double linearSpeedFactor = 1;

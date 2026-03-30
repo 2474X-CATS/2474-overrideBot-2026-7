@@ -232,20 +232,21 @@ int main()
 
  //startCommandCompetitiveMatch(routines);  //Uncomment when loading up for a comp   
  //startCommandSkillsMatch(auto_skills(), false);  //Uncomment when loading up for skills 
- //testDrive();//Uncomment when getting driver practice 
+ testDrive();//Uncomment when getting driver practice 
 
- 
+ /*
  testAuto(  
-  { 
-    FollowSplinePath::getCommand( 
+  {  
+    FollowCirclePath::getCommand( 
       { 
-        array<double,2>{TILE_SIZE_MM * 4, TILE_SIZE_MM * 2}, 
-        array<double,2>{TILE_SIZE_MM * 4, TILE_SIZE_MM * 2}
+        (BiarcEnum){array<double,2>{TILE_SIZE_MM * 4, TILE_SIZE_MM * 2}, true}
       }
-    )
+    ),   
+    TurnToLocation(Zones::NAT_ML_RIGHT, TILE_SIZE_MM), 
+    SlantedAlignWithX::getCommand(TILE_SIZE_MM * 4.6)
   }
   ,false);    
-  
+  */
 
  
  

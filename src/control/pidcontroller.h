@@ -1,7 +1,8 @@
 #ifndef __PID_H__
 #define __PID_H__ 
 
-#include "math.h" 
+#include "math.h"  
+#include "limits.h"
 
 /* 
 Uses Proportional Integral Derviative control to insure motion smoothness,
@@ -62,6 +63,7 @@ class errorcontroller : public pidcontroller {
 
   private: 
      double referencePos = 0; 
+     bool active = false;
   
   public:   
      errorcontroller(PIDConstants consts) : pidcontroller(consts, 0){};  
@@ -69,7 +71,7 @@ class errorcontroller : public pidcontroller {
      double calculate(double currentRef, double timestamp); 
      
      void setReference(double ref);
-}  
+};
 
 
 

@@ -410,7 +410,8 @@ void FollowSplinePath::periodic(){
     PathFrameOutput output = path->calculateFrameOutput( 
         drivebaseRef.get<double>("Pos_X"), 
         drivebaseRef.get<double>("Pos_Y"), 
-        drivebaseRef.get<double>("Angle_Degrees_CCW"), 
+        drivebaseRef.get<double>("Angle_Degrees_CCW"),  
+        drivebaseRef.get<double>("Angular_Velocity"),
         Brain.Timer.time()
     ); 
 

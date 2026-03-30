@@ -67,13 +67,14 @@ void pidcontroller::reset()
 } 
 
 double errorcontroller::calculate(double currentRef,  double timestamp){  
-  if (referencePos == 0){ 
+  if (!active){ 
    return 0;
   }
-  return pidcontroller::calculate(referencePos - currentRef, timestamp);
+  return pidcontroller::calculate(currentRef - referencePos, timestamp);
 }  
 
 void errorcontroller::setReference(double ref){ 
-   this->referencePos = ref;
+   this->referencePos = ref; 
+   active = true;
 }
 

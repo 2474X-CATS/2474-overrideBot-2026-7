@@ -23,7 +23,7 @@ HomingPath::HomingPath(BezierCurve *curve, TrapezoidConstants motionConstants, P
    this->endpoint = curve->generatePoint(1);
 
    this->curveProfile = new TrapezoidalMotionProfile(motionConstants, curve->getPathLength());
-   this->turnController = new pidcontroller(pidconstants, 0);
+   this->turnController = new errorcontroller(pidconstants);
 }
 
 HomingPath::HomingPath(array<array<double, 2>, 3> points, TrapezoidConstants motionConstants, PIDConstants pidconstants, double maxCentripAccel)
@@ -38,30 +38,32 @@ HomingPath::HomingPath(array<array<double, 2>, 2> points, PathMetadata metadata)
                                                                                        metadata.pidConstants,
                                                                                        metadata.maximumCentripetalAcceleration) {};
 
-PathFrameOutput HomingPath::calculateFrameOutput(double x, double y, double heading, double timestamp)
+PathFrameOutput HomingPath::calculateFrameOutput(double x, double y, double heading, double angularVelocity, double timestamp)
 {
 
    PathFrameOutput res;
    BezierReferencePoint refPoint = findReferencePoint(x, y, getOptimumLookaheadDist(lastVelocity));
-
+   
+   double correctiveOmega = turnController->calculate(angularVelocity, timestamp);
+   
    double deltaTime = (timestamp - lastTimestamp) / 1000;
 
    double dist = hypot(x - refPoint.point[0], y - refPoint.point[1]); 
    dist = std::max<double>(dist, 1e-6);
 
-   double desiredHeading = angleBetweenPts(refPoint.point[0], refPoint.point[1], x, y);
-   
-   double angleDiff = toRadians(angleDifference(desiredHeading, heading));                                                             
+   double angleDiff = toRadians(angleDifference( angleBetweenPts(refPoint.point[0], refPoint.point[1], x, y) , heading));                                                             
 
    double radius = fabs(dist / sin(angleDiff)); 
    
-   double linearVelocity = std::min<double>(lastVelocity + (getAcceleration() * deltaTime), curveProfile->getMaxVelocity()); 
-   double angularVelocity = 2 * toDegrees(linearVelocity / radius) * copysign(1, angleDiff);
-   
-   res.angularVelocity = angularVelocity;
-   res.linearVelocity = linearVelocity;
+   double linearVelo = std::min<double>(lastVelocity + (getAcceleration() * deltaTime), deriveMaxVelocity(radius * 2)); 
+   double angularVelo = 2 * toDegrees(linearVelo / radius) * copysign(1, angleDiff); 
 
-   lastVelocity = linearVelocity;
+   turnController->setReference(angularVelo);
+
+   res.angularVelocity = angularVelo + correctiveOmega;
+   res.linearVelocity = linearVelo;
+
+   lastVelocity = linearVelo;
    lastTimestamp = timestamp;
 
    updateAnchorPoint(refPoint.progressT);
@@ -186,14 +188,17 @@ double HomingPath::getAcceleration()
           curveProfile->getMaxAcceleration());
    }
    else
-   {
+   {   
+      return -curveProfile->getMaxAcceleration(); 
+      /*
       double v = std::max<double>(lastVelocity, 0);
       double delta_x = (curve->getPathLength() - distanceTraveled);
 
       return -std::min<double>(
           pow(v, 2) /
               (2 * delta_x),
-          curveProfile->getMaxAcceleration());
+          curveProfile->getMaxAcceleration()); 
+      */
    }
 }
 

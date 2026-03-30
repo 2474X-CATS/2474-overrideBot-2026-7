@@ -37,8 +37,10 @@ private:
    static double TUNED_L_SCALE;
    static double OPTIMUM_TOLERANCE;
 
-   BezierCurve *curve = nullptr;
-   pidcontroller *turnController = nullptr;
+   BezierCurve *curve = nullptr; 
+
+   errorcontroller *turnController = nullptr; 
+
    TrapezoidalMotionProfile *curveProfile = nullptr;
 
    double lDist;
@@ -78,7 +80,7 @@ public:
 
    HomingPath(array<array<double, 2>, 2> points, PathMetadata metadata);
 
-   PathFrameOutput calculateFrameOutput(double x, double y, double heading, double timestamp);
+   PathFrameOutput calculateFrameOutput(double x, double y, double heading, double angularVelocity, double timestamp);
 
    void init(double timestamp);
 
@@ -106,8 +108,7 @@ private:
 
    double radius;
    double lastTimestamp = -1;
-   //double lastOmega = 0;
-
+   
    double arcLength;
 
    bool straight = false;
@@ -116,8 +117,6 @@ private:
 
    bool cuttingCorners;
    array<double, 2> endpoint;
-
-   //double projectedHeading;
 
    double endingHeading;
 
