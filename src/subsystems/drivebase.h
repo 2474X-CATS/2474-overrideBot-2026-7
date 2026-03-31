@@ -53,11 +53,9 @@ private:
 
   vex::motor driveFrontLeft;
   vex::motor driveMidLeft;
-  vex::motor driveMidLeft;
   vex::motor driveBackLeft;
 
   vex::motor driveFrontRight;
-  vex::motor driveMidRight;
   vex::motor driveMidRight;
   vex::motor driveBackRight;
 
@@ -68,15 +66,12 @@ private:
   PIDConstants correctivePID;
 
   TrapezoidConstants trapConsts; 
-  TrapezoidConstants trapConsts; 
-
+ 
   double linearSpeedFactor = 1;
   double angularSpeedFactor = 1;
 
   double lastTimestamp = 0; 
-  double startingTimestamp = 0;
-  double lastTimestamp = 0; 
-  double startingTimestamp = 0;
+  
 
   Alignment_Structure calibratingWall = Alignment_Structure::NONE;
 
@@ -94,20 +89,18 @@ public:
 
   static Drivebase *globalRef;
 
-  Drivebase(double startX, double startY);
-  Drivebase(double startX, double startY);
+  Drivebase(double startX, double startY); //Implemented
 
   void init() override;
   void periodic() override;
   void updateTelemetry() override;
   void stop() override;
 
-  void arcadeDrive(double speed, double rotation);
-
-  void manualDriveForward(double speedMM, double centerAngle);
-  void manualPercentageDrive(double decimal);
+  void arcadeDrive(double speed, double rotation); 
+  
+  void manualDriveForward(double speedMM, double centerAngle); 
+  void manualPercentageDrive(double decimal); 
   void manualTurnCounterclockwise(double turnDeg);
-
   void manualDriveWithCurvature(double speedMM, double turnDeg);
 
   void voltageDriveForward(double volts);

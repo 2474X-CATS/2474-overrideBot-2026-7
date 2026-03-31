@@ -101,8 +101,6 @@ private:
    double startingVelocity = 0;
    double endingVelocity = 0;
 
-   double initialHeading;
-
    errorcontroller *turnController = nullptr;
    TrapezoidalMotionProfile *profile = nullptr;
 
@@ -121,13 +119,12 @@ private:
    double endingHeading;
 
    double getAngularVelocity(double linearVelocity);
-   double getAngularVelocity(double linearVelocity);
-
+   
    double getMaximumVelocity();
 
    double getEndpointX();
    double getEndpointY();
-   double getEndingHeading();  
+  
    double getEndingHeading();  
 
 

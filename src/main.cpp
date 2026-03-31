@@ -158,8 +158,6 @@ int main()
   Drivebase drive = Drivebase(0,0);
   Intake intake; 
   Indexer indexer;
-  Intake intake; 
-  Indexer indexer;
   Matchloader matchloader;
   Hooks hooks;
 
@@ -167,7 +165,7 @@ int main()
 
   RobotState::manuallyModifyState("color_sensitive", false);     // <- We don't have color-sort currently
   RobotState::manuallyModifyState("is_counterclockwise", false); // Adjust to match inertial sensor orientation
-  //RobotState::manuallyModifyState("odometry_enabled", true); 
+  RobotState::manuallyModifyState("odometry_enabled", true); 
 
   //-------------------ROUTINE CREATION-------------------
 
@@ -228,28 +226,24 @@ int main()
 
   //-----------------------PROTOCOL------------------------
 
-  // startCommandCompetitiveMatch(routines);  //Uncomment when loading up for a comp
-  // startCommandSkillsMatch(auto_skills(), false);  //Uncomment when loading up for skills
+  //startCommandCompetitiveMatch(routines);  //Uncomment when loading up for a comp
+  //startCommandSkillsMatch(auto_skills(), false);  //Uncomment when loading up for skills
   //testDrive(); // Uncomment when getting driver practice
+  
+  
+  testAuto( 
+    {   
+      FollowCirclePath::getCommand( 
+        {
+            (BiarcEnum){ {TILE_SIZE_MM * 4, TILE_SIZE_MM * 2}, true }
+        }, 
+        true
+      )
+    }, 
+    false
+  );
+  
 
- //startCommandCompetitiveMatch(routines);  //Uncomment when loading up for a comp   
- //startCommandSkillsMatch(auto_skills(), false);  //Uncomment when loading up for skills 
- testDrive();//Uncomment when getting driver practice 
-
-
- /*
- testAuto(  
-  {  
-    FollowCirclePath::getCommand( 
-      { 
-        (BiarcEnum){array<double,2>{TILE_SIZE_MM * 4, TILE_SIZE_MM * 2}, true}
-      }
-    ),   
-    TurnToLocation(Zones::NAT_ML_RIGHT, TILE_SIZE_MM), 
-    SlantedAlignWithX::getCommand(TILE_SIZE_MM * 4.6)
-  }
-  ,false);    
-  */
 
  
  

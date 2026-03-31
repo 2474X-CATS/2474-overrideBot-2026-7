@@ -36,13 +36,11 @@ void CirclePath::activate(PathMetadata metadata)
   }
   else
   {     
-
     angleDiff = toRadians(angleDiff);
     this->turningDirection = static_cast<int>(copysign(1, angleDiff));
     this->radius = dist / (sin(angleDiff));
     this->arcLength = fabs(this->radius * angleDiff);
-    this->radius /= 2;  
-    this->radius /= 2;  
+    //this->radius /= 2;   
     
     this->endingHeading = angleSum(metadata.angleHeading, angleDiff);
   }
