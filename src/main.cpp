@@ -232,13 +232,25 @@ int main()
   
   
   testAuto( 
-    {   
+    {    
       FollowCirclePath::getCommand( 
         {
-            (BiarcEnum){ {TILE_SIZE_MM * 4, TILE_SIZE_MM * 2}, true }
+            (BiarcEnum){ {TILE_SIZE_MM * 3.722, TILE_SIZE_MM * 1.65}, true }
         }, 
         true
-      )
+      ),  
+      DriveForwardForTime::getCommand(0.27, 750, true), 
+      DriveToLocation(Zones::NAT_ML_RIGHT, TILE_SIZE_MM, PathType::EUCLIDEAN, false), 
+      TurnToLocation(Zones::NAT_ML_RIGHT), 
+      DriveForwardForTime::getCommand(0.25, 500, true), 
+      ModifyRobotState::getCommand("is_drive_inverted", true), 
+      WaitFor::getCommand(200), 
+      FollowSplinePath::getCommand( 
+        {
+            array<double,2>{TILE_SIZE_MM * 5, TILE_SIZE_MM * 2 - ROBOT_LENGTH_MM/4},  
+            array<double,2>{TILE_SIZE_MM * 5, TILE_SIZE_MM * 2 - ROBOT_LENGTH_MM/4},
+        }
+      ),
     }, 
     false
   );

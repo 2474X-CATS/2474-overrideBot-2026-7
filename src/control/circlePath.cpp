@@ -15,7 +15,6 @@ CirclePath::CirclePath(BiarcEnum biarc)
 void CirclePath::activate(PathMetadata metadata)
 {
   
-
   double dist = hypot(metadata.positionX - endpoint[0], metadata.positionY - endpoint[1]); 
 
   double targetHeading = angleBetweenPts(endpoint[0], endpoint[1], metadata.positionX, metadata.positionY); 
@@ -36,12 +35,12 @@ void CirclePath::activate(PathMetadata metadata)
   }
   else
   {     
+    
     angleDiff = toRadians(angleDiff);
     this->turningDirection = static_cast<int>(copysign(1, angleDiff));
     this->radius = dist / (sin(angleDiff));
     this->arcLength = fabs(this->radius * angleDiff);
-    //this->radius /= 2;   
-    
+    this->radius /= 2;  
     this->endingHeading = angleSum(metadata.angleHeading, angleDiff);
   }
 
@@ -52,7 +51,8 @@ void CirclePath::activate(PathMetadata metadata)
   this->turnController = new errorcontroller(metadata.pidConstants);
   this->profile = new TrapezoidalMotionProfile(metadata.motionConstants, this->arcLength);
 
-  activated = true;
+  activated = true;  
+  
 }
 
 void CirclePath::init(double timestamp)
