@@ -2,13 +2,12 @@
 #include "architecture/robot.h"
 #include <iostream>
 
-#include "autos.h"
-#include "gui/autonInit.h"
-
 using namespace vex;
 
 competition Competition;
-Robot robot; 
+Robot robot;  
+
+//----------------PROTOCOLS TO RUN--------------------
 
 void runTelemetry()
 {
@@ -40,14 +39,12 @@ void testAuto(vector<CommandInterface *> auton)
   robot.driverControl(false);
 }
 
-
 void startCommandMatch()
 {
   robot.configurateAutonomous();
   thread callBackTrigger = thread(scheduleCallbacks);
   robot.runTelemetryThread();
 }
-
 
 //------------------------------>-------------------------------------------------------------------------------------------------------------------
 
@@ -58,13 +55,13 @@ int main()
   vexcodeInit();
 
   //--------------------SUBSYSTEM CREATION----------------- 
-
+   
   
   //-------------------------------------------------------
 
   robot.initialize(); 
 
-  //-------------------ROUTINE CREATION-------------------
+  //-------------------RUN PROTOCOLS HERE-------------------
  
 
 }

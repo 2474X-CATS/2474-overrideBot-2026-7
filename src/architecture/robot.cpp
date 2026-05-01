@@ -72,10 +72,13 @@ void Robot::autonControl()
   }
 }; 
 
-void Robot::configurateAutonomous(){ 
+void Robot::configurateAutonomous(){   
+
+  vector<Routine> routines = generateRoutinePool(); 
+
   ColorPicker colorChooser = ColorPicker(135 + 115, 200);
   SidePicker sidePicker = SidePicker(235 + 115, 200);
-  RoutineCatalog catalog = RoutineCatalog(10, 10, generateRoutinePool());
+  RoutineCatalog catalog = RoutineCatalog(10, 10, getOptionVector(routines));
   
   AutonDisplay(250, 80, &catalog, &sidePicker);
   ExitBlock(250, 10); 
@@ -94,6 +97,6 @@ void Robot::configurateAutonomous(){
     sideIndex = 1;
   }
 
-  robot.setAutonomousCommand(routines.at(autonIndex).autos.at(sideIndex));
+  setAutonomousCommand(routines.at(autonIndex).autos.at(sideIndex));
   RobotState::manuallyModifyState("is_team_color_blue", colorChooser.getIsBlue());
 }
