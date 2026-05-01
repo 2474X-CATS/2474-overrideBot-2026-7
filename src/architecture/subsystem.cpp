@@ -78,7 +78,8 @@ void RobotState::initializeState()
 {
    Telemetry::inst.registerSubtable(
        "robot_state",
-       {
+       { 
+
            (EntrySet){"is_team_color_blue", EntryType::BOOL},
            (EntrySet){"color_sensitive", EntryType::BOOL},
            (EntrySet){"ready", EntryType::BOOL},
@@ -92,20 +93,28 @@ void RobotState::initializeState()
            (EntrySet){"scoring_high", EntryType::BOOL},
            (EntrySet){"scoring_mid", EntryType::BOOL},
            (EntrySet){"scoring_low", EntryType::BOOL},
-           (EntrySet){"matchloader_out", EntryType::BOOL},
-           (EntrySet){"descore_in", EntryType::BOOL},
-           (EntrySet){"outtaking", EntryType::BOOL},
-           (EntrySet){"intaking", EntryType::BOOL},
+           (EntrySet){"matchloader_out", EntryType::BOOL}, 
+
+           (EntrySet){"descore_f_in", EntryType::BOOL}, 
+           (EntrySet){"descore_b_in", EntryType::BOOL}, 
+
+           (EntrySet){"intaking", EntryType::BOOL}, 
+           (EntrySet){"swallow", EntryType::BOOL}, 
+           (EntrySet){"quiet", EntryType::BOOL},
 
            (EntrySet){"k_inversion_held", EntryType::BOOL},
            (EntrySet){"is_drive_inverted", EntryType::BOOL}, 
-           (EntrySet){"odometry_enabled", EntryType::BOOL} 
+           (EntrySet){"odometry_enabled", EntryType::BOOL}, 
 
+           (EntrySet){"low_descore_out", EntryType::BOOL}
+         
        });
 }
 
 void RobotState::updateRegular()
-{ 
+{  
+   manuallyModifyState("odometry_enabled", false);   
+   
    manuallyModifyState("scoring_high", Controller.ButtonR2.pressing());
    manuallyModifyState("scoring_mid", Controller.ButtonR1.pressing());
    manuallyModifyState("scoring_low", Controller.ButtonRight.pressing()); 
@@ -125,16 +134,18 @@ void RobotState::updateRegular()
       }
    }
 
-   manuallyModifyState("outtaking", Controller.ButtonDown.pressing());
-   manuallyModifyState("descore_in", Controller.ButtonL1.pressing());
-   manuallyModifyState("matchloader_out", Controller.ButtonL2.pressing()); 
-   /*
-   if (getStateOf("is_drive_inverted")){ 
-      setVibrationCode("..");
-   } else { 
-      disableVibrations(); 
-   } 
-   */
+   manuallyModifyState("descore_f_in", Controller.ButtonL1.pressing()); 
+   manuallyModifyState("descore_b_in", Controller.ButtonL2.pressing());
+   manuallyModifyState("matchloader_out", Controller.ButtonDown.pressing());   
+
+   manuallyModifyState("low_descore_out", Controller.ButtonB.pressing()); 
+
+   manuallyModifyState("swallow", Controller.ButtonX.pressing());  
+
+   manuallyModifyState("quiet", !(getStateOf("scoring_high") || getStateOf("scoring_mid") || getStateOf("scoring_low") || getStateOf("intaking") || getStateOf("swallow")) ); 
+
+   
+
 }
 
 void RobotState::updateStopped()
@@ -145,9 +156,12 @@ void RobotState::updateStopped()
    manuallyModifyState("scoring_low", false);
    manuallyModifyState("matchloader_out", false);
    manuallyModifyState("k_inversion_held", false);
-   manuallyModifyState("descore_in", false);
-   manuallyModifyState("intaking", false);  
-   
+   manuallyModifyState("descore_f_in", false); 
+   manuallyModifyState("descore_b_in", false);
+   manuallyModifyState("intaking", false);   
+   manuallyModifyState("low_descore_out", false);  
+   manuallyModifyState("swallow", false); 
+
 };
 
 void RobotState::updateInitializing()

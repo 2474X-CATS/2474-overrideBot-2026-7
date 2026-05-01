@@ -9,6 +9,7 @@ class Intake : public Subsystem
 
 private:
   vex::motor intakeConveyor; 
+  vex::motor idlerMotor;   
 
 public:
   using Subsystem::get;
@@ -18,9 +19,15 @@ public:
   Intake() : Subsystem(
                  "intake",
                  { 
-                  (EntrySet){"is_on", EntryType::BOOL},
-                   }),
-             intakeConveyor(vex::motor(vex::PORT8))
+                  (EntrySet){"is_on", EntryType::BOOL}, 
+                  (EntrySet){"delay_active", EntryType::BOOL},  
+                  (EntrySet){"time_since_activated", EntryType::DOUBLE},  
+                  (EntrySet){"idler_efficiency", EntryType::DOUBLE}
+                 } 
+             ),
+             intakeConveyor(vex::motor(vex::PORT8)), 
+             idlerMotor(vex::motor(vex::PORT7)) 
+             //intakeChain(vex::motor_group(intakeConveyor, idlerMotor))
   {
     globalRef = this;
   }
@@ -28,9 +35,11 @@ public:
   void init() override;
   void periodic() override;
   void updateTelemetry() override;
-  void stop() override;
+  void stop() override; 
 
-protected:
+  void synchronizedMotorRequest(double value, vex::velocityUnits units);
+
+protected: 
   using Subsystem::set;
 };
 

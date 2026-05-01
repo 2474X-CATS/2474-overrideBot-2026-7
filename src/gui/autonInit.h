@@ -1,15 +1,6 @@
 #include "graphics.h" 
 #include <array> 
-
-
-typedef struct { 
-  std::string name; 
-  std::string description; 
-  int index; 
-  bool hasLeftSide; 
-  bool hasRightSide; 
-} AutonOption; 
- 
+#include "../autos.h"
 
 class ColorPicker : public Sprite {  
    private:

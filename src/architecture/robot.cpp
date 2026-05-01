@@ -2,7 +2,9 @@
 #include "telemetry.h"
 #include "command.h"
 #include "subsystem.h"
-#include "vex.h"
+#include "vex.h" 
+
+
 using namespace vex;
 
 /*
@@ -29,29 +31,22 @@ void Robot::initialize()
 void Robot::driverControl(bool odometryEnabled)
 {
   RobotState::setMode(ControlType::DRIVER);
-  RobotState::manuallyModifyState("odometry_enabled", odometryEnabled);
-  RobotState::manuallyModifyState("is_drive_inverted", true);
   RobotState::manuallyModifyState("in_autonomous", false);
-  //double timestamp;
-  //timestamp = Brain.Timer.time();
   while (true)
   {
     Subsystem::updateSystems();
     wait(20, vex::msec);
-    //timestamp = Brain.Timer.time();
   }
 };
 
 void Robot::runTelemetryThread()
 {
-  //int timestamp = Brain.Timer.time();
   while (true)
   {
     RobotState::updateState();
     RobotState::vibrate();
     Subsystem::refreshTelemetry();
     wait(20, vex::msec);
-    //timestamp = Brain.Timer.time();
   }
 };
 
@@ -69,11 +64,36 @@ void Robot::setAutonomousCommand(std::vector<CommandInterface *> comm)
 void Robot::autonControl()
 {
   RobotState::setMode(ControlType::MANUAL);
-  RobotState::manuallyModifyState("in_autonomous", true);
-  RobotState::manuallyModifyState("odometry_enabled", true); 
+  RobotState::manuallyModifyState("in_autonomous", true);  
   vex::wait(20, msec);  
   for (CommandInterface *command : Robot::autonomousCommand)
   {
     command->run();
   }
-};
+}; 
+
+void Robot::configurateAutonomous(){ 
+  ColorPicker colorChooser = ColorPicker(135 + 115, 200);
+  SidePicker sidePicker = SidePicker(235 + 115, 200);
+  RoutineCatalog catalog = RoutineCatalog(10, 10, generateRoutinePool());
+  
+  AutonDisplay(250, 80, &catalog, &sidePicker);
+  ExitBlock(250, 10); 
+
+  Sprite::frameLoop();
+
+  int sideIndex;
+  int autonIndex = catalog.getCurrentAuto().index;
+
+  if (sidePicker.getIsLeft())
+  { 
+    sideIndex = 0;
+  }
+  else
+  {
+    sideIndex = 1;
+  }
+
+  robot.setAutonomousCommand(routines.at(autonIndex).autos.at(sideIndex));
+  RobotState::manuallyModifyState("is_team_color_blue", colorChooser.getIsBlue());
+}

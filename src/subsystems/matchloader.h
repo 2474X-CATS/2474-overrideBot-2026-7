@@ -18,11 +18,11 @@ public:
   Matchloader() : Subsystem(
                       "matchloader",
                       {(EntrySet){"is_on", EntryType::BOOL}}),
-                  mlPiston(vex::pneumatics(Brain.ThreeWirePort.H))
+                  mlPiston(vex::pneumatics(Brain.ThreeWirePort.F))
   {
     globalRef = this;
   }
-
+  
   void init() override;
   void periodic() override;
   void updateTelemetry() override;

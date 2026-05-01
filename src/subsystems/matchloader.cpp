@@ -19,7 +19,7 @@ void Matchloader::periodic()
       mlPiston.set(false);
    }
 }
-
+//Low goal descroe port E
 void Matchloader::updateTelemetry()
 {
    return;
@@ -27,5 +27,5 @@ void Matchloader::updateTelemetry()
 
 void Matchloader::stop()
 {
-   mlPiston.close();
+   mlPiston.set(false);
 }

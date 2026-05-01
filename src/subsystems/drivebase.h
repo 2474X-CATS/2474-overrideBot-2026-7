@@ -72,12 +72,13 @@ private:
 
   double startX, startY;
   double linearSpeedFactor = 1;
-  double angularSpeedFactor = 0.75; 
+  double angularSpeedFactor = 1; 
 
   bool hasScheduledSetpoint = false; 
   double scheduledSetpoint[2]; 
 
-  double lastTimestamp = 0;
+  double lastTimestamp = 0; 
+  double startingTimestamp = 0;
 
   Alignment_Structure calibratingWall = Alignment_Structure::NONE;
 
@@ -118,7 +119,7 @@ public:
                                             driveMidRight(vex::motor(vex::PORT4, vex::ratio6_1)),
                                             driveBackRight(vex::motor(vex::PORT5, vex::ratio6_1, true)), // Used to be 15
                                              
-                                            odomLift(vex::pneumatics(Brain.ThreeWirePort.F)), 
+                                            odomLift(vex::pneumatics(Brain.ThreeWirePort.G)), 
 
                                             leftDriveMotors(vex::motor_group(driveFrontLeft, driveBackLeft, driveMidLeft)),
                                             rightDriveMotors(vex::motor_group(driveFrontRight, driveBackRight, driveMidRight)), 
@@ -142,7 +143,7 @@ public:
 
   void manualDriveWithCurvature(double speedMM, double turnDeg); 
 
-  void initializePosWithVertices(double x, double y, double anchorHeading); 
+  void initializePosWithVertices(double x, double y); 
   void initializePosWithFaces(double x, double y); 
 
   void voltageDriveForward(double volts);

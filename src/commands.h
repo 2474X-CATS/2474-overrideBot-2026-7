@@ -43,12 +43,13 @@ typedef enum
 //---------------------------------------
 // A COMBINATION OF DRIVING FORWARD AND TURNING COMMANDS
 
-class DrivePath : public Command<Drivebase, Intake>
+class DrivePath : public Command<Drivebase, Intake, Indexer>
 {
 
 protected:
   Drivebase &drivebaseRef;
-  Intake &intakeRef;
+  Intake &intakeRef; 
+  Indexer &indexerRef;
 
   vector<double> setpoints;
   bool turningFirst;
@@ -99,12 +100,13 @@ public:
 
   static CommandInterface *getCommand(vector<double> setpoints, bool turningFirst, bool intaking)
   {
-    return new DrivePath(*Drivebase::globalRef, *Intake::globalRef, setpoints, turningFirst, intaking);
+    return new DrivePath(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, setpoints, turningFirst, intaking);
   }
 
-  DrivePath(Drivebase &drive, Intake &intake, vector<double> setpoints, bool turningFirst, bool intaking) : Command<Drivebase, Intake>(drive, intake),
+  DrivePath(Drivebase &drive, Intake &intake, Indexer &indexer, vector<double> setpoints, bool turningFirst, bool intaking) : Command<Drivebase, Intake, Indexer>(drive, intake, indexer),
                                                                                                             drivebaseRef(drive),
-                                                                                                            intakeRef(intake),
+                                                                                                            intakeRef(intake), 
+                                                                                                            indexerRef(indexer),
                                                                                                             setpoints(setpoints),
                                                                                                             turningFirst(turningFirst),
                                                                                                             intaking(intaking),
@@ -125,10 +127,10 @@ protected:
 public:
   static CommandInterface *getCommand(double setpointX, double setpointY, double endingAngle, PathType pathType, bool intaking)
   {
-    return new DriveToSetpoint(*Drivebase::globalRef, *Intake::globalRef, setpointX, setpointY, endingAngle, pathType, intaking);
+    return new DriveToSetpoint(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, setpointX, setpointY, endingAngle, pathType, intaking);
   }
 
-  DriveToSetpoint(Drivebase &drive, Intake &intake, double setpointX, double setpointY, double endingAngle, PathType pathType, bool intaking) : DrivePath(drive, intake, {}, true, intaking),
+  DriveToSetpoint(Drivebase &drive, Intake &intake, Indexer &indexer, double setpointX, double setpointY, double endingAngle, PathType pathType, bool intaking) : DrivePath(drive, intake, indexer, {}, true, intaking),
                                                                                                                                                 setpointX(setpointX),
                                                                                                                                                 setpointY(setpointY),
                                                                                                                                                 endingAngle(endingAngle),
@@ -146,10 +148,10 @@ class FlatAlignWithX : protected DriveToSetpoint
 public:
   static CommandInterface *getCommand(double setpointX)
   {
-    return new FlatAlignWithX(*Drivebase::globalRef, *Intake::globalRef, setpointX);
+    return new FlatAlignWithX(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, setpointX);
   }
 
-  FlatAlignWithX(Drivebase &drive, Intake &intake, double setpointX) : DriveToSetpoint(drive, intake, setpointX, 0, -1, PathType::MANHATTAN_XY, false) {};
+  FlatAlignWithX(Drivebase &drive, Intake &intake, Indexer &indexer, double setpointX) : DriveToSetpoint(drive, intake, indexer, setpointX, 0, -1, PathType::MANHATTAN_XY, false) {};
 
   void start() override;
 };
@@ -159,10 +161,10 @@ class FlatAlignWithY : protected DriveToSetpoint
 public:
   static CommandInterface *getCommand(double setpointY)
   {
-    return new FlatAlignWithY(*Drivebase::globalRef, *Intake::globalRef, setpointY);
+    return new FlatAlignWithY(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, setpointY);
   }
 
-  FlatAlignWithY(Drivebase &drive, Intake &intake, double setpointY) : DriveToSetpoint(drive, intake, 0, setpointY, -1, PathType::MANHATTAN_YX, false) {}
+  FlatAlignWithY(Drivebase &drive, Intake &intake, Indexer &indexer, double setpointY) : DriveToSetpoint(drive, intake, indexer, 0, setpointY, -1, PathType::MANHATTAN_YX, false) {}
 
   void start() override;
 };
@@ -177,10 +179,10 @@ private:
 public:
   static CommandInterface *getCommand(double setpointY)
   {
-    return new SlantedAlignWithY(*Drivebase::globalRef, *Intake::globalRef, setpointY);
+    return new SlantedAlignWithY(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, setpointY);
   }
 
-  SlantedAlignWithY(Drivebase &drive, Intake &intake, double setpointY) : DrivePath(drive, intake, {}, false, false),
+  SlantedAlignWithY(Drivebase &drive, Intake &intake, Indexer &indexer, double setpointY) : DrivePath(drive, intake, indexer, {}, false, false),
                                                                           setpointY(setpointY) {}
 
   void start() override;
@@ -194,17 +196,17 @@ private:
 public:
   static CommandInterface *getCommand(double setpointX)
   {
-    return new SlantedAlignWithX(*Drivebase::globalRef, *Intake::globalRef, setpointX);
+    return new SlantedAlignWithX(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, setpointX);
   }
 
-  SlantedAlignWithX(Drivebase &drive, Intake &intake, double setpointX) : DrivePath(drive, intake, {}, false, false),
+  SlantedAlignWithX(Drivebase &drive, Intake &intake, Indexer &indexer, double setpointX) : DrivePath(drive, intake, indexer, {}, false, false),
                                                                           setpointX(setpointX) {}
 
   void start() override;
 };
 
 //------------------------------------------------------------------------------------------------------------- 
-class FollowCirclePath : Command<Drivebase, Intake> { 
+class FollowCirclePath : Command<Drivebase, Intake, Indexer> { 
   private:  
 
      vector<BiarcEnum> setpoints;   
@@ -216,17 +218,17 @@ class FollowCirclePath : Command<Drivebase, Intake> {
      bool initialized = false;  
      bool intaking;
 
-
      Drivebase& drivebaseRef;  
-     Intake& intakeRef;  
+     Intake& intakeRef;   
+     Indexer& indexerRef; 
 
   public:    
 
      static CommandInterface* getCommand(vector<BiarcEnum> setpoints, bool intaking){ 
-        return new FollowCirclePath(*Drivebase::globalRef, *Intake::globalRef, setpoints, intaking);
+        return new FollowCirclePath(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, setpoints, intaking);
      } 
 
-     FollowCirclePath(Drivebase& drivebase, Intake& intake, vector<BiarcEnum> setpoints, bool intaking);
+     FollowCirclePath(Drivebase& drivebase, Intake& intake, Indexer& indexer, vector<BiarcEnum> setpoints, bool intaking);
      
      void start() override; 
      void periodic() override; 
@@ -270,10 +272,10 @@ class TurnToSetpoint : DriveToSetpoint
 public:
   static CommandInterface *getCommand(double setpointX, double setpointY)
   {
-    return new TurnToSetpoint(*Drivebase::globalRef, *Intake::globalRef, setpointX, setpointY);
+    return new TurnToSetpoint(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, setpointX, setpointY);
   }
 
-  TurnToSetpoint(Drivebase &drive, Intake &intake, double setpointX, double setpointY) : DriveToSetpoint(drive, intake, setpointX, setpointY, -1, PathType::EUCLIDEAN, false) {};
+  TurnToSetpoint(Drivebase &drive, Intake &intake, Indexer &indexer, double setpointX, double setpointY) : DriveToSetpoint(drive, intake, indexer, setpointX, setpointY, -1, PathType::EUCLIDEAN, false) {};
 
 protected:
   void start() override;
@@ -289,10 +291,10 @@ private:
 public:
   static CommandInterface *getCommand(double setpointX, double setpointY, double intaking, double offset)
   {
-    return new CloseDistance(*Drivebase::globalRef, *Intake::globalRef, setpointX, setpointY, intaking, offset);
+    return new CloseDistance(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, setpointX, setpointY, intaking, offset);
   }
 
-  CloseDistance(Drivebase &drive, Intake &intake, double setpointX, double setpointY, bool intaking, double offset) : DriveToSetpoint(drive, intake, setpointX, setpointY, -1, PathType::EUCLIDEAN, intaking),
+  CloseDistance(Drivebase &drive, Intake &intake, Indexer &indexer, double setpointX, double setpointY, bool intaking, double offset) : DriveToSetpoint(drive, intake, indexer, setpointX, setpointY, -1, PathType::EUCLIDEAN, intaking),
                                                                                                                       offset(offset) {};
 
 protected:
@@ -302,11 +304,12 @@ protected:
 //---------------------------------------
 // DRIVES THE ROBOT FORWARD OR BACKWARD AT A CERTAIN SPEED PERCENTAGE
 
-class DriveForwardForTime : Command<Drivebase, Intake>
+class DriveForwardForTime : Command<Drivebase, Intake, Indexer>
 {
 private:
   Drivebase &drivebaseRef;
-  Intake &intakeRef;
+  Intake &intakeRef; 
+  Indexer &indexerRef;
 
   bool intaking;
 
@@ -324,13 +327,14 @@ protected:
 public:
   static CommandInterface *getCommand(double percentage, double timeDuration, bool intaking)
   {
-    return new DriveForwardForTime(*Drivebase::globalRef, *Intake::globalRef, percentage, timeDuration, intaking);
+    return new DriveForwardForTime(*Drivebase::globalRef, *Intake::globalRef, *Indexer::globalRef, percentage, timeDuration, intaking);
   }
 
-  DriveForwardForTime(Drivebase &drivebase, Intake &intake, double percentage, double timeDuration, bool intaking) : Command<Drivebase, Intake>(drivebase, intake),
+  DriveForwardForTime(Drivebase &drivebase, Intake &intake, Indexer &indexer, double percentage, double timeDuration, bool intaking) : Command<Drivebase, Intake, Indexer>(drivebase, intake, indexer),
                                                                                                                      intaking(intaking),
-                                                                                                                     drivebaseRef(drivebase),
-                                                                                                                     intakeRef(intake),
+                                                                                                                     drivebaseRef(drivebase), 
+                                                                                                                     intakeRef(intake), 
+                                                                                                                     indexerRef(indexer),
                                                                                                                      percentage(percentage),
                                                                                                                      timeDuration(timeDuration) {};
 
@@ -370,10 +374,11 @@ public:
 //---------------------------------------
 // INTAKE CUBES FOR STORAGE FOR A CERTAIN AMOUNT OF TIME
 
-class IntakeCubes : public Command<Intake>
+class IntakeCubes : public Command<Intake, Indexer>
 {
 private:
-  Intake &intakeRef;
+  Intake &intakeRef; 
+  Indexer &indexerRef;
 
   double startingTime;
   double timeDuration;
@@ -388,11 +393,12 @@ protected:
 public:
   static CommandInterface *getCommand(double timeDuration)
   {
-    return new IntakeCubes(*Intake::globalRef, timeDuration);
+    return new IntakeCubes(*Intake::globalRef, *Indexer::globalRef, timeDuration);
   }
 
-  IntakeCubes(Intake &intake, double timeDuration) : Command<Intake>(intake),
-                                                     intakeRef(intake),
+  IntakeCubes(Intake &intake, Indexer &indexer, double timeDuration) : Command<Intake, Indexer>(intake, indexer),
+                                                     intakeRef(intake), 
+                                                     indexerRef(indexer),
                                                      timeDuration(timeDuration) {};
 
   ~IntakeCubes() override = default;
@@ -513,7 +519,7 @@ class ParkClear : Command<Drivebase, Intake> {
   public: 
     static double PARK_ZONE_WIDTH;   
 
-    CommandInterface* getCommand(vector<PCPhase> phases, bool stay){ 
+    static CommandInterface* getCommand(vector<PCPhase> phases, bool stay){ 
       return new ParkClear(*Drivebase::globalRef, *Intake::globalRef, phases, stay);
     }
 

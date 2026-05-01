@@ -20,7 +20,8 @@ void DrivePath::periodic()
     {
         turnPeriodic();
     }
-    intakeRef.periodic();
+    intakeRef.periodic(); 
+    indexerRef.periodic();
 }
 
 bool DrivePath::isOver()
@@ -31,9 +32,10 @@ bool DrivePath::isOver()
 void DrivePath::end()
 {
     RobotState::manuallyModifyState("intaking", false); 
-    RobotState::manuallyModifyState("odometry_enabled", true);
+    //RobotState::manuallyModifyState("odometry_enabled", true);
     drivebaseRef.stop();
-    intakeRef.stop();
+    intakeRef.stop(); 
+    indexerRef.stop();
 }
 
 void DrivePath::drivePeriodic()
@@ -122,7 +124,7 @@ void DrivePath::initializeDrive()
     lastPoint[0] = startingPoint[0];
     lastPoint[1] = startingPoint[1]; 
     
-    RobotState::manuallyModifyState("odometry_enabled", true);
+    //RobotState::manuallyModifyState("odometry_enabled", true);
 
     drivingProfile->setLastTimestamp(timestamp);  
     alphaController->setLastTimestamp(timestamp); 
@@ -155,7 +157,7 @@ bool DrivePath::isTurnOver()
 
 void DrivePath::initializeTurn()
 { 
-    RobotState::manuallyModifyState("odometry_enabled", false); 
+    //RobotState::manuallyModifyState("odometry_enabled", false); 
 
     turnPID = new pidcontroller(drivebaseRef.getTurningPID(), 0);
     turnPID->setLastTimestamp(Brain.Timer.time());
@@ -400,10 +402,11 @@ void CloseDistance::start()
 
 //--------------------------------------- 
 
-FollowCirclePath::FollowCirclePath(Drivebase& drivebase, Intake& intake, vector<BiarcEnum> setpoints, bool intaking) : 
-Command<Drivebase, Intake>(drivebase, intake), 
+FollowCirclePath::FollowCirclePath(Drivebase& drivebase, Intake& intake, Indexer& indexer, vector<BiarcEnum> setpoints, bool intaking) : 
+Command<Drivebase, Intake, Indexer>(drivebase, intake, indexer), 
 drivebaseRef(drivebase),  
-intakeRef(intake), 
+intakeRef(intake),  
+indexerRef(indexer),
 setpoints(setpoints), 
 intaking(intaking)
 { 
@@ -444,7 +447,8 @@ void FollowCirclePath::periodic(){
             drivebaseRef.manualDriveWithCurvature(output.linearVelocity, output.angularVelocity); 
         }
     }  
-    intakeRef.periodic();
+    intakeRef.periodic(); 
+    indexerRef.periodic();
 } 
 
 bool FollowCirclePath::isOver(){ 
@@ -453,10 +457,10 @@ bool FollowCirclePath::isOver(){
 
 void FollowCirclePath::end(){
     RobotState::manuallyModifyState("intaking", false);  
-    intakeRef.stop(); 
+    intakeRef.stop();  
+    indexerRef.stop();
     drivebaseRef.stop();
 }
-
 
 
 //--------------------------------------- 
@@ -482,7 +486,6 @@ bool FollowSplinePath::isOver(){
 void FollowSplinePath::end(){ 
     drivebaseRef.stop();
 }
-
 
 
 //---------------------------------------
@@ -555,7 +558,8 @@ void IntakeCubes::start()
 
 void IntakeCubes::periodic()
 {
-    intakeRef.periodic();
+    intakeRef.periodic(); 
+    indexerRef.periodic();
 };
 
 bool IntakeCubes::isOver()
@@ -566,7 +570,8 @@ bool IntakeCubes::isOver()
 void IntakeCubes::end()
 {
     RobotState::manuallyModifyState("intaking", false);
-    intakeRef.stop();
+    intakeRef.stop(); 
+    indexerRef.stop();
 }
 
 string IntakeCubes::repr()
@@ -606,8 +611,8 @@ void ScoreOnGoal::periodic()
 
 bool ScoreOnGoal::isOver()
 {
-    return Brain.Timer.time() - startingTime >= timeDuration;
-}
+    return Brain.Timer.time() - startingTime >= timeDuration; //|| (indexerRef.get<bool>("detects_block") && indexerRef.get<bool>("detects_wrong_color")); 
+} 
 
 void ScoreOnGoal::end()
 {
@@ -671,7 +676,8 @@ string DeployMatchloader::repr()
 
 void DeployDescore::start()
 {
-    RobotState::manuallyModifyState("descore_in", isOut);
+    RobotState::manuallyModifyState("descore_f_in", isOut); 
+    RobotState::manuallyModifyState("descore_b_in", isOut);
 }
 
 void DeployDescore::periodic()

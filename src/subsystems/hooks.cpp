@@ -10,15 +10,19 @@ void Hooks::init()
 
 void Hooks::periodic()
 {
-   hookPiston.set(RobotState::getStateOf("descore_in"));
+   hookPistonFront.set(RobotState::getStateOf("descore_f_in")); 
+   hookPistonBack.set(RobotState::getStateOf("descore_b_in")); 
+   lowGoalDescore.set(RobotState::getStateOf("low_descore_out"));
 }
 
 void Hooks::updateTelemetry()
-{
+{ 
    return;
 }
 
 void Hooks::stop()
 {
-   hookPiston.set(true);
+   hookPistonFront.set(true); 
+   hookPistonBack.set(true); 
+   lowGoalDescore.set(false);
 }

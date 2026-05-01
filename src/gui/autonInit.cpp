@@ -5,7 +5,6 @@ void ColorPicker::draw(){
     uint32_t currentColor = isBlue ? globalColor.blue : globalColor.red; 
     int32_t backdrop = pressed ? globalColor.rgb(150,150,150) : globalColor.rgb(200,200,200);  
 
-
     drawRectangle(x,y,width, height, backdrop); 
     drawRectangle(x + (width / 5) * 3, y + (height / 10), width / 3, ((height / 10) * 9), currentColor); 
     renderText("Color", x + (width / 20), y + (height/3) * 2, globalColor.black, backdrop, vex::fontType::mono20); 

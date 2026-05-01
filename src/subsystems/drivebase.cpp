@@ -16,7 +16,7 @@ double Drivebase::ENCODER_DIST_FROM_CENTER = 91.3417;
 
 double Drivebase::DRIVE_WHEEL_RADIUS_MM = 3.25 * 25.4 / 2; // 3.25in diam
 
-double Drivebase::MID_ALIGNER_LENGTH = 0;
+double Drivebase::MID_ALIGNER_LENGTH = -30;
 double Drivebase::HIGH_ALIGNER_LENGTH = 0; 
 
 double Drivebase::ROBOT_WHEEL_BASE = 10.24 * 25.4;
@@ -54,8 +54,8 @@ Location *Drivebase::locations[14] = {
         30),
     new Location(
         "native-mid",
-        TILE_SIZE_MM * 2.75,
-        TILE_SIZE_MM * 2.75,
+        TILE_SIZE_MM * 2.75,//3 - (((226.25 / 2) * sqrt(2)) * cos(M_PI/4)), //TILE_SIZE * 2.75 for both
+        TILE_SIZE_MM * 2.75,//3 - (((226.25 / 2) * sqrt(2)) * sin(M_PI/4)), 
         30,
         45,
         30),
@@ -140,41 +140,40 @@ void Drivebase::init()
    }
 
    driveGyro.setHeading(90, vex::rotationUnits::deg);
-
    set<double>("last_heading", 90);
    
    setStartingPos(startX, startY);
 
    //------------------------------
 
-   correctivePID.P = 0.25;
+   correctivePID.P = 0.35;
    correctivePID.I = 0.0;
    correctivePID.D = 0.0;
    correctivePID.errorTolerance = 0;
 
    //--------------------------  > 
    
-   turnPID.P = 3.00; 
-   turnPID.I = 0.0075; 
-   turnPID.D = 0.00;  
-   turnPID.minimumOutput = 17.5;
-   turnPID.errorTolerance = 0.5;
+   turnPID.P = 2.825;
+   turnPID.I = 0.11;
+   turnPID.D = 0;//  
+   turnPID.minimumOutput = 12.5;
+   turnPID.errorTolerance = 1;
 
    //-------------------------- >
 
    trapConsts.maxVelocity = ((MAX_RPM * (2 * DRIVE_WHEEL_RADIUS_MM * M_PI)) / 60.0); // * (MAX_RPM / 600.0));
-   trapConsts.maxAcceleration = trapConsts.maxVelocity / 0.75;                               // Reach max speed in 0.9 seconds
+   trapConsts.maxAcceleration = trapConsts.maxVelocity / 0.9;                               // Reach max speed in 0.9 seconds
 
    //--------------------------
-
-   lastTimestamp = Brain.Timer.time(vex::sec); 
+ 
+   lastTimestamp = Brain.Timer.time(vex::sec);  
+   startingTimestamp = lastTimestamp;
    
 };
 
 void Drivebase::periodic()
 {  
    arcadeDrive(((double)RobotState::getAxisState(AxisType::LEFT_VERTICAL)), ((double)RobotState::getAxisState(AxisType::RIGHT_HORIZONTAL)));
-  
 } 
 
 void Drivebase::updateTelemetry()
@@ -191,13 +190,11 @@ void Drivebase::updateTelemetry()
    double omega = angleDifference(angle, get<double>("last_heading"));  
      
    set<double>("Angular_Velocity", omega / deltaTime);
-   
+    
+
    if (RobotState::getStateOf("odometry_enabled")) 
    {  
-      odomLift.open();
-
-      leftDriveMotors.setStopping(vex::brakeType::brake);
-      rightDriveMotors.setStopping(vex::brakeType::brake);
+      odomLift.close();
       
       double hypotenuse;
       hypotenuse = ((encoderLinear.velocity(vex::velocityUnits::rpm) * 2 * M_PI * ENCODER_WHEEL_LIN_RADIUS_MM) / 60 * deltaTime);
@@ -225,7 +222,7 @@ void Drivebase::updateTelemetry()
         }
       }
    } else { 
-      odomLift.close(); 
+      odomLift.open(); 
    }
 
    set<double>("last_heading", angle);  
@@ -240,9 +237,9 @@ void Drivebase::updateTelemetry()
    set<double>("Pos_Y", y);
 
 
-   Brain.Screen.printAt(20, 150, "Angle Degrees: %.2f", get<double>("Angle_Degrees_CCW"));
-   Brain.Screen.printAt(20, 175, "Pos X: %.2f", get<double>("Pos_X"));  
-   Brain.Screen.printAt(20, 200, "Pos Y: %.2f", get<double>("Pos_Y")); 
+   //Brain.Screen.printAt(20, 150, "Angle Degrees: %.2f", get<double>("Angle_Degrees_CCW"));
+   //Brain.Screen.printAt(20, 175, "Pos X: %.2f", get<double>("Pos_X"));  
+   //Brain.Screen.printAt(20, 200, "Pos Y: %.2f", get<double>("Pos_Y")); 
    lastTimestamp = Brain.Timer.time(vex::sec);
 };
 
@@ -256,23 +253,21 @@ void Drivebase::arcadeDrive(double speed, double rotation)
    
    speed *= linearSpeedFactor;  
    rotation *= angularSpeedFactor;
-   
-   if (fabs(speed) < 2 && fabs(rotation) < 2)
-   {
-      stop();
-      return;
-   }
 
    speed = speed > 100 ? 100 : (speed < -100 ? -100 : speed);
    rotation = rotation > 100 ? 100 : (rotation < -100 ? -100 : rotation);
 
    speed = RobotState::getStateOf("is_drive_inverted") ? speed * -1 : speed;
 
-   leftDriveMotors.setVelocity((speed - rotation), vex::percentUnits::pct);
-   rightDriveMotors.setVelocity((speed + rotation), vex::percentUnits::pct);
+   //leftDriveMotors.setVelocity((speed - rotation), vex::percentUnits::pct);
+   //rightDriveMotors.setVelocity((speed + rotation), vex::percentUnits::pct);
+   
+   leftDriveMotors.spin(vex::directionType::rev, 12 * ((speed - rotation) / 100), vex::voltageUnits::volt); 
+   rightDriveMotors.spin(vex::directionType::fwd, 12 * ((speed + rotation) / 100), vex::voltageUnits::volt);
+   
 
-   leftDriveMotors.spin(vex::directionType::rev);
-   rightDriveMotors.spin(vex::directionType::fwd);
+   //leftDriveMotors.spin(vex::directionType::rev);
+   //rightDriveMotors.spin(vex::directionType::fwd);
 };
 
 void Drivebase::manualDriveForward(double speedMM, double centerAngle)
@@ -349,31 +344,63 @@ void Drivebase::initializePosWithFaces(double x, double y){
    set<double>("Pos_Y", y + sin(heading) * (ROBOT_LENGTH_MM/2));
 } 
 
-void Drivebase::initializePosWithVertices(double x, double y, double anchorHeading){ 
-   double heading = get<double>("Angle_Degrees_CCW");  
-
-   double xComp; 
-   double yComp;  
-
-   if ((heading >= 45 && heading <= 135) || (heading >= 225 && heading <= 315)){ 
-      xComp = ROBOT_WIDTH_MM / 2; 
-      yComp = ROBOT_LENGTH_MM / 2;
-   } else { 
-      xComp = ROBOT_LENGTH_MM / 2; 
-      yComp = ROBOT_WIDTH_MM / 2;
-   }
+void Drivebase::initializePosWithVertices(double x, double y){ 
    
-   heading = angleSum(heading, -45);   
+   double heading = get<double>("Angle_Degrees_CCW");   
+   
+   double xComp;
+   double yComp; 
 
-   while (fabs(angleDifference(anchorHeading, heading)) > 45){ 
-      heading = angleSum(heading, 90);
+   int referenceAngle;
+
+   if ((heading >= 45 && heading < 135) || (heading >= 225 && heading < 315)){  
+     if (heading >= 45 && heading < 135){ 
+      referenceAngle = 90;
+     } else { 
+      referenceAngle = 270;
+     }
+     xComp = ROBOT_WIDTH_MM/2; 
+     yComp = ROBOT_LENGTH_MM/2; 
+   } else {   
+
+     if (heading >= 135 && heading < 225){ 
+      referenceAngle = 180;
+     } else { 
+      referenceAngle = 0;
+     }  
+
+     xComp = ROBOT_LENGTH_MM/2; 
+     yComp = ROBOT_WIDTH_MM/2;
+   } 
+
+   double dist = hypot(xComp, yComp); 
+    
+   double standardAngle;
+
+   switch (referenceAngle){ 
+      case 90:  
+        standardAngle = atan2(yComp, xComp); 
+        break;
+      case 180:
+        standardAngle = atan2(yComp, -xComp); 
+        break;
+      case 270:  
+        standardAngle = (2*M_PI) + atan2(-yComp, -xComp); 
+        break;
+      case 0:  
+        standardAngle = (2*M_PI) + atan2(-yComp, xComp);  
+        break; 
+      default: 
+        standardAngle = -1; 
    }  
 
-   heading = toRadians(heading); 
+   double angleDiff = angleDifference(referenceAngle, heading);  
 
-   set<double>("Pos_X", x + (cos(heading) * xComp) ); 
-   set<double>("Pos_Y", y + (sin(heading) * yComp) ); 
-
+   standardAngle -= toRadians(angleDiff);  
+    
+   set<double>("Pos_X", x + cos(standardAngle) * dist);
+   set<double>("Pos_Y", y + sin(standardAngle) * dist);
+   
 }
 
 void Drivebase::manualDriveWithCurvature(double speedMM, double turnDeg)
@@ -529,7 +556,9 @@ PIDConstants Drivebase::getTurningPID()
 void Drivebase::setStartingPos(double x, double y)
 {
    set<double>("Pos_X", x + (ROBOT_WIDTH_MM / 2));
-   set<double>("Pos_Y", y + (ROBOT_LENGTH_MM / 2));
+   set<double>("Pos_Y", y + (ROBOT_LENGTH_MM / 2)); 
+   leftDriveMotors.setStopping(vex::brakeType::brake);
+   rightDriveMotors.setStopping(vex::brakeType::brake);
    //driveGyro.setHeading(90, vex::rotationUnits::deg);
 }
 
@@ -551,7 +580,7 @@ PathMetadata Drivebase::getPathMetadata(){
    data.correctiveTurnConstants = correctivePID;  
    data.correctiveLinConstants = correctivePID;
    data.motionConstants = trapConsts; 
-   data.maximumCentripetalAcceleration = pow(trapConsts.maxVelocity,2) / 500.0; 
+   data.maximumCentripetalAcceleration = pow(trapConsts.maxVelocity,2) / 500; 
    return data;
 } 
 
