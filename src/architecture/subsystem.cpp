@@ -48,7 +48,8 @@ Subsystem *Subsystem::getSubsystem(int index)
 
 //----------------------------------------------------------------------
 
-vex::controller Controller = vex::controller(vex::controllerType::primary);
+vex::controller Controller1 = vex::controller(vex::controllerType::primary);
+vex::controller Controller2 = vex::controller(vex::controllerType::partner);
 
 bool RobotState::axisesEnabled = false;
 ControlType RobotState::mode = ControlType::INITIALIZATION;
@@ -80,87 +81,16 @@ void RobotState::initializeState()
        "robot_state",
        { 
 
-           (EntrySet){"is_team_color_blue", EntryType::BOOL},
-           (EntrySet){"color_sensitive", EntryType::BOOL},
-           (EntrySet){"ready", EntryType::BOOL},
-           (EntrySet){"in_autonomous", EntryType::BOOL},
-           (EntrySet){"is_counterclockwise", EntryType::BOOL},
-           (EntrySet){"in_skills", EntryType::BOOL},
-
-           (EntrySet){"calibrating", EntryType::BOOL},
-           (EntrySet){"k_calibrating", EntryType::BOOL},
-
-           (EntrySet){"scoring_high", EntryType::BOOL},
-           (EntrySet){"scoring_mid", EntryType::BOOL},
-           (EntrySet){"scoring_low", EntryType::BOOL},
-           (EntrySet){"matchloader_out", EntryType::BOOL}, 
-
-           (EntrySet){"descore_f_in", EntryType::BOOL}, 
-           (EntrySet){"descore_b_in", EntryType::BOOL}, 
-
-           (EntrySet){"intaking", EntryType::BOOL}, 
-           (EntrySet){"swallow", EntryType::BOOL}, 
-           (EntrySet){"quiet", EntryType::BOOL},
-
-           (EntrySet){"k_inversion_held", EntryType::BOOL},
-           (EntrySet){"is_drive_inverted", EntryType::BOOL}, 
-           (EntrySet){"odometry_enabled", EntryType::BOOL}, 
-
-           (EntrySet){"low_descore_out", EntryType::BOOL}
-         
        });
 }
 
 void RobotState::updateRegular()
 {  
-   manuallyModifyState("odometry_enabled", false);   
    
-   manuallyModifyState("scoring_high", Controller.ButtonR2.pressing());
-   manuallyModifyState("scoring_mid", Controller.ButtonR1.pressing());
-   manuallyModifyState("scoring_low", Controller.ButtonRight.pressing()); 
-
-   manuallyModifyState("intaking", Controller.ButtonY.pressing());
-
-   if (Controller.ButtonUp.pressing())
-   {
-      manuallyModifyState("k_inversion_held", true);
-   }
-   else
-   {
-      if (getStateOf("k_inversion_held"))
-      {
-         manuallyModifyState("k_inversion_held", false);
-         manuallyModifyState("is_drive_inverted", !getStateOf("is_drive_inverted"));
-      }
-   }
-
-   manuallyModifyState("descore_f_in", Controller.ButtonL1.pressing()); 
-   manuallyModifyState("descore_b_in", Controller.ButtonL2.pressing());
-   manuallyModifyState("matchloader_out", Controller.ButtonDown.pressing());   
-
-   manuallyModifyState("low_descore_out", Controller.ButtonB.pressing()); 
-
-   manuallyModifyState("swallow", Controller.ButtonX.pressing());  
-
-   manuallyModifyState("quiet", !(getStateOf("scoring_high") || getStateOf("scoring_mid") || getStateOf("scoring_low") || getStateOf("intaking") || getStateOf("swallow")) ); 
-
-   
-
 }
 
 void RobotState::updateStopped()
 {
-
-   manuallyModifyState("scoring_high", false);
-   manuallyModifyState("scoring_mid", false);
-   manuallyModifyState("scoring_low", false);
-   manuallyModifyState("matchloader_out", false);
-   manuallyModifyState("k_inversion_held", false);
-   manuallyModifyState("descore_f_in", false); 
-   manuallyModifyState("descore_b_in", false);
-   manuallyModifyState("intaking", false);   
-   manuallyModifyState("low_descore_out", false);  
-   manuallyModifyState("swallow", false); 
 
 };
 
