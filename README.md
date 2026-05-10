@@ -1,7 +1,7 @@
-<h1>2474X-CATS CompetitionBot — 2025–26 Push Back Season</h1>
+<h1>2474X-CATS CompetitionBot — 2026–26</h1>
 
 <h2>Author: Jackson Scott (primary developer)</h2>
-<h2>Game: VEX Robotics Competition – Push Back</h2>
+<h2>Game: VEX Robotics Competition – Override</h2>
 <h2>Robot: Competition-ready V5 robot with modular architecture, command-based control, and advanced motion planning.</h3>
 
 <h3>🚀 Overview</h3>
