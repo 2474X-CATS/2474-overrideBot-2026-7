@@ -322,41 +322,41 @@ Discarded input sections
                 0x0000000000000000        0x8 build/src/architecture/subsystem.o
  .llvm_addrsig  0x0000000000000000        0x6 build/src/architecture/subsystem.o
  .text          0x0000000000000000        0x0 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroupC2EP16CommandInterface
+ .text._ZN20ParallelCommandGroupC2EP16CommandInterface
                 0x0000000000000000       0x48 build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroupC2EP16CommandInterface
+ .ARM.exidx.text._ZN20ParallelCommandGroupC2EP16CommandInterface
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroup8chainAndEP16CommandInterface
+ .text._ZN20ParallelCommandGroup8chainAndEP16CommandInterface
                 0x0000000000000000       0xc8 build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroup8chainAndEP16CommandInterface
+ .ARM.exidx.text._ZN20ParallelCommandGroup8chainAndEP16CommandInterface
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroup19integrateSubsystemsESt6vectorISt17reference_wrapperI9SubsystemESaIS3_EE
+ .text._ZN20ParallelCommandGroup19integrateSubsystemsESt6vectorISt17reference_wrapperI9SubsystemESaIS3_EE
                 0x0000000000000000       0xb4 build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroup19integrateSubsystemsESt6vectorISt17reference_wrapperI9SubsystemESaIS3_EE
+ .ARM.exidx.text._ZN20ParallelCommandGroup19integrateSubsystemsESt6vectorISt17reference_wrapperI9SubsystemESaIS3_EE
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroup10chainWhileEP16CommandInterface
+ .text._ZN20ParallelCommandGroup10chainWhileEP16CommandInterface
                 0x0000000000000000       0x94 build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroup10chainWhileEP16CommandInterface
+ .ARM.exidx.text._ZN20ParallelCommandGroup10chainWhileEP16CommandInterface
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroup5startEv
+ .text._ZN20ParallelCommandGroup5startEv
                 0x0000000000000000       0x34 build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroup5startEv
+ .ARM.exidx.text._ZN20ParallelCommandGroup5startEv
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroup8periodicEv
+ .text._ZN20ParallelCommandGroup8periodicEv
                 0x0000000000000000       0x8c build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroup8periodicEv
+ .ARM.exidx.text._ZN20ParallelCommandGroup8periodicEv
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroup3endEv
+ .text._ZN20ParallelCommandGroup3endEv
                 0x0000000000000000       0x40 build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroup3endEv
+ .ARM.exidx.text._ZN20ParallelCommandGroup3endEv
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroup6isOverEv
+ .text._ZN20ParallelCommandGroup6isOverEv
                 0x0000000000000000       0x5c build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroup6isOverEv
+ .ARM.exidx.text._ZN20ParallelCommandGroup6isOverEv
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroup9makeGroupEP16CommandInterface
+ .text._ZN20ParallelCommandGroup9makeGroupEP16CommandInterface
                 0x0000000000000000       0x58 build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroup9makeGroupEP16CommandInterface
+ .ARM.exidx.text._ZN20ParallelCommandGroup9makeGroupEP16CommandInterface
                 0x0000000000000000        0x8 build/src/architecture/command.o
  .text._ZN22SequentialCommandGroupC2EP16CommandInterface
                 0x0000000000000000       0x28 build/src/architecture/command.o
@@ -391,7 +391,7 @@ Discarded input sections
  .ARM.exidx.text._ZN22SequentialCommandGroup9makeGroupEP16CommandInterface
                 0x0000000000000000        0x8 build/src/architecture/command.o
  .group         0x0000000000000000       0x14 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroupD2Ev
+ .text._ZN20ParallelCommandGroupD2Ev
                 0x0000000000000000       0x54 build/src/architecture/command.o
  .group         0x0000000000000000       0x14 build/src/architecture/command.o
  .group         0x0000000000000000       0x14 build/src/architecture/command.o
@@ -404,11 +404,11 @@ Discarded input sections
  .group         0x0000000000000000       0x14 build/src/architecture/command.o
  .group         0x0000000000000000       0x14 build/src/architecture/command.o
  .group         0x0000000000000000       0x14 build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroupD2Ev
+ .ARM.exidx.text._ZN20ParallelCommandGroupD2Ev
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN20ParralelCommandGroupD0Ev
+ .text._ZN20ParallelCommandGroupD0Ev
                 0x0000000000000000       0x58 build/src/architecture/command.o
- .ARM.exidx.text._ZN20ParralelCommandGroupD0Ev
+ .ARM.exidx.text._ZN20ParallelCommandGroupD0Ev
                 0x0000000000000000        0x8 build/src/architecture/command.o
  .text._ZN16CommandInterface4reprEv
                 0x0000000000000000       0x24 build/src/architecture/command.o
@@ -450,7 +450,7 @@ Discarded input sections
                 0x0000000000000000       0x30 build/src/architecture/command.o
  .ARM.exidx.text._ZNSt12_Vector_baseISt17reference_wrapperI9SubsystemESaIS2_EE11_M_allocateEj
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .rodata._ZTV20ParralelCommandGroup
+ .rodata._ZTV20ParallelCommandGroup
                 0x0000000000000000       0x28 build/src/architecture/command.o
  .rodata._ZTV22SequentialCommandGroup
                 0x0000000000000000       0x28 build/src/architecture/command.o
