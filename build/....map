@@ -463,7 +463,7 @@ Discarded input sections
  .ARM.exidx.text._ZN5Robot13driverControlEb
                 0x0000000000000000        0x8 build/src/architecture/robot.o
  .text._ZN5Robot18runTelemetryThreadEv
-                0x0000000000000000       0x3c build/src/architecture/robot.o
+                0x0000000000000000       0x40 build/src/architecture/robot.o
  .ARM.exidx.text._ZN5Robot18runTelemetryThreadEv
                 0x0000000000000000        0x8 build/src/architecture/robot.o
  .text._ZN5Robot14stopEverythingEv
@@ -622,6 +622,52 @@ Discarded input sections
  .data._ZN10RobotState4modeE
                 0x0000000000000000        0x1 build/src/architecture/robotState.o
  .llvm_addrsig  0x0000000000000000        0x7 build/src/architecture/robotState.o
+ .text          0x0000000000000000        0x0 build/src/architecture/dataStream.o
+ .group         0x0000000000000000       0x14 build/src/architecture/dataStream.o
+ .group         0x0000000000000000       0x14 build/src/architecture/dataStream.o
+ .group         0x0000000000000000       0x14 build/src/architecture/dataStream.o
+ .group         0x0000000000000000       0x14 build/src/architecture/dataStream.o
+ .group         0x0000000000000000       0x14 build/src/architecture/dataStream.o
+ .group         0x0000000000000000       0x14 build/src/architecture/dataStream.o
+ .group         0x0000000000000000       0x14 build/src/architecture/dataStream.o
+ .group         0x0000000000000000        0xc build/src/architecture/dataStream.o
+ .text._ZN10DataStreamC2ESsSt6vectorI8EntrySetSaIS1_EE
+                0x0000000000000000       0xdc build/src/architecture/dataStream.o
+ .ARM.exidx.text._ZN10DataStreamC2ESsSt6vectorI8EntrySetSaIS1_EE
+                0x0000000000000000        0x8 build/src/architecture/dataStream.o
+ .text._ZNSt6vectorI8EntrySetSaIS0_EEC2ERKS2_
+                0x0000000000000000       0x7c build/src/architecture/dataStream.o
+ .ARM.exidx.text._ZNSt6vectorI8EntrySetSaIS0_EEC2ERKS2_
+                0x0000000000000000        0x8 build/src/architecture/dataStream.o
+ .text._ZNSt6vectorI8EntrySetSaIS0_EED2Ev
+                0x0000000000000000       0x44 build/src/architecture/dataStream.o
+ .ARM.exidx.text._ZNSt6vectorI8EntrySetSaIS0_EED2Ev
+                0x0000000000000000        0x8 build/src/architecture/dataStream.o
+ .text._ZN10DataStream10refreshAllEv
+                0x0000000000000000       0x38 build/src/architecture/dataStream.o
+ .ARM.exidx.text._ZN10DataStream10refreshAllEv
+                0x0000000000000000        0x8 build/src/architecture/dataStream.o
+ .text._ZNSt12_Vector_baseI8EntrySetSaIS0_EE11_M_allocateEj
+                0x0000000000000000       0x30 build/src/architecture/dataStream.o
+ .ARM.exidx.text._ZNSt12_Vector_baseI8EntrySetSaIS0_EE11_M_allocateEj
+                0x0000000000000000        0x8 build/src/architecture/dataStream.o
+ .text._ZNSt6vectorIP10DataStreamSaIS1_EE19_M_emplace_back_auxIJS1_EEEvDpOT_
+                0x0000000000000000       0x8c build/src/architecture/dataStream.o
+ .ARM.exidx.text._ZNSt6vectorIP10DataStreamSaIS1_EE19_M_emplace_back_auxIJS1_EEEvDpOT_
+                0x0000000000000000        0x8 build/src/architecture/dataStream.o
+ .text._ZNKSt6vectorIP10DataStreamSaIS1_EE12_M_check_lenEjPKc
+                0x0000000000000000       0x54 build/src/architecture/dataStream.o
+ .ARM.exidx.text._ZNKSt6vectorIP10DataStreamSaIS1_EE12_M_check_lenEjPKc
+                0x0000000000000000        0x8 build/src/architecture/dataStream.o
+ .text._ZNSt12_Vector_baseIP10DataStreamSaIS1_EE11_M_allocateEj
+                0x0000000000000000       0x30 build/src/architecture/dataStream.o
+ .ARM.exidx.text._ZNSt12_Vector_baseIP10DataStreamSaIS1_EE11_M_allocateEj
+                0x0000000000000000        0x8 build/src/architecture/dataStream.o
+ .rodata._ZTV10DataStream
+                0x0000000000000000       0x10 build/src/architecture/dataStream.o
+ .rodata.str1.1
+                0x0000000000000000       0x1c build/src/architecture/dataStream.o
+ .llvm_addrsig  0x0000000000000000        0x5 build/src/architecture/dataStream.o
  .text          0x0000000000000000        0x0 build/src/utilities/functools.o
  .text._Z9toRadiansd
                 0x0000000000000000       0x30 build/src/utilities/functools.o
@@ -8501,7 +8547,7 @@ Linker script and memory map
                 0x0000000000000400                _FIQ_STACK_SIZE = DEFINED (_FIQ_STACK_SIZE)?_FIQ_STACK_SIZE:0x400
                 0x0000000000000400                _UNDEF_STACK_SIZE = DEFINED (_UNDEF_STACK_SIZE)?_UNDEF_STACK_SIZE:0x400
 
-.text           0x0000000003800000     0x2fe0
+.text           0x0000000003800000     0x3068
  *(.vectors)
  *(.boot_data)
  .boot_data     0x0000000003800000       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
@@ -8657,335 +8703,342 @@ Linker script and memory map
                 0x0000000003801688                Robot::Robot()
                 0x0000000003801688                Robot::Robot()
  .text._ZN5Robot10initializeEv
-                0x000000000380169c       0x14 build/src/architecture/robot.o
+                0x000000000380169c       0x18 build/src/architecture/robot.o
                 0x000000000380169c                Robot::initialize()
  .text._ZN10RobotState15initializeStateEv
-                0x00000000038016b0       0x94 build/src/architecture/robotState.o
-                0x00000000038016b0                RobotState::initializeState()
+                0x00000000038016b4       0x94 build/src/architecture/robotState.o
+                0x00000000038016b4                RobotState::initializeState()
  .text._GLOBAL__sub_I_robotState.cpp
-                0x0000000003801744       0x9c build/src/architecture/robotState.o
+                0x0000000003801748       0x9c build/src/architecture/robotState.o
+ .text._ZNSt6vectorIP10DataStreamSaIS1_EED2Ev
+                0x00000000038017e4       0x24 build/src/architecture/dataStream.o
+                0x00000000038017e4                std::vector<DataStream*, std::allocator<DataStream*> >::~vector()
+ .text._ZN10DataStream13initializeAllEv
+                0x0000000003801808       0x38 build/src/architecture/dataStream.o
+                0x0000000003801808                DataStream::initializeAll()
+ .text._GLOBAL__sub_I_dataStream.cpp
+                0x0000000003801840       0x2c build/src/architecture/dataStream.o
  .text._ZNSt6vectorIP6SpriteSaIS1_EED2Ev
-                0x00000000038017e0       0x24 build/src/gui/graphics.o
-                0x00000000038017e0                std::vector<Sprite*, std::allocator<Sprite*> >::~vector()
+                0x000000000380186c       0x24 build/src/gui/graphics.o
+                0x000000000380186c                std::vector<Sprite*, std::allocator<Sprite*> >::~vector()
  .text._GLOBAL__sub_I_graphics.cpp
-                0x0000000003801804       0x78 build/src/gui/graphics.o
+                0x0000000003801890       0x78 build/src/gui/graphics.o
  .text._GLOBAL__sub_I_homingPath.cpp
-                0x000000000380187c       0x48 build/src/control/homingPath.o
- .text.vexMain  0x00000000038018c4       0xb0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
-                0x00000000038018c4                vexMain
+                0x0000000003801908       0x48 build/src/control/homingPath.o
+ .text.vexMain  0x0000000003801950       0xb0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
+                0x0000000003801950                vexMain
  .text.__vex_function_prolog
-                0x0000000003801974       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
-                0x0000000003801974                __vex_function_prolog
- .text._init    0x000000000380198c        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
-                0x000000000380198c                _init
- .text._fini    0x0000000003801990        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
-                0x0000000003801990                _fini
+                0x0000000003801a00       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
+                0x0000000003801a00                __vex_function_prolog
+ .text._init    0x0000000003801a18        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
+                0x0000000003801a18                _init
+ .text._fini    0x0000000003801a1c        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
+                0x0000000003801a1c                _fini
  .text.vexStdlibVersionLinked
-                0x0000000003801994        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_util.c.obj)
-                0x0000000003801994                vexStdlibVersionLinked
+                0x0000000003801a20        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_util.c.obj)
+                0x0000000003801a20                vexStdlibVersionLinked
  .text.vexStdlibVersionVerify
-                0x00000000038019a0       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_util.c.obj)
-                0x00000000038019a0                vexStdlibVersionVerify
+                0x0000000003801a2c       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_util.c.obj)
+                0x0000000003801a2c                vexStdlibVersionVerify
  .text.vexPrivateApiEnable
-                0x00000000038019d0       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x00000000038019d0                vexPrivateApiEnable
+                0x0000000003801a5c       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801a5c                vexPrivateApiEnable
  .text.vexStdlibMismatchError
-                0x00000000038019e0       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x00000000038019e0                vexStdlibMismatchError
+                0x0000000003801a6c       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801a6c                vexStdlibMismatchError
  .text.vexTaskAdd
-                0x0000000003801a1c       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801a1c                vexTaskAdd
+                0x0000000003801aa8       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801aa8                vexTaskAdd
  .text.vexTasksRun
-                0x0000000003801a2c       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801a2c                vexTasksRun
+                0x0000000003801ab8       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801ab8                vexTasksRun
  .text.vexTaskYield
-                0x0000000003801a3c       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801a3c                vexTaskYield
+                0x0000000003801ac8       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801ac8                vexTaskYield
  .text.vexTaskCheckTimeslice
-                0x0000000003801a4c       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801a4c                vexTaskCheckTimeslice
+                0x0000000003801ad8       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801ad8                vexTaskCheckTimeslice
  .text.vexTasksDump
-                0x0000000003801a5c       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801a5c                vexTasksDump
+                0x0000000003801ae8       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801ae8                vexTasksDump
  .text.vexTaskGetTaskIndex
-                0x0000000003801a78       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801a78                vexTaskGetTaskIndex
+                0x0000000003801b04       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801b04                vexTaskGetTaskIndex
  .text.vexTaskStopAll
-                0x0000000003801a88       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801a88                vexTaskStopAll
+                0x0000000003801b14       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801b14                vexTaskStopAll
  .text.vexTaskRemoveAllUser
-                0x0000000003801a98       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801a98                vexTaskRemoveAllUser
+                0x0000000003801b24       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801b24                vexTaskRemoveAllUser
  .text.vexTaskCompletionIdSet
-                0x0000000003801acc       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801acc                vexTaskCompletionIdSet
+                0x0000000003801b58       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801b58                vexTaskCompletionIdSet
  .text.vexTaskStopWithId
-                0x0000000003801adc       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801adc                vexTaskStopWithId
+                0x0000000003801b68       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801b68                vexTaskStopWithId
  .text.vexEventAdd
-                0x0000000003801aec       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801aec                vexEventAdd
+                0x0000000003801b78       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801b78                vexEventAdd
  .text.vexEventUserIndexGet
-                0x0000000003801b20       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801b20                vexEventUserIndexGet
+                0x0000000003801bac       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801bac                vexEventUserIndexGet
  .text.vexEventAddWithArg
-                0x0000000003801b3c       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801b3c                vexEventAddWithArg
+                0x0000000003801bc8       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801bc8                vexEventAddWithArg
  .text.vexEventsCleanup
-                0x0000000003801b78       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801b78                vexEventsCleanup
+                0x0000000003801c04       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801c04                vexEventsCleanup
  .text.vexDebug
-                0x0000000003801ba4       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801ba4                vexDebug
+                0x0000000003801c30       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801c30                vexDebug
  .text.vex_sprintf
-                0x0000000003801bdc       0x40 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801bdc                vex_sprintf
+                0x0000000003801c68       0x40 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801c68                vex_sprintf
  .text.vexSystemTimeGet
-                0x0000000003801c1c       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801c1c                vexSystemTimeGet
+                0x0000000003801ca8       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801ca8                vexSystemTimeGet
  .text.vexSystemExitRequest
-                0x0000000003801c38       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801c38                vexSystemExitRequest
+                0x0000000003801cc4       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801cc4                vexSystemExitRequest
  .text.vexDeviceGetByIndex
-                0x0000000003801c54       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801c54                vexDeviceGetByIndex
+                0x0000000003801ce0       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801ce0                vexDeviceGetByIndex
  .text.vexDisplayForegroundColor
-                0x0000000003801c78       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801c78                vexDisplayForegroundColor
+                0x0000000003801d04       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801d04                vexDisplayForegroundColor
  .text.vexDisplayBackgroundColor
-                0x0000000003801c9c       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801c9c                vexDisplayBackgroundColor
+                0x0000000003801d28       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801d28                vexDisplayBackgroundColor
  .text.vexDisplayTextReference
-                0x0000000003801cc0       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801cc0                vexDisplayTextReference
+                0x0000000003801d4c       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801d4c                vexDisplayTextReference
  .text.vexDisplayTextSize
-                0x0000000003801ce4       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801ce4                vexDisplayTextSize
+                0x0000000003801d70       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801d70                vexDisplayTextSize
  .text.vexDisplayFontNamedSet
-                0x0000000003801d10       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801d10                vexDisplayFontNamedSet
+                0x0000000003801d9c       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801d9c                vexDisplayFontNamedSet
  .text.vexSystemStdlibImpureDataAddr
-                0x0000000003801d34       0x28 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801d34                vexSystemStdlibImpureDataAddr
+                0x0000000003801dc0       0x28 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801dc0                vexSystemStdlibImpureDataAddr
  .text.vexSystemStdlibImpureDataSize
-                0x0000000003801d5c       0x28 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801d5c                vexSystemStdlibImpureDataSize
+                0x0000000003801de8       0x28 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801de8                vexSystemStdlibImpureDataSize
  .text.vexSystemSaveUserData
-                0x0000000003801d84       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801d84                vexSystemSaveUserData
+                0x0000000003801e10       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801e10                vexSystemSaveUserData
  .text.vexDisplayThemeIdGet
-                0x0000000003801dc0       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801dc0                vexDisplayThemeIdGet
+                0x0000000003801e4c       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801e4c                vexDisplayThemeIdGet
  .text.vexDeviceEventMaskSet
-                0x0000000003801df8       0x48 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801df8                vexDeviceEventMaskSet
+                0x0000000003801e84       0x48 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801e84                vexDeviceEventMaskSet
  .text.vexDeviceEventMaskGet
-                0x0000000003801e40       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
-                0x0000000003801e40                vexDeviceEventMaskGet
+                0x0000000003801ecc       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x0000000003801ecc                vexDeviceEventMaskGet
  .text.vexSystemVersion
-                0x0000000003801e7c       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiversions.c.obj)
-                0x0000000003801e7c                vexSystemVersion
+                0x0000000003801f08       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiversions.c.obj)
+                0x0000000003801f08                vexSystemVersion
  .text.vexStdlibVersion
-                0x0000000003801e8c       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiversions.c.obj)
-                0x0000000003801e8c                vexStdlibVersion
+                0x0000000003801f18       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiversions.c.obj)
+                0x0000000003801f18                vexStdlibVersion
  .text._ZN3vex10controllerD2Ev
-                0x0000000003801e9c        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
-                0x0000000003801e9c                vex::controller::~controller()
-                0x0000000003801e9c                vex::controller::~controller()
+                0x0000000003801f28        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003801f28                vex::controller::~controller()
+                0x0000000003801f28                vex::controller::~controller()
  .text._ZNK3vex10controller6button21_buttonToPressedEventEv
-                0x0000000003801ea0       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
-                0x0000000003801ea0                vex::controller::button::_buttonToPressedEvent() const
+                0x0000000003801f2c       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003801f2c                vex::controller::button::_buttonToPressedEvent() const
  .text._ZNK3vex10controller6button22_buttonToReleasedEventEv
-                0x0000000003801ec0       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
-                0x0000000003801ec0                vex::controller::button::_buttonToReleasedEvent() const
+                0x0000000003801f4c       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003801f4c                vex::controller::button::_buttonToReleasedEvent() const
  .text._ZN3vex10controller6buttonC2ENS0_11tButtonTypeEPS0_
-                0x0000000003801ee0       0x48 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
-                0x0000000003801ee0                vex::controller::button::button(vex::controller::tButtonType, vex::controller*)
-                0x0000000003801ee0                vex::controller::button::button(vex::controller::tButtonType, vex::controller*)
+                0x0000000003801f6c       0x48 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003801f6c                vex::controller::button::button(vex::controller::tButtonType, vex::controller*)
+                0x0000000003801f6c                vex::controller::button::button(vex::controller::tButtonType, vex::controller*)
  .text._ZNK3vex10controller4axis23_joystickToChangedEventEv
-                0x0000000003801f28       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
-                0x0000000003801f28                vex::controller::axis::_joystickToChangedEvent() const
+                0x0000000003801fb4       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003801fb4                vex::controller::axis::_joystickToChangedEvent() const
  .text._ZN3vex10controller4axisC2ENS0_9tAxisTypeEPS0_
-                0x0000000003801f48       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
-                0x0000000003801f48                vex::controller::axis::axis(vex::controller::tAxisType, vex::controller*)
-                0x0000000003801f48                vex::controller::axis::axis(vex::controller::tAxisType, vex::controller*)
+                0x0000000003801fd4       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003801fd4                vex::controller::axis::axis(vex::controller::tAxisType, vex::controller*)
+                0x0000000003801fd4                vex::controller::axis::axis(vex::controller::tAxisType, vex::controller*)
  .text._ZN3vex10controllerC2ENS_14controllerTypeE
-                0x0000000003801f74      0x16c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
-                0x0000000003801f74                vex::controller::controller(vex::controllerType)
-                0x0000000003801f74                vex::controller::controller(vex::controllerType)
+                0x0000000003802000      0x16c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003802000                vex::controller::controller(vex::controllerType)
+                0x0000000003802000                vex::controller::controller(vex::controllerType)
  .text._ZN3vex5event4initEmmPFvvE
-                0x00000000038020e0        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_event.cpp.obj)
-                0x00000000038020e0                vex::event::init(unsigned long, unsigned long, void (*)())
+                0x000000000380216c        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_event.cpp.obj)
+                0x000000000380216c                vex::event::init(unsigned long, unsigned long, void (*)())
  .text._ZN3vex5event4initEmmPFvPvES1_
-                0x00000000038020e4        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_event.cpp.obj)
-                0x00000000038020e4                vex::event::init(unsigned long, unsigned long, void (*)(void*), void*)
+                0x0000000003802170        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_event.cpp.obj)
+                0x0000000003802170                vex::event::init(unsigned long, unsigned long, void (*)(void*), void*)
  .text._ZN3vex5event9userindexEv
-                0x00000000038020e8        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_event.cpp.obj)
-                0x00000000038020e8                vex::event::userindex()
+                0x0000000003802174        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_event.cpp.obj)
+                0x0000000003802174                vex::event::userindex()
  .text._ZZN3vex6meventC4EmmENUlvE_4_FUNEv
-                0x00000000038020ec        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_mevent.cpp.obj)
+                0x0000000003802178        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_mevent.cpp.obj)
  .text._ZN3vex6meventC2Emm
-                0x00000000038020f0       0x70 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_mevent.cpp.obj)
-                0x00000000038020f0                vex::mevent::mevent(unsigned long, unsigned long)
-                0x00000000038020f0                vex::mevent::mevent(unsigned long, unsigned long)
+                0x000000000380217c       0x70 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_mevent.cpp.obj)
+                0x000000000380217c                vex::mevent::mevent(unsigned long, unsigned long)
+                0x000000000380217c                vex::mevent::mevent(unsigned long, unsigned long)
  .text._ZN3vex5brain9_getIndexEv
-                0x0000000003802160       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
-                0x0000000003802160                vex::brain::_getIndex()
+                0x00000000038021ec       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
+                0x00000000038021ec                vex::brain::_getIndex()
  .text._ZN3vex5brain3lcd9setCursorEll
-                0x0000000003802170       0x44 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
-                0x0000000003802170                vex::brain::lcd::setCursor(long, long)
+                0x00000000038021fc       0x44 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
+                0x00000000038021fc                vex::brain::lcd::setCursor(long, long)
  .text._ZN3vex5brain3lcd7setFontENS_8fontTypeE
-                0x00000000038021b4      0x23c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
-                0x00000000038021b4                vex::brain::lcd::setFont(vex::fontType)
+                0x0000000003802240      0x23c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
+                0x0000000003802240                vex::brain::lcd::setFont(vex::fontType)
  .text._ZN3vex5brain3lcdC2Ev
-                0x00000000038023f0       0x94 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
-                0x00000000038023f0                vex::brain::lcd::lcd()
-                0x00000000038023f0                vex::brain::lcd::lcd()
+                0x000000000380247c       0x94 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
+                0x000000000380247c                vex::brain::lcd::lcd()
+                0x000000000380247c                vex::brain::lcd::lcd()
  .text._ZN3vex5brainC2Ev
-                0x0000000003802484       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
-                0x0000000003802484                vex::brain::brain()
-                0x0000000003802484                vex::brain::brain()
+                0x0000000003802510       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
+                0x0000000003802510                vex::brain::brain()
+                0x0000000003802510                vex::brain::brain()
  .text._ZN3vex5brainD2Ev
-                0x00000000038024c0       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
-                0x00000000038024c0                vex::brain::~brain()
-                0x00000000038024c0                vex::brain::~brain()
+                0x000000000380254c       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
+                0x000000000380254c                vex::brain::~brain()
+                0x000000000380254c                vex::brain::~brain()
  .text._ZN3vex11competition8_disableEPv
-                0x00000000038024e0       0xa4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x00000000038024e0                vex::competition::_disable(void*)
+                0x000000000380256c       0xa4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x000000000380256c                vex::competition::_disable(void*)
  .text._ZN3vex11competition11_autonomousEv
-                0x0000000003802584       0x80 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x0000000003802584                vex::competition::_autonomous()
+                0x0000000003802610       0x80 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003802610                vex::competition::_autonomous()
  .text._ZN3vex11competition14_drivercontrolEv
-                0x0000000003802604       0x80 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x0000000003802604                vex::competition::_drivercontrol()
+                0x0000000003802690       0x80 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003802690                vex::competition::_drivercontrol()
  .text._ZN3vex11competitionC2Ev
-                0x0000000003802684      0x13c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x0000000003802684                vex::competition::competition()
-                0x0000000003802684                vex::competition::competition()
+                0x0000000003802710      0x13c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003802710                vex::competition::competition()
+                0x0000000003802710                vex::competition::competition()
  .text._ZN3vex11competitionD2Ev
-                0x00000000038027c0        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x00000000038027c0                vex::competition::~competition()
-                0x00000000038027c0                vex::competition::~competition()
+                0x000000000380284c        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x000000000380284c                vex::competition::~competition()
+                0x000000000380284c                vex::competition::~competition()
  .text._ZN3vex7triportD2Ev
-                0x00000000038027c4       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
-                0x00000000038027c4                vex::triport::~triport()
-                0x00000000038027c4                vex::triport::~triport()
+                0x0000000003802850       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
+                0x0000000003802850                vex::triport::~triport()
+                0x0000000003802850                vex::triport::~triport()
  .text._ZN3vex7triportD0Ev
-                0x00000000038027fc       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
-                0x00000000038027fc                vex::triport::~triport()
+                0x0000000003802888       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
+                0x0000000003802888                vex::triport::~triport()
  .text._ZN3vex7triport9installedEv
-                0x0000000003802818       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
-                0x0000000003802818                vex::triport::installed()
+                0x00000000038028a4       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
+                0x00000000038028a4                vex::triport::installed()
  .text._ZN3vex7triport4portC2ElPS0_
-                0x0000000003802830       0x74 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
-                0x0000000003802830                vex::triport::port::port(long, vex::triport*)
-                0x0000000003802830                vex::triport::port::port(long, vex::triport*)
+                0x00000000038028bc       0x74 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
+                0x00000000038028bc                vex::triport::port::port(long, vex::triport*)
+                0x00000000038028bc                vex::triport::port::port(long, vex::triport*)
  .text._ZN3vex7triportC2El
-                0x00000000038028a4       0xf0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
-                0x00000000038028a4                vex::triport::triport(long)
-                0x00000000038028a4                vex::triport::triport(long)
+                0x0000000003802930       0xf0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
+                0x0000000003802930                vex::triport::triport(long)
+                0x0000000003802930                vex::triport::triport(long)
  .text._ZN3vex5colorD2Ev
-                0x0000000003802994        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003802994                vex::color::~color()
-                0x0000000003802994                vex::color::~color()
+                0x0000000003802a20        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003802a20                vex::color::~color()
+                0x0000000003802a20                vex::color::~color()
  .text._ZN3vex5colorC2Ev
-                0x0000000003802998       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003802998                vex::color::color()
-                0x0000000003802998                vex::color::color()
+                0x0000000003802a24       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003802a24                vex::color::color()
+                0x0000000003802a24                vex::color::color()
  .text._ZNK3vex5colorcvmEv
-                0x00000000038029a8        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x00000000038029a8                vex::color::operator unsigned long() const
+                0x0000000003802a34        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003802a34                vex::color::operator unsigned long() const
  .text.startup._GLOBAL__sub_I__ZN3vex5color5blackE
-                0x00000000038029b0      0x164 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003802a3c      0x164 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
  .text._ZN3vex5timerD2Ev
-                0x0000000003802b14        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
-                0x0000000003802b14                vex::timer::~timer()
-                0x0000000003802b14                vex::timer::~timer()
+                0x0000000003802ba0        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
+                0x0000000003802ba0                vex::timer::~timer()
+                0x0000000003802ba0                vex::timer::~timer()
  .text._ZN3vex5timer5clearEv
-                0x0000000003802b18       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
-                0x0000000003802b18                vex::timer::clear()
+                0x0000000003802ba4       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
+                0x0000000003802ba4                vex::timer::clear()
  .text._ZN3vex5timerC2Ev
-                0x0000000003802b34       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
-                0x0000000003802b34                vex::timer::timer()
-                0x0000000003802b34                vex::timer::timer()
+                0x0000000003802bc0       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
+                0x0000000003802bc0                vex::timer::timer()
+                0x0000000003802bc0                vex::timer::timer()
  .text.vexEventMaskSet
-                0x0000000003802b48       0x28 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
-                0x0000000003802b48                vexEventMaskSet
+                0x0000000003802bd4       0x28 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
+                0x0000000003802bd4                vexEventMaskSet
  .text.vexEventMaskGet
-                0x0000000003802b70       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
-                0x0000000003802b70                vexEventMaskGet
+                0x0000000003802bfc       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
+                0x0000000003802bfc                vexEventMaskGet
  .text._ZN3vex6deviceD2Ev
-                0x0000000003802b88        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
-                0x0000000003802b88                vex::device::~device()
-                0x0000000003802b88                vex::device::~device()
+                0x0000000003802c14        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+                0x0000000003802c14                vex::device::~device()
+                0x0000000003802c14                vex::device::~device()
  .text._ZN3vex6device5valueEv
-                0x0000000003802b8c        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
-                0x0000000003802b8c                vex::device::value()
+                0x0000000003802c18        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+                0x0000000003802c18                vex::device::value()
  .text._ZN3vex6deviceD0Ev
-                0x0000000003802b94       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
-                0x0000000003802b94                vex::device::~device()
+                0x0000000003802c20       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+                0x0000000003802c20                vex::device::~device()
  .text._ZN3vex6device4initEl
-                0x0000000003802ba8       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
-                0x0000000003802ba8                vex::device::init(long)
+                0x0000000003802c34       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+                0x0000000003802c34                vex::device::init(long)
  .text._ZN3vex6deviceC2El
-                0x0000000003802bd8       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
-                0x0000000003802bd8                vex::device::device(long)
-                0x0000000003802bd8                vex::device::device(long)
+                0x0000000003802c64       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+                0x0000000003802c64                vex::device::device(long)
+                0x0000000003802c64                vex::device::device(long)
  .text._ZN3vex6device4typeEv
-                0x0000000003802bf8       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
-                0x0000000003802bf8                vex::device::type()
+                0x0000000003802c84       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+                0x0000000003802c84                vex::device::type()
  .text._ZN3vex6device9installedEv
-                0x0000000003802c08       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
-                0x0000000003802c08                vex::device::installed()
+                0x0000000003802c94       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+                0x0000000003802c94                vex::device::installed()
  .text._ZN3vex4taskC2EPFivE
-                0x0000000003802c1c       0x5c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
-                0x0000000003802c1c                vex::task::task(int (*)())
-                0x0000000003802c1c                vex::task::task(int (*)())
+                0x0000000003802ca8       0x5c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
+                0x0000000003802ca8                vex::task::task(int (*)())
+                0x0000000003802ca8                vex::task::task(int (*)())
  .text._ZN3vex4taskD2Ev
-                0x0000000003802c78        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
-                0x0000000003802c78                vex::task::~task()
-                0x0000000003802c78                vex::task::~task()
+                0x0000000003802d04        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
+                0x0000000003802d04                vex::task::~task()
+                0x0000000003802d04                vex::task::~task()
  .text._ZN3vex4task4stopEPvi
-                0x0000000003802c7c       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
-                0x0000000003802c7c                vex::task::stop(void*, int)
+                0x0000000003802d08       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
+                0x0000000003802d08                vex::task::stop(void*, int)
  .text._ZN3vex4task6_indexEPFivE
-                0x0000000003802c98       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
-                0x0000000003802c98                vex::task::_index(int (*)())
+                0x0000000003802d24       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
+                0x0000000003802d24                vex::task::_index(int (*)())
  .text._ZN3vex4task8_stopAllEv
-                0x0000000003802cac       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
-                0x0000000003802cac                vex::task::_stopAll()
+                0x0000000003802d38       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
+                0x0000000003802d38                vex::task::_stopAll()
  .text.__libc_fini_array
-                0x0000000003802ce8       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-fini.o)
-                0x0000000003802ce8                __libc_fini_array
+                0x0000000003802d74       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-fini.o)
+                0x0000000003802d74                __libc_fini_array
  .text.__libc_init_array
-                0x0000000003802d18       0x58 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-init.o)
-                0x0000000003802d18                __libc_init_array
- .text.hypot    0x0000000003802d70       0xb4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-w_hypot.o)
-                0x0000000003802d70                hypot
+                0x0000000003802da4       0x58 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-init.o)
+                0x0000000003802da4                __libc_init_array
+ .text.hypot    0x0000000003802dfc       0xb4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-w_hypot.o)
+                0x0000000003802dfc                hypot
  .text.__ieee754_hypot
-                0x0000000003802e24      0x198 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-e_hypot.o)
-                0x0000000003802e24                __ieee754_hypot
- *fill*         0x0000000003802fbc        0x4 
+                0x0000000003802eb0      0x198 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-e_hypot.o)
+                0x0000000003802eb0                __ieee754_hypot
  .text.__ieee754_hypot.__stub
-                0x0000000003802fc0       0x20 linker stubs
+                0x0000000003803048       0x20 linker stubs
  *(.gnu.linkonce.t.*)
  *(.plt)
  *(.gnu_warning)
  *(.gcc_except_table)
  *(.glue_7)
- .glue_7        0x0000000003802fe0        0x0 linker stubs
+ .glue_7        0x0000000003803068        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x0000000003802fe0        0x0 linker stubs
+ .glue_7t       0x0000000003803068        0x0 linker stubs
  *(.vfp11_veneer)
- .vfp11_veneer  0x0000000003802fe0        0x0 linker stubs
+ .vfp11_veneer  0x0000000003803068        0x0 linker stubs
  *(.ARM.extab)
  *(.gnu.linkonce.armextab.*)
 
-.v4_bx          0x0000000003802fe0        0x0
- .v4_bx         0x0000000003802fe0        0x0 linker stubs
+.v4_bx          0x0000000003803068        0x0
+ .v4_bx         0x0000000003803068        0x0 linker stubs
 
-.iplt           0x0000000003802fe0        0x0
- .iplt          0x0000000003802fe0        0x0 build/src/main.o
+.iplt           0x0000000003803068        0x0
+ .iplt          0x0000000003803068        0x0 build/src/main.o
 
 .init
  *(.init)
@@ -8993,150 +9046,150 @@ Linker script and memory map
 .fini
  *(.fini)
 
-.rodata         0x0000000003802fe0      0x270
-                0x0000000003802fe0                __rodata_start = .
+.rodata         0x0000000003803068      0x270
+                0x0000000003803068                __rodata_start = .
  *(.rodata)
  *(.rodata.*)
  .rodata.str1.1
-                0x0000000003802fe0       0xea build/src/architecture/telemetry.o
+                0x0000000003803068       0xea build/src/architecture/telemetry.o
                                          0xed (size before relaxing)
  .rodata._ZStL19piecewise_construct
-                0x00000000038030ca        0x1 build/src/architecture/telemetry.o
- *fill*         0x00000000038030cb        0x1 
+                0x0000000003803152        0x1 build/src/architecture/telemetry.o
+ *fill*         0x0000000003803153        0x1 
  .rodata._ZTV9Subsystem
-                0x00000000038030cc       0x18 build/src/architecture/subsystem.o
-                0x00000000038030cc                vtable for Subsystem
+                0x0000000003803154       0x18 build/src/architecture/subsystem.o
+                0x0000000003803154                vtable for Subsystem
  .rodata.str1.1
-                0x00000000038030e4       0x74 build/src/architecture/subsystem.o
+                0x000000000380316c       0x74 build/src/architecture/subsystem.o
  .rodata._ZTV11DummySystem
-                0x0000000003803158       0x18 build/src/architecture/subsystem.o
-                0x0000000003803158                vtable for DummySystem
+                0x00000000038031e0       0x18 build/src/architecture/subsystem.o
+                0x00000000038031e0                vtable for DummySystem
  .rodata.str1.1
-                0x0000000003803170        0xf build/src/architecture/robotState.o
+                0x00000000038031f8        0xf build/src/architecture/robotState.o
  .rodata.str1.1
-                0x000000000380317f       0x2e /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
- *fill*         0x00000000038031ad        0x3 
+                0x0000000003803207       0x2e /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
+ *fill*         0x0000000003803235        0x3 
  .rodata._ZN3vex6PORT22E
-                0x00000000038031b0        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_global.cpp.obj)
-                0x00000000038031b0                vex::PORT22
+                0x0000000003803238        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_global.cpp.obj)
+                0x0000000003803238                vex::PORT22
  .rodata.CSWTCH.16
-                0x00000000038031b4        0xb /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x000000000380323c        0xb /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
  .rodata.CSWTCH.18
-                0x00000000038031bf        0xb /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003803247        0xb /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
  .rodata.CSWTCH.24
-                0x00000000038031ca        0x3 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003803252        0x3 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
  .rodata.str1.1
-                0x00000000038031cd       0x2d /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
- *fill*         0x00000000038031fa        0x6 
+                0x0000000003803255       0x2d /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
+ *fill*         0x0000000003803282        0x6 
  .rodata._ZTVN3vex7triportE
-                0x0000000003803200       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
-                0x0000000003803200                vtable for vex::triport
+                0x0000000003803288       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
+                0x0000000003803288                vtable for vex::triport
  .rodata._ZTVN3vex6deviceE
-                0x0000000003803218       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
-                0x0000000003803218                vtable for vex::device
+                0x00000000038032a0       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+                0x00000000038032a0                vtable for vex::device
  .rodata.str1.1
-                0x0000000003803230       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
+                0x00000000038032b8       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
  .rodata.str1.4
-                0x0000000003803244        0x2 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-impure.o)
- *fill*         0x0000000003803246        0x2 
+                0x00000000038032cc        0x2 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-impure.o)
+ *fill*         0x00000000038032ce        0x2 
  .rodata.str1.4
-                0x0000000003803248        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-w_hypot.o)
+                0x00000000038032d0        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-w_hypot.o)
                                           0x6 (size before relaxing)
  *(.gnu.linkonce.r.*)
-                0x0000000003803250                __rodata_end = .
+                0x00000000038032d8                __rodata_end = .
 
-.rodata1        0x0000000003803250        0x0
-                0x0000000003803250                __rodata1_start = .
+.rodata1        0x00000000038032d8        0x0
+                0x00000000038032d8                __rodata1_start = .
  *(.rodata1)
  *(.rodata1.*)
-                0x0000000003803250                __rodata1_end = .
+                0x00000000038032d8                __rodata1_end = .
 
-.sdata2         0x0000000003803250        0x0
-                0x0000000003803250                __sdata2_start = .
+.sdata2         0x00000000038032d8        0x0
+                0x00000000038032d8                __sdata2_start = .
  *(.sdata2)
  *(.sdata2.*)
  *(.gnu.linkonce.s2.*)
-                0x0000000003803250                __sdata2_end = .
+                0x00000000038032d8                __sdata2_end = .
 
-.sbss2          0x0000000003803250        0x0
-                0x0000000003803250                __sbss2_start = .
+.sbss2          0x00000000038032d8        0x0
+                0x00000000038032d8                __sbss2_start = .
  *(.sbss2)
  *(.sbss2.*)
  *(.gnu.linkonce.sb2.*)
-                0x0000000003803250                __sbss2_end = .
+                0x00000000038032d8                __sbss2_end = .
 
-.data           0x0000000003803250      0x445
-                0x0000000003803250                __data_start = .
+.data           0x00000000038032d8      0x445
+                0x00000000038032d8                __data_start = .
  *(.data)
  *(.data.*)
  .data.ROBOT_WIDTH_MM
-                0x0000000003803250        0x8 build/src/architecture/robotConfig.o
-                0x0000000003803250                ROBOT_WIDTH_MM
+                0x00000000038032d8        0x8 build/src/architecture/robotConfig.o
+                0x00000000038032d8                ROBOT_WIDTH_MM
  .data.ROBOT_LENGTH_MM
-                0x0000000003803258        0x8 build/src/architecture/robotConfig.o
-                0x0000000003803258                ROBOT_LENGTH_MM
+                0x00000000038032e0        0x8 build/src/architecture/robotConfig.o
+                0x00000000038032e0                ROBOT_LENGTH_MM
  .data.appRunning
-                0x0000000003803260        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
-                0x0000000003803260                appRunning
- *fill*         0x0000000003803264        0x4 
+                0x00000000038032e8        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
+                0x00000000038032e8                appRunning
+ *fill*         0x00000000038032ec        0x4 
  .data.impure_data
-                0x0000000003803268      0x428 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-impure.o)
+                0x00000000038032f0      0x428 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-impure.o)
  .data._impure_ptr
-                0x0000000003803690        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-impure.o)
-                0x0000000003803690                _impure_ptr
+                0x0000000003803718        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-impure.o)
+                0x0000000003803718                _impure_ptr
  .data.__fdlib_version
-                0x0000000003803694        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-s_lib_ver.o)
-                0x0000000003803694                __fdlib_version
+                0x000000000380371c        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-s_lib_ver.o)
+                0x000000000380371c                __fdlib_version
  *(.gnu.linkonce.d.*)
  *(.jcr)
  *(.got)
  *(.got.plt)
-                0x0000000003803695                __data_end = .
+                0x000000000380371d                __data_end = .
 
-.igot.plt       0x0000000003803698        0x0
- .igot.plt      0x0000000003803698        0x0 build/src/main.o
+.igot.plt       0x0000000003803720        0x0
+ .igot.plt      0x0000000003803720        0x0 build/src/main.o
 
-.data1          0x0000000003803695        0x0
-                0x0000000003803695                __data1_start = .
+.data1          0x000000000380371d        0x0
+                0x000000000380371d                __data1_start = .
  *(.data1)
  *(.data1.*)
-                0x0000000003803695                __data1_end = .
+                0x000000000380371d                __data1_end = .
 
 .got
  *(.got)
 
-.ctors          0x0000000003803695        0x0
-                0x0000000003803695                __CTOR_LIST__ = .
-                0x0000000003803695                ___CTORS_LIST___ = .
+.ctors          0x000000000380371d        0x0
+                0x000000000380371d                __CTOR_LIST__ = .
+                0x000000000380371d                ___CTORS_LIST___ = .
  *crtbegin.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o) .ctors)
  *(SORT_BY_NAME(.ctors.*))
  *(.ctors)
-                0x0000000003803695                __CTOR_END__ = .
-                0x0000000003803695                ___CTORS_END___ = .
+                0x000000000380371d                __CTOR_END__ = .
+                0x000000000380371d                ___CTORS_END___ = .
 
-.dtors          0x0000000003803695        0x0
-                0x0000000003803695                __DTOR_LIST__ = .
-                0x0000000003803695                ___DTORS_LIST___ = .
+.dtors          0x000000000380371d        0x0
+                0x000000000380371d                __DTOR_LIST__ = .
+                0x000000000380371d                ___DTORS_LIST___ = .
  *crtbegin.o(.dtors)
  *(EXCLUDE_FILE(*crtend.o) .dtors)
  *(SORT_BY_NAME(.dtors.*))
  *(.dtors)
-                0x0000000003803695                __DTOR_END__ = .
-                0x0000000003803695                ___DTORS_END___ = .
+                0x000000000380371d                __DTOR_END__ = .
+                0x000000000380371d                ___DTORS_END___ = .
 
-.fixup          0x0000000003803695        0x0
-                0x0000000003803695                __fixup_start = .
+.fixup          0x000000000380371d        0x0
+                0x000000000380371d                __fixup_start = .
  *(.fixup)
-                0x0000000003803695                __fixup_end = .
+                0x000000000380371d                __fixup_end = .
 
 .eh_frame
  *(.eh_frame)
 
-.eh_framehdr    0x0000000003803695        0x0
-                0x0000000003803695                __eh_framehdr_start = .
+.eh_framehdr    0x000000000380371d        0x0
+                0x000000000380371d                __eh_framehdr_start = .
  *(.eh_framehdr)
-                0x0000000003803695                __eh_framehdr_end = .
+                0x000000000380371d                __eh_framehdr_end = .
 
 .gcc_except_table
  *(.gcc_except_table)
@@ -9146,455 +9199,471 @@ Linker script and memory map
  *(.mmu_tbl)
                 0x0000000003804000                __mmu_tbl_end = .
 
-.ARM.exidx      0x0000000003803698        0x8
-                0x0000000003803698                __exidx_start = .
+.ARM.exidx      0x0000000003803720        0x8
+                0x0000000003803720                __exidx_start = .
  *(.ARM.exidx*)
  .ARM.exidx.text._ZN5RobotD2Ev
-                0x0000000003803698        0x8 build/src/main.o
+                0x0000000003803720        0x8 build/src/main.o
  .ARM.exidx.text.main
-                0x00000000038036a0        0x0 build/src/main.o
+                0x0000000003803728        0x0 build/src/main.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._GLOBAL__sub_I_main.cpp
-                0x00000000038036a0        0x0 build/src/main.o
+                0x0000000003803728        0x0 build/src/main.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._Z11vexcodeInitv
-                0x00000000038036a0        0x0 build/src/architecture/robotConfig.o
+                0x0000000003803728        0x0 build/src/architecture/robotConfig.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._GLOBAL__sub_I_robotConfig.cpp
-                0x00000000038036a0        0x0 build/src/architecture/robotConfig.o
+                0x0000000003803728        0x0 build/src/architecture/robotConfig.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN9TelemetryD2Ev
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN9Telemetry16registerSubtableESsSt6vectorI8EntrySetSaIS1_EE
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt3mapISsS_ISs8EntrySetSt4lessISsESaISt4pairIKSsS0_EEES2_SaIS3_IS4_S7_EEEixERS4_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt3mapISs8EntrySetSt4lessISsESaISt4pairIKSsS0_EEEixERS4_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN9Telemetry14deleteSubtableESs
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE8_M_eraseEPSt13_Rb_tree_nodeIS9_E
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE15_M_destroy_nodeEPSt13_Rb_tree_nodeIS9_E
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSs8EntrySetESt10_Select1stIS3_ESt4lessISsESaIS3_EE8_M_eraseEPSt13_Rb_tree_nodeIS3_E
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE22_M_emplace_hint_uniqueIJRKSt21piecewise_construct_tSt5tupleIJRS1_EESI_IJEEEEESt17_Rb_tree_iteratorIS9_ESt23_Rb_tree_const_iteratorIS9_EDpOT_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE14_M_lower_boundEPSt13_Rb_tree_nodeIS9_ESG_RS1_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE29_M_get_insert_hint_unique_posESt23_Rb_tree_const_iteratorIS9_ERS1_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE14_M_insert_nodeEPSt18_Rb_tree_node_baseSF_PSt13_Rb_tree_nodeIS9_E
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE24_M_get_insert_unique_posERS1_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSs8EntrySetESt10_Select1stIS3_ESt4lessISsESaIS3_EE22_M_emplace_hint_uniqueIJRKSt21piecewise_construct_tSt5tupleIJRS1_EESE_IJEEEEESt17_Rb_tree_iteratorIS3_ESt23_Rb_tree_const_iteratorIS3_EDpOT_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSs8EntrySetESt10_Select1stIS3_ESt4lessISsESaIS3_EE11lower_boundERS1_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSs8EntrySetESt10_Select1stIS3_ESt4lessISsESaIS3_EE29_M_get_insert_hint_unique_posESt23_Rb_tree_const_iteratorIS3_ERS1_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSs8EntrySetESt10_Select1stIS3_ESt4lessISsESaIS3_EE14_M_insert_nodeEPSt18_Rb_tree_node_baseSB_PSt13_Rb_tree_nodeIS3_E
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSs8EntrySetESt10_Select1stIS3_ESt4lessISsESaIS3_EE24_M_get_insert_unique_posERS1_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE5eraseERS1_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE11equal_rangeERS1_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE12_M_erase_auxESt23_Rb_tree_const_iteratorIS9_ESF_
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt8_Rb_treeISsSt4pairIKSsSt3mapISs8EntrySetSt4lessISsESaIS0_IS1_S3_EEEESt10_Select1stIS9_ES5_SaIS9_EE5eraseB5cxx11ESt23_Rb_tree_const_iteratorIS9_E
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._GLOBAL__sub_I_telemetry.cpp
-                0x00000000038036a0        0x0 build/src/architecture/telemetry.o
+                0x0000000003803728        0x0 build/src/architecture/telemetry.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt6vectorIP9SubsystemSaIS1_EED2Ev
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN9SubsystemC2ESsSt6vectorI8EntrySetSaIS1_EE
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt6vectorI8EntrySetSaIS0_EEC2ERKS2_
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt6vectorI8EntrySetSaIS0_EED2Ev
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN9Subsystem11initSystemsEv
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN11DummySystemC2Ev
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN9SubsystemD2Ev
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN11DummySystem4initEv
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN11DummySystem8periodicEv
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN11DummySystem15updateTelemetryEv
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN11DummySystem4stopEv
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt6vectorI8EntrySetSaIS0_EE19_M_range_initializeIPKS0_EEvT_S6_St20forward_iterator_tag
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt12_Vector_baseI8EntrySetSaIS0_EE11_M_allocateEj
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt6vectorIP9SubsystemSaIS1_EE19_M_emplace_back_auxIJS1_EEEvDpOT_
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNKSt6vectorIP9SubsystemSaIS1_EE12_M_check_lenEjPKc
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt12_Vector_baseIP9SubsystemSaIS1_EE11_M_allocateEj
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._GLOBAL__sub_I_subsystem.cpp
-                0x00000000038036a0        0x0 build/src/architecture/subsystem.o
+                0x0000000003803728        0x0 build/src/architecture/subsystem.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._GLOBAL__sub_I_command.cpp
-                0x00000000038036a0        0x0 build/src/architecture/command.o
+                0x0000000003803728        0x0 build/src/architecture/command.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN5RobotC2Ev
-                0x00000000038036a0        0x0 build/src/architecture/robot.o
+                0x0000000003803728        0x0 build/src/architecture/robot.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN5Robot10initializeEv
-                0x00000000038036a0        0x0 build/src/architecture/robot.o
+                0x0000000003803728        0x0 build/src/architecture/robot.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZN10RobotState15initializeStateEv
-                0x00000000038036a0        0x0 build/src/architecture/robotState.o
+                0x0000000003803728        0x0 build/src/architecture/robotState.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._GLOBAL__sub_I_robotState.cpp
-                0x00000000038036a0        0x0 build/src/architecture/robotState.o
+                0x0000000003803728        0x0 build/src/architecture/robotState.o
+                                          0x8 (size before relaxing)
+ .ARM.exidx.text._ZNSt6vectorIP10DataStreamSaIS1_EED2Ev
+                0x0000000003803728        0x0 build/src/architecture/dataStream.o
+                                          0x8 (size before relaxing)
+ .ARM.exidx.text._ZN10DataStream13initializeAllEv
+                0x0000000003803728        0x0 build/src/architecture/dataStream.o
+                                          0x8 (size before relaxing)
+ .ARM.exidx.text._GLOBAL__sub_I_dataStream.cpp
+                0x0000000003803728        0x0 build/src/architecture/dataStream.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._ZNSt6vectorIP6SpriteSaIS1_EED2Ev
-                0x00000000038036a0        0x0 build/src/gui/graphics.o
+                0x0000000003803728        0x0 build/src/gui/graphics.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._GLOBAL__sub_I_graphics.cpp
-                0x00000000038036a0        0x0 build/src/gui/graphics.o
+                0x0000000003803728        0x0 build/src/gui/graphics.o
                                           0x8 (size before relaxing)
  .ARM.exidx.text._GLOBAL__sub_I_homingPath.cpp
-                0x00000000038036a0        0x0 build/src/control/homingPath.o
+                0x0000000003803728        0x0 build/src/control/homingPath.o
                                           0x8 (size before relaxing)
  *(.gnu.linkonce.armexidix.*.*)
-                0x00000000038036a0                __exidx_end = .
+                0x0000000003803728                __exidx_end = .
 
-.rel.dyn        0x00000000038036a0        0x0
- .rel.iplt      0x00000000038036a0        0x0 build/src/main.o
+.rel.dyn        0x0000000003803728        0x0
+ .rel.iplt      0x0000000003803728        0x0 build/src/main.o
 
-.preinit_array  0x00000000038036a0        0x0
-                0x00000000038036a0                __preinit_array_start = .
+.preinit_array  0x0000000003803728        0x0
+                0x0000000003803728                __preinit_array_start = .
  *(SORT_BY_NAME(.preinit_array.*))
  *(.preinit_array)
-                0x00000000038036a0                __preinit_array_end = .
+                0x0000000003803728                __preinit_array_end = .
 
-.init_array     0x00000000038036a0       0x24
-                0x00000000038036a0                __init_array_start = .
+.init_array     0x0000000003803728       0x28
+                0x0000000003803728                __init_array_start = .
  *(SORT_BY_NAME(.init_array.*))
  *(.init_array)
- .init_array    0x00000000038036a0        0x4 build/src/main.o
- .init_array    0x00000000038036a4        0x4 build/src/architecture/robotConfig.o
- .init_array    0x00000000038036a8        0x4 build/src/architecture/telemetry.o
- .init_array    0x00000000038036ac        0x4 build/src/architecture/subsystem.o
- .init_array    0x00000000038036b0        0x4 build/src/architecture/command.o
- .init_array    0x00000000038036b4        0x4 build/src/architecture/robotState.o
- .init_array    0x00000000038036b8        0x4 build/src/gui/graphics.o
- .init_array    0x00000000038036bc        0x4 build/src/control/homingPath.o
- .init_array    0x00000000038036c0        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x00000000038036c4                __init_array_end = .
+ .init_array    0x0000000003803728        0x4 build/src/main.o
+ .init_array    0x000000000380372c        0x4 build/src/architecture/robotConfig.o
+ .init_array    0x0000000003803730        0x4 build/src/architecture/telemetry.o
+ .init_array    0x0000000003803734        0x4 build/src/architecture/subsystem.o
+ .init_array    0x0000000003803738        0x4 build/src/architecture/command.o
+ .init_array    0x000000000380373c        0x4 build/src/architecture/robotState.o
+ .init_array    0x0000000003803740        0x4 build/src/architecture/dataStream.o
+ .init_array    0x0000000003803744        0x4 build/src/gui/graphics.o
+ .init_array    0x0000000003803748        0x4 build/src/control/homingPath.o
+ .init_array    0x000000000380374c        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803750                __init_array_end = .
 
-.fini_array     0x00000000038036c4        0x0
-                0x00000000038036c4                __fini_array_start = .
+.fini_array     0x0000000003803750        0x0
+                0x0000000003803750                __fini_array_start = .
  *(SORT_BY_NAME(.fini_array.*))
  *(.fini_array)
-                0x00000000038036c4                __fini_array_end = .
+                0x0000000003803750                __fini_array_end = .
 
 .ARM.attributes
-                0x00000000038036c4       0x3a
-                0x00000000038036c4                __ARM.attributes_start = .
+                0x0000000003803750       0x3a
+                0x0000000003803750                __ARM.attributes_start = .
  *(.ARM.attributes)
  .ARM.attributes
-                0x00000000038036c4       0x3a build/src/main.o
+                0x0000000003803750       0x3a build/src/main.o
  .ARM.attributes
-                0x00000000038036fe       0x3a build/src/architecture/robotConfig.o
+                0x000000000380378a       0x3a build/src/architecture/robotConfig.o
  .ARM.attributes
-                0x0000000003803738       0x3a build/src/architecture/telemetry.o
+                0x00000000038037c4       0x3a build/src/architecture/telemetry.o
  .ARM.attributes
-                0x0000000003803772       0x3a build/src/architecture/subsystem.o
+                0x00000000038037fe       0x3a build/src/architecture/subsystem.o
  .ARM.attributes
-                0x00000000038037ac       0x3a build/src/architecture/command.o
+                0x0000000003803838       0x3a build/src/architecture/command.o
  .ARM.attributes
-                0x00000000038037e6       0x3a build/src/architecture/robot.o
+                0x0000000003803872       0x3a build/src/architecture/robot.o
  .ARM.attributes
-                0x0000000003803820       0x3a build/src/architecture/robotState.o
+                0x00000000038038ac       0x3a build/src/architecture/robotState.o
  .ARM.attributes
-                0x000000000380385a       0x3a build/src/gui/graphics.o
+                0x00000000038038e6       0x3a build/src/architecture/dataStream.o
  .ARM.attributes
-                0x0000000003803894       0x3a build/src/control/homingPath.o
+                0x0000000003803920       0x3a build/src/gui/graphics.o
  .ARM.attributes
-                0x00000000038038ce       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
+                0x000000000380395a       0x3a build/src/control/homingPath.o
  .ARM.attributes
-                0x0000000003803903       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_util.c.obj)
+                0x0000000003803994       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
  .ARM.attributes
-                0x0000000003803938       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
+                0x00000000038039c9       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_util.c.obj)
  .ARM.attributes
-                0x000000000380396d       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiversions.c.obj)
+                0x00000000038039fe       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj)
  .ARM.attributes
-                0x00000000038039a2       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_global.cpp.obj)
+                0x0000000003803a33       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiversions.c.obj)
  .ARM.attributes
-                0x00000000038039d7       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
+                0x0000000003803a68       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_global.cpp.obj)
  .ARM.attributes
-                0x0000000003803a0c       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_event.cpp.obj)
+                0x0000000003803a9d       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
  .ARM.attributes
-                0x0000000003803a41       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_mevent.cpp.obj)
+                0x0000000003803ad2       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_event.cpp.obj)
  .ARM.attributes
-                0x0000000003803a76       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
+                0x0000000003803b07       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_mevent.cpp.obj)
  .ARM.attributes
-                0x0000000003803aab       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003803b3c       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
  .ARM.attributes
-                0x0000000003803ae0       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
+                0x0000000003803b71       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
  .ARM.attributes
-                0x0000000003803b15       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803ba6       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj)
  .ARM.attributes
-                0x0000000003803b4a       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
+                0x0000000003803bdb       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
  .ARM.attributes
-                0x0000000003803b7f       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
+                0x0000000003803c10       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
  .ARM.attributes
-                0x0000000003803bb4       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+                0x0000000003803c45       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
  .ARM.attributes
-                0x0000000003803be9       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
+                0x0000000003803c7a       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
  .ARM.attributes
-                0x0000000003803c1e       0x19 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-aeabi_memmove-soft.o)
+                0x0000000003803caf       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
  .ARM.attributes
-                0x0000000003803c37       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-fini.o)
+                0x0000000003803ce4       0x19 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-aeabi_memmove-soft.o)
  .ARM.attributes
-                0x0000000003803c62       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-impure.o)
+                0x0000000003803cfd       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-fini.o)
  .ARM.attributes
-                0x0000000003803c8d       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-init.o)
+                0x0000000003803d28       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-impure.o)
  .ARM.attributes
-                0x0000000003803cb8       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-w_hypot.o)
+                0x0000000003803d53       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libc.a(lib_a-init.o)
  .ARM.attributes
-                0x0000000003803ce3       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-e_hypot.o)
+                0x0000000003803d7e       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-w_hypot.o)
  .ARM.attributes
-                0x0000000003803d0e       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-s_lib_ver.o)
-                0x0000000003803d39                __ARM.attributes_end = .
+                0x0000000003803da9       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-e_hypot.o)
+ .ARM.attributes
+                0x0000000003803dd4       0x2b /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libm.a(lib_a-s_lib_ver.o)
+                0x0000000003803dff                __ARM.attributes_end = .
 
-.sdata          0x00000000038036c4        0x0
-                0x00000000038036c4                __sdata_start = .
+.sdata          0x0000000003803750        0x0
+                0x0000000003803750                __sdata_start = .
  *(.sdata)
  *(.sdata.*)
  *(.gnu.linkonce.s.*)
-                0x00000000038036c4                __sdata_end = .
+                0x0000000003803750                __sdata_end = .
 
-.sbss           0x00000000038036c4        0x0
-                0x00000000038036c4                __sbss_start = .
+.sbss           0x0000000003803750        0x0
+                0x0000000003803750                __sbss_start = .
  *(.sbss)
  *(.sbss.*)
  *(.gnu.linkonce.sb.*)
-                0x00000000038036c4                __sbss_end = .
+                0x0000000003803750                __sbss_end = .
 
-.tdata          0x00000000038036c4        0x0
-                0x00000000038036c4                __tdata_start = .
+.tdata          0x0000000003803750        0x0
+                0x0000000003803750                __tdata_start = .
  *(.tdata)
  *(.tdata.*)
  *(.gnu.linkonce.td.*)
-                0x00000000038036c4                __tdata_end = .
+                0x0000000003803750                __tdata_end = .
 
-.tbss           0x00000000038036c4        0x0
-                0x00000000038036c4                __tbss_start = .
+.tbss           0x0000000003803750        0x0
+                0x0000000003803750                __tbss_start = .
  *(.tbss)
  *(.tbss.*)
  *(.gnu.linkonce.tb.*)
-                0x00000000038036c4                __tbss_end = .
+                0x0000000003803750                __tbss_end = .
 
-.bss            0x00000000038036c8      0x709
-                0x00000000038036c8                __bss_start = .
+.bss            0x0000000003803750      0x719
+                0x0000000003803750                __bss_start = .
  *(.bss)
  *(.bss.*)
  .bss._ZStL8__ioinit
-                0x00000000038036c8        0x1 build/src/main.o
- *fill*         0x00000000038036c9        0x3 
+                0x0000000003803750        0x1 build/src/main.o
+ *fill*         0x0000000003803751        0x3 
  .bss.Competition
-                0x00000000038036cc       0x28 build/src/main.o
-                0x00000000038036cc                Competition
- .bss.robot     0x00000000038036f4        0xc build/src/main.o
-                0x00000000038036f4                robot
- .bss.Brain     0x0000000003803700      0x2bc build/src/architecture/robotConfig.o
-                0x0000000003803700                Brain
+                0x0000000003803754       0x28 build/src/main.o
+                0x0000000003803754                Competition
+ .bss.robot     0x000000000380377c        0xc build/src/main.o
+                0x000000000380377c                robot
+ .bss.Brain     0x0000000003803788      0x2bc build/src/architecture/robotConfig.o
+                0x0000000003803788                Brain
  .bss._ZN9Telemetry4instE
-                0x00000000038039bc       0x18 build/src/architecture/telemetry.o
-                0x00000000038039bc                Telemetry::inst
+                0x0000000003803a44       0x18 build/src/architecture/telemetry.o
+                0x0000000003803a44                Telemetry::inst
  .bss._ZN9Subsystem7systemsE
-                0x00000000038039d4        0xc build/src/architecture/subsystem.o
-                0x00000000038039d4                Subsystem::systems
+                0x0000000003803a5c        0xc build/src/architecture/subsystem.o
+                0x0000000003803a5c                Subsystem::systems
  .bss.GLOBAL_DUMMY
-                0x00000000038039e0        0x8 build/src/architecture/subsystem.o
-                0x00000000038039e0                GLOBAL_DUMMY
+                0x0000000003803a68        0x8 build/src/architecture/subsystem.o
+                0x0000000003803a68                GLOBAL_DUMMY
  .bss._ZStL8__ioinit
-                0x00000000038039e8        0x1 build/src/architecture/command.o
- *fill*         0x00000000038039e9        0x3 
+                0x0000000003803a70        0x1 build/src/architecture/command.o
+ *fill*         0x0000000003803a71        0x3 
  .bss.Controller1
-                0x00000000038039ec      0x1ac build/src/architecture/robotState.o
-                0x00000000038039ec                Controller1
+                0x0000000003803a74      0x1ac build/src/architecture/robotState.o
+                0x0000000003803a74                Controller1
  .bss.Controller2
-                0x0000000003803b98      0x1ac build/src/architecture/robotState.o
-                0x0000000003803b98                Controller2
+                0x0000000003803c20      0x1ac build/src/architecture/robotState.o
+                0x0000000003803c20                Controller2
  .bss._ZN10RobotState13vibrationCodeE
-                0x0000000003803d44        0x4 build/src/architecture/robotState.o
-                0x0000000003803d44                RobotState::vibrationCode
+                0x0000000003803dcc        0x4 build/src/architecture/robotState.o
+                0x0000000003803dcc                RobotState::vibrationCode
+ .bss._ZN10DataStream7streamsE
+                0x0000000003803dd0        0xc build/src/architecture/dataStream.o
+                0x0000000003803dd0                DataStream::streams
  .bss._ZN6Sprite10allSpritesE
-                0x0000000003803d48        0xc build/src/gui/graphics.o
-                0x0000000003803d48                Sprite::allSprites
+                0x0000000003803ddc        0xc build/src/gui/graphics.o
+                0x0000000003803ddc                Sprite::allSprites
  .bss._ZN6Sprite11globalColorE
-                0x0000000003803d54        0x8 build/src/gui/graphics.o
-                0x0000000003803d54                Sprite::globalColor
+                0x0000000003803de8        0x8 build/src/gui/graphics.o
+                0x0000000003803de8                Sprite::globalColor
  .bss._ZN6Sprite16BACKGROUND_COLORE
-                0x0000000003803d5c        0x4 build/src/gui/graphics.o
-                0x0000000003803d5c                Sprite::BACKGROUND_COLOR
+                0x0000000003803df0        0x4 build/src/gui/graphics.o
+                0x0000000003803df0                Sprite::BACKGROUND_COLOR
+ *fill*         0x0000000003803df4        0x4 
  .bss._ZN10HomingPath11TUNED_LDISTE
-                0x0000000003803d60        0x8 build/src/control/homingPath.o
-                0x0000000003803d60                HomingPath::TUNED_LDIST
+                0x0000000003803df8        0x8 build/src/control/homingPath.o
+                0x0000000003803df8                HomingPath::TUNED_LDIST
  .bss.__dso_handle
-                0x0000000003803d68        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
-                0x0000000003803d68                __dso_handle
+                0x0000000003803e00        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
+                0x0000000003803e00                __dso_handle
  .bss._ZN3vex11competition22bStopTasksBetweenModesE
-                0x0000000003803d6c        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x0000000003803d6c                vex::competition::bStopTasksBetweenModes
+                0x0000000003803e04        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003803e04                vex::competition::bStopTasksBetweenModes
  .bss._ZN3vex11competition25bStopAllTasksBetweenModesE
-                0x0000000003803d6d        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x0000000003803d6d                vex::competition::bStopAllTasksBetweenModes
+                0x0000000003803e05        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003803e05                vex::competition::bStopAllTasksBetweenModes
  .bss._ZN3vex11competition14_auton_pendingE
-                0x0000000003803d6e        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x0000000003803d6e                vex::competition::_auton_pending
- *fill*         0x0000000003803d6f        0x1 
+                0x0000000003803e06        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003803e06                vex::competition::_auton_pending
+ *fill*         0x0000000003803e07        0x1 
  .bss._ZN3vex11competition20_autonomous_callbackE
-                0x0000000003803d70        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x0000000003803d70                vex::competition::_autonomous_callback
+                0x0000000003803e08        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003803e08                vex::competition::_autonomous_callback
  .bss._ZN3vex11competition23_drivercontrol_callbackE
-                0x0000000003803d74        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x0000000003803d74                vex::competition::_drivercontrol_callback
+                0x0000000003803e0c        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003803e0c                vex::competition::_drivercontrol_callback
  .bss._ZN3vex11competition15_driver_pendingE
-                0x0000000003803d78        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
-                0x0000000003803d78                vex::competition::_driver_pending
- *fill*         0x0000000003803d79        0x3 
+                0x0000000003803e10        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj)
+                0x0000000003803e10                vex::competition::_driver_pending
+ *fill*         0x0000000003803e11        0x3 
  .bss._ZN3vex5color6orangeE
-                0x0000000003803d7c        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803d7c                vex::color::orange
+                0x0000000003803e14        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e14                vex::color::orange
  .bss._ZN3vex5color5blackE
-                0x0000000003803d84        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803d84                vex::color::black
+                0x0000000003803e1c        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e1c                vex::color::black
  .bss._ZN3vex5color6yellowE
-                0x0000000003803d8c        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803d8c                vex::color::yellow
+                0x0000000003803e24        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e24                vex::color::yellow
  .bss._ZN3vex5color5greenE
-                0x0000000003803d94        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803d94                vex::color::green
+                0x0000000003803e2c        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e2c                vex::color::green
  .bss._ZN3vex5color6purpleE
-                0x0000000003803d9c        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803d9c                vex::color::purple
+                0x0000000003803e34        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e34                vex::color::purple
  .bss._ZN3vex5color4cyanE
-                0x0000000003803da4        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803da4                vex::color::cyan
+                0x0000000003803e3c        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e3c                vex::color::cyan
  .bss._ZN3vex5color4blueE
-                0x0000000003803dac        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803dac                vex::color::blue
+                0x0000000003803e44        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e44                vex::color::blue
  .bss._ZN3vex5color3redE
-                0x0000000003803db4        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803db4                vex::color::red
+                0x0000000003803e4c        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e4c                vex::color::red
  .bss._ZN3vex5color11transparentE
-                0x0000000003803dbc        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803dbc                vex::color::transparent
+                0x0000000003803e54        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e54                vex::color::transparent
  .bss._ZN3vex5color5whiteE
-                0x0000000003803dc4        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
-                0x0000000003803dc4                vex::color::white
+                0x0000000003803e5c        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_color.cpp.obj)
+                0x0000000003803e5c                vex::color::white
  .bss._ZN3vex4task8_labelIdE
-                0x0000000003803dcc        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
-                0x0000000003803dcc                vex::task::_labelId
+                0x0000000003803e64        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
+                0x0000000003803e64                vex::task::_labelId
  *(.gnu.linkonce.b.*)
  *(COMMON)
- COMMON         0x0000000003803dd0        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
-                0x0000000003803dd0                __vex_critical_section
-                0x0000000003803dd1                __bss_end = .
-                0x00000000038036c4                _SDA_BASE_ = (__sdata_start + ((__sbss_end - __sdata_start) / 0x2))
-                0x0000000003803250                _SDA2_BASE_ = (__sdata2_start + ((__sbss2_end - __sdata2_start) / 0x2))
+ COMMON         0x0000000003803e68        0x1 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
+                0x0000000003803e68                __vex_critical_section
+                0x0000000003803e69                __bss_end = .
+                0x0000000003803750                _SDA_BASE_ = (__sdata_start + ((__sbss_end - __sdata_start) / 0x2))
+                0x00000000038032d8                _SDA2_BASE_ = (__sdata2_start + ((__sbss2_end - __sdata2_start) / 0x2))
 
-.heap           0x0000000003803dd1   0x10000f
-                0x0000000003803de0                . = ALIGN (0x10)
- *fill*         0x0000000003803dd1        0xf 
-                0x0000000003803de0                _heap = .
-                0x0000000003803de0                HeapBase = .
-                0x0000000003803de0                _heap_start = .
-                0x0000000003903de0                . = (. + _HEAP_SIZE)
- *fill*         0x0000000003803de0   0x100000 
-                0x0000000003903de0                _heap_end = .
-                0x0000000003903de0                HeapLimit = .
+.heap           0x0000000003803e69   0x100007
+                0x0000000003803e70                . = ALIGN (0x10)
+ *fill*         0x0000000003803e69        0x7 
+                0x0000000003803e70                _heap = .
+                0x0000000003803e70                HeapBase = .
+                0x0000000003803e70                _heap_start = .
+                0x0000000003903e70                . = (. + _HEAP_SIZE)
+ *fill*         0x0000000003803e70   0x100000 
+                0x0000000003903e70                _heap_end = .
+                0x0000000003903e70                HeapLimit = .
 
-.stack          0x0000000003903de0     0x3800
-                0x0000000003903de0                . = ALIGN (0x10)
-                0x0000000003903de0                _stack_end = .
-                0x0000000003905de0                . = (. + _STACK_SIZE)
- *fill*         0x0000000003903de0     0x2000 
-                0x0000000003905de0                . = ALIGN (0x10)
-                0x0000000003905de0                _stack = .
-                0x0000000003905de0                __stack = _stack
-                0x0000000003905de0                . = ALIGN (0x10)
-                0x0000000003905de0                _irq_stack_end = .
-                0x00000000039061e0                . = (. + _IRQ_STACK_SIZE)
- *fill*         0x0000000003905de0      0x400 
-                0x00000000039061e0                . = ALIGN (0x10)
-                0x00000000039061e0                __irq_stack = .
-                0x00000000039061e0                _supervisor_stack_end = .
-                0x00000000039069e0                . = (. + _SUPERVISOR_STACK_SIZE)
- *fill*         0x00000000039061e0      0x800 
-                0x00000000039069e0                . = ALIGN (0x10)
-                0x00000000039069e0                __supervisor_stack = .
-                0x00000000039069e0                _abort_stack_end = .
-                0x0000000003906de0                . = (. + _ABORT_STACK_SIZE)
- *fill*         0x00000000039069e0      0x400 
-                0x0000000003906de0                . = ALIGN (0x10)
-                0x0000000003906de0                __abort_stack = .
-                0x0000000003906de0                _fiq_stack_end = .
-                0x00000000039071e0                . = (. + _FIQ_STACK_SIZE)
- *fill*         0x0000000003906de0      0x400 
-                0x00000000039071e0                . = ALIGN (0x10)
-                0x00000000039071e0                __fiq_stack = .
-                0x00000000039071e0                _undef_stack_end = .
-                0x00000000039075e0                . = (. + _UNDEF_STACK_SIZE)
- *fill*         0x00000000039071e0      0x400 
-                0x00000000039075e0                . = ALIGN (0x10)
-                0x00000000039075e0                __undef_stack = .
-                0x00000000039075e0                _end = .
+.stack          0x0000000003903e70     0x3800
+                0x0000000003903e70                . = ALIGN (0x10)
+                0x0000000003903e70                _stack_end = .
+                0x0000000003905e70                . = (. + _STACK_SIZE)
+ *fill*         0x0000000003903e70     0x2000 
+                0x0000000003905e70                . = ALIGN (0x10)
+                0x0000000003905e70                _stack = .
+                0x0000000003905e70                __stack = _stack
+                0x0000000003905e70                . = ALIGN (0x10)
+                0x0000000003905e70                _irq_stack_end = .
+                0x0000000003906270                . = (. + _IRQ_STACK_SIZE)
+ *fill*         0x0000000003905e70      0x400 
+                0x0000000003906270                . = ALIGN (0x10)
+                0x0000000003906270                __irq_stack = .
+                0x0000000003906270                _supervisor_stack_end = .
+                0x0000000003906a70                . = (. + _SUPERVISOR_STACK_SIZE)
+ *fill*         0x0000000003906270      0x800 
+                0x0000000003906a70                . = ALIGN (0x10)
+                0x0000000003906a70                __supervisor_stack = .
+                0x0000000003906a70                _abort_stack_end = .
+                0x0000000003906e70                . = (. + _ABORT_STACK_SIZE)
+ *fill*         0x0000000003906a70      0x400 
+                0x0000000003906e70                . = ALIGN (0x10)
+                0x0000000003906e70                __abort_stack = .
+                0x0000000003906e70                _fiq_stack_end = .
+                0x0000000003907270                . = (. + _FIQ_STACK_SIZE)
+ *fill*         0x0000000003906e70      0x400 
+                0x0000000003907270                . = ALIGN (0x10)
+                0x0000000003907270                __fiq_stack = .
+                0x0000000003907270                _undef_stack_end = .
+                0x0000000003907670                . = (. + _UNDEF_STACK_SIZE)
+ *fill*         0x0000000003907270      0x400 
+                0x0000000003907670                . = ALIGN (0x10)
+                0x0000000003907670                __undef_stack = .
+                0x0000000003907670                _end = .
 LOAD /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/stdlib_0.lib
 LOAD build/src/autos.o
 LOAD build/src/commands.o
@@ -9605,6 +9674,7 @@ LOAD build/src/architecture/subsystem.o
 LOAD build/src/architecture/command.o
 LOAD build/src/architecture/robot.o
 LOAD build/src/architecture/robotState.o
+LOAD build/src/architecture/dataStream.o
 LOAD build/src/utilities/functools.o
 LOAD build/src/utilities/bezier.o
 LOAD build/src/utilities/location.o
@@ -9634,6 +9704,7 @@ OUTPUT(build/....elf elf32-littlearm)
  .comment       0x000000000000002d       0x2e build/src/architecture/command.o
  .comment       0x000000000000002d       0x2e build/src/architecture/robot.o
  .comment       0x000000000000002d       0x2e build/src/architecture/robotState.o
+ .comment       0x000000000000002d       0x2e build/src/architecture/dataStream.o
  .comment       0x000000000000002d       0x2e build/src/gui/graphics.o
  .comment       0x000000000000002d       0x2e build/src/control/homingPath.o
  .comment       0x000000000000002d       0x70 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
@@ -9670,6 +9741,8 @@ OUTPUT(build/....elf elf32-littlearm)
                 0x0000000000000000        0x0 build/src/architecture/robot.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/src/architecture/robotState.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/src/architecture/dataStream.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/src/gui/graphics.o
  .note.GNU-stack

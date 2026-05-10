@@ -1,7 +1,8 @@
 #include "robot.h"
 //#include "telemetry.h"
 #include "command.h"
-#include "subsystem.h"
+#include "subsystem.h" 
+#include "dataStream.h"
 //#include "vex.h" 
 
 
@@ -16,7 +17,8 @@ Robot::Robot() {
 void Robot::initialize()
 {
   RobotState::initializeState();
-  Subsystem::initSystems();
+  Subsystem::initSystems(); 
+  DataStream::initializeAll();
 };
 
 void Robot::driverControl(bool odometryEnabled)
@@ -33,10 +35,11 @@ void Robot::driverControl(bool odometryEnabled)
 void Robot::runTelemetryThread()
 {
   while (true)
-  {
+  { 
+    DataStream::refreshAll();
     RobotState::updateState();
+    Subsystem::refreshTelemetry();  
     RobotState::vibrate();
-    Subsystem::refreshTelemetry();
     wait(20, vex::msec);
   }
 };
