@@ -632,7 +632,7 @@ Discarded input sections
  .group         0x0000000000000000       0x14 build/src/architecture/dataStream.o
  .group         0x0000000000000000        0xc build/src/architecture/dataStream.o
  .text._ZN10DataStreamC2ESsSt6vectorI8EntrySetSaIS1_EE
-                0x0000000000000000       0xdc build/src/architecture/dataStream.o
+                0x0000000000000000       0xf0 build/src/architecture/dataStream.o
  .ARM.exidx.text._ZN10DataStreamC2ESsSt6vectorI8EntrySetSaIS1_EE
                 0x0000000000000000        0x8 build/src/architecture/dataStream.o
  .text._ZNSt6vectorI8EntrySetSaIS0_EEC2ERKS2_
