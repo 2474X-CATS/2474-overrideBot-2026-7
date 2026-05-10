@@ -3,7 +3,7 @@
 
 vector<DataStream*> DataStream::streams;
 
-DataStream::DataStream(string dataDesc, vector<EntrySet> entryDecls){ 
+DataStream::DataStream(string dataDesc, vector<EntrySet> entryDecls) : desc(dataDesc) {  
    Telemetry::inst.registerSubtable(dataDesc, entryDecls); 
    streams.push_back(this);
 }  

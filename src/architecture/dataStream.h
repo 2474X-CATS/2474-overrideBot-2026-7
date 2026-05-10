@@ -8,9 +8,25 @@
 
 class DataStream {  
     
+    protected:  
+
+     template <typename T>
+     void set(string entryName, T val) 
+     {
+       Telemetry::inst.placeValueAt<T>(val, this->desc, entryName);
+     };  
+
+     template <typename T>
+     T get(string entryName) 
+     {
+      return Telemetry::inst.getValueAt<T>(this->desc, entryName);
+     };
+
     private:  
 
-      static vector<DataStream*> streams;  
+      static vector<DataStream*> streams;   
+
+      string desc;
 
     public:   
 
