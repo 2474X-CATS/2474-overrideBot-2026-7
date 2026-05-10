@@ -89,9 +89,7 @@ protected:
   virtual bool isOver() = 0;
   virtual void end() = 0; 
 
-  virtual vector<std::reference_wrapper<Subsystem>> getSystems() const { 
-    return {};
-  }; 
+  virtual vector<std::reference_wrapper<Subsystem>> getSystems() {return {};}; 
 
 };
 
@@ -122,7 +120,12 @@ public:
   virtual ~Command() override = default;
 
 private: 
-  std::vector<std::reference_wrapper<Subsystem>> subsystems_; 
+  std::vector<std::reference_wrapper<Subsystem>> subsystems_;  
+
+protected: 
+  vector<std::reference_wrapper<Subsystem>> getSystems() override { 
+    return subsystems_; 
+  };
 }; 
 
 
