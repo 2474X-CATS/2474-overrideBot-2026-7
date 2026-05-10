@@ -64,10 +64,35 @@ and Intake which spins the intake inwards for a certain amount of time you could
 
 class CommandInterface
 { // Interface made for autonomous commands that use various types of subsystems
-public:
-  virtual ~CommandInterface() = default;
-  virtual void run() = 0; // Establishes that at the very least a command has the ability to run
-  virtual string repr() { return ""; };
+public: 
+  friend class ParallelCommandGroup;  
+  friend class SequentialCommandGroup;
+
+  virtual ~CommandInterface() = default; 
+  
+  void run(){ 
+    this->start();
+    while (!isOver())
+    {
+      this->periodic();
+      vex::this_thread::sleep_for(20);
+    }
+    this->end();
+  };  
+
+  virtual string repr() { return ""; };  
+
+protected:  
+
+  virtual void start() = 0;
+  virtual void periodic() = 0;
+  virtual bool isOver() = 0;
+  virtual void end() = 0; 
+
+  virtual vector<std::reference_wrapper<Subsystem>> getSystems() const { 
+    return {};
+  }; 
+
 };
 
 template <typename T>
@@ -93,25 +118,76 @@ class Command : public CommandInterface
 
 public:
   Command(Subsystems &...systems) : subsystems_{std::reference_wrapper<Subsystem>(systems)...} {};
+  
   virtual ~Command() override = default;
-  void run() override
-  {
-    this->start();
-    while (!isOver())
-    {
-      this->periodic();
-      vex::this_thread::sleep_for(20);
-    }
-    this->end();
-  }
 
-protected:
-  std::vector<std::reference_wrapper<Subsystem>> subsystems_;
+private: 
+  std::vector<std::reference_wrapper<Subsystem>> subsystems_; 
+}; 
 
-  virtual void start() = 0;
-  virtual void periodic() = 0;
-  virtual bool isOver() = 0;
-  virtual void end() = 0;
+
+
+class ParallelCommandGroup : public CommandInterface { 
+   
+   private:   
+
+     vector<std::reference_wrapper<Subsystem>> allSubsystems;  
+     vector<CommandInterface*> participatingCommands;
+     vector<CommandInterface*> qualifiers;
+     
+     bool integrateSubsystems(vector<std::reference_wrapper<Subsystem>> subsystems);      //Adds subsystems used in a command to  
+                                                                  //the allSubsystems container but throws  
+                                                                  //an error if it contains subsystems that are  
+                                                                  //already in use. 
+
+                                                                  //Will need friend access in order to access 
+                                                                  //systems  
+
+                                                                  //true if successful
+     
+
+   public:  
+     static ParallelCommandGroup* makeGroup(CommandInterface* initialCommand);
+
+     ParallelCommandGroup(CommandInterface* initialCommand);  
+
+     ParallelCommandGroup* chainAnd(CommandInterface* comm); // BUILDERS--
+                                                             // CHAIN calls
+     ParallelCommandGroup* chainWhile(CommandInterface* comm);   //
+   
+   protected: 
+     void start() override; 
+     bool isOver() override; 
+     void periodic() override; 
+     void end() override;
+
+}; 
+
+class SequentialCommandGroup : public CommandInterface { 
+   
+   private:  
+     
+     int commandIndex = -1;   
+     int numCommands = 0; 
+
+     void initializeNext(); 
+
+     vector<CommandInterface*> commands;
+
+   public:  
+     static SequentialCommandGroup* makeGroup(CommandInterface* initialCommand);
+
+     SequentialCommandGroup(CommandInterface* initialCommand);  
+
+     SequentialCommandGroup* chainThen(CommandInterface* comm); 
+   
+   protected:  
+
+     void start() override; 
+     bool isOver() override; 
+     void periodic() override; 
+     void end() override;
+
 };
 
 #endif

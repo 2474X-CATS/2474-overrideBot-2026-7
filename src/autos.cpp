@@ -9,6 +9,7 @@
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 */
 
+
 AutonOption convertRoutineToOption(Routine routine, int index)
 {
   AutonOption option;
@@ -32,7 +33,7 @@ vector<AutonOption> getOptionVector(vector<Routine> routines)
 
 vector<Routine> generateRoutinePool(){ 
   vector<Routine> routines;  
-  
+
   return routines;
 }
 

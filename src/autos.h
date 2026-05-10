@@ -1,14 +1,20 @@
 #ifndef __AUTOS_H__
 #define __AUTOS_H__
 
-#include "commands.h"
-#include <vector> 
+#include "commands.h" 
 
-using std::vector;
+#include <vector>  
+#include <string> 
+#include <array>
+
+using std::vector;  
+using std::string;  
+using std::array;
+
 
 typedef struct { 
-  std::string name; 
-  std::string description; 
+  string name; 
+  string description; 
   int index; 
   bool hasLeftSide; 
   bool hasRightSide; 
@@ -19,7 +25,7 @@ typedef struct
 {
   string name;
   string desc;
-  array<vector<CommandInterface *>, 2> autos;
+  array<vector<CommandInterface*>, 2> autos;
 } Routine;  
 
 

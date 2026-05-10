@@ -1,22 +1,13 @@
 #include "robot.h"
-#include "telemetry.h"
+//#include "telemetry.h"
 #include "command.h"
 #include "subsystem.h"
-#include "vex.h" 
+//#include "vex.h" 
 
 
 using namespace vex;
 
-/*
-void timelyWait(long lastTimestamp, long timeInterval)
-{
-  long nextTimestamp = lastTimestamp + timeInterval;
-  long waitTime = nextTimestamp - Brain.Timer.time();
-  if (waitTime < 0)
-    waitTime = 0;
-  wait(waitTime, msec);
-}
-*/ 
+
 
 Robot::Robot() {
 

@@ -2,6 +2,8 @@
 #define __SUBSYSTEM_H__
 
 #include "telemetry.h"
+#include "robotState.h" //Will be used by downstream subsystems
+#include "vex.h" //Will be used by downstream subsystems
 
 /*
 //Generalizes the creation of subsystem logic
@@ -44,21 +46,6 @@ class Drivebase : public Subsystem {
 
 */
 
-typedef enum
-{
-  LEFT_VERTICAL,
-  LEFT_HORIZONTAL,
-  RIGHT_VERTICAL,
-  RIGHT_HORIZONTAL
-} AxisType;
-
-typedef enum
-{
-  DRIVER,
-  MANUAL,
-  STOPPED,
-  INITIALIZATION
-} ControlType;
 
 class Subsystem
 {
@@ -96,37 +83,6 @@ public:
   virtual void periodic() = 0;        // How the robot responds to input
   virtual void updateTelemetry() = 0; // The data the robot has to offer
   virtual void stop() = 0;
-};
-
-//----------------------------------------------------------------------
-
-class RobotState
-{
-private:
-  static ControlType mode; // 1 is updating based on controller 2 is null state values 3 is manually set states (for auton)
-  static bool axisesEnabled;
-
-  static std::string vibrationCode;
-
-  static void updateStopped();
-  static void updateRegular();
-  static void updateInitializing();
-
-  static void disableVibrations();
-  static void setVibrationCode(string code);
-
-public:
-  static void manuallyModifyState(string key, bool val);
-  static bool getStateOf(string key);
-  static bool getExternalState(string subtable, string key);
-  static void setMode(ControlType control);
-  static int getAxisState(AxisType axisType);
-
-  static void initializeState();
-
-  static void updateState();
-
-  static void vibrate();
 };
 
 //----------------------------------------------------------------------
