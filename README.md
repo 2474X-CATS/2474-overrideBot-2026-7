@@ -6,7 +6,7 @@
 
 <h3>🚀 Overview</h3>
 
-This repository contains the control software for Team 2474X-CATS’ 2025–26 VEX Push Back robot. The system is designed for robust autonomous routines, precise driver control, and modular subsystems, making it easy to scale, debug, and iterate during competition.
+This repository contains the control software for Team 2474X-CATS’ 2026–27 VEX Override robot. The system is designed for robust autonomous routines, precise driver control, and modular subsystems, making it easy to scale, debug, and iterate during competition.
 
 <h4>Key Features:</h4>
 <ul>
