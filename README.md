@@ -1,4 +1,4 @@
-<h1>2474X-CATS CompetitionBot — 2026–26</h1>
+<h1>2474X-CATS CompetitionBot — 2026–27</h1>
 
 <h2>Author: Jackson Scott (primary developer)</h2>
 <h2>Game: VEX Robotics Competition – Override</h2>
