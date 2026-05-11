@@ -1,5 +1,5 @@
-#include "robotState.h" 
-#include "vex.h" 
+#include "robotState.h"
+#include "vex.h"
 
 vex::controller Controller1 = vex::controller(vex::controllerType::primary);
 vex::controller Controller2 = vex::controller(vex::controllerType::partner);
@@ -32,18 +32,16 @@ void RobotState::initializeState()
 {
    Telemetry::inst.registerSubtable(
        "robot_state",
-       { 
+       {
 
        });
 }
 
 void RobotState::updateRegular()
-{  
-   
+{
 }
 
-void RobotState::updateStopped()
-{
+void RobotState::updateStopped() {
 
 };
 

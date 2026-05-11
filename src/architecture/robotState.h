@@ -1,7 +1,7 @@
-#ifndef __ROBOT_STATE_H__ 
-#define __ROBOT_STATE_H__ 
+#ifndef __ROBOT_STATE_H__
+#define __ROBOT_STATE_H__
 
-#include "telemetry.h" 
+#include "telemetry.h"
 
 typedef enum
 {
@@ -47,6 +47,5 @@ public:
 
   static void vibrate();
 };
-
 
 #endif

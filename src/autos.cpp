@@ -33,7 +33,9 @@ vector<AutonOption> getOptionVector(vector<Routine> routines)
 
 vector<Routine> generateRoutinePool(){ 
   vector<Routine> routines;  
-
+  /* 
+  Add routines here
+  */
   return routines;
 }
 

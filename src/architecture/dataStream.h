@@ -1,46 +1,42 @@
 #ifndef __DATA_STREAM_H__
-#define __DATA_STREAM_H__ 
+#define __DATA_STREAM_H__
 
-#include "vex.h" //Devices
+#include "vex.h"        //Devices
 #include "telemetry.h"  //Making subtable + accessing data
 #include "robotState.h" //Looking at current robot processes
-#include <string> 
+#include <string>
 
-class DataStream {  
-    
-    protected:  
+class DataStream
+{
 
-     template <typename T>
-     void set(string entryName, T val) 
-     {
-       Telemetry::inst.placeValueAt<T>(val, this->desc, entryName);
-     };  
+protected:
+  template <typename T>
+  void set(string entryName, T val)
+  {
+    Telemetry::inst.placeValueAt<T>(val, this->desc, entryName);
+  };
 
-     template <typename T>
-     T get(string entryName) 
-     {
-      return Telemetry::inst.getValueAt<T>(this->desc, entryName);
-     };
+  template <typename T>
+  T get(string entryName)
+  {
+    return Telemetry::inst.getValueAt<T>(this->desc, entryName);
+  };
 
-    private:  
+private:
+  static vector<DataStream *> streams;
 
-      static vector<DataStream*> streams;   
+  string desc;
 
-      string desc;
+public:
+  DataStream(string dataDesc, vector<EntrySet> entryDecls);
 
-    public:   
+  virtual void refreshData() = 0; // Calls every telemetry frame
 
-       DataStream(string dataDesc, vector<EntrySet> entryDecls);   
+  virtual void init() = 0; // Sets up sensors for data-collection
 
-       virtual void refreshData() = 0; //Calls every telemetry frame  
-       
-       virtual void init() = 0; //Sets up sensors for data-collection
+  static void refreshAll();
 
-       static void refreshAll(); 
-
-       static void initializeAll(); 
-
+  static void initializeAll();
 };
-
 
 #endif

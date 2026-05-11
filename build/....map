@@ -414,9 +414,9 @@ Discarded input sections
                 0x0000000000000000       0x24 build/src/architecture/command.o
  .ARM.exidx.text._ZN16CommandInterface4reprEv
                 0x0000000000000000        0x8 build/src/architecture/command.o
- .text._ZN16CommandInterface10getSystemsEv
+ .text._ZNK16CommandInterface10getSystemsEv
                 0x0000000000000000       0x14 build/src/architecture/command.o
- .ARM.exidx.text._ZN16CommandInterface10getSystemsEv
+ .ARM.exidx.text._ZNK16CommandInterface10getSystemsEv
                 0x0000000000000000        0x8 build/src/architecture/command.o
  .text._ZN22SequentialCommandGroupD2Ev
                 0x0000000000000000       0x34 build/src/architecture/command.o

@@ -1,23 +1,23 @@
 #ifndef __ROBOT_H__
 #define __ROBOT_H__
 
-#include <vector> 
-#include "../autos.h"   
+#include <vector>
+#include "../autos.h"
 #include "../gui/autonInit.h"
 
 using std::vector;
 
-class CommandInterface; 
+class CommandInterface;
 
 class Robot
 {
 
 private:
-   vector<CommandInterface *> autonomousCommand; 
+   vector<CommandInterface *> autonomousCommand;
 
 public:
    Robot();
-   
+
    void configurateAutonomous();
 
    void initialize(); // All subsysytems in the subsystem list as a result of their instantiation are initialized here (Motor prep / sensor calibration)
@@ -32,9 +32,6 @@ public:
 
    void runTelemetryThread(); // A constant loop of information logging fom the subsystems (drivebase, intake, etc),
                               // and the system (controller axises, buttons) happening on a different thread
-}; 
-
-
-
+};
 
 #endif

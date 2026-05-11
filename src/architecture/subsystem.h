@@ -3,7 +3,7 @@
 
 #include "telemetry.h"
 #include "robotState.h" //Will be used by downstream subsystems
-#include "vex.h" //Will be used by downstream subsystems
+#include "vex.h"        //Will be used by downstream subsystems
 
 /*
 //Generalizes the creation of subsystem logic
@@ -45,7 +45,6 @@ class Drivebase : public Subsystem {
 }
 
 */
-
 
 class Subsystem
 {
