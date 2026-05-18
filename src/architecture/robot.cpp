@@ -20,7 +20,7 @@ void Robot::initialize()
 void Robot::driverControl(bool odometryEnabled)
 {
   RobotState::setMode(ControlType::DRIVER);
-  RobotState::manuallyModifyState("in_autonomous", false);
+  //RobotState::manuallyModifyState("in_autonomous", false);
   while (true)
   {
     Subsystem::updateSystems();

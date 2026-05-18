@@ -1,6 +1,8 @@
 #include "vex.h"
 #include "architecture/robot.h"
-#include <iostream>
+#include <iostream> 
+
+#include "subsystems/arm.h"
 
 using namespace vex;
 
@@ -56,12 +58,12 @@ int main()
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
-  
+  Arm theArm = Arm(); 
   //-------------------------------------------------------
 
   robot.initialize(); 
-
+  
   //-------------------RUN PROTOCOLS HERE-------------------
  
-
+  testDrive();
 }
