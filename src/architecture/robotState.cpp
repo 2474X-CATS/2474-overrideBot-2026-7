@@ -33,16 +33,18 @@ void RobotState::initializeState()
    Telemetry::inst.registerSubtable(
        "robot_state",
        {
-
-       });
+         (EntrySet){"is_on", EntryType::BOOL}
+       } 
+   );
 }
 
 void RobotState::updateRegular()
-{
+{ 
+   return;
 }
 
 void RobotState::updateStopped() {
-
+   return;
 };
 
 void RobotState::updateInitializing()

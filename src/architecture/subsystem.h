@@ -78,10 +78,10 @@ public:
 
   Subsystem(string tableLabel, vector<EntrySet> entryNames);
 
-  virtual void init() = 0;            // Prep for match: Motor setting / calibration / initial telemetry values
-  virtual void periodic() = 0;        // How the robot responds to input
-  virtual void updateTelemetry() = 0; // The data the robot has to offer
-  virtual void stop() = 0;
+  virtual void init(){};            // Prep for match: Motor setting / calibration / initial telemetry values
+  virtual void periodic(){};        // How the robot responds to input
+  virtual void updateTelemetry(){}; // The data the robot has to offer
+  virtual void stop(){};
 };
 
 //----------------------------------------------------------------------

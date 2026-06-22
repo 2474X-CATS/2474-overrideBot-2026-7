@@ -20,7 +20,7 @@ void Robot::initialize()
 void Robot::driverControl(bool odometryEnabled)
 {
   RobotState::setMode(ControlType::DRIVER);
-  RobotState::manuallyModifyState("in_autonomous", false);
+  //RobotState::manuallyModifyState("in_autonomous", false);
   while (true)
   {
     Subsystem::updateSystems();
@@ -54,7 +54,7 @@ void Robot::setAutonomousCommand(std::vector<CommandInterface *> comm)
 void Robot::autonControl()
 {
   RobotState::setMode(ControlType::MANUAL);
-  RobotState::manuallyModifyState("in_autonomous", true);
+  //RobotState::manuallyModifyState("in_autonomous", true);
   vex::wait(20, msec);
   for (CommandInterface *command : Robot::autonomousCommand)
   {
@@ -89,5 +89,5 @@ void Robot::configurateAutonomous()
   }
 
   setAutonomousCommand(routines.at(autonIndex).autos.at(sideIndex));
-  RobotState::manuallyModifyState("is_team_color_blue", colorChooser.getIsBlue());
+  //RobotState::manuallyModifyState("is_team_color_blue", colorChooser.getIsBlue());
 }

@@ -29,6 +29,8 @@ private:
 
 public:
   DataStream(string dataDesc, vector<EntrySet> entryDecls);
+  
+  ~DataStream(){}; 
 
   virtual void refreshData() = 0; // Calls every telemetry frame
 
