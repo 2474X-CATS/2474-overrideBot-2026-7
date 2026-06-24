@@ -17,7 +17,7 @@ void SuperSystem::refreshData(){
     
     if (get<bool>("in_autopilot")){ 
         if (get<bool>("task_completed")){ 
-            set<int>("position", SuperStructurePosition::PRIMED);  
+            set<int>("position", SuperStructurePosition::GROUND);  
             set<bool>("in_autopilot", false); 
         }
     } else { 
