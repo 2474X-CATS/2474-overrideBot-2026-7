@@ -33,9 +33,10 @@ void RobotState::initializeState()
    Telemetry::inst.registerSubtable(
        "robot_state",
        {
-         (EntrySet){"is_on", EntryType::BOOL}
-       } 
-   );
+           (EntrySet){"in_autonomous", EntryType::BOOL}, 
+           (EntrySet){"inverted", EntryType::BOOL}, 
+           (EntrySet){"is_team_color_blue", EntryType::BOOL}
+       });
 }
 
 void RobotState::updateRegular()
@@ -85,17 +86,29 @@ int RobotState::getAxisState(AxisType axisType)
    {
       switch (axisType)
       {
-      case LEFT_HORIZONTAL:
+      case M_LEFT_HORIZONTAL:
          axisVal = Controller1.Axis4.position();
          break;
-      case LEFT_VERTICAL:
+      case M_LEFT_VERTICAL:
          axisVal = Controller1.Axis3.position();
          break;
-      case RIGHT_HORIZONTAL:
+      case M_RIGHT_HORIZONTAL:
          axisVal = Controller1.Axis1.position();
          break;
-      case RIGHT_VERTICAL:
+      case M_RIGHT_VERTICAL:
          axisVal = Controller1.Axis2.position();
+         break; 
+      case S_LEFT_HORIZONTAL:
+         axisVal = Controller2.Axis4.position();
+         break;
+      case S_LEFT_VERTICAL:
+         axisVal = Controller2.Axis3.position();
+         break;
+      case S_RIGHT_HORIZONTAL:
+         axisVal = Controller2.Axis1.position();
+         break;
+      case S_RIGHT_VERTICAL:
+         axisVal = Controller2.Axis2.position();
          break;
       }
    }
