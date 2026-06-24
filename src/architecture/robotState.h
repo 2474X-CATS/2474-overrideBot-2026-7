@@ -1,14 +1,18 @@
 #ifndef __ROBOT_STATE_H__
 #define __ROBOT_STATE_H__
 
-#include "telemetry.h"
+#include "telemetry.h" 
 
 typedef enum
 {
-  LEFT_VERTICAL,
-  LEFT_HORIZONTAL,
-  RIGHT_VERTICAL,
-  RIGHT_HORIZONTAL
+  M_LEFT_VERTICAL,
+  M_LEFT_HORIZONTAL,
+  M_RIGHT_VERTICAL,
+  M_RIGHT_HORIZONTAL,  
+  S_LEFT_VERTICAL,
+  S_LEFT_HORIZONTAL,
+  S_RIGHT_VERTICAL,
+  S_RIGHT_HORIZONTAL
 } AxisType;
 
 typedef enum
@@ -46,6 +50,8 @@ public:
   static void updateState();
 
   static void vibrate();
-};
+}; 
+
+//--------------------------------- 
 
 #endif

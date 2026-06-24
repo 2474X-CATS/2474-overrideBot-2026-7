@@ -3,11 +3,37 @@
 
 typedef struct
 {
-   double kS; // over come static friction
-   double kV; // maintain kinetic friction
-   double kA; // increase velocity
-} FFConstants;
+   double kS; // overcome static friction
+   double kV; // maintain velocity
+   double kA; // increase velocity  
 
+   double calculate(double velocity, double acceleration);  
+
+} FFConstants;  
+
+
+typedef struct {  
+   double kS_rot;
+   double kV_rot; 
+   double kA_rot;  
+   double kCos;  
+   double kCos_ratio = 1;  
+
+   double calculate(double absPosition, double velocity, double acceleration);
+
+} AngularArmFFConstants; 
+
+
+typedef struct { 
+   FFConstants ffCconsts, 
+   double kG; 
+
+   double calculate(double velocity, double acceleration);  
+
+} ElevatorFFConstants;
+
+
+/*
 class FeedForward
 {
    double kS;
@@ -17,10 +43,16 @@ class FeedForward
 public:
    FeedForward(FFConstants consts) : kS(consts.kS),
                                      kV(consts.kV),
-                                     kA(consts.kA) {};
+                                     kA(consts.kA) {};     
+
+   FeedForward(double cS, double cV, double cA) : kS(cS),
+                                                  kV(cV),
+                                                  kA(cA) {};   
 
    double calculate(double velocity);
    double calculate(double velocity, double accleration);
-};
+};  
+*/ 
+
 
 #endif

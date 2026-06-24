@@ -1,5 +1,5 @@
 #include "robotState.h"
-#include "vex.h"
+#include "vex.h" 
 
 vex::controller Controller1 = vex::controller(vex::controllerType::primary);
 vex::controller Controller2 = vex::controller(vex::controllerType::partner);
@@ -29,17 +29,70 @@ void RobotState::updateState()
 };
 
 void RobotState::initializeState()
-{
+{ 
    Telemetry::inst.registerSubtable(
        "robot_state",
-       {
+       {  
+          (EntrySet){"requested_macro", EntryType::BOOL},   
 
-       });
-}
+          (EntrySet){"requested_drop", EntryType::BOOL},  
+          (EntrySet){"awaiting_drop", EntryType::BOOL}, 
+
+          (EntrySet){"requested_land", EntryType::BOOL},  
+          (EntrySet){"awaiting_land", EntryType::BOOL}, 
+
+          (EntrySet){"requested_flip", EntryType::BOOL}, 
+          (EntrySet){"awaiting_flip", EntryType::BOOL}
+       } 
+   ); 
+};
 
 void RobotState::updateRegular()
-{
-}
+{  
+   if (Controller2.ButtonR2.pressing()){ //Macro
+      manuallyModifyState("requested_macro", true);
+   } else { 
+      if (getStateOf("requested_macro")){ 
+          Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");  
+          manuallyModifyState("requested_macro", false);
+      }
+   }
+
+   //--------------------------------------------------------------------------
+
+   if (Controller2.ButtonA.pressing()){ //Drop
+      manuallyModifyState("requested_drop", true);
+   } else { 
+      if (getStateOf("requested_drop")){ 
+          manuallyModifyState("awaiting_drop", true); //Turned off by claw itself
+          manuallyModifyState("requested_drop", false);
+      }
+   }  
+
+   //--------------------------------------------------------------------------- 
+   
+   if (Controller2.ButtonB.pressing()){ //Land
+      manuallyModifyState("requested_land", true);
+   } else { 
+      if (getStateOf("requested_land")){ 
+          manuallyModifyState("awaiting_land", true); //Turned off by the arm itself 
+          manuallyModifyState("requested_land", false);
+      }
+   } 
+   
+    //---------------------------------------------------------------------------
+
+   if (Controller2.ButtonX.pressing()){ //Flip
+      manuallyModifyState("requested_flip", true);
+   } else { 
+      if (getStateOf("requested_flip")){ 
+          manuallyModifyState("awaiting_flip", true); //Turned off by claw itself
+          manuallyModifyState("requested_flip", false);
+      }
+   }
+
+
+};
 
 void RobotState::updateStopped() {
 
@@ -83,17 +136,29 @@ int RobotState::getAxisState(AxisType axisType)
    {
       switch (axisType)
       {
-      case LEFT_HORIZONTAL:
+      case M_LEFT_HORIZONTAL:
          axisVal = Controller1.Axis4.position();
          break;
-      case LEFT_VERTICAL:
+      case M_LEFT_VERTICAL:
          axisVal = Controller1.Axis3.position();
          break;
-      case RIGHT_HORIZONTAL:
+      case M_RIGHT_HORIZONTAL:
          axisVal = Controller1.Axis1.position();
          break;
-      case RIGHT_VERTICAL:
+      case M_RIGHT_VERTICAL:
          axisVal = Controller1.Axis2.position();
+         break; 
+      case S_LEFT_HORIZONTAL:
+         axisVal = Controller2.Axis4.position();
+         break;
+      case S_LEFT_VERTICAL:
+         axisVal = Controller2.Axis3.position();
+         break;
+      case S_RIGHT_HORIZONTAL:
+         axisVal = Controller2.Axis1.position();
+         break;
+      case S_RIGHT_VERTICAL:
+         axisVal = Controller2.Axis2.position();
          break;
       }
    }
@@ -115,4 +180,5 @@ void RobotState::setMode(ControlType mod)
 void RobotState::manuallyModifyState(string key, bool val)
 {
    Telemetry::inst.placeValueAt<bool>(val, "robot_state", key);
-};
+}; 
+

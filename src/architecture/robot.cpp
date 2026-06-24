@@ -32,8 +32,8 @@ void Robot::runTelemetryThread()
 {
   while (true)
   {
+    RobotState::updateState(); 
     DataStream::refreshAll();
-    RobotState::updateState();
     Subsystem::refreshTelemetry();
     RobotState::vibrate();
     wait(20, vex::msec);

@@ -19,7 +19,15 @@ extern double ROBOT_LENGTH_MM;
 
 extern double MOTOR_TEMP_LIMIT_CELSIUS;
 
-extern double TILE_SIZE_MM;
+extern double TILE_SIZE_MM; 
+
+typedef enum { 
+    GROUND = 1,  
+    PRIMED, 
+    STANDING, 
+    PLACE, 
+    AUTO
+} SuperStructurePosition;  
 
 //-------
 
