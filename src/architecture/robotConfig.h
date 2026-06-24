@@ -25,7 +25,6 @@ typedef enum {
     GROUND = 1,  
     PRIMED, 
     STANDING, 
-    PLACE, 
     AUTO
 } SuperStructurePosition;  
 

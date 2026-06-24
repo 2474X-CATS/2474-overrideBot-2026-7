@@ -32,20 +32,26 @@ void RobotState::initializeState()
 { 
    Telemetry::inst.registerSubtable(
        "robot_state",
-       {  
-          (EntrySet){"requested_macro", EntryType::BOOL},   
+       {
+           (EntrySet){"in_autonomous", EntryType::BOOL}, 
+           (EntrySet){"inverted", EntryType::BOOL}, 
+           (EntrySet){"is_team_color_blue", EntryType::BOOL},   
+           
+           (EntrySet){"requested_macro", EntryType::BOOL},   
 
-          (EntrySet){"requested_drop", EntryType::BOOL},  
-          (EntrySet){"awaiting_drop", EntryType::BOOL}, 
+           (EntrySet){"requested_drop", EntryType::BOOL},  
+           (EntrySet){"awaiting_drop", EntryType::BOOL}, 
 
-          (EntrySet){"requested_land", EntryType::BOOL},  
-          (EntrySet){"awaiting_land", EntryType::BOOL}, 
+           (EntrySet){"requested_land", EntryType::BOOL},  
+           (EntrySet){"awaiting_land", EntryType::BOOL}, 
 
-          (EntrySet){"requested_flip", EntryType::BOOL}, 
-          (EntrySet){"awaiting_flip", EntryType::BOOL}
-       } 
-   ); 
-};
+           (EntrySet){"requested_flip", EntryType::BOOL}, 
+           (EntrySet){"awaiting_flip", EntryType::BOOL}
+
+
+
+       });
+}
 
 void RobotState::updateRegular()
 {  

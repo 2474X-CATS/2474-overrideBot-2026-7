@@ -5,9 +5,7 @@ void SuperSystem::init(){
 }  
 
 void SuperSystem::resetTaskProgress(){ 
-    Telemetry::inst.placeValueAt<int>(0, "elevator","task_id"); 
     Telemetry::inst.placeValueAt<int>(0, "forearm","task_id"); 
-    Telemetry::inst.placeValueAt<int>(0, "claw","task_id"); 
 }
 
 void SuperSystem::refreshData(){
@@ -49,11 +47,6 @@ void SuperSystem::refreshData(){
                   break;  
                 case STANDING: 
                   if (Telemetry::inst.getValueAt("claw","clenched")){ 
-                    set<int>("position", SuperStructurePosition::PRIMED);
-                  } 
-                  break; 
-                case PLACE: 
-                  if (!Telemetry::inst.getValueAt("claw", "clenched")){ 
                     set<int>("position", SuperStructurePosition::PRIMED);
                   } 
                   break; 
