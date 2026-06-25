@@ -12,7 +12,7 @@ class Claw : public Subsystem {
        vex::pneumatics wrist; 
        vex::pneumatics claw;
 
-       void flip(bool facingUp);  
+       void flip(bool facingDown);  
        void clench(bool clenched); 
 
        bool canGrab();
@@ -28,7 +28,6 @@ class Claw : public Subsystem {
            (EntrySet){"clenched", EntryType::BOOL}, 
            (EntrySet){"facing_down", EntryType::BOOL}, 
            (EntrySet){"active", EntryType::BOOL}, 
-           (EntrySet){"task_id", EntryType::INT}
         } 
         ), 
        claw(vex::pneumatics(Brain.ThreeWirePort.B)), 
