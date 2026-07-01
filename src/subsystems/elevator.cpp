@@ -67,7 +67,7 @@ void Elevator::updatePosition(){
   double newPosition = getPosition();   
   set<double>("current_velocity", getVelocity(newPosition));   
   previousHeight = get<double>("current_height");   
-  set<double>("current_height", newPosition());  
+  set<double>("current_height", newPosition);  
   previousTimestamp = Brain.Timer.time(); 
 }
 
