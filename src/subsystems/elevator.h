@@ -63,7 +63,7 @@ class Elevator : public Subsystem {
        vex::rotation rot;  
 
     public:   
-
+       using Subsystem::get; 
        static Elevator& getObject();
 
        Elevator() : 
@@ -92,7 +92,10 @@ class Elevator : public Subsystem {
        void init() override; 
        void periodic() override; 
        void updateTelemetry() override; 
-       void stop() override; 
+       void stop() override;  
+      
+    protected: 
+       using Subsystem::set; 
 
 };
 
