@@ -1,7 +1,35 @@
 #include "elevator.h" 
 
 void Elevator::init(){ 
-    //Set up all the constants
+    //Set up all the constants   
+
+    //Motion: Max speed and acceleration
+    TrapezoidConstants mConsts;   
+    mConsts.maxVelocity = 0; 
+    mConsts.maxAcceleration = 0; 
+
+    motionConsts = &mConsts;   
+  
+    //Feedback: Correcting the Feedforward's shortcomings 
+
+    PIDConstants pidConsts;  
+    pidConsts.P = 0; 
+    pidConsts.I = 0; 
+    pidConsts.D = 0; 
+
+    correctionController = new errorcontroller(pidConsts);  
+
+    //Feedforward: Bulk of precision contol based on an inverse model of the elevator system 
+
+    ElevatorFFConstants elevConsts;  
+    elevConsts.ffConsts.kS = 0; 
+    elevConsts.ffConsts.kV = 0;
+    elevConsts.ffConsts.kA = 0;  
+    elevConsts.kG = 0; 
+
+
+    elevatorFF = &elevConsts; 
+
 } 
 
 void Elevator::periodic(){   
@@ -18,39 +46,57 @@ void Elevator::periodic(){
      elevatorOutput = calculateOutput(motionGoal.velocity, motionGoal.acceleration) * setpointDirection;
    } 
    lift.spin(vex::directionType::fwd, elevatorOutput, vex::voltageUnits::volt);
-} 
+}  
 
-void Elevator::updateTelemetry(){    
-    // Update Position  
-    // Update velocity 
-    // Update status of stack sight 
+void Elevator::updateTelemetry(){     
+    // Update status of stack sight    
+    updatePosition(); 
+
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();
     } else { 
        raisingDirection = 0;
-    }
+    } 
 } 
 
+double Elevator::getPosition(){ 
+    return 0.0; 
+} 
+
+double Elevator::getVelocity(double velocity){
+   return (getPosition() - previousHeight) / ((Brain.Timer.time() - previousTimestamp) / 1000.0); 
+}
+
+void Elevator::updatePosition(){ 
+  double newPosition = getPosition();   
+  set<double>("current_velocity", getVelocity(newPosition));   
+  previousHeight = get<double>("current_height");   
+  set<double>("current_height", newPosition());  
+  previousTimestamp = Brain.Timer.time(); 
+}
 
 double Elevator::calculateOutput(double velocity, double acceleration){  
     double ffOutput = elevatorFF->calculate(velocity, acceleration); 
-    double pidOutput = correctionController->calculate(currentVelocity, Brain.Timer.time()); 
+    double pidOutput = correctionController->calculate(getVelocity(getPosition()), Brain.Timer.time()); 
     correctionController->setReference(velocity); 
     return ffOutput + pidoutput; 
 } 
 
 void Elevator::setSetpoint(double setpoint){ 
-   double error = setpoint - currentHeight;  
+   double error = setpoint - getPosition();  
    setpointDirection = copysign(1, error); 
    error = fabs(error); 
-   if (error < ELEVATOR_ERROR_TOLERANCE){ 
+   if (error < ELEVATOR_ERROR_TOLERANCE || currentState != ElevatorState::HOLDING){ 
     return;
    } 
-   motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error));  
+   motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), getVelocity(), 0);  
    currentState = ElevatorState::PURSUING;
 }
 
+bool Elevator::reachedSetpoint(){ 
+   return Brain.Timer.time() - motionProfile->getStartTime() >= motionProfile->getTotalDuration(); 
+}
 
 void Elevator::stateControl(){ 
     SuperStructurePosition pos = Telemetry::inst.getValueAt<int>("ss_manager", "position");   
@@ -61,11 +107,11 @@ void Elevator::stateControl(){
     }
 
     if (currentState == ElevatorState::PURSUING){ //
-      if (Brain.Timer.time() - motionProfile->getStartTime() >= motionProfile->getTotalDuration()){ 
+      if (reachedSetpoint()){ 
         currentState = ElevatorState::HOLDING;
       }
     } else if (currentState == ElevatorState::PRIMING){ 
-        if (initialPrimingState != get<bool>("sensing_stack")){ 
+        if (initialPrimingState != get<bool>("sensing_stack") || RobotState::getStateOf("in_autonomous")){ 
           currentState = ElevatorState::HOLDING; 
           set<bool>("active", false); 
           Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
@@ -73,7 +119,7 @@ void Elevator::stateControl(){
     } else { 
         switch (pos){ 
             case AUTO: 
-               if (get<bool>("active")){ 
+               if (get<bool>("active")){  
                  initialPrimingState = get<bool>("sensing_stack"); 
                  currentState = ElevatorState::PRIMING;
                } 
@@ -116,7 +162,7 @@ void Elevator::stateControl(){
 void Elevator::respondToRequests(){ 
     SuperStructurePosition pos = Telemetry::inst.getValueAt<int>("ss_manager", "position");
     //respond to driver/operator input 
-    if (pos == SuperStructurePosition::PRIMED ||currentState == ElevatorState::HOLDING){ 
+    if (pos == SuperStructurePosition::PRIMED && currentState == ElevatorState::HOLDING){ 
       raisingDirection = ((int)RobotState::getAxisState(AxisType::S_LEFT_VERTICAL)) / 100; 
     }
 }

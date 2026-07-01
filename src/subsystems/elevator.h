@@ -30,16 +30,12 @@ class Elevator : public Subsystem {
 
        ElevatorState currentState; 
 
-       double currentVelocity;   
-
        int raisingDirection = 0;
-       
-       double currentHeight;  
-
-       double currentSetpoint;
-       
        bool initialPrimingState; 
-       int setpointDirection;
+       int setpointDirection;  
+
+       double previousHeight; 
+       double previousTimestamp; 
 
 
        TrapezoidalMotionProfile* motionProfile = nullptr; //When the robot has defined setpoints it needs to reach
@@ -48,11 +44,16 @@ class Elevator : public Subsystem {
        ElevatorFFConstants* elevatorFF = nullptr; //Elevator FF Running at almost all times
        
        double calculateOutput(double velocity, double acceleration); 
-       
+       bool reachedSetpoint(); 
+
        void stateControl();
        void respondToRequests();  
+       
+       double getPosition();  
+       double getVelocity(double newPosition);
 
-       void setSetpoint(double setpoint); 
+       void setSetpoint(double setpoint);  
+       void updatePosition();
 
        vex::motor lifter1; 
        vex::motor lifter2;  
@@ -74,7 +75,10 @@ class Elevator : public Subsystem {
             (EntrySet){"requesting_setpoint", EntryType::BOOL},
             (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
             (EntrySet){"has_setpoint", EntryType::BOOL}, //Do we have a specific height we want to reach 
-            (EntrySet){"sensing_stack", EntryType::BOOL}
+            (EntrySet){"sensing_stack", EntryType::BOOL}, 
+
+            (EntrySet){"current_height", EntryType::DOUBLE}, 
+            (EntrySet){"current_velocity", EntryType::DOUBLE}
          }
        ),
        lifter1(vex::motor(vex::PORT11)), 
