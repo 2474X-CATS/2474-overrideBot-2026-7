@@ -18,7 +18,7 @@ class Claw : public Subsystem {
        bool canGrab();
 
     public:   
-       
+       using Subsystem::get; 
        static Claw& getObject();
        
        Claw() : 
@@ -43,7 +43,10 @@ class Claw : public Subsystem {
 
        void respondToRequests(); 
 
-       void stateControl(); 
+       void stateControl();   
+       
+    protected: 
+       using Subsystem::set; 
 
 };
 
