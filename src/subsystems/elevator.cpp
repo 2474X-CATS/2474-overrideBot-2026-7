@@ -4,11 +4,9 @@ void Elevator::init(){
     //Set up all the constants   
 
     //Motion: Max speed and acceleration
-    TrapezoidConstants mConsts;   
-    mConsts.maxVelocity = 0; 
-    mConsts.maxAcceleration = 0; 
-
-    motionConsts = &mConsts;   
+     
+    motionConsts.maxVelocity = 0; 
+    motionConsts.maxAcceleration = 0; 
   
     //Feedback: Correcting the Feedforward's shortcomings 
 
@@ -17,18 +15,15 @@ void Elevator::init(){
     pidConsts.I = 0; 
     pidConsts.D = 0; 
 
-    correctionController = new errorcontroller(pidConsts);  
+    correctionController = new errorcontroller(pidConsts);   
 
     //Feedforward: Bulk of precision contol based on an inverse model of the elevator system 
 
-    ElevatorFFConstants elevConsts;  
-    elevConsts.ffConsts.kS = 0; 
-    elevConsts.ffConsts.kV = 0;
-    elevConsts.ffConsts.kA = 0;  
-    elevConsts.kG = 0; 
-
-
-    elevatorFF = &elevConsts; 
+  
+    elevatorFF.ffConsts.kS = 0; 
+    elevatorFF.ffConsts.kV = 0;
+    elevatorFF.ffConsts.kA = 0;  
+    elevatorFF.kG = 0; 
 
 } 
 
