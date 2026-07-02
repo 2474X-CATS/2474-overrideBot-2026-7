@@ -32,10 +32,14 @@ Archive member included to satisfy reference by file (symbol)
                               build/src/gui/graphics.o (vex::color::~color())
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
                               /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj) (vex::timer::~timer())
+/home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+                              build/src/subsystems/elevator.o (vex::motor_group::spin(vex::directionType, double, vex::voltageUnits))
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
                               /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj) (vexAdiPortConfigSet)
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
                               /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj) (vex::device::~device())
+/home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+                              /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj) (vex::motor::setStopping(vex::brakeType))
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
                               /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_competition.cpp.obj) (vex::task::task(int (*)()))
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/gcc/libs/libstdc++.a(sstream-inst.o)
@@ -682,81 +686,81 @@ Discarded input sections
  .rodata.str1.1
                 0x0000000000000000       0x1c build/src/architecture/dataStream.o
  .llvm_addrsig  0x0000000000000000        0x5 build/src/architecture/dataStream.o
- .text          0x0000000000000000        0x0 build/src/subsystems/forearm.o
- .text._ZN7Forearm4initEv
-                0x0000000000000000       0xbc build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm4initEv
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm8periodicEv
-                0x0000000000000000       0xb4 build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm8periodicEv
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm15calculateOutputEdd
-                0x0000000000000000       0xd8 build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm15calculateOutputEdd
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm15updateTelemetryEv
-                0x0000000000000000       0xb8 build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm15updateTelemetryEv
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm14updatePositionEv
-                0x0000000000000000       0x3c build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm14updatePositionEv
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm12stateControlEv
-                0x0000000000000000      0x64c build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm12stateControlEv
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .group         0x0000000000000000       0x14 build/src/subsystems/forearm.o
- .text._ZN9Subsystem3setIbEEvSsT_
-                0x0000000000000000       0xbc build/src/subsystems/forearm.o
- .group         0x0000000000000000       0x14 build/src/subsystems/forearm.o
- .group         0x0000000000000000       0x14 build/src/subsystems/forearm.o
- .group         0x0000000000000000       0x14 build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN9Subsystem3setIbEEvSsT_
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm4stopEv
-                0x0000000000000000       0x48 build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm4stopEv
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm15getCurrentAngleEv
-                0x0000000000000000        0xc build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm15getCurrentAngleEv
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm11getVelocityEv
-                0x0000000000000000       0x70 build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm11getVelocityEv
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm15reachedSetpointEv
-                0x0000000000000000       0x5c build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm15reachedSetpointEv
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN7Forearm11setSetpointEdb
-                0x0000000000000000      0x1b0 build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN7Forearm11setSetpointEdb
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
+ .text          0x0000000000000000        0x0 build/src/subsystems/elevator.o
+ .text._ZN8Elevator4initEv
+                0x0000000000000000       0x9c build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator4initEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator8periodicEv
+                0x0000000000000000      0x110 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator8periodicEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator15calculateOutputEdd
+                0x0000000000000000       0xe0 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator15calculateOutputEdd
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator15updateTelemetryEv
+                0x0000000000000000       0x94 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator15updateTelemetryEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator14updatePositionEv
+                0x0000000000000000      0x190 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator14updatePositionEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator12stateControlEv
+                0x0000000000000000      0x5d8 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator12stateControlEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator17respondToRequestsEv
+                0x0000000000000000      0x100 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator17respondToRequestsEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator11getPositionEv
+                0x0000000000000000        0xc build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator11getPositionEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator11getVelocityEv
+                0x0000000000000000       0x60 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator11getVelocityEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
+ .text._ZN9Subsystem3setIdEEvSsT_
+                0x0000000000000000       0xc0 build/src/subsystems/elevator.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN9Subsystem3setIdEEvSsT_
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN9Subsystem3getIdEET_Ss
+                0x0000000000000000       0xc4 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN9Subsystem3getIdEET_Ss
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator11setSetpointEd
+                0x0000000000000000      0x108 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator11setSetpointEd
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN8Elevator15reachedSetpointEv
+                0x0000000000000000       0x5c build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator15reachedSetpointEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN9Subsystem3getIbEET_Ss
-                0x0000000000000000       0xbc build/src/subsystems/forearm.o
+                0x0000000000000000       0xbc build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN9Subsystem3getIbEET_Ss
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN9Subsystem3setIiEEvSsT_
-                0x0000000000000000       0xbc build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN9Subsystem3setIiEEvSsT_
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN9Subsystem3getIiEET_Ss
-                0x0000000000000000       0xbc build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN9Subsystem3getIiEET_Ss
-                0x0000000000000000        0x8 build/src/subsystems/forearm.o
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .text._ZN9Subsystem3setIbEEvSsT_
+                0x0000000000000000       0xbc build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN9Subsystem3setIbEEvSsT_
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .rodata.str1.1
-                0x0000000000000000       0x4c build/src/subsystems/forearm.o
- .rodata._ZTV7Forearm
-                0x0000000000000000       0x18 build/src/subsystems/forearm.o
- .comment       0x0000000000000000       0x2e build/src/subsystems/forearm.o
+                0x0000000000000000       0x84 build/src/subsystems/elevator.o
+ .rodata._ZTV8Elevator
+                0x0000000000000000       0x18 build/src/subsystems/elevator.o
+ .comment       0x0000000000000000       0x2e build/src/subsystems/elevator.o
  .note.GNU-stack
-                0x0000000000000000        0x0 build/src/subsystems/forearm.o
+                0x0000000000000000        0x0 build/src/subsystems/elevator.o
  .ARM.attributes
-                0x0000000000000000       0x3a build/src/subsystems/forearm.o
- .llvm_addrsig  0x0000000000000000        0x3 build/src/subsystems/forearm.o
+                0x0000000000000000       0x3a build/src/subsystems/elevator.o
+ .llvm_addrsig  0x0000000000000000        0x3 build/src/subsystems/elevator.o
  .text          0x0000000000000000        0x0 build/src/utilities/functools.o
  .text._Z9toRadiansd
                 0x0000000000000000       0x30 build/src/utilities/functools.o
@@ -3836,6 +3840,118 @@ Discarded input sections
                 0x0000000000000000       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
  .text._ZN3vex5timer5eventEPFvvEm
                 0x0000000000000000       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_timer.cpp.obj)
+ .text          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .data          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .bss           0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group18motor_group_motorsC2Ev
+                0x0000000000000000       0x28 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group18motor_group_motorsC2ERKS1_
+                0x0000000000000000       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group18motor_group_motorsD2Ev
+                0x0000000000000000        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_groupC2Ev
+                0x0000000000000000       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_groupD2Ev
+                0x0000000000000000        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group9_addMotorEv
+                0x0000000000000000        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group9_addMotorERNS_5motorE
+                0x0000000000000000       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group5countEv
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_groupixEl
+                0x0000000000000000       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group5beginEv
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group3endEv
+                0x0000000000000000       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group11setVelocityEdNS_13velocityUnitsE
+                0x0000000000000000       0x4c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group11setStoppingENS_9brakeTypeE
+                0x0000000000000000       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group13resetPositionEv
+                0x0000000000000000       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group11setPositionEdNS_13rotationUnitsE
+                0x0000000000000000       0x4c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group10setTimeoutElNS_9timeUnitsE
+                0x0000000000000000       0x88 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group4spinENS_13directionTypeE
+                0x0000000000000000       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group4spinENS_13directionTypeEdNS_13velocityUnitsE
+                0x0000000000000000       0x54 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group4spinENS_13directionTypeEdNS_12voltageUnitsE
+                0x0000000000000000       0x54 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group10isSpinningEv
+                0x0000000000000000       0x40 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group6isDoneEv
+                0x0000000000000000       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group14isSpinningModeEv
+                0x0000000000000000       0x40 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group4stopEv
+                0x0000000000000000       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7spinForEdNS_9timeUnitsEdNS_13velocityUnitsE
+                0x0000000000000000       0x90 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7spinForENS_13directionTypeEdNS_9timeUnitsEdNS_13velocityUnitsE
+                0x0000000000000000       0x98 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7spinForEdNS_9timeUnitsE
+                0x0000000000000000       0x78 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7spinForENS_13directionTypeEdNS_9timeUnitsE
+                0x0000000000000000       0x80 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group4stopENS_9brakeTypeE
+                0x0000000000000000       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group12setMaxTorqueEdNS_12percentUnitsE
+                0x0000000000000000       0x4c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group12setMaxTorqueEdNS_11torqueUnitsE
+                0x0000000000000000       0x4c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group12setMaxTorqueEdNS_12currentUnitsE
+                0x0000000000000000       0x4c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group9directionEv
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group8positionENS_13rotationUnitsE
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group8velocityENS_13velocityUnitsE
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7currentENS_12currentUnitsE
+                0x0000000000000000       0x58 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7currentENS_12percentUnitsE
+                0x0000000000000000       0x70 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7voltageENS_12voltageUnitsE
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group5powerENS_10powerUnitsE
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group6torqueENS_11torqueUnitsE
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group10efficiencyENS_12percentUnitsE
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group11temperatureENS_12percentUnitsE
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group11temperatureENS_16temperatureUnitsE
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group15convertVelocityEdNS_13velocityUnitsES1_
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group17getMotorCartridgeEv
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group20waitForCompletionAllEv
+                0x0000000000000000       0x60 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group6spinToEdNS_13rotationUnitsEdNS_13velocityUnitsEb
+                0x0000000000000000       0x98 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group14spinToPositionEdNS_13rotationUnitsEdNS_13velocityUnitsEb
+                0x0000000000000000       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group6spinToEdNS_13rotationUnitsEb
+                0x0000000000000000       0x78 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group14spinToPositionEdNS_13rotationUnitsEb
+                0x0000000000000000        0xc /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7spinForEdNS_13rotationUnitsEdNS_13velocityUnitsEb
+                0x0000000000000000       0x98 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7spinForENS_13directionTypeEdNS_13rotationUnitsEdNS_13velocityUnitsEb
+                0x0000000000000000       0xa8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7spinForEdNS_13rotationUnitsEb
+                0x0000000000000000       0x78 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .text._ZN3vex11motor_group7spinForENS_13directionTypeEdNS_13rotationUnitsEb
+                0x0000000000000000       0x80 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .comment       0x0000000000000000       0x71 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
+ .ARM.attributes
+                0x0000000000000000       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj)
  .text          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
  .data          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
  .bss           0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
@@ -4472,6 +4588,136 @@ Discarded input sections
                 0x0000000000000000        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
  .text._ZN3vex7devices8numberOfE13V5_DeviceType
                 0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
+ .text          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .data          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .bss           0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motorD2Ev
+                0x0000000000000000       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motorD0Ev
+                0x0000000000000000       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor9installedEv
+                0x0000000000000000       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor11setReversedEb
+                0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor15defaultStoppingENS_9brakeTypeE
+                0x0000000000000000       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor8setBrakeENS_9brakeTypeE
+                0x0000000000000000        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor11setStoppingENS_9brakeTypeE
+                0x0000000000000000        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motorC2El
+                0x0000000000000000       0x78 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motorC2ElNS_11gearSettingEb
+                0x0000000000000000       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motorC2ElNS_11gearSettingE
+                0x0000000000000000       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motorC2Elb
+                0x0000000000000000       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor10setTimeoutElNS_9timeUnitsE
+                0x0000000000000000       0x4c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor10getTimeoutEv
+                0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor4spinENS_13directionTypeEdNS_12voltageUnitsE
+                0x0000000000000000       0x50 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor14isSpinningModeEv
+                0x0000000000000000       0x48 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor10isSpinningEv
+                0x0000000000000000       0x44 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor6isDoneEv
+                0x0000000000000000       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor4stopENS_9brakeTypeE
+                0x0000000000000000       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor4stopEv
+                0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor12setMaxTorqueEdNS_12percentUnitsE
+                0x0000000000000000       0x88 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor12setMaxTorqueEdNS_11torqueUnitsE
+                0x0000000000000000       0xc0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor12setMaxTorqueEdNS_12currentUnitsE
+                0x0000000000000000       0x28 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor15torqueToCurrentEd
+                0x0000000000000000       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor9directionEv
+                0x0000000000000000       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7currentENS_12currentUnitsE
+                0x0000000000000000       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7currentENS_12percentUnitsE
+                0x0000000000000000       0x40 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7voltageENS_12voltageUnitsE
+                0x0000000000000000       0x44 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor5powerENS_10powerUnitsE
+                0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor6torqueENS_11torqueUnitsE
+                0x0000000000000000       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor10efficiencyENS_12percentUnitsE
+                0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor11temperatureENS_12percentUnitsE
+                0x0000000000000000       0x68 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor11temperatureENS_16temperatureUnitsE
+                0x0000000000000000       0x40 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor12getMotorTypeEv
+                0x0000000000000000       0x48 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor17getMotorCartridgeEv
+                0x0000000000000000       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor16velocityToScaledEdNS_13velocityUnitsE
+                0x0000000000000000       0x5c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor11getVelocityENS_13velocityUnitsE
+                0x0000000000000000       0x24 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor8velocityENS_13velocityUnitsE
+                0x0000000000000000       0x30 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor5valueEv
+                0x0000000000000000       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7commandENS_13velocityUnitsE
+                0x0000000000000000       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor16scaledToVelocityEdNS_13velocityUnitsE
+                0x0000000000000000       0xa4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor4spinENS_13directionTypeEdNS_13velocityUnitsE
+                0x0000000000000000       0x5c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor4spinENS_13directionTypeE
+                0x0000000000000000       0x28 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7spinForEdNS_9timeUnitsEdNS_13velocityUnitsE
+                0x0000000000000000       0x78 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7spinForENS_13directionTypeEdNS_9timeUnitsEdNS_13velocityUnitsE
+                0x0000000000000000       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7spinForEdNS_9timeUnitsE
+                0x0000000000000000       0x2c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7spinForENS_13directionTypeEdNS_9timeUnitsE
+                0x0000000000000000       0x44 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor11setVelocityEdNS_13velocityUnitsE
+                0x0000000000000000       0x54 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor15convertVelocityEdNS_13velocityUnitsES1_
+                0x0000000000000000       0x38 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor16setRotationUnitsENS_13rotationUnitsE
+                0x0000000000000000       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor11setPositionEdNS_13rotationUnitsE
+                0x0000000000000000       0x44 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor13resetPositionEv
+                0x0000000000000000       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor6spinToEdNS_13rotationUnitsEdNS_13velocityUnitsEb
+                0x0000000000000000       0xe0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor14spinToPositionEdNS_13rotationUnitsEdNS_13velocityUnitsEb
+                0x0000000000000000       0x14 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor6spinToEdNS_13rotationUnitsEb
+                0x0000000000000000       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor14spinToPositionEdNS_13rotationUnitsEb
+                0x0000000000000000       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7spinForEdNS_13rotationUnitsEdNS_13velocityUnitsEb
+                0x0000000000000000       0xf4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7spinForENS_13directionTypeEdNS_13rotationUnitsEdNS_13velocityUnitsEb
+                0x0000000000000000       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7spinForEdNS_13rotationUnitsEb
+                0x0000000000000000       0x34 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor7spinForENS_13directionTypeEdNS_13rotationUnitsEb
+                0x0000000000000000       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .text._ZN3vex5motor8positionENS_13rotationUnitsE
+                0x0000000000000000       0x44 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .rodata._ZTVN3vex5motorE
+                0x0000000000000000       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .data._ZN3vex24__default_motor_velocityE
+                0x0000000000000000        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .comment       0x0000000000000000       0x71 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
+ .ARM.attributes
+                0x0000000000000000       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
  .text          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
  .data          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
  .bss           0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
@@ -9980,7 +10226,7 @@ LOAD build/src/architecture/command.o
 LOAD build/src/architecture/robot.o
 LOAD build/src/architecture/robotState.o
 LOAD build/src/architecture/dataStream.o
-LOAD build/src/subsystems/forearm.o
+LOAD build/src/subsystems/elevator.o
 LOAD build/src/utilities/functools.o
 LOAD build/src/utilities/bezier.o
 LOAD build/src/utilities/location.o

@@ -47,9 +47,6 @@ void RobotState::initializeState()
 
            (EntrySet){"requested_flip", EntryType::BOOL}, 
            (EntrySet){"awaiting_flip", EntryType::BOOL}
-
-
-
        });
 }
 
