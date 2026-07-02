@@ -7,7 +7,7 @@
 class Claw : public Subsystem {  
     
     private:  
-       static Claw* globalPtr = nullptr; 
+       static Claw* globalPtr; 
 
        vex::pneumatics wrist; 
        vex::pneumatics claw;

@@ -678,6 +678,67 @@ Discarded input sections
  .rodata.str1.1
                 0x0000000000000000       0x1c build/src/architecture/dataStream.o
  .llvm_addrsig  0x0000000000000000        0x5 build/src/architecture/dataStream.o
+ .text          0x0000000000000000        0x0 build/src/subsystems/claw.o
+ .text._ZN4Claw9getObjectEv
+                0x0000000000000000       0x10 build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw9getObjectEv
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN4Claw4initEv
+                0x0000000000000000        0x4 build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw4initEv
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN4Claw8periodicEv
+                0x0000000000000000       0xe0 build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw8periodicEv
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN4Claw6clenchEb
+                0x0000000000000000        0xc build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw6clenchEb
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/claw.o
+ .text._ZN9Subsystem3getIbEET_Ss
+                0x0000000000000000       0xbc build/src/subsystems/claw.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN9Subsystem3getIbEET_Ss
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN4Claw4flipEb
+                0x0000000000000000       0x7c build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw4flipEb
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN4Claw15updateTelemetryEv
+                0x0000000000000000       0x7c build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw15updateTelemetryEv
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN4Claw12stateControlEv
+                0x0000000000000000      0x42c build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw12stateControlEv
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN4Claw17respondToRequestsEv
+                0x0000000000000000      0x3c4 build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw17respondToRequestsEv
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN4Claw4stopEv
+                0x0000000000000000        0xc build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw4stopEv
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN4Claw7canGrabEv
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN4Claw7canGrabEv
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .text._ZN9Subsystem3setIbEEvSsT_
+                0x0000000000000000       0xbc build/src/subsystems/claw.o
+ .ARM.exidx.text._ZN9Subsystem3setIbEEvSsT_
+                0x0000000000000000        0x8 build/src/subsystems/claw.o
+ .rodata.str1.1
+                0x0000000000000000       0x7d build/src/subsystems/claw.o
+ .rodata._ZTV4Claw
+                0x0000000000000000       0x18 build/src/subsystems/claw.o
+ .comment       0x0000000000000000       0x2e build/src/subsystems/claw.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 build/src/subsystems/claw.o
+ .ARM.attributes
+                0x0000000000000000       0x3a build/src/subsystems/claw.o
+ .llvm_addrsig  0x0000000000000000        0x2 build/src/subsystems/claw.o
  .text          0x0000000000000000        0x0 build/src/utilities/functools.o
  .text._Z9toRadiansd
                 0x0000000000000000       0x30 build/src/utilities/functools.o
@@ -9733,6 +9794,7 @@ LOAD build/src/architecture/command.o
 LOAD build/src/architecture/robot.o
 LOAD build/src/architecture/robotState.o
 LOAD build/src/architecture/dataStream.o
+LOAD build/src/subsystems/claw.o
 LOAD build/src/utilities/functools.o
 LOAD build/src/utilities/bezier.o
 LOAD build/src/utilities/location.o

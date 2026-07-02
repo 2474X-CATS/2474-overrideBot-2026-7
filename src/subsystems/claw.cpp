@@ -15,14 +15,14 @@ void Claw::periodic(){
 
 void Claw::updateTelemetry(){  
    stateControl(); 
-   if (!RobotState::getStatef("in_autonomous")){ 
+   if (!RobotState::getStateOf("in_autonomous")){ 
      respondToRequests();
    }
    
 }  
 
 void Claw::stop(){ 
-    return;
+    clench(false);
 } 
 
 bool Claw::canGrab(){ 
@@ -30,7 +30,7 @@ bool Claw::canGrab(){
 }
 
 void Claw::stateControl(){ 
-   SuperStructurePosition pos = Telemetry::inst.getValueAt<int>("ss_manager", "position");   
+   SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
    bool still = Telemetry::inst.getValueAt<bool>("ss_manager","setpoints_reached"); 
 
    if (pos == SuperStructurePosition::AUTO){ //Whenever macro is running
@@ -67,7 +67,7 @@ void Claw::stateControl(){
 
 void Claw::respondToRequests(){  
 
-    SuperStructurePosition pos = Telemetry::inst.getValueAt<int>("ss_manager", "position");   
+    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
     bool still = Telemetry::inst.getValueAt<bool>("ss_manager","setpoints_reached");  
 
     if (pos == SuperStructurePosition::PRIMED && still){  
