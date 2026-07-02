@@ -1,5 +1,10 @@
 #include "elevator.h" 
 
+
+Elevator& Elevator::getObject(){ 
+  return *globalPtr;
+}
+
 void Elevator::init(){ 
     //Set up all the constants   
 

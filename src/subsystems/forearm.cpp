@@ -1,6 +1,9 @@
 #include "forearm.h" 
 #include "../utilities/functools.h"
 
+Forearm& Forearm::getObject(){ 
+  return *globalPtr;
+}
 
 void Forearm::init(){  
 
