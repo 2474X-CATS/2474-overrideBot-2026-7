@@ -50,7 +50,7 @@ void SuperSystem::refreshData(){
                     set<int>("position", SuperStructurePosition::PRIMED);
                   } 
                   break; 
-                case PRIMED:
+                case PRIMED: 
                   if (!Telemetry::inst.getValueAt<bool>("claw","clenched")){ 
                     set<int>("position", SuperStructurePosition::GROUND);
                   } 
