@@ -18,7 +18,7 @@ class Elevator : public Subsystem {
     
     private:   
        
-       static Elevator* globalPtr = nullptr;  
+       static Elevator* globalPtr;  
         
        static double GROUND_INTAKE_HEIGHT;  
        static double LEVELED_HEIGHT; 
@@ -52,7 +52,7 @@ class Elevator : public Subsystem {
        void respondToRequests();  
        
        double getPosition();  
-       double getVelocity(double newPosition);
+       double getVelocity();
 
        void setSetpoint(double setpoint);  
        void updatePosition();

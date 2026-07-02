@@ -59,23 +59,23 @@ double Elevator::getPosition(){
     return 0.0; 
 } 
 
-double Elevator::getVelocity(double velocity){
+double Elevator::getVelocity(){
    return (getPosition() - previousHeight) / ((Brain.Timer.time() - previousTimestamp) / 1000.0); 
 }
 
 void Elevator::updatePosition(){ 
   double newPosition = getPosition();   
-  set<double>("current_velocity", getVelocity(newPosition));   
+  set<double>("current_velocity", getVelocity());   
   previousHeight = get<double>("current_height");   
   set<double>("current_height", newPosition);  
   previousTimestamp = Brain.Timer.time(); 
 }
 
 double Elevator::calculateOutput(double velocity, double acceleration){  
-    double ffOutput = elevatorFF->calculate(velocity, acceleration); 
-    double pidOutput = correctionController->calculate(getVelocity(getPosition()), Brain.Timer.time()); 
+    double ffOutput = elevatorFF.calculate(velocity, acceleration); 
+    double pidOutput = correctionController->calculate(getVelocity(), Brain.Timer.time()); 
     correctionController->setReference(velocity); 
-    return ffOutput + pidoutput; 
+    return ffOutput + pidOutput; 
 } 
 
 void Elevator::setSetpoint(double setpoint){ 
@@ -94,7 +94,7 @@ bool Elevator::reachedSetpoint(){
 }
 
 void Elevator::stateControl(){ 
-    SuperStructurePosition pos = Telemetry::inst.getValueAt<int>("ss_manager", "position");   
+    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
     
     if (get<bool>("requesting_setpoint")){ 
       set<bool>("requesting_setpoint", false); 
@@ -155,7 +155,7 @@ void Elevator::stateControl(){
 }
 
 void Elevator::respondToRequests(){ 
-    SuperStructurePosition pos = Telemetry::inst.getValueAt<int>("ss_manager", "position");
+    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
     //respond to driver/operator input 
     if (pos == SuperStructurePosition::PRIMED && currentState == ElevatorState::HOLDING){ 
       raisingDirection = ((int)RobotState::getAxisState(AxisType::S_LEFT_VERTICAL)) / 100; 
