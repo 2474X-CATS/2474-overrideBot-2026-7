@@ -41,17 +41,17 @@ void SuperSystem::refreshData(){
         if (get<bool>("setpoints_reached")){
             switch (get<int>("position")){ 
                 case GROUND: 
-                  if (Telemetry::inst.getValueAt("claw","clenched")){ 
+                  if (Telemetry::inst.getValueAt<bool>("claw","clenched")){ 
                     set<int>("position", SuperStructurePosition::PRIMED);
                   }
                   break;  
                 case STANDING: 
-                  if (Telemetry::inst.getValueAt("claw","clenched")){ 
+                  if (Telemetry::inst.getValueAt<bool>("claw","clenched")){ 
                     set<int>("position", SuperStructurePosition::PRIMED);
                   } 
                   break; 
-                case PRIMED: 
-                  if (!Telemetry::inst.getValueAt("claw","clenched")){ 
+                case PRIMED:
+                  if (!Telemetry::inst.getValueAt<bool>("claw","clenched")){ 
                     set<int>("position", SuperStructurePosition::GROUND);
                   } 
                   break; 

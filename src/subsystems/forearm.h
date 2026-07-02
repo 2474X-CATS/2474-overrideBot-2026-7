@@ -21,7 +21,7 @@ class Forearm : public Subsystem {
 
        static double ANGULAR_ERROR_TOLERANCE; 
 
-       static Forearm* globalPtr = nullptr;     
+       static Forearm* globalPtr;     
 
        double currentAngle; 
        double currentVelocity; 
@@ -31,7 +31,7 @@ class Forearm : public Subsystem {
 
        AngularArmFFConstants armFFConsts; //Bulk (feedforward) 
 
-       pidcontroller* feedback = nullptr; //Rest done with feedback
+       errorcontroller* feedback = nullptr; //Rest done with feedback
        PIDConstants pidConsts; 
 
        TrapezoidConstants motionConsts; 
@@ -40,16 +40,24 @@ class Forearm : public Subsystem {
        double angularDeadZones[2];  
        
        double calculateOutput(double omega, double alpha); //velocity and acceleration but for angles
-
+       
        double getCurrentAngle();   
-       double getVelocity();
+       double getVelocity(); 
 
-       void setSetpoint(double setpoint); 
+       double previousAngle; 
+       double previousTimestamp;
+
+       void setSetpoint(double setpoint, bool inverted);    
+
+       int setpointDirection; 
+
+       bool reachedSetpoint();  
 
        double angularSetpoint; 
 
        ForearmState currentState = ForearmState::HOLDING; 
-
+       
+       void updatePosition(); 
        void stateControl();  //ONLY (We can't manually modify the forearm with the controller)
 
     public:   
@@ -70,10 +78,16 @@ class Forearm : public Subsystem {
          rotarySensor(vex::rotation(vex::PORT12)) 
          { 
             globalPtr = this;
-         };   
+         };    
+
+         void init() override; 
+         void periodic() override; 
+         void updateTelemetry() override; 
+         void stop() override;  
+      
 
     protected: 
-         using Subsystem:set; 
+         using Subsystem::set; 
     
       
 }; 

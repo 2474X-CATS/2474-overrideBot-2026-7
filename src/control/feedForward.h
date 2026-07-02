@@ -25,7 +25,7 @@ typedef struct {
 
 
 typedef struct { 
-   FFConstants ffCconsts, 
+   FFConstants ffConsts;
    double kG; 
 
    double calculate(double velocity, double acceleration);  
