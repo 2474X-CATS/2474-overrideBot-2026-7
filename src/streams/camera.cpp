@@ -33,7 +33,7 @@ double Camera::getObjectYaw(vex::aivision::object obj){
 }; 
 
 
-void Camera::robotToTarget(vex::aivision::object obj, double* angleTransLoc, double* distTransLoc){  
+void Camera::robotToTarget(vex::aivision::object obj, double& angleTransLoc, double& distTransLoc){  
     double objectDist = getDistFromCamera(obj);
     double yawToTarget = getObjectYaw(obj);  
 
@@ -45,6 +45,6 @@ void Camera::robotToTarget(vex::aivision::object obj, double* angleTransLoc, dou
     double xTrans = cameraTrans_x + orientation.relativeX; 
     double yTrans = cameraTrans_y + orientation.relativeY;  
 
-    *distTransLoc = hypot(xTrans, yTrans); 
-    *angleTransLoc = toDegrees(atan2(yTrans, xTrans));
+    distTransLoc = hypot(xTrans, yTrans); 
+    angleTransLoc = toDegrees(atan2(yTrans, xTrans));
 }

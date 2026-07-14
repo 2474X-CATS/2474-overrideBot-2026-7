@@ -36,7 +36,7 @@ class Camera : public DataStream {
        double getObjectPitch(vex::aivision::object obj); 
        double getObjectYaw(vex::aivision::object obj);   
 
-       void robotToTarget(vex::aivision::object obj, double* angleTransLoc, double* distTransLoc);   
+       void robotToTarget(vex::aivision::object obj, double& angleTransLoc, double& distTransLoc);   
        
        virtual double getObjectHeight() = 0; 
        virtual void initializeCamera(int32_t port) = 0;

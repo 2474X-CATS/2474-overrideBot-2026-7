@@ -25,17 +25,23 @@ void AprilTagCamera::setToAveragedRelativePose(){
 
     switch (camera->objectCount){ 
         case 1: 
-           robotToTarget(camera->objects[0], &polarAngle, &polarDist); 
+           robotToTarget(camera->objects[0], polarAngle, polarDist); 
            break; 
         case 2:   
-           double yaw1 = toRadians(getObjectYaw(camera->objects[0])); 
-           double yaw2 = toRadians(getObjectYaw(camera->objects[1]));   
+           double yaw1;
+           double yaw2;  
+
+           double dist1;
+           double dist2; 
+
+           robotToTarget(camera->objects[0], yaw1, dist1); 
+           robotToTarget(camera->objects[1], yaw2, dist2);  
+
+           yaw1 = toRadians(yaw1); 
+           yaw2 = toRadians(yaw2);
            
            polarAngle = toDegrees(atan2((sin(yaw1) + sin(yaw2)) / 2, (cos(yaw1) + cos(yaw2)) / 2));
-
-           double dist1 = getDistFromCamera(camera->objects[0]); 
-           double dist2 = getDistFromCamera(camera->objects[1]);
-
+    
            double avgDist = (dist1 + dist2) / 2; 
            double hypotDist = hypot(dist1, dist2); 
 
@@ -52,7 +58,7 @@ void AprilTagCamera::setToLargestRelativePose(){
     if (largestObject.exists){ 
         double dist; 
         double angle;  
-        robotToTarget(largestObject, &angle, &dist); 
+        robotToTarget(largestObject, angle, dist); 
         set<double>("dist_from_target", dist); 
         set<double>("angle_from_target", angle);  
         set<double>("target_id", largestObject.id);
