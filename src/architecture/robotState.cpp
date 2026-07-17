@@ -39,8 +39,8 @@ void RobotState::initializeState()
            
            (EntrySet){"requested_macro", EntryType::BOOL},   
 
-           (EntrySet){"requested_drop", EntryType::BOOL},  
-           (EntrySet){"awaiting_drop", EntryType::BOOL}, 
+           (EntrySet){"requested_claw_act", EntryType::BOOL},  
+           (EntrySet){"awaiting_claw_act", EntryType::BOOL}, 
 
            (EntrySet){"requested_land", EntryType::BOOL},  
            (EntrySet){"awaiting_land", EntryType::BOOL}, 
@@ -67,11 +67,11 @@ void RobotState::updateRegular()
    //--------------------------------------------------------------------------
 
    if (Controller2.ButtonA.pressing()){ //Drop
-      manuallyModifyState("requested_drop", true);
+      manuallyModifyState("requested_claw_act", true);
    } else { 
-      if (getStateOf("requested_drop")){ 
-          manuallyModifyState("awaiting_drop", true); //Turned off by claw itself
-          manuallyModifyState("requested_drop", false);
+      if (getStateOf("requested_claw_act")){ 
+          manuallyModifyState("awaiting_claw_act", true); //Turned off by claw itself
+          manuallyModifyState("requested_claw_act", false);
       }
    }  
 
