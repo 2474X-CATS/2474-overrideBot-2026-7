@@ -57,12 +57,12 @@ double Forearm::getCurrentAngle(){
 } 
 
 double Forearm::getVelocity(){ 
-    return (getCurrentAngle() - previousAngle) / ((Brain.Timer.time() - previousTimestamp) / 1000.0);
+    return (angleDifference(getCurrentAngle(), previousAngle)) / ((Brain.Timer.time() - previousTimestamp) / 1000.0);
 }
 
 void Forearm::updatePosition(){ 
     double newPosition = getCurrentAngle();   
-    previousAngle = newPosition;   
+    previousAngle = newPosition;
     previousTimestamp = Brain.Timer.time(); 
 }
 
@@ -75,7 +75,7 @@ void Forearm::setSetpoint(double setpoint, bool inverted){
   
   if (inverted){ 
     setpoint = flipOrientation(setpoint); 
-  }    
+  }
 
   if (setpoint == angularSetpoint){ 
     return; //Already reached or is pursuing
@@ -97,7 +97,9 @@ void Forearm::setSetpoint(double setpoint, bool inverted){
   setpointDirection = copysign(1, error); 
 
   motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), 0, 0);  
-  currentState = ForearmState::PURSUING;
+  currentState = ForearmState::PURSUING; 
+
+  angularSetpoint = setpoint;
 }
 
 void Forearm::stateControl(){ 
@@ -109,7 +111,6 @@ void Forearm::stateControl(){
             if (get<bool>("active")){ 
                set<bool>("active", false); 
                set<int>("task_id", get<int>("task_id") + 1); 
-
                if (get<int>("task_id") == 2){ 
                   Telemetry::inst.placeValueAt<bool>(true, "ss_manager","task_completed"); 
                   set<int>("task_id", 0);  
