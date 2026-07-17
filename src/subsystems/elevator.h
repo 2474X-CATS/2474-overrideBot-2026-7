@@ -22,16 +22,20 @@ class Elevator : public Subsystem {
         
        static double GROUND_INTAKE_HEIGHT;  
        static double LEVELED_HEIGHT; 
+       
+       static double MAX_HEIGHT;
 
        static double ELEVATOR_ERROR_TOLERANCE; 
        static double STACK_HEIGHT;  
 
-       static double PRIMING_SPEED;
+       static double PRIMING_SPEED; 
+
+       static double MINIMUM_ALIGNER_DISTANCE; 
+       static double ALIGNER_ERROR_TOLERANCE;
 
        ElevatorState currentState; 
 
        int raisingDirection = 0;
-       bool initialPrimingState; 
        int setpointDirection;  
 
        double previousHeight; 
@@ -60,7 +64,9 @@ class Elevator : public Subsystem {
        vex::motor lifter1; 
        vex::motor lifter2;  
 
-       vex::motor_group lift;
+       vex::motor_group lift;  
+
+       vex::distance primingSensor;
 
        vex::rotation rot;  
 
@@ -86,7 +92,8 @@ class Elevator : public Subsystem {
        lifter1(vex::motor(vex::PORT11)), 
        lifter2(vex::motor(vex::PORT10)), 
        lift(vex::motor_group(lifter1, lifter2)), 
-       rot(vex::rotation(vex::PORT19))
+       rot(vex::rotation(vex::PORT19)), 
+       primingSensor(vex::distance(vex::PORT20))
        { 
         globalPtr = this;
        };

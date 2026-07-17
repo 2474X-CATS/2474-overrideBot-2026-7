@@ -24,7 +24,6 @@ void Elevator::init(){
 
     //Feedforward: Bulk of precision contol based on an inverse model of the elevator system 
 
-  
     elevatorFF.ffConsts.kS = 0; 
     elevatorFF.ffConsts.kV = 0;
     elevatorFF.ffConsts.kA = 0;  
@@ -34,13 +33,10 @@ void Elevator::init(){
 
 void Elevator::periodic(){   
    double elevatorOutput;
-   if (currentState == ElevatorState::HOLDING){ //Stay Still
-     elevatorOutput = calculateOutput(PRIMING_SPEED * raisingDirection ,0); 
+   if (currentState == ElevatorState::HOLDING){//Stay Still
+     elevatorOutput = calculateOutput(PRIMING_SPEED * raisingDirection, 0); 
    } else if (currentState == ElevatorState::PRIMING){ //Rise or fall at a constant rate
      elevatorOutput = calculateOutput(PRIMING_SPEED, 0); 
-     if (!initialPrimingState){ 
-       elevatorOutput *= -1;
-     }
    } else {  //Pursuing a setpoint
      TrapezoidalSetpoint motionGoal = motionProfile->generateSetpoint(Brain.Timer.time());
      elevatorOutput = calculateOutput(motionGoal.velocity, motionGoal.acceleration) * setpointDirection;
@@ -49,9 +45,9 @@ void Elevator::periodic(){
 }  
 
 void Elevator::updateTelemetry(){     
-    // Update status of stack sight    
+    // Update status of stack sight   
+    set<bool>("sensing_stack", fabs(primingSensor.objectDistance(vex::distanceUnits::mm) - MINIMUM_ALIGNER_DISTANCE) < ALIGNER_ERROR_TOLERANCE);
     updatePosition(); 
-
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();
@@ -90,7 +86,8 @@ void Elevator::setSetpoint(double setpoint){
    if (error < ELEVATOR_ERROR_TOLERANCE || currentState != ElevatorState::HOLDING){ 
     return;
    } 
-   motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), getVelocity(), 0);  
+   motionProfile = new TrapezoidalMotionProfile(motionConsts, error, getVelocity(), 0);   
+   motionProfile->setLastTimestamp(Brain.Timer.time());
    currentState = ElevatorState::PURSUING;
 }
 
@@ -111,7 +108,7 @@ void Elevator::stateControl(){
         currentState = ElevatorState::HOLDING;
       }
     } else if (currentState == ElevatorState::PRIMING){ 
-        if (initialPrimingState != get<bool>("sensing_stack") || RobotState::getStateOf("in_autonomous")){ 
+        if (!get<bool>("sensing_stack")){ 
           currentState = ElevatorState::HOLDING; 
           set<bool>("active", false); 
           Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
@@ -120,11 +117,10 @@ void Elevator::stateControl(){
         switch (pos){ 
             case AUTO: 
                if (get<bool>("active")){  
-                 initialPrimingState = get<bool>("sensing_stack"); 
                  currentState = ElevatorState::PRIMING;
                } 
                break; 
-            case GROUND: 
+            case GROUND:
                set<bool>("requesting_setpoint", true);
                set<double>("requested_height", GROUND_INTAKE_HEIGHT);  
                break; 
@@ -155,7 +151,9 @@ void Elevator::stateControl(){
     v  
     Finally (actually this should be at the start) when we are running the macro the first stage is to prime 
     at least when we aren't in auto. (Going to make a prime function)
-    */ 
+    */   
+
+   set<bool>("at_setpoint", currentState == ElevatorState::HOLDING);
 
 }
 
@@ -163,6 +161,11 @@ void Elevator::respondToRequests(){
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
     //respond to driver/operator input 
     if (pos == SuperStructurePosition::PRIMED && currentState == ElevatorState::HOLDING){ 
-      raisingDirection = ((int)RobotState::getAxisState(AxisType::S_LEFT_VERTICAL)) / 100; 
+      raisingDirection = ((int)RobotState::getAxisState(AxisType::S_LEFT_VERTICAL)) / 100;  
+      if (get<double>("current_height") >= MAX_HEIGHT){ 
+        raisingDirection = min<int>(raisingDirection, 0);
+      } else if (get<double>("current_height") <= GROUND_INTAKE_HEIGHT){ 
+        raisingDirection = max<int>(raisingDirection, 0);
+      }
     }
 }
