@@ -8,9 +8,10 @@ void Claw::init(){
     return;
 }  
 
-void Claw::periodic(){ 
-   clench(get<bool>("clenched")); 
-   flip(get<bool>("facing_down")); 
+void Claw::periodic(){  
+   return;
+   //clench(get<bool>("clenched")); 
+   //flip(get<bool>("facing_down")); 
 } 
 
 void Claw::updateTelemetry(){  
@@ -22,12 +23,10 @@ void Claw::updateTelemetry(){
 }  
 
 void Claw::stop(){ 
-    clench(false);
+    //clench(false); 
+    return;
 } 
 
-bool Claw::sensesObject(){ 
-    return objectDetector.objectDistance(vex::distanceUnits::mm) <= MAXIMUM_TOLERABLE_DISTANCE; //If the claw is picking something up basically [Using sensors]
-}
 
 void Claw::stateControl(){ 
    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
@@ -47,7 +46,7 @@ void Claw::stateControl(){
        a game object. Example dropping a game object  
        in the primed positioned
        */  
-       if (sensesObject() && (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING) ){ 
+       if (get<bool>("senses_object") && (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING) ){ 
          set<bool>("clenched", false);
        } else { 
          set<bool>("clenched", true);
@@ -72,7 +71,7 @@ void Claw::stateControl(){
         if (get<bool>("requesting_act")){ 
           set<bool>("requesting_act", false);
           if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING){ 
-            if (sensesObject()){ 
+            if (get<bool>("senses_object")){ 
                 willClench = !willClench;
             }
           } else { 
@@ -99,7 +98,6 @@ void Claw::respondToRequests(){
 
         if (RobotState::getStateOf("awaiting_flip")){ 
             set<bool>("facing_down", !get<bool>("facing_down"));  
-             
         }  
 
         RobotState::manuallyModifyState("awaiting_claw_act", false); 

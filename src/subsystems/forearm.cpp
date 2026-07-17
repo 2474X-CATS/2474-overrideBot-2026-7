@@ -12,30 +12,17 @@ void Forearm::init(){
 
    motionConsts.maxAcceleration = 0.0; 
    motionConsts.maxVelocity = 0.0; 
-
-   pidConsts.P = 0; 
-   pidConsts.I = 0; 
-   pidConsts.D = 0;  
-
-   feedback = new errorcontroller(pidConsts); 
-   
-   armFFConsts.kS_rot = 0.0; 
-   armFFConsts.kV_rot = 0.0; 
-   armFFConsts.kA_rot = 0.0; 
-   armFFConsts.kCos = 0.0; 
-
 } 
 
 void Forearm::periodic(){ 
-    double forearmOutput; 
+    double forearmVelocity; 
     if (currentState == ForearmState::HOLDING){ 
-        forearmOutput = calculateOutput(0,0); 
+        forearmVelocity = 0; 
     } else { 
         TrapezoidalSetpoint outputGoal = motionProfile->generateSetpoint(Brain.Timer.time());  
-        forearmOutput = calculateOutput(outputGoal.velocity, outputGoal.acceleration) * setpointDirection; 
+        forearmVelocity = outputGoal.velocity * setpointDirection; 
     }  
-    forearmMotor.spin(vex::directionType::fwd, forearmOutput, vex::voltageUnits::volt);
- 
+    updatePosition(forearmVelocity);
 } 
 
 void Forearm::updateTelemetry(){ 
@@ -45,28 +32,13 @@ void Forearm::updateTelemetry(){
 } 
 
 void Forearm::stop(){ 
-    forearmMotor.spin(vex::directionType::fwd, calculateOutput(0,0), vex::voltageUnits::volt);
+    return;
 }   
 
-double Forearm::calculateOutput(double omega, double alpha){ 
-    double ffOutput = armFFConsts.calculate(getCurrentAngle() / 360, omega / 360, alpha / 360); 
-    double pidOutput = feedback->calculate(getVelocity(), Brain.Timer.time());  
-    feedback->setReference(omega); 
-    return ffOutput + pidOutput;
-}
-
-double Forearm::getCurrentAngle(){ 
-    return rotarySensor.angle(vex::rotationUnits::deg); 
-} 
-
-double Forearm::getVelocity(){ 
-    return (angleDifference(getCurrentAngle(), previousAngle)) / ((Brain.Timer.time() - previousTimestamp) / 1000.0);
-}
-
-void Forearm::updatePosition(){ 
-    double newPosition = getCurrentAngle();   
-    previousAngle = newPosition;
-    previousTimestamp = Brain.Timer.time(); 
+void Forearm::updatePosition(double velocity){ 
+    double frameTranslation = velocity * ((Brain.Timer.time() - previousTimestamp) / 1000); 
+    set<double>("current_angle", angleSum(get<double>("current_angle"), frameTranslation)); 
+    previousTimestamp = Brain.Timer.time();
 }
 
 bool Forearm::reachedSetpoint(){ 

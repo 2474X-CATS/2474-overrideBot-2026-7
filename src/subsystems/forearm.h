@@ -26,20 +26,10 @@ class Forearm : public Subsystem {
        double currentAngle; 
        double currentVelocity; 
 
-       vex::motor forearmMotor;  
-       vex::rotation rotarySensor;    
-
-       AngularArmFFConstants armFFConsts; //Bulk (feedforward) 
-
-       errorcontroller* feedback = nullptr; //Rest done with feedback
-       PIDConstants pidConsts; 
-
        TrapezoidConstants motionConsts; 
        TrapezoidalMotionProfile* motionProfile = nullptr;
         
        double angularDeadZones[2];  
-       
-       double calculateOutput(double omega, double alpha); //velocity and acceleration but for angles
        
        double getCurrentAngle();   
        double getVelocity(); 
@@ -57,7 +47,7 @@ class Forearm : public Subsystem {
 
        ForearmState currentState = ForearmState::HOLDING; 
        
-       void updatePosition(); 
+       void updatePosition(double velocity); 
        void stateControl();  //ONLY (We can't manually modify the forearm with the controller)
 
     public:   
@@ -71,11 +61,10 @@ class Forearm : public Subsystem {
             {  
                (EntrySet){"task_id", EntryType::INT}, 
                (EntrySet){"active", EntryType::BOOL}, 
-               (EntrySet){"at_setpoint", EntryType::BOOL}
+               (EntrySet){"at_setpoint", EntryType::BOOL} 
+               (EntrySet){"current_angle", EntryType::DOUBLE}
             }
-         ), 
-         forearmMotor(vex::motor(vex::PORT16)), 
-         rotarySensor(vex::rotation(vex::PORT12)) 
+         )
          { 
             globalPtr = this;
          };    
