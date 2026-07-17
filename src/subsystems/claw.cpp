@@ -25,8 +25,8 @@ void Claw::stop(){
     clench(false);
 } 
 
-bool Claw::canGrab(){ 
-    return false; //If the claw is picking something up basically [Using sensors]
+bool Claw::sensesObject(){ 
+    return objectDetector.objectDistance(vex::distanceUnits::mm) <= MAXIMUM_TOLERABLE_DISTANCE; //If the claw is picking something up basically [Using sensors]
 }
 
 void Claw::stateControl(){ 
@@ -39,30 +39,51 @@ void Claw::stateControl(){
          set<bool>("active", false); 
          Telemetry::inst.placeValueAt<bool>(true, "forearm", "active"); 
      }
-   } else {  
-
+   } else { 
      if (!still){ 
-
-       if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING){ 
+       /* 
+       If the robot is not still the claw should be  
+       clenched unless the robot is in possesion of  
+       a game object. Example dropping a game object  
+       in the primed positioned
+       */  
+       if (sensesObject() && (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING) ){ 
          set<bool>("clenched", false);
        } else { 
          set<bool>("clenched", true);
-       }  
+       } 
+       
+       set<bool>("requesting_act", false);
 
        if (pos == SuperStructurePosition::STANDING){ 
          set<bool>("facing_down", true);
        } else { 
          set<bool>("facing_down", false);
        }  
+       
+     } else {    
+        bool willClench; 
+        if (pos != SuperStructurePosition::PRIMED){ 
+           willClench = true;
+        } else { 
+           willClench = false;
+        }  
+        //willClench = !willClench [essentially approves the action]
+        if (get<bool>("requesting_act")){ 
+          set<bool>("requesting_act", false);
+          if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING){ 
+            if (sensesObject()){ 
+                willClench = !willClench;
+            }
+          } else { 
+            willClench = !willClench;
+          }
+        }   
 
-     } else {   
-
-       if (canGrab()){ 
-         set<bool>("clenched", true);
-       }   
-
+        set<bool>("clenched", willClench);
      } 
-   }
+   } 
+   
 }
 
 void Claw::respondToRequests(){  
@@ -72,8 +93,8 @@ void Claw::respondToRequests(){
 
     if (pos == SuperStructurePosition::PRIMED && still){  
 
-        if (RobotState::getStateOf("awaiting_drop")){ 
-            set<bool>("clenched", false);  
+        if (RobotState::getStateOf("awaiting_claw_act")){ 
+            set<bool>("requesting_act", true);  
         }  
 
         if (RobotState::getStateOf("awaiting_flip")){ 
@@ -81,7 +102,7 @@ void Claw::respondToRequests(){
              
         }  
 
-        RobotState::manuallyModifyState("awaiting_drop", false); 
+        RobotState::manuallyModifyState("awaiting_claw_act", false); 
         RobotState::manuallyModifyState("awaiting_flip", false); 
 
     } 
