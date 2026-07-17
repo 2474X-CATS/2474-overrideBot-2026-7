@@ -36,7 +36,6 @@ class Elevator : public Subsystem {
        ElevatorState currentState; 
 
        int raisingDirection = 0;
-       bool initialPrimingState; 
        int setpointDirection;  
 
        double previousHeight; 

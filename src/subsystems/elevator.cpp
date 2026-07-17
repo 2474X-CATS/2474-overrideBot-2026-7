@@ -28,8 +28,8 @@ void Elevator::init(){
 
 void Elevator::periodic(){   
    double elevatorOutput;
-   if (currentState == ElevatorState::HOLDING){ //Stay Still
-     elevatorOutput = calculateOutput(PRIMING_SPEED * raisingDirection ,0); 
+   if (currentState == ElevatorState::HOLDING){//Stay Still
+     elevatorOutput = calculateOutput(PRIMING_SPEED * raisingDirection, 0); 
    } else if (currentState == ElevatorState::PRIMING){ //Rise or fall at a constant rate
      elevatorOutput = calculateOutput(PRIMING_SPEED, 0); 
    } else {  //Pursuing a setpoint
@@ -41,11 +41,8 @@ void Elevator::periodic(){
 
 void Elevator::updateTelemetry(){     
     // Update status of stack sight   
-    
     set<bool>("sensing_stack", fabs(primingSensor.objectDistance(vex::distanceUnits::mm) - MINIMUM_ALIGNER_DISTANCE) < ALIGNER_ERROR_TOLERANCE);
-    
     updatePosition(); 
-
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();
@@ -84,7 +81,8 @@ void Elevator::setSetpoint(double setpoint){
    if (error < ELEVATOR_ERROR_TOLERANCE || currentState != ElevatorState::HOLDING){ 
     return;
    } 
-   motionProfile = new TrapezoidalMotionProfile(motionConsts, error, getVelocity(), 0);  
+   motionProfile = new TrapezoidalMotionProfile(motionConsts, error, getVelocity(), 0);   
+   motionProfile->setLastTimestamp(Brain.Timer.time());
    currentState = ElevatorState::PURSUING;
 }
 
@@ -148,7 +146,9 @@ void Elevator::stateControl(){
     v  
     Finally (actually this should be at the start) when we are running the macro the first stage is to prime 
     at least when we aren't in auto. (Going to make a prime function)
-    */ 
+    */   
+
+   set<bool>("at_setpoint", currentState == ElevatorState::HOLDING);
 
 }
 
