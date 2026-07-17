@@ -163,4 +163,8 @@ void Elevator::respondToRequests(){
         raisingDirection = max<int>(raisingDirection, 0);
       }
     }
+} 
+
+void Elevator::stop(){ 
+  return;
 }
