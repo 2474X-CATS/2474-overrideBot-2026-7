@@ -3,15 +3,15 @@
 
 #include "../architecture/subsystem.h"   
 
-#include "../control/feedForward.h" 
-#include "../control/pidcontroller.h" 
+//#include "../control/feedForward.h" 
+//#include "../control/pidcontroller.h" 
 #include "../control/trapezoidalMotion.h"
 
 
 typedef enum { 
-   HOLDING, 
-   PRIMING, 
-   PURSUING
+   E_HOLDING, 
+   E_PRIMING, 
+   E_PURSUING
 } ElevatorState;
 
 class Elevator : public Subsystem { 
@@ -33,7 +33,7 @@ class Elevator : public Subsystem {
        static double MINIMUM_ALIGNER_DISTANCE; 
        static double ALIGNER_ERROR_TOLERANCE;
 
-       ElevatorState currentState; 
+       ElevatorState currentState = ElevatorState::E_HOLDING; 
 
        int raisingDirection = 0;
        int setpointDirection;  
@@ -49,7 +49,8 @@ class Elevator : public Subsystem {
        void respondToRequests();  
        
        void setSetpoint(double setpoint);
-       void updatePosition(double velocity);
+       void updatePosition(double velocity); 
+
 
 
     public:   
@@ -65,7 +66,8 @@ class Elevator : public Subsystem {
             (EntrySet){"requesting_setpoint", EntryType::BOOL},
             (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
             (EntrySet){"sensing_stack", EntryType::BOOL}, 
-            (EntrySet){"current_height", EntryType::DOUBLE}
+            (EntrySet){"current_height", EntryType::DOUBLE}, 
+            (EntrySet){"responded", EntryType::BOOL}
          }
        )
        { 

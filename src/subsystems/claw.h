@@ -36,7 +36,7 @@ class Claw : public Subsystem {
            (EntrySet){"requesting_act", EntryType::BOOL}, //Does the next action want to be taken depending on the state
            (EntrySet){"senses_object", EntryType::BOOL}
         } 
-        ), 
+        )
        //claw(vex::pneumatics(Brain.ThreeWirePort.B)), 
        //wrist(vex::pneumatics(Brain.ThreeWirePort.E)), 
        //objectDetector(vex::distance(vex::PORT13))

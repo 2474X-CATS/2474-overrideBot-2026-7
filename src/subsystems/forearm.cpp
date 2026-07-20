@@ -1,22 +1,33 @@
 #include "forearm.h" 
 #include "../utilities/functools.h"
 
+Forearm* Forearm::globalPtr = nullptr; 
+
+double Forearm::PLACE_SETPOINT = 0; 
+double Forearm::PRIMING_SETPOINT = 45; 
+double Forearm::GROUND_SETPOINT = 270; 
+double Forearm::STANDING_SETPOINT = 180;  
+
+double Forearm::ANGULAR_ERROR_TOLERANCE = 3.0;
+
 Forearm& Forearm::getObject(){ 
   return *globalPtr;
 }
 
 void Forearm::init(){  
+  
+   set<double>("current_angle", 270);
 
    angularDeadZones[0] = 0.0; 
    angularDeadZones[1] = 0.0;  
 
-   motionConsts.maxAcceleration = 0.0; 
-   motionConsts.maxVelocity = 0.0; 
+   motionConsts.maxAcceleration = 60; 
+   motionConsts.maxVelocity = 180; 
 } 
 
 void Forearm::periodic(){ 
     double forearmVelocity; 
-    if (currentState == ForearmState::HOLDING){ 
+    if (currentState == ForearmState::F_HOLDING){ 
         forearmVelocity = 0; 
     } else { 
         TrapezoidalSetpoint outputGoal = motionProfile->generateSetpoint(Brain.Timer.time());  
@@ -25,20 +36,30 @@ void Forearm::periodic(){
     updatePosition(forearmVelocity);
 } 
 
-void Forearm::updateTelemetry(){ 
-    updatePosition(); 
+void Forearm::updateTelemetry(){  
+    Brain.Screen.printAt(20, 110, "Forearm Angle: %.2f", get<double>("current_angle")); 
+    string setpointMessage; 
+    if (currentState == ForearmState::F_HOLDING){ 
+      setpointMessage = "HOLDING"; 
+    } else { 
+      setpointMessage = "PURSUING";
+    }   
+
+    Brain.Screen.printAt(20, 130, setpointMessage.c_str());  
+    Brain.Screen.printAt(70, 130, "- %d", get<bool>("responded"));
+
     stateControl();  
-    set<bool>("at_setpoint", currentState == ForearmState::HOLDING);
+    set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING );
 } 
 
 void Forearm::stop(){ 
     return;
 }   
 
-void Forearm::updatePosition(double velocity){ 
-    double frameTranslation = velocity * ((Brain.Timer.time() - previousTimestamp) / 1000); 
+void Forearm::updatePosition(double velocity){  
+    double frameTranslation = velocity * (20.0/1000); 
     set<double>("current_angle", angleSum(get<double>("current_angle"), frameTranslation)); 
-    previousTimestamp = Brain.Timer.time();
+    previousTimestamp = Brain.Timer.time();  
 }
 
 bool Forearm::reachedSetpoint(){ 
@@ -46,76 +67,81 @@ bool Forearm::reachedSetpoint(){
 }
 
 void Forearm::setSetpoint(double setpoint, bool inverted){ 
-  double currentAngle = getCurrentAngle();
+  double currentAngle = get<double>("current_angle");
   
   if (inverted){ 
     setpoint = flipOrientation(setpoint); 
-  }
+  } 
 
-  if (setpoint == angularSetpoint){ 
-    return; //Already reached or is pursuing
-  }
-
-  double error = angleDifference(setpoint, currentAngle);  
-
-  double firstDeadDiff = fabs(angleDifference(angularDeadZones[0], currentAngle));
-  double secondDeadDiff = fabs(angleDifference(angularDeadZones[1], currentAngle)); 
-
-  if (fabs(error) > firstDeadDiff && fabs(error) > secondDeadDiff){ 
-    error = (360 - fabs(error)) * -1 * copysign(1, error); //Goes through the zone
-  } else if (fabs(error) < firstDeadDiff && fabs(error) < secondDeadDiff){ 
-    error *= 1;
-  } else { 
-    return; //You can't go there
+  double error = angleDifference(setpoint, currentAngle); 
+   
+  if (fabs(error) < ANGULAR_ERROR_TOLERANCE){  
+    return;
   }  
+
 
   setpointDirection = copysign(1, error); 
 
-  motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), 0, 0);  
-  currentState = ForearmState::PURSUING; 
-
-  angularSetpoint = setpoint;
+  motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), 0, 0);   
+  motionProfile->setLastTimestamp(Brain.Timer.time());
+  currentState = ForearmState::F_PURSUING; 
 }
 
-void Forearm::stateControl(){ 
+void Forearm::stateControl(){   
+
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position")); 
+
+    if (requestingSetpoint){  
+      requestingSetpoint = false;
+      setSetpoint(requestedSetpoint, RobotState::getStateOf("inverted")); 
+      return;
+    } 
     
-    if (currentState == ForearmState::PURSUING){ 
-        if (reachedSetpoint()){ 
-            currentState = ForearmState::HOLDING; 
-            if (get<bool>("active")){ 
-               set<bool>("active", false); 
-               set<int>("task_id", get<int>("task_id") + 1); 
-               if (get<int>("task_id") == 2){ 
-                  Telemetry::inst.placeValueAt<bool>(true, "ss_manager","task_completed"); 
-                  set<int>("task_id", 0);  
-               } else { 
-                  Telemetry::inst.placeValueAt(true, "claw","active"); 
-               }
-            } 
-        }
-    } else { 
+
+    if (currentState == ForearmState::F_PURSUING && reachedSetpoint()){ 
+        currentState = ForearmState::F_HOLDING; 
+        if (get<bool>("active")){ 
+          set<bool>("active", false); 
+          set<int>("task_id", get<int>("task_id") + 1); 
+          if (get<int>("task_id") == 2){ 
+            Telemetry::inst.placeValueAt<bool>(true, "ss_manager","task_completed"); 
+            set<int>("task_id", 0);  
+          } else { 
+            Telemetry::inst.placeValueAt(true, "claw","active"); 
+          }
+        }  
+    } else if (currentState == ForearmState::F_HOLDING) {    
         switch (pos){ 
-            case PRIMED:  
-              setSetpoint(PRIMING_SETPOINT, RobotState::getStateOf("inverted")); 
+            case PRIMED:
+              requestingSetpoint = true; 
+              requestedSetpoint = PRIMING_SETPOINT;
+              //setSetpoint(PRIMING_SETPOINT, RobotState::getStateOf("inverted")); 
               break;
-            case GROUND: 
-              setSetpoint(GROUND_SETPOINT, RobotState::getStateOf("inverted")); 
+            case GROUND:  
+              requestingSetpoint = true; 
+              requestedSetpoint = GROUND_SETPOINT;
+              //setSetpoint(GROUND_SETPOINT, RobotState::getStateOf("inverted")); 
               break;
-            case STANDING: 
-              setSetpoint(STANDING_SETPOINT, RobotState::getStateOf("inverted")); 
+            case STANDING:  
+              requestingSetpoint = true; 
+              requestedSetpoint = STANDING_SETPOINT;
+              //setSetpoint(STANDING_SETPOINT, RobotState::getStateOf("inverted"));  
               break; 
             case AUTO: 
-              if (get<bool>("active")){ 
+              if (get<bool>("active")){  
+                requestingSetpoint = true;
                 if (get<int>("task_id") == 0){ 
-                    setSetpoint(PLACE_SETPOINT, RobotState::getStateOf("inverted"));
+                    requestedSetpoint = PLACE_SETPOINT;
                 } else { 
-                    setSetpoint(PRIMING_SETPOINT, RobotState::getStateOf("inverted"));
+                    requestedSetpoint = PRIMING_SETPOINT;
                 }
               } 
-              break; 
-               
-        }
-    }
+              break;     
+        }  
+
+    } 
+    
+    set<bool>("responded", true); 
+    
 }  
 

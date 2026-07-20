@@ -2,13 +2,13 @@
 #define __FOREARM_H__ 
 
 #include "../architecture/subsystem.h"   
-#include "../control/feedForward.h" 
-#include "../control/pidcontroller.h"   
+//#include "../control/feedForward.h" 
+//#include "../control/pidcontroller.h"   
 #include "../control/trapezoidalMotion.h"
 
 typedef enum { 
-   PURSUING,  
-   HOLDING
+   F_PURSUING,  
+   F_HOLDING
 } ForearmState;
 
 class Forearm : public Subsystem {  
@@ -35,7 +35,10 @@ class Forearm : public Subsystem {
        double getVelocity(); 
 
        double previousAngle; 
-       double previousTimestamp;
+       double previousTimestamp; 
+
+       bool requestingSetpoint = false; 
+       double requestedSetpoint;
 
        void setSetpoint(double setpoint, bool inverted);    
 
@@ -45,7 +48,7 @@ class Forearm : public Subsystem {
 
        double angularSetpoint; 
 
-       ForearmState currentState = ForearmState::HOLDING; 
+       ForearmState currentState = ForearmState::F_HOLDING; 
        
        void updatePosition(double velocity); 
        void stateControl();  //ONLY (We can't manually modify the forearm with the controller)
@@ -61,8 +64,9 @@ class Forearm : public Subsystem {
             {  
                (EntrySet){"task_id", EntryType::INT}, 
                (EntrySet){"active", EntryType::BOOL}, 
-               (EntrySet){"at_setpoint", EntryType::BOOL} 
-               (EntrySet){"current_angle", EntryType::DOUBLE}
+               (EntrySet){"at_setpoint", EntryType::BOOL}, 
+               (EntrySet){"current_angle", EntryType::DOUBLE}, 
+               (EntrySet){"responded", EntryType::BOOL}
             }
          )
          { 
