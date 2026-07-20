@@ -3,6 +3,4 @@
 
 #include "architecture/command.h" 
 
-
-
 #endif

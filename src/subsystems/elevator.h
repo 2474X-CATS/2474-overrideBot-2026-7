@@ -66,8 +66,7 @@ class Elevator : public Subsystem {
             (EntrySet){"requesting_setpoint", EntryType::BOOL},
             (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
             (EntrySet){"sensing_stack", EntryType::BOOL}, 
-            (EntrySet){"current_height", EntryType::DOUBLE}, 
-            (EntrySet){"responded", EntryType::BOOL}
+            (EntrySet){"current_height", EntryType::DOUBLE}
          }
        )
        { 

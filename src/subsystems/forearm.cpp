@@ -46,7 +46,6 @@ void Forearm::updateTelemetry(){
     }   
 
     Brain.Screen.printAt(20, 130, setpointMessage.c_str());  
-    Brain.Screen.printAt(70, 130, "- %d", get<bool>("responded"));
 
     stateControl();  
     set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING );

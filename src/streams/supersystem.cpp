@@ -24,6 +24,7 @@ void SuperSystem::refreshData(){
        stateMessage = "STANDING";  
        break;
     } 
+    
     Brain.Screen.printAt(20, 160, stateMessage.c_str()); 
     Brain.Screen.printAt(20, 190, "Setpoints Reached: %d", Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached"));
     

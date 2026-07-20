@@ -36,7 +36,7 @@ void testDrive()
   robot.driverControl(true);
 }
 
-void testAuto(vector<CommandInterface *> auton)
+void testAuto(vector<CommandInterface*> auton)
 {
   robot.setAutonomousCommand(auton);
   thread telemThread = thread(runTelemetry);

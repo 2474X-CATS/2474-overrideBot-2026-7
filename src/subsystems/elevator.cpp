@@ -57,7 +57,6 @@ void Elevator::updateTelemetry(){
      setpointMessage = "HOLDING"; 
     }  
     Brain.Screen.printAt(20, 80, setpointMessage.c_str()); 
-    Brain.Screen.printAt(70, 80, "- %d", get<bool>("responded"));
     
     set<bool>("sensing_stack", false); 
     stateControl();
