@@ -1,6 +1,11 @@
 #include "vex.h"
 #include "architecture/robot.h"
-#include <iostream>
+#include <iostream> 
+
+#include "streams/supersystem.h"
+#include "subsystems/claw.h" 
+#include "subsystems/elevator.h" 
+#include "subsystems/forearm.h"
 
 using namespace vex;
 
@@ -55,7 +60,12 @@ int main()
   vexcodeInit();
 
   //--------------------SUBSYSTEM CREATION----------------- 
-  
+   
+  SuperSystem ss = SuperSystem();  
+
+  Elevator elevator = Elevator();
+  Forearm forearm = Forearm(); 
+  Claw claw = Claw();
   
   //-------------------------------------------------------
 
@@ -63,5 +73,5 @@ int main()
 
   //-------------------RUN PROTOCOLS HERE-------------------
  
-
+  testDrive();
 }

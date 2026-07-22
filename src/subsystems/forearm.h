@@ -7,8 +7,8 @@
 #include "../control/trapezoidalMotion.h"
 
 typedef enum { 
-   PURSUING,  
-   HOLDING
+   F_PURSUING,  
+   F_HOLDING
 } ForearmState;
 
 class Forearm : public Subsystem {  
@@ -23,12 +23,22 @@ class Forearm : public Subsystem {
 
        static Forearm* globalPtr;     
 
-       double currentAngle; 
-       double currentVelocity; 
+       double previousAngle; 
+       double previousTimestamp;  
+
+       bool requestingSetpoint; 
+       double requestedSetpoint;
+
+       double angularDeadZones[2];   
+
+       int setpointDirection;
+       
+       ForearmState currentState = ForearmState::F_HOLDING;  
+
 
        vex::motor forearmMotor;  
-       vex::rotation rotarySensor;    
-
+       vex::rotation rotarySensor;     
+ 
        AngularArmFFConstants armFFConsts; //Bulk (feedforward) 
 
        errorcontroller* feedback = nullptr; //Rest done with feedback
@@ -37,25 +47,15 @@ class Forearm : public Subsystem {
        TrapezoidConstants motionConsts; 
        TrapezoidalMotionProfile* motionProfile = nullptr;
         
-       double angularDeadZones[2];  
        
        double calculateOutput(double omega, double alpha); //velocity and acceleration but for angles
        
        double getCurrentAngle();   
        double getVelocity(); 
 
-       double previousAngle; 
-       double previousTimestamp;
-
        void setSetpoint(double setpoint, bool inverted);    
 
-       int setpointDirection; 
-
        bool reachedSetpoint();  
-
-       double angularSetpoint; 
-
-       ForearmState currentState = ForearmState::HOLDING; 
        
        void updatePosition(); 
        void stateControl();  //ONLY (We can't manually modify the forearm with the controller)
@@ -71,7 +71,8 @@ class Forearm : public Subsystem {
             {  
                (EntrySet){"task_id", EntryType::INT}, 
                (EntrySet){"active", EntryType::BOOL}, 
-               (EntrySet){"at_setpoint", EntryType::BOOL}
+               (EntrySet){"at_setpoint", EntryType::BOOL},  
+               (EntrySet){"current_angle", EntryType::DOUBLE}
             }
          ), 
          forearmMotor(vex::motor(vex::PORT16)), 

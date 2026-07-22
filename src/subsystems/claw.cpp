@@ -1,5 +1,9 @@
 #include "claw.h" 
 
+Claw* Claw::globalPtr = nullptr;
+double Claw::MAXIMUM_TOLERABLE_DISTANCE = 0.0;
+
+
 Claw& Claw::getObject(){ 
     return *globalPtr;
 } 
@@ -13,12 +17,12 @@ void Claw::periodic(){
    flip(get<bool>("facing_down")); 
 } 
 
-void Claw::updateTelemetry(){  
+void Claw::updateTelemetry(){   
+   set<bool>("senses_object", sensesObject());
    stateControl(); 
    if (!RobotState::getStateOf("in_autonomous")){ 
      respondToRequests();
    }
-   
 }  
 
 void Claw::stop(){ 
@@ -31,29 +35,23 @@ bool Claw::sensesObject(){
 
 void Claw::stateControl(){ 
    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
-   bool still = Telemetry::inst.getValueAt<bool>("ss_manager","setpoints_reached"); 
-
+   
+   bool still = Telemetry::inst.getValueAt<bool>("forearm","at_setpoint") && Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint"); 
+   
    if (pos == SuperStructurePosition::AUTO){ //Whenever macro is running
-     if (get<bool>("active")){ 
+     if (get<bool>("active")){
          set<bool>("clenched", false); 
          set<bool>("active", false); 
          Telemetry::inst.placeValueAt<bool>(true, "forearm", "active"); 
      }
-   } else { 
-     if (!still){ 
-       /* 
-       If the robot is not still the claw should be  
-       clenched unless the robot is in possesion of  
-       a game object. Example dropping a game object  
-       in the primed positioned
-       */  
-       if (sensesObject() && (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING) ){ 
-         set<bool>("clenched", false);
-       } else { 
-         set<bool>("clenched", true);
-       } 
+   } else {   
+    if (!still){  
+       set<bool>("clenched", true);
+       set<bool>("requesting_act", false); 
        
-       set<bool>("requesting_act", false);
+       if (pos == SuperStructurePosition::GROUND && sensesObject()){ 
+          set<bool>("clenched", false);
+       }
 
        if (pos == SuperStructurePosition::STANDING){ 
          set<bool>("facing_down", true);
@@ -61,29 +59,25 @@ void Claw::stateControl(){
          set<bool>("facing_down", false);
        }  
        
-     } else {    
+    } else {    
         bool willClench; 
-        if (pos != SuperStructurePosition::PRIMED){ 
+        if (pos == SuperStructurePosition::PRIMED){ 
            willClench = true;
         } else { 
            willClench = false;
         }  
         //willClench = !willClench [essentially approves the action]
         if (get<bool>("requesting_act")){ 
-          set<bool>("requesting_act", false);
-          if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING){ 
-            if (sensesObject()){ 
-                willClench = !willClench;
-            }
-          } else { 
+          set<bool>("requesting_act", false);   
+          if (sensesObject()){   
             willClench = !willClench;
           }
-        }   
+        }
 
         set<bool>("clenched", willClench);
-     } 
-   } 
-   
+    }
+      
+   }   
 }
 
 void Claw::respondToRequests(){  

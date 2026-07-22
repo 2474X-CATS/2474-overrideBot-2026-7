@@ -9,9 +9,9 @@
 
 
 typedef enum { 
-   HOLDING, 
-   PRIMING, 
-   PURSUING
+   E_HOLDING, 
+   E_PRIMING, 
+   E_PURSUING
 } ElevatorState;
 
 class Elevator : public Subsystem { 
@@ -33,14 +33,13 @@ class Elevator : public Subsystem {
        static double MINIMUM_ALIGNER_DISTANCE; 
        static double ALIGNER_ERROR_TOLERANCE;
 
-       ElevatorState currentState; 
-
        int raisingDirection = 0;
        int setpointDirection;  
 
        double previousHeight; 
-       double previousTimestamp; 
+       double previousTimestamp;  
 
+       ElevatorState currentState = ElevatorState::E_HOLDING;
 
        TrapezoidalMotionProfile* motionProfile = nullptr; //When the robot has defined setpoints it needs to reach
        TrapezoidConstants motionConsts; 
@@ -49,6 +48,15 @@ class Elevator : public Subsystem {
       
        ElevatorFFConstants elevatorFF; //Elevator FF Running at almost all times
        
+       vex::motor lifter1; 
+       vex::motor lifter2;  
+
+       vex::motor_group lift;  
+
+       vex::distance primingSensor;
+
+       vex::rotation rot; 
+
        double calculateOutput(double velocity, double acceleration); 
        bool reachedSetpoint(); 
 
@@ -61,15 +69,6 @@ class Elevator : public Subsystem {
        void setSetpoint(double setpoint);  
        void updatePosition();
 
-       vex::motor lifter1; 
-       vex::motor lifter2;  
-
-       vex::motor_group lift;  
-
-       vex::distance primingSensor;
-
-       vex::rotation rot;  
-
     public:   
        using Subsystem::get; 
        static Elevator& getObject();
@@ -80,13 +79,13 @@ class Elevator : public Subsystem {
           { 
             (EntrySet){"active", EntryType::BOOL}, //In a macro?
             (EntrySet){"at_setpoint", EntryType::BOOL}, //Achieved setpoint or no setpoint? 
-            (EntrySet){"requesting_setpoint", EntryType::BOOL},
+            (EntrySet){"requesting_setpoint", EntryType::BOOL}, 
+            (EntrySet){"priming_setpoint", EntryType::DOUBLE},
             (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
-            (EntrySet){"has_setpoint", EntryType::BOOL}, //Do we have a specific height we want to reach 
-            (EntrySet){"sensing_stack", EntryType::BOOL}, 
-
-            (EntrySet){"current_height", EntryType::DOUBLE}, 
-            (EntrySet){"current_velocity", EntryType::DOUBLE}
+            (EntrySet){"sensing_stack", EntryType::BOOL},
+            (EntrySet){"current_height", EntryType::DOUBLE},
+            (EntrySet){"priming_direction", EntryType::INT}, 
+            (EntrySet){"sniper_score_enabled", EntryType::BOOL}
          }
        ),
        lifter1(vex::motor(vex::PORT11)), 
