@@ -3,8 +3,6 @@
 
 #include "../architecture/subsystem.h"   
 
-//#include "../control/feedForward.h" 
-//#include "../control/pidcontroller.h" 
 #include "../control/trapezoidalMotion.h"
 
 

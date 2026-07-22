@@ -12,10 +12,7 @@ void Claw::init(){
 }
 
 void Claw::periodic(){  
-   
-   //clench(get<bool>("clenched")); 
-   //flip(get<bool>("facing_down"));   
-   
+    return;
 } 
 
 void Claw::updateTelemetry(){   
@@ -26,7 +23,6 @@ void Claw::updateTelemetry(){
 }  
 
 void Claw::stop(){ 
-    //clench(false); 
     return;
 } 
 
@@ -103,15 +99,8 @@ void Claw::respondToRequests(){
  
 void Claw::clench(bool clenched){ 
     return;
-    //claw.set(!clenched);
 } 
 
 void Claw::flip(bool facingDown){   
     return;
-    /*
-    if (RobotState::getStateOf("inverted")){ 
-      facingDown = !facingDown;
-    } 
-    wrist.set(facingDown); 
-    */
 }

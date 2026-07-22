@@ -21,15 +21,11 @@ Elevator& Elevator::getObject(){
 }
 
 void Elevator::init(){ 
-    //Set up all the constants   
-
-    //Motion: Max speed and acceleration 
+    
     set<double>("current_height", 0);
      
     motionConsts.maxVelocity = 3000; 
     motionConsts.maxAcceleration = 3000; 
-
-
 
 } 
 
@@ -60,7 +56,6 @@ void Elevator::updateTelemetry(){
 void Elevator::stop(){ 
   return;
 }
-
 
 void Elevator::updatePosition(double velocity){    
   double frameTranslation = velocity * (20.0 / 1000.0); 

@@ -10,13 +10,6 @@ class Claw : public Subsystem {
        static Claw* globalPtr;  
        static double MAXIMUM_TOLERABLE_DISTANCE;
        
-       /*
-       vex::pneumatics wrist; 
-       vex::pneumatics claw; 
-
-       vex::distance objectDetector;
-       */ 
-
        void flip(bool facingDown);  
        void clench(bool clenched); 
 

@@ -23,9 +23,6 @@ class Forearm : public Subsystem {
 
        static Forearm* globalPtr;     
 
-       double currentAngle; 
-       double currentVelocity; 
-
        TrapezoidConstants motionConsts; 
        TrapezoidalMotionProfile* motionProfile = nullptr;
         
@@ -45,8 +42,6 @@ class Forearm : public Subsystem {
        int setpointDirection; 
 
        bool reachedSetpoint();  
-
-       double angularSetpoint; 
 
        ForearmState currentState = ForearmState::F_HOLDING; 
        
