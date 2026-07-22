@@ -61,12 +61,12 @@ void Elevator::stop(){
   return;
 }
 
+
 void Elevator::updatePosition(double velocity){    
   double frameTranslation = velocity * (20.0 / 1000.0); 
   set<double>("current_height", get<double>("current_height") + frameTranslation); 
   previousTimestamp = Brain.Timer.time();
 }
-
 
 void Elevator::setSetpoint(double setpoint){ 
    double error = setpoint - get<double>("current_height");  
