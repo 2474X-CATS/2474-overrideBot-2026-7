@@ -1,4 +1,23 @@
-#include "elevator.h" 
+#include "elevator.h"  
+
+Elevator* Elevator::globalPtr = nullptr;
+
+double Elevator::GROUND_INTAKE_HEIGHT = 100;  
+double Elevator::LEVELED_HEIGHT = 0; 
+       
+double Elevator::MAX_HEIGHT = 1000;
+
+double Elevator::ELEVATOR_ERROR_TOLERANCE = 3; 
+double Elevator::STACK_HEIGHT = 0.0;  
+
+double Elevator::PRIMING_SPEED = 500; 
+
+double Elevator::MINIMUM_ALIGNER_DISTANCE = 0.0;  
+double Elevator::ALIGNER_ERROR_TOLERANCE = 0.0; 
+
+Elevator& Elevator::getObject(){ 
+  return *globalPtr;
+}
 
 void Elevator::init(){ 
     //Set up all the constants   
@@ -97,17 +116,17 @@ void Elevator::stateControl(){
       set<bool>("requesting_setpoint", false); 
     }
 
-    if (currentState == ElevatorState::E_PURSUING){ //
+    if (currentState == ElevatorState::PURSUING){ //
       if (reachedSetpoint()){  
-        currentState = ElevatorState::E_HOLDING; 
+        currentState = ElevatorState::HOLDING; 
       }
-    } else if (currentState == ElevatorState::E_PRIMING){   
+    } else if (currentState == ElevatorState::PRIMING){   
         if (!get<bool>("sensing_stack")){ 
-          currentState = ElevatorState::E_HOLDING; 
+          currentState = ElevatorState::HOLDING; 
         }
     }
 
-   set<bool>("at_setpoint", currentState == ElevatorState::E_HOLDING);
+   set<bool>("at_setpoint", currentState == ElevatorState::HOLDING);
 }
 
 void Elevator::respondToRequests(){ 

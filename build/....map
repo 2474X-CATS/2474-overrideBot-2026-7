@@ -10,12 +10,14 @@ Archive member included to satisfy reference by file (symbol)
                               /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apijump.c.obj) (vexSystemVersion)
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_global.cpp.obj)
                               build/src/architecture/robot.o (vex::wait(double, vex::timeUnits))
+/home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+                              build/src/subsystems/elevator.o (vex::distance::objectDistance(vex::distanceUnits))
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
                               build/src/architecture/robotState.o (vex::controller::~controller())
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_thread.cpp.obj)
                               build/src/main.o (vex::thread::thread(int (*)()))
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_event.cpp.obj)
-                              /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj) (vex::event::init(unsigned long, unsigned long, void (*)()))
+                              /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj) (vex::event::init(unsigned long, unsigned long, void (*)()))
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_mevent.cpp.obj)
                               /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj) (vex::mevent::mevent(unsigned long, unsigned long))
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_brain.cpp.obj)
@@ -33,7 +35,7 @@ Archive member included to satisfy reference by file (symbol)
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_apiuser.c.obj)
                               /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj) (vexAdiPortConfigSet)
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_device.cpp.obj)
-                              /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_triport.cpp.obj) (vex::device::~device())
+                              /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj) (vex::device::~device())
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motor.cpp.obj)
                               /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_motorgroup.cpp.obj) (vex::motor::setStopping(vex::brakeType))
 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_task.cpp.obj)
@@ -683,12 +685,16 @@ Discarded input sections
                 0x0000000000000000       0x1c build/src/architecture/dataStream.o
  .llvm_addrsig  0x0000000000000000        0x5 build/src/architecture/dataStream.o
  .text          0x0000000000000000        0x0 build/src/subsystems/elevator.o
+ .text._ZN8Elevator9getObjectEv
+                0x0000000000000000       0x10 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator9getObjectEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator4initEv
                 0x0000000000000000       0x9c build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN8Elevator4initEv
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator8periodicEv
-                0x0000000000000000      0x110 build/src/subsystems/elevator.o
+                0x0000000000000000       0xe0 build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN8Elevator8periodicEv
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator15calculateOutputEdd
@@ -696,19 +702,27 @@ Discarded input sections
  .ARM.exidx.text._ZN8Elevator15calculateOutputEdd
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator15updateTelemetryEv
-                0x0000000000000000       0x94 build/src/subsystems/elevator.o
+                0x0000000000000000      0x130 build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN8Elevator15updateTelemetryEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
+ .text._ZN9Subsystem3setIbEEvSsT_
+                0x0000000000000000       0xbc build/src/subsystems/elevator.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
+ .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN9Subsystem3setIbEEvSsT_
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator14updatePositionEv
                 0x0000000000000000      0x190 build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN8Elevator14updatePositionEv
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator12stateControlEv
-                0x0000000000000000      0x5d8 build/src/subsystems/elevator.o
+                0x0000000000000000      0x22c build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN8Elevator12stateControlEv
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator17respondToRequestsEv
-                0x0000000000000000      0x100 build/src/subsystems/elevator.o
+                0x0000000000000000      0x14c build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN8Elevator17respondToRequestsEv
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator11getPositionEv
@@ -719,12 +733,8 @@ Discarded input sections
                 0x0000000000000000       0x60 build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN8Elevator11getVelocityEv
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
- .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
  .text._ZN9Subsystem3setIdEEvSsT_
                 0x0000000000000000       0xc0 build/src/subsystems/elevator.o
- .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
- .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
- .group         0x0000000000000000       0x14 build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN9Subsystem3setIdEEvSsT_
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN9Subsystem3getIdEET_Ss
@@ -732,7 +742,7 @@ Discarded input sections
  .ARM.exidx.text._ZN9Subsystem3getIdEET_Ss
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator11setSetpointEd
-                0x0000000000000000      0x108 build/src/subsystems/elevator.o
+                0x0000000000000000      0x130 build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN8Elevator11setSetpointEd
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .text._ZN8Elevator15reachedSetpointEv
@@ -743,12 +753,30 @@ Discarded input sections
                 0x0000000000000000       0xbc build/src/subsystems/elevator.o
  .ARM.exidx.text._ZN9Subsystem3getIbEET_Ss
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
- .text._ZN9Subsystem3setIbEEvSsT_
-                0x0000000000000000       0xbc build/src/subsystems/elevator.o
- .ARM.exidx.text._ZN9Subsystem3setIbEEvSsT_
+ .text._ZN8Elevator4stopEv
+                0x0000000000000000        0x4 build/src/subsystems/elevator.o
+ .ARM.exidx.text._ZN8Elevator4stopEv
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .bss._ZN8Elevator9globalPtrE
+                0x0000000000000000        0x4 build/src/subsystems/elevator.o
+ .data._ZN8Elevator20GROUND_INTAKE_HEIGHTE
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .bss._ZN8Elevator14LEVELED_HEIGHTE
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .data._ZN8Elevator10MAX_HEIGHTE
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .data._ZN8Elevator24ELEVATOR_ERROR_TOLERANCEE
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .bss._ZN8Elevator12STACK_HEIGHTE
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .data._ZN8Elevator13PRIMING_SPEEDE
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .bss._ZN8Elevator24MINIMUM_ALIGNER_DISTANCEE
+                0x0000000000000000        0x8 build/src/subsystems/elevator.o
+ .bss._ZN8Elevator23ALIGNER_ERROR_TOLERANCEE
                 0x0000000000000000        0x8 build/src/subsystems/elevator.o
  .rodata.str1.1
-                0x0000000000000000       0x84 build/src/subsystems/elevator.o
+                0x0000000000000000       0x6d build/src/subsystems/elevator.o
  .rodata._ZTV8Elevator
                 0x0000000000000000       0x18 build/src/subsystems/elevator.o
  .comment       0x0000000000000000       0x2e build/src/subsystems/elevator.o
@@ -908,49 +936,6 @@ Discarded input sections
  .ARM.attributes
                 0x0000000000000000       0x3a build/src/utilities/location.o
  .llvm_addrsig  0x0000000000000000        0x2 build/src/utilities/location.o
- .text          0x0000000000000000        0x0 build/src/streams/supersystem.o
- .text._ZN11SuperSystem4initEv
-                0x0000000000000000       0x78 build/src/streams/supersystem.o
- .ARM.exidx.text._ZN11SuperSystem4initEv
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .group         0x0000000000000000       0x14 build/src/streams/supersystem.o
- .text._ZN10DataStream3setIiEEvSsT_
-                0x0000000000000000       0xbc build/src/streams/supersystem.o
- .group         0x0000000000000000       0x14 build/src/streams/supersystem.o
- .group         0x0000000000000000       0x14 build/src/streams/supersystem.o
- .group         0x0000000000000000       0x14 build/src/streams/supersystem.o
- .ARM.exidx.text._ZN10DataStream3setIiEEvSsT_
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN11SuperSystem17resetTaskProgressEv
-                0x0000000000000000       0xc4 build/src/streams/supersystem.o
- .ARM.exidx.text._ZN11SuperSystem17resetTaskProgressEv
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN11SuperSystem11refreshDataEv
-                0x0000000000000000      0xba4 build/src/streams/supersystem.o
- .ARM.exidx.text._ZN11SuperSystem11refreshDataEv
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN10DataStream3setIbEEvSsT_
-                0x0000000000000000       0xbc build/src/streams/supersystem.o
- .ARM.exidx.text._ZN10DataStream3setIbEEvSsT_
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN10DataStream3getIbEET_Ss
-                0x0000000000000000       0xbc build/src/streams/supersystem.o
- .ARM.exidx.text._ZN10DataStream3getIbEET_Ss
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN10DataStream3getIiEET_Ss
-                0x0000000000000000       0xbc build/src/streams/supersystem.o
- .ARM.exidx.text._ZN10DataStream3getIiEET_Ss
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .rodata.str1.1
-                0x0000000000000000       0x97 build/src/streams/supersystem.o
- .rodata._ZTV11SuperSystem
-                0x0000000000000000       0x10 build/src/streams/supersystem.o
- .comment       0x0000000000000000       0x2e build/src/streams/supersystem.o
- .note.GNU-stack
-                0x0000000000000000        0x0 build/src/streams/supersystem.o
- .ARM.attributes
-                0x0000000000000000       0x3a build/src/streams/supersystem.o
- .llvm_addrsig  0x0000000000000000        0x2 build/src/streams/supersystem.o
  .text          0x0000000000000000        0x0 build/src/experimental/mirror.o
  .text._Z17getStringFromDataPiPb
                 0x0000000000000000      0x15c build/src/experimental/mirror.o
@@ -2921,6 +2906,36 @@ Discarded input sections
                 0x0000000000000000        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_global.cpp.obj)
  .rodata._ZN3vex7secondsE
                 0x0000000000000000        0x4 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_global.cpp.obj)
+ .text          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .data          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .bss           0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distanceD2Ev
+                0x0000000000000000       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distanceD0Ev
+                0x0000000000000000       0x1c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distance9installedEv
+                0x0000000000000000       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distance5valueEv
+                0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distanceC2El
+                0x0000000000000000       0x20 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distance14objectDistanceENS_13distanceUnitsE
+                0x0000000000000000       0x48 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distance10objectSizeEv
+                0x0000000000000000       0x3c /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distance13objectRawSizeEv
+                0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distance14objectVelocityEv
+                0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distance16isObjectDetectedEv
+                0x0000000000000000       0x80 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .text._ZN3vex8distance7changedEPFvvE
+                0x0000000000000000       0x10 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .rodata._ZTVN3vex8distanceE
+                0x0000000000000000       0x18 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .comment       0x0000000000000000       0x71 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
+ .ARM.attributes
+                0x0000000000000000       0x35 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_distance.cpp.obj)
  .group         0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
  .group         0x0000000000000000        0x8 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
  .text          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(vex_controller.cpp.obj)
@@ -10058,7 +10073,6 @@ LOAD build/src/subsystems/elevator.o
 LOAD build/src/utilities/functools.o
 LOAD build/src/utilities/bezier.o
 LOAD build/src/utilities/location.o
-LOAD build/src/streams/supersystem.o
 LOAD build/src/experimental/mirror.o
 LOAD build/src/gui/graphics.o
 LOAD build/src/gui/autonInit.o
