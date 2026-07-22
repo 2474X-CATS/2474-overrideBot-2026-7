@@ -683,6 +683,10 @@ Discarded input sections
                 0x0000000000000000       0x1c build/src/architecture/dataStream.o
  .llvm_addrsig  0x0000000000000000        0x5 build/src/architecture/dataStream.o
  .text          0x0000000000000000        0x0 build/src/subsystems/forearm.o
+ .text._ZN7Forearm9getObjectEv
+                0x0000000000000000       0x10 build/src/subsystems/forearm.o
+ .ARM.exidx.text._ZN7Forearm9getObjectEv
+                0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .text._ZN7Forearm4initEv
                 0x0000000000000000       0xbc build/src/subsystems/forearm.o
  .ARM.exidx.text._ZN7Forearm4initEv
@@ -696,15 +700,15 @@ Discarded input sections
  .ARM.exidx.text._ZN7Forearm15calculateOutputEdd
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .text._ZN7Forearm15updateTelemetryEv
-                0x0000000000000000       0xb8 build/src/subsystems/forearm.o
+                0x0000000000000000       0x90 build/src/subsystems/forearm.o
  .ARM.exidx.text._ZN7Forearm15updateTelemetryEv
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .text._ZN7Forearm14updatePositionEv
-                0x0000000000000000       0x3c build/src/subsystems/forearm.o
+                0x0000000000000000       0xfc build/src/subsystems/forearm.o
  .ARM.exidx.text._ZN7Forearm14updatePositionEv
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .text._ZN7Forearm12stateControlEv
-                0x0000000000000000      0x64c build/src/subsystems/forearm.o
+                0x0000000000000000      0x1b0 build/src/subsystems/forearm.o
  .ARM.exidx.text._ZN7Forearm12stateControlEv
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .group         0x0000000000000000       0x14 build/src/subsystems/forearm.o
@@ -727,28 +731,40 @@ Discarded input sections
                 0x0000000000000000       0x70 build/src/subsystems/forearm.o
  .ARM.exidx.text._ZN7Forearm11getVelocityEv
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
+ .text._ZN9Subsystem3getIdEET_Ss
+                0x0000000000000000       0xc4 build/src/subsystems/forearm.o
+ .ARM.exidx.text._ZN9Subsystem3getIdEET_Ss
+                0x0000000000000000        0x8 build/src/subsystems/forearm.o
+ .text._ZN9Subsystem3setIdEEvSsT_
+                0x0000000000000000       0xc0 build/src/subsystems/forearm.o
+ .ARM.exidx.text._ZN9Subsystem3setIdEEvSsT_
+                0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .text._ZN7Forearm15reachedSetpointEv
                 0x0000000000000000       0x5c build/src/subsystems/forearm.o
  .ARM.exidx.text._ZN7Forearm15reachedSetpointEv
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .text._ZN7Forearm11setSetpointEdb
-                0x0000000000000000      0x1b0 build/src/subsystems/forearm.o
+                0x0000000000000000      0x134 build/src/subsystems/forearm.o
  .ARM.exidx.text._ZN7Forearm11setSetpointEdb
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .text._ZN9Subsystem3getIbEET_Ss
                 0x0000000000000000       0xbc build/src/subsystems/forearm.o
  .ARM.exidx.text._ZN9Subsystem3getIbEET_Ss
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN9Subsystem3setIiEEvSsT_
-                0x0000000000000000       0xbc build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN9Subsystem3setIiEEvSsT_
+ .bss._ZN7Forearm9globalPtrE
+                0x0000000000000000        0x4 build/src/subsystems/forearm.o
+ .bss._ZN7Forearm14PLACE_SETPOINTE
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
- .text._ZN9Subsystem3getIiEET_Ss
-                0x0000000000000000       0xbc build/src/subsystems/forearm.o
- .ARM.exidx.text._ZN9Subsystem3getIiEET_Ss
+ .data._ZN7Forearm16PRIMING_SETPOINTE
+                0x0000000000000000        0x8 build/src/subsystems/forearm.o
+ .data._ZN7Forearm15GROUND_SETPOINTE
+                0x0000000000000000        0x8 build/src/subsystems/forearm.o
+ .data._ZN7Forearm17STANDING_SETPOINTE
+                0x0000000000000000        0x8 build/src/subsystems/forearm.o
+ .data._ZN7Forearm23ANGULAR_ERROR_TOLERANCEE
                 0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .rodata.str1.1
-                0x0000000000000000       0x4c build/src/subsystems/forearm.o
+                0x0000000000000000       0x47 build/src/subsystems/forearm.o
  .rodata._ZTV7Forearm
                 0x0000000000000000       0x18 build/src/subsystems/forearm.o
  .comment       0x0000000000000000       0x2e build/src/subsystems/forearm.o
@@ -908,49 +924,6 @@ Discarded input sections
  .ARM.attributes
                 0x0000000000000000       0x3a build/src/utilities/location.o
  .llvm_addrsig  0x0000000000000000        0x2 build/src/utilities/location.o
- .text          0x0000000000000000        0x0 build/src/streams/supersystem.o
- .text._ZN11SuperSystem4initEv
-                0x0000000000000000       0x78 build/src/streams/supersystem.o
- .ARM.exidx.text._ZN11SuperSystem4initEv
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .group         0x0000000000000000       0x14 build/src/streams/supersystem.o
- .text._ZN10DataStream3setIiEEvSsT_
-                0x0000000000000000       0xbc build/src/streams/supersystem.o
- .group         0x0000000000000000       0x14 build/src/streams/supersystem.o
- .group         0x0000000000000000       0x14 build/src/streams/supersystem.o
- .group         0x0000000000000000       0x14 build/src/streams/supersystem.o
- .ARM.exidx.text._ZN10DataStream3setIiEEvSsT_
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN11SuperSystem17resetTaskProgressEv
-                0x0000000000000000       0xc4 build/src/streams/supersystem.o
- .ARM.exidx.text._ZN11SuperSystem17resetTaskProgressEv
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN11SuperSystem11refreshDataEv
-                0x0000000000000000      0xba4 build/src/streams/supersystem.o
- .ARM.exidx.text._ZN11SuperSystem11refreshDataEv
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN10DataStream3setIbEEvSsT_
-                0x0000000000000000       0xbc build/src/streams/supersystem.o
- .ARM.exidx.text._ZN10DataStream3setIbEEvSsT_
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN10DataStream3getIbEET_Ss
-                0x0000000000000000       0xbc build/src/streams/supersystem.o
- .ARM.exidx.text._ZN10DataStream3getIbEET_Ss
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .text._ZN10DataStream3getIiEET_Ss
-                0x0000000000000000       0xbc build/src/streams/supersystem.o
- .ARM.exidx.text._ZN10DataStream3getIiEET_Ss
-                0x0000000000000000        0x8 build/src/streams/supersystem.o
- .rodata.str1.1
-                0x0000000000000000       0x97 build/src/streams/supersystem.o
- .rodata._ZTV11SuperSystem
-                0x0000000000000000       0x10 build/src/streams/supersystem.o
- .comment       0x0000000000000000       0x2e build/src/streams/supersystem.o
- .note.GNU-stack
-                0x0000000000000000        0x0 build/src/streams/supersystem.o
- .ARM.attributes
-                0x0000000000000000       0x3a build/src/streams/supersystem.o
- .llvm_addrsig  0x0000000000000000        0x2 build/src/streams/supersystem.o
  .text          0x0000000000000000        0x0 build/src/experimental/mirror.o
  .text._Z17getStringFromDataPiPb
                 0x0000000000000000      0x15c build/src/experimental/mirror.o
@@ -9984,7 +9957,6 @@ LOAD build/src/subsystems/forearm.o
 LOAD build/src/utilities/functools.o
 LOAD build/src/utilities/bezier.o
 LOAD build/src/utilities/location.o
-LOAD build/src/streams/supersystem.o
 LOAD build/src/experimental/mirror.o
 LOAD build/src/gui/graphics.o
 LOAD build/src/gui/autonInit.o

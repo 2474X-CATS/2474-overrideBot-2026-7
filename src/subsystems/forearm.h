@@ -23,9 +23,6 @@ class Forearm : public Subsystem {
 
        static Forearm* globalPtr;     
 
-       double currentAngle; 
-       double currentVelocity; 
-
        vex::motor forearmMotor;  
        vex::rotation rotarySensor;    
 
@@ -45,16 +42,14 @@ class Forearm : public Subsystem {
        double getVelocity(); 
 
        double previousAngle; 
-       double previousTimestamp;
+       double previousTimestamp; 
 
        void setSetpoint(double setpoint, bool inverted);    
 
        int setpointDirection; 
 
-       bool reachedSetpoint();  
-
-       double angularSetpoint; 
-
+       bool reachedSetpoint();   
+       
        ForearmState currentState = ForearmState::HOLDING; 
        
        void updatePosition(); 
@@ -69,9 +64,10 @@ class Forearm : public Subsystem {
          Subsystem( 
             "forearm", 
             {  
-               (EntrySet){"task_id", EntryType::INT}, 
-               (EntrySet){"active", EntryType::BOOL}, 
-               (EntrySet){"at_setpoint", EntryType::BOOL}
+               (EntrySet){"at_setpoint", EntryType::BOOL}, 
+               (EntrySet){"current_angle", EntryType::DOUBLE}, 
+               (EntrySet){"requesting_setpoint", EntryType::BOOL}, 
+               (EntrySet){"requested_angle", EntryType::DOUBLE}
             }
          ), 
          forearmMotor(vex::motor(vex::PORT16)), 
