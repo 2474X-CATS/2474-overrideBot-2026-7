@@ -20,8 +20,6 @@ class Claw : public Subsystem {
        void flip(bool facingDown);  
        void clench(bool clenched); 
 
-       bool sensesObject();
-
     public:   
        using Subsystem::get; 
        static Claw& getObject();

@@ -63,10 +63,13 @@ class Elevator : public Subsystem {
           { 
             (EntrySet){"active", EntryType::BOOL}, //In a macro?
             (EntrySet){"at_setpoint", EntryType::BOOL}, //Achieved setpoint or no setpoint? 
-            (EntrySet){"requesting_setpoint", EntryType::BOOL},
+            (EntrySet){"requesting_setpoint", EntryType::BOOL}, 
+            (EntrySet){"priming_setpoint", EntryType::DOUBLE},
             (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
-            (EntrySet){"sensing_stack", EntryType::BOOL}, 
-            (EntrySet){"current_height", EntryType::DOUBLE}
+            (EntrySet){"sensing_stack", EntryType::BOOL},
+            (EntrySet){"current_height", EntryType::DOUBLE},
+            (EntrySet){"priming_direction", EntryType::INT}, 
+            (EntrySet){"sniper_score_enabled", EntryType::BOOL}
          }
        )
        { 

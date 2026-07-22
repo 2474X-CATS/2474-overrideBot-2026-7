@@ -10,7 +10,7 @@ double Elevator::MAX_HEIGHT = 1000;
 double Elevator::ELEVATOR_ERROR_TOLERANCE = 3; 
 double Elevator::STACK_HEIGHT = 0.0;  
 
-double Elevator::PRIMING_SPEED = 0.0; 
+double Elevator::PRIMING_SPEED = 500; 
 
 double Elevator::MINIMUM_ALIGNER_DISTANCE = 0.0;  
 double Elevator::ALIGNER_ERROR_TOLERANCE = 0.0; 
@@ -24,10 +24,12 @@ void Elevator::init(){
     //Set up all the constants   
 
     //Motion: Max speed and acceleration 
-    set<double>("current_height", 200);
+    set<double>("current_height", 0);
      
-    motionConsts.maxVelocity = 1000; 
-    motionConsts.maxAcceleration = 250; 
+    motionConsts.maxVelocity = 3000; 
+    motionConsts.maxAcceleration = 3000; 
+
+
 
 } 
 
@@ -46,19 +48,7 @@ void Elevator::periodic(){
 
 void Elevator::updateTelemetry(){     
     // Update status of stack sight  
-    Brain.Screen.printAt(20, 60, "Elevator Height: %.2f", get<double>("current_height"));   
-    
-    string setpointMessage; 
-    if (currentState == ElevatorState::E_PURSUING){ 
-     setpointMessage = "PURSUING";
-    } else if (currentState == ElevatorState::E_PRIMING){ 
-     setpointMessage = "PRIMING";
-    } else { 
-     setpointMessage = "HOLDING"; 
-    }  
-    Brain.Screen.printAt(20, 80, setpointMessage.c_str()); 
-    
-    set<bool>("sensing_stack", false); 
+    set<bool>("sensing_stack", get<double>("current_height") < 500); 
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();
@@ -82,7 +72,7 @@ void Elevator::setSetpoint(double setpoint){
    double error = setpoint - get<double>("current_height");  
    setpointDirection = copysign(1, error); 
    error = fabs(error); 
-   if (error < ELEVATOR_ERROR_TOLERANCE || currentState != ElevatorState::E_HOLDING){ 
+   if (error < ELEVATOR_ERROR_TOLERANCE){ 
     return;
    } 
    motionProfile = new TrapezoidalMotionProfile(motionConsts, error, 0, 0);   
@@ -94,30 +84,43 @@ bool Elevator::reachedSetpoint(){
    return Brain.Timer.time() - motionProfile->getStartTime() >= motionProfile->getTotalDuration(); 
 }
 
-void Elevator::stateControl(){  
+void Elevator::stateControl(){   
 
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
 
-    if (get<bool>("requesting_setpoint")){ 
+    if (get<bool>("requesting_setpoint")){  
+      if (get<bool>("sniper_score_enabled")){ 
+        set<double>("priming_setpoint", get<double>("requested_height"));
+      } else { 
+        setSetpoint(get<double>("requested_height"));
+      }
       set<bool>("requesting_setpoint", false); 
-      setSetpoint(get<double>("requested_height"));
     }
 
     if (currentState == ElevatorState::E_PURSUING){ //
-      if (reachedSetpoint()){ 
-        currentState = ElevatorState::E_HOLDING;
+      if (reachedSetpoint()){  
+        currentState = ElevatorState::E_HOLDING; 
+        if (get<bool>("active")){ 
+          set<bool>("active", false); 
+          Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
+        }
       }
-    } else if (currentState == ElevatorState::E_PRIMING){ 
+    } else if (currentState == ElevatorState::E_PRIMING){   
         if (!get<bool>("sensing_stack")){ 
           currentState = ElevatorState::E_HOLDING; 
           set<bool>("active", false); 
           Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
         }
-    } else { 
-        switch (pos){ 
+    } else {  
+        switch (pos){
             case AUTO: 
-               if (get<bool>("active")){  
-                 currentState = ElevatorState::E_PRIMING;
+               if (get<bool>("active")){   
+                 if (get<bool>("sniper_score_enabled")){ 
+                   setSetpoint(get<double>("priming_setpoint"));
+                 } else { 
+                   currentState = ElevatorState::E_PRIMING; 
+                 }
+                 set<bool>("sniper_score_enabled", false);
                } 
                break; 
             case GROUND:
@@ -127,44 +130,23 @@ void Elevator::stateControl(){
             case STANDING: 
                set<bool>("requesting_setpoint", true); 
                set<double>("requested_height", LEVELED_HEIGHT); 
-               break; 
+               break;  
+            case PRIMED: 
             default: 
                break;
         }
         
-    }  
-    
+    }   
 
-    /*  
-    - Needs to check if the elevator *has* a setpoint yet 
-      [This is essentially checking if there is an important height the elevator needs 
-      to reach. If there is a named position or a known height we want to reach then we will  
-      have a setpoint. In this case the motion profile will not be a nullptr] 
-    - If we don't have a known setpoint though then 
-    | 
-    v
-    If in the GROUND position or STANDING position we will have a setpoint (specifically the ground position) 
-    | 
-    v 
-    Because we want to go to specific heights in the autonomous period then we will have setpoints (but this
-    can be controlled by an entry "requested_height") In fact ground and standing will also run the same  
-    protocol. Modifying requested_height and has_setpoint to show that we want to go to a specifc height.  
-    | 
-    v  
-    Finally (actually this should be at the start) when we are running the macro the first stage is to prime 
-    at least when we aren't in auto. (Going to make a prime function)
-    */   
+   set<bool>("at_setpoint", currentState == ElevatorState::E_HOLDING);  
 
-   set<bool>("at_setpoint", currentState == ElevatorState::E_HOLDING); 
-   set<bool>("responded", true);
-   
 }
 
 void Elevator::respondToRequests(){ 
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
     //respond to driver/operator input 
     if (pos == SuperStructurePosition::PRIMED && currentState == ElevatorState::E_HOLDING){ 
-      raisingDirection = ((int)RobotState::getAxisState(AxisType::S_LEFT_VERTICAL)) / 100;  
+      raisingDirection = get<int>("priming_direction");  
       if (get<double>("current_height") >= MAX_HEIGHT){ 
         raisingDirection = min<int>(raisingDirection, 0);
       } else if (get<double>("current_height") <= GROUND_INTAKE_HEIGHT){ 

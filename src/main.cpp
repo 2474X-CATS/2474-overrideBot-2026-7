@@ -5,7 +5,9 @@
 #include "streams/supersystem.h" 
 #include "subsystems/claw.h"  
 #include "subsystems/elevator.h"  
-#include "subsystems/forearm.h" 
+#include "subsystems/forearm.h"  
+
+#include "mechanisms/simMechs.h"
 
 using namespace vex;
 
@@ -53,7 +55,16 @@ void startCommandMatch()
 
 //------------------------------>-------------------------------------------------------------------------------------------------------------------
 
+int startDisplaySequence(){   
+   Console console = Console();
+   ElevatorMech eMech = ElevatorMech();    
+   ForearmMech fMech = ForearmMech(eMech); 
+   ClawMech cMech = ClawMech(fMech); 
+   Sprite::frameLoop();
+   return 0;
+}
 
+//--------------------------------------------------------------------------------------------------------------------------------------------------
 int main()
 {
 
@@ -63,16 +74,16 @@ int main()
   
   SuperSystem ss = SuperSystem();  
   
-  Claw claw = Claw(); 
   Elevator elevator = Elevator();
-  Forearm forearm = Forearm();
+  Forearm forearm = Forearm(); 
+  Claw claw = Claw(); 
   
   //-------------------------------------------------------
 
   robot.initialize(); 
-
-  //-------------------RUN PROTOCOLS HERE-------------------
   
+  //-------------------RUN PROTOCOLS HERE-------------------
+  thread graphics = thread(startDisplaySequence);
   testDrive();
 
 }

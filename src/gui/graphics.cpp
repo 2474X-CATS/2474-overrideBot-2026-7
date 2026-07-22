@@ -2,7 +2,8 @@
 #include "math.h"  
 
 
-void drawRectangle(int x, int y, int width, int height, uint32_t color){ 
+void drawRectangle(int x, int y, int width, int height, uint32_t color){  
+    Brain.Screen.setPenColor(vex::transparent);
     Brain.Screen.drawRectangle(x, y, width, height, color);
 }; 
 
@@ -99,9 +100,9 @@ void drawLogo(bool isColorBlue){
 
 bool Sprite::running = true; 
 std::vector<Sprite*> Sprite::allSprites; 
-vex::color Sprite::globalColor; 
-uint32_t Sprite::BACKGROUND_COLOR = Sprite::globalColor.white; 
+vex::color Sprite::globalColor;  
 
+int Sprite::BACKGROUND_COLOR[3] = {255, 255, 255}; 
 
 void Sprite::init()
 {
@@ -111,15 +112,17 @@ void Sprite::init()
 
 void Sprite::refreshBackground()
 {
-  Brain.Screen.clearScreen(globalColor.black);
+  Brain.Screen.clearScreen(Sprite::globalColor.rgb(Sprite::BACKGROUND_COLOR[0], Sprite::BACKGROUND_COLOR[1], Sprite::BACKGROUND_COLOR[2]));
 }
 
 void Sprite::redraw()
-{
+{  
+  refreshBackground();
   for (Sprite *sprite : allSprites)
   {
-    sprite->draw();
-  }
+    sprite->draw(); 
+  } 
+  Brain.Screen.render();
 }
 
 void Sprite::refreshSpriteLogic()
@@ -169,19 +172,18 @@ void Sprite::filterDead()
   }
 } 
 
-void Sprite::frameLoop(){ 
-   init();
-   while (running){
-        redraw();  
-        refreshSpriteLogic();  
-        filterDead();
-        vex::wait(30, vex::msec);  
-       } 
+void Sprite::frameLoop(){  
+   init(); 
+   while (running){ 
+      redraw();   
+      refreshSpriteLogic();  
+      filterDead(); 
+      wait(20, vex::msec);  
+   }
    Brain.Screen.clearScreen(); 
    allSprites.clear(); 
    Brain.Screen.pressed(nothingMethod); 
    Brain.Screen.released(nothingMethod); 
-   running = true;
+   running = true;  
+   Brain.Screen.renderDisable();
 }
-
-
