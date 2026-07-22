@@ -30,8 +30,8 @@ class Claw : public Subsystem {
         { 
            (EntrySet){"clenched", EntryType::BOOL}, 
            (EntrySet){"facing_down", EntryType::BOOL}, 
-           (EntrySet){"active", EntryType::BOOL}, 
-           (EntrySet){"requesting_act", EntryType::BOOL} //Does the next action want to be taken depending on the state
+           (EntrySet){"requesting_act", EntryType::BOOL}, //Does the next action want to be taken depending on the state
+           (EntrySet){"senses_object", EntryType::BOOL}
         } 
         ), 
        claw(vex::pneumatics(Brain.ThreeWirePort.B)), 
