@@ -44,7 +44,7 @@ class Sprite {
       
       static std::vector<Sprite*> allSprites;   
 
-      static uint32_t BACKGROUND_COLOR; 
+      static int BACKGROUND_COLOR[3]; 
 
       static bool running; 
 
@@ -70,6 +70,8 @@ class Sprite {
       virtual void mouseReleased(){};  
 
 };  
+
+
 
 
 
