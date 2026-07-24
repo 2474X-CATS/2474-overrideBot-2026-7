@@ -2,7 +2,8 @@
 #include "architecture/robot.h"
 #include <iostream> 
 #include "subsystems/forearm.h" 
-#include "gui/graphics.h"
+#include "gui/graphics.h" 
+#include "gui/graph.h"
 
 using namespace vex;
 
@@ -48,7 +49,26 @@ void startCommandMatch()
   robot.runTelemetryThread();
 }
 
-int displayGraphData(){    
+int displayGraphData(){     
+  DataSupplier desiredOutput; 
+  DataSupplier actualOutput; 
+
+  desiredOutput.directory = "forearm"; 
+  desiredOutput.name = "requested_velocity"; 
+  desiredOutput.label = "D(deg/sec)";  
+
+  actualOutput.directory = "forearm"; 
+  actualOutput.name = "current_velocity"; 
+  actualOutput.label = "R(deg/sec)";
+  
+  Graph g = Graph( 
+    "(D)esired & (R)eal Forearm Velocity", 
+    { 
+      desiredOutput, 
+      actualOutput
+    }
+  ); 
+  
   Sprite::frameLoop();
   return 0;
 }
