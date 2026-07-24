@@ -53,10 +53,12 @@ class Forearm : public Subsystem {
        ForearmState currentState = ForearmState::HOLDING; 
        
        void updatePosition(); 
-       void stateControl();  //ONLY (We can't manually modify the forearm with the controller)
+       void stateControl();  //ONLY (We can't manually modify the forearm with the controller) 
+
+       void respondToRequests();
 
     public:   
-       using Subsystem::get;  
+       using Subsystem::get;
 
        static Forearm& getObject();  
 
@@ -65,9 +67,12 @@ class Forearm : public Subsystem {
             "forearm", 
             {  
                (EntrySet){"at_setpoint", EntryType::BOOL}, 
-               (EntrySet){"current_angle", EntryType::DOUBLE}, 
+               (EntrySet){"current_angle", EntryType::DOUBLE},  
+               (EntrySet){"current_velocity", EntryType::DOUBLE},
                (EntrySet){"requesting_setpoint", EntryType::BOOL}, 
-               (EntrySet){"requested_angle", EntryType::DOUBLE}
+               (EntrySet){"requested_angle", EntryType::DOUBLE}, 
+               (EntrySet){"setpoint", EntryType::DOUBLE}, 
+               (EntrySet){"requested_velocity", EntryType::DOUBLE}
             }
          ), 
          forearmMotor(vex::motor(vex::PORT16)), 

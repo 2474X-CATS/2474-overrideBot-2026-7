@@ -48,6 +48,7 @@ void Forearm::periodic(){
 
 void Forearm::updateTelemetry(){ 
     updatePosition(); 
+    respondToRequests();
     stateControl();  
     set<bool>("at_setpoint", currentState == ForearmState::HOLDING);
 } 
@@ -56,7 +57,8 @@ void Forearm::stop(){
     forearmMotor.spin(vex::directionType::fwd, calculateOutput(0,0), vex::voltageUnits::volt);
 }   
 
-double Forearm::calculateOutput(double omega, double alpha){ 
+double Forearm::calculateOutput(double omega, double alpha){  
+    set<double>("requested_velocity", omega); 
     double ffOutput = armFFConsts.calculate(getCurrentAngle() / 360, omega / 360, alpha / 360); 
     double pidOutput = feedback->calculate(getVelocity(), Brain.Timer.time());  
     feedback->setReference(omega); 
@@ -71,8 +73,9 @@ double Forearm::getVelocity(){
     return (angleDifference(getCurrentAngle(), previousAngle)) / ((Brain.Timer.time() - previousTimestamp) / 1000.0);
 }
 
-void Forearm::updatePosition(){      
-    previousAngle = get<double>("current_angle");   
+void Forearm::updatePosition(){       
+    set<double>("current_velocity", getVelocity());
+    previousAngle = get<double>("current_angle");    
     set<double>("current_angle", getCurrentAngle());  
     previousTimestamp = Brain.Timer.time(); 
 }
@@ -91,13 +94,15 @@ void Forearm::setSetpoint(double setpoint, bool inverted){
 
   if (fabs(error) < ANGULAR_ERROR_TOLERANCE){  
     return;
-  }
-  
+  } 
+
+  set<double>("setpoint", setpoint);
   setpointDirection = copysign(1, error); 
 
   motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), getVelocity(), 0);   
   motionProfile->setLastTimestamp(Brain.Timer.time());
-  currentState = ForearmState::PURSUING; 
+  currentState = ForearmState::PURSUING;  
+ 
 }
 
 void Forearm::stateControl(){  
@@ -114,3 +119,22 @@ void Forearm::stateControl(){
     }
 }  
 
+void Forearm::respondToRequests(){ 
+    if (RobotState::getStateOf("scheduling_setpoint")){  
+
+        int xComponent = RobotState::getAxisState(AxisType::M_LEFT_HORIZONTAL); 
+        int yComponent = RobotState::getAxisState(AxisType::M_LEFT_VERTICAL);
+        
+        if (xComponent == 0 && yComponent == 0){ 
+           double angle = atan2(yComponent, xComponent); 
+           if (angle < 0){ 
+             angle = ((2 * M_PI) + angle);
+           } 
+           set<double>("requesting_setpoint", true); 
+           set<double>("requested_angle", toDegrees(angle));
+        } 
+
+        RobotState::manuallyModifyState("scheduling_setpoint", false); 
+
+    }
+}

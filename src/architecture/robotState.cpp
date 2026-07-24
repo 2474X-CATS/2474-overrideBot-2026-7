@@ -1,5 +1,6 @@
 #include "robotState.h"
-#include "vex.h" 
+#include "vex.h"  
+#include "../utilities/functools.h"
 
 vex::controller Controller1 = vex::controller(vex::controllerType::primary);
 vex::controller Controller2 = vex::controller(vex::controllerType::partner);
@@ -35,65 +36,22 @@ void RobotState::initializeState()
        {
            (EntrySet){"in_autonomous", EntryType::BOOL}, 
            (EntrySet){"inverted", EntryType::BOOL}, 
-           (EntrySet){"is_team_color_blue", EntryType::BOOL},   
-           
-           (EntrySet){"requested_macro", EntryType::BOOL},   
+           (EntrySet){"is_team_color_blue", EntryType::BOOL},  
 
-           (EntrySet){"requested_drop", EntryType::BOOL},  
-           (EntrySet){"awaiting_drop", EntryType::BOOL}, 
-
-           (EntrySet){"requested_land", EntryType::BOOL},  
-           (EntrySet){"awaiting_land", EntryType::BOOL}, 
-
-           (EntrySet){"requested_flip", EntryType::BOOL}, 
-           (EntrySet){"awaiting_flip", EntryType::BOOL}
-
-
-
+           (EntrySet){"k_scheduling_setpoint", EntryType::BOOL}, 
+           (EntrySet){"scheduling_setpoint", EntryType::BOOL}
        });
 }
 
 void RobotState::updateRegular()
 {  
-   if (Controller2.ButtonR2.pressing()){ //Macro
-      manuallyModifyState("requested_macro", true);
-   } else { 
-      if (getStateOf("requested_macro")){ 
-          Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");  
-          manuallyModifyState("requested_macro", false);
-      }
-   }
 
-   //--------------------------------------------------------------------------
-
-   if (Controller2.ButtonA.pressing()){ //Drop
-      manuallyModifyState("requested_drop", true);
+   if (Controller1.ButtonR2.pressing()){ 
+      manuallyModifyState("k_scheduling_setpoint", true);
    } else { 
-      if (getStateOf("requested_drop")){ 
-          manuallyModifyState("awaiting_drop", true); //Turned off by claw itself
-          manuallyModifyState("requested_drop", false);
-      }
-   }  
-
-   //--------------------------------------------------------------------------- 
-   
-   if (Controller2.ButtonB.pressing()){ //Land
-      manuallyModifyState("requested_land", true);
-   } else { 
-      if (getStateOf("requested_land")){ 
-          manuallyModifyState("awaiting_land", true); //Turned off by the arm itself 
-          manuallyModifyState("requested_land", false);
-      }
-   } 
-   
-    //---------------------------------------------------------------------------
-
-   if (Controller2.ButtonX.pressing()){ //Flip
-      manuallyModifyState("requested_flip", true);
-   } else { 
-      if (getStateOf("requested_flip")){ 
-          manuallyModifyState("awaiting_flip", true); //Turned off by claw itself
-          manuallyModifyState("requested_flip", false);
+      if (getStateOf("k_scheduling_setpoint")){ 
+         manuallyModifyState("k_scheduling_setpoint", false); 
+         manuallyModifyState("scheduling_setpoint", true);
       }
    }
 

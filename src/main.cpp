@@ -1,6 +1,8 @@
 #include "vex.h"
 #include "architecture/robot.h"
-#include <iostream>
+#include <iostream> 
+#include "subsystems/forearm.h" 
+#include "gui/graphics.h"
 
 using namespace vex;
 
@@ -46,6 +48,11 @@ void startCommandMatch()
   robot.runTelemetryThread();
 }
 
+int displayGraphData(){    
+  Sprite::frameLoop();
+  return 0;
+}
+
 //------------------------------>-------------------------------------------------------------------------------------------------------------------
 
 
@@ -56,12 +63,14 @@ int main()
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
+  Forearm forearm = Forearm(); 
   
   //-------------------------------------------------------
 
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
- 
+  thread graph = thread(displayGraphData);
+  testDrive();
 
 }
