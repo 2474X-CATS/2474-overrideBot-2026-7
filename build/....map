@@ -684,7 +684,7 @@ Discarded input sections
  .llvm_addrsig  0x0000000000000000        0x5 build/src/architecture/dataStream.o
  .text          0x0000000000000000        0x0 build/src/subsystems/drivebase.o
  .text._ZN9Drivebase4initEv
-                0x0000000000000000       0x44 build/src/subsystems/drivebase.o
+                0x0000000000000000       0x4c build/src/subsystems/drivebase.o
  .ARM.exidx.text._ZN9Drivebase4initEv
                 0x0000000000000000        0x8 build/src/subsystems/drivebase.o
  .text._ZN9Drivebase9getObjectEv

@@ -4,7 +4,8 @@
 
 #include "../architecture/subsystem.h"  
 #include "../control/feedForward.h" 
-#include "../control/pidcontroller.h"
+#include "../control/pidcontroller.h" 
+#include "../control/trapezoidalMotion.h"
 
 class Drivebase : public Subsystem { 
     public:  
@@ -31,8 +32,7 @@ class Drivebase : public Subsystem {
       
       void manualDrive(double voltage); 
       
-      void manualSpin(double voltage); //Negative for the opposite direction 
-
+      void manualSpin(double voltage); //Negative for the opposite direction
 
 
     private:     
@@ -48,10 +48,10 @@ class Drivebase : public Subsystem {
       vex::motor_group rightMotors;
 
       FFConstants ffConsts;
-      PIDConstants correctionConsts;
+      PIDConstants correctionConsts; 
+      TrapezoidConstants motionConsts;
       
       void arcadeDrive(double speed, double rotation); 
-      
 
     protected: 
       using Subsystem::set; 

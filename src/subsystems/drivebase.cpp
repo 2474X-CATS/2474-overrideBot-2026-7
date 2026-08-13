@@ -4,13 +4,16 @@ Drivebase* Drivebase::globalPtr = nullptr;
 
 void Drivebase::init(){ 
 
-  ffConsts.kA = 0; 
-  ffConsts.kV = 0; 
-  ffConsts.kS = 0; 
+  ffConsts.kA = 0;
+  ffConsts.kV = 0;
+  ffConsts.kS = 0;
    
-  correctionConsts.P = 0; 
-  correctionConsts.I = 0; 
-  correctionConsts.D = 0; 
+  correctionConsts.P = 0;
+  correctionConsts.I = 0;
+  correctionConsts.D = 0;
+
+  motionConsts.maxVelocity = 0;
+  motionConsts.maxAcceleration = 0;
 
   leftMotors.setStopping(vex::brakeType::coast);  
   rightMotors.setStopping(vex::brakeType::coast);
