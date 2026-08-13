@@ -2,7 +2,8 @@
 
 Drivebase* Drivebase::globalPtr = nullptr; 
 
-void Drivebase::init(){  
+void Drivebase::init(){ 
+
   ffConsts.kA = 0; 
   ffConsts.kV = 0; 
   ffConsts.kS = 0; 
@@ -11,8 +12,7 @@ void Drivebase::init(){
   correctionConsts.I = 0; 
   correctionConsts.D = 0; 
 
-
-  leftMotors.setStopping(vex::brakeType::brake);  
+  leftMotors.setStopping(vex::brakeType::coast);  
   rightMotors.setStopping(vex::brakeType::coast);
 }  
 
