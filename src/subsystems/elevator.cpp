@@ -94,7 +94,7 @@ void Elevator::stateControl(){
 
     if (currentState == ElevatorState::E_PURSUING){ //
       if (reachedSetpoint()){  
-        currentState = ElevatorState::E_HOLDING; 
+        currentState = ElevatorState::E_HOLDING;
         if (get<bool>("active")){ 
           set<bool>("active", false); 
           Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");

@@ -1,4 +1,3 @@
-#include "vex.h"
 #include "architecture/robot.h"
 #include <iostream> 
 

@@ -100,22 +100,24 @@ void Forearm::stateControl(){
             }
           }  
         } 
-    } else if (currentState == ForearmState::F_HOLDING) {    
-        switch (pos){ 
+    } else if (currentState == ForearmState::F_HOLDING) {   
+        bool canTransition = Telemetry::inst.getValueAt<bool>("ss_manager", "can_transition"); 
+        switch (pos){  
             case PRIMED:
               requestingSetpoint = true; 
               requestedSetpoint = PRIMING_SETPOINT;
-              //setSetpoint(PRIMING_SETPOINT, RobotState::getStateOf("inverted")); 
               break;
             case GROUND:  
-              requestingSetpoint = true; 
-              requestedSetpoint = GROUND_SETPOINT;
-              //setSetpoint(GROUND_SETPOINT, RobotState::getStateOf("inverted")); 
+              if (canTransition){ 
+                requestingSetpoint = true; 
+                requestedSetpoint = GROUND_SETPOINT;
+              } 
               break;
-            case STANDING:  
-              requestingSetpoint = true; 
-              requestedSetpoint = STANDING_SETPOINT;
-              //setSetpoint(STANDING_SETPOINT, RobotState::getStateOf("inverted"));  
+            case STANDING:   
+              if (canTransition){ 
+                requestingSetpoint = true; 
+                requestedSetpoint = STANDING_SETPOINT;
+              } 
               break; 
             case AUTO: 
               if (get<bool>("active")){  
@@ -123,7 +125,7 @@ void Forearm::stateControl(){
                 if (get<int>("task_id") == 0){ 
                     requestedSetpoint = PLACE_SETPOINT;
                 } else { 
-                    requestedSetpoint = PRIMING_SETPOINT;
+                    requestedSetpoint = RELEASE_SETPOINT;
                 }
               } 
               break;  
