@@ -125,8 +125,13 @@ void Elevator::stateControl(){
             case STANDING: 
                set<bool>("requesting_setpoint", true); 
                set<double>("requested_height", LEVELED_HEIGHT); 
-               break;  
-            case PRIMED: 
+               break;
+            case PRIMED:
+               if (get<bool>("sniper_score_enabled")){ 
+                   setSetpoint(get<double>("priming_setpoint")); 
+                   set<bool>("sniper_score_enabled", false);
+               }
+               break;
             default: 
                break;
         }
