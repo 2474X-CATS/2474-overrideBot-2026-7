@@ -44,7 +44,7 @@ void Elevator::periodic(){
 
 void Elevator::updateTelemetry(){     
     // Update status of stack sight  
-    set<bool>("sensing_stack", get<double>("current_height") < 500); 
+    set<bool>("sensing_stack", get<double>("current_height") < 300); 
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();

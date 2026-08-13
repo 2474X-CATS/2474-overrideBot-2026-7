@@ -3,10 +3,11 @@
 
 Forearm* Forearm::globalPtr = nullptr; 
 
-double Forearm::PLACE_SETPOINT = 0; 
+double Forearm::PLACE_SETPOINT = 30; 
 double Forearm::PRIMING_SETPOINT = 45; 
 double Forearm::GROUND_SETPOINT = 270; 
-double Forearm::STANDING_SETPOINT = 180;  
+double Forearm::STANDING_SETPOINT = 0;   
+double Forearm::RELEASE_SETPOINT = 75;
 
 double Forearm::ANGULAR_ERROR_TOLERANCE = 3.0;
 

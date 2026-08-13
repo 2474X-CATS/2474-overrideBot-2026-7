@@ -604,6 +604,8 @@ Discarded input sections
  .group         0x0000000000000000       0x14 build/src/subsystems/forearm.o
  .group         0x0000000000000000       0x14 build/src/subsystems/forearm.o
  .group         0x0000000000000000       0x14 build/src/subsystems/forearm.o
+ .data._ZN7Forearm16RELEASE_SETPOINTE
+                0x0000000000000000        0x8 build/src/subsystems/forearm.o
  .llvm_addrsig  0x0000000000000000        0x3 build/src/subsystems/forearm.o
  .text          0x0000000000000000        0x0 build/src/subsystems/elevator.o
  .text._ZN8Elevator9getObjectEv
@@ -9543,15 +9545,15 @@ Linker script and memory map
                 0x000000000380ebf8        0x1 build/src/architecture/robotState.o
                 0x000000000380ebf8                RobotState::mode
  *fill*         0x000000000380ebf9        0x7 
- .data._ZN7Forearm16PRIMING_SETPOINTE
+ .data._ZN7Forearm14PLACE_SETPOINTE
                 0x000000000380ec00        0x8 build/src/subsystems/forearm.o
-                0x000000000380ec00                Forearm::PRIMING_SETPOINT
- .data._ZN7Forearm15GROUND_SETPOINTE
+                0x000000000380ec00                Forearm::PLACE_SETPOINT
+ .data._ZN7Forearm16PRIMING_SETPOINTE
                 0x000000000380ec08        0x8 build/src/subsystems/forearm.o
-                0x000000000380ec08                Forearm::GROUND_SETPOINT
- .data._ZN7Forearm17STANDING_SETPOINTE
+                0x000000000380ec08                Forearm::PRIMING_SETPOINT
+ .data._ZN7Forearm15GROUND_SETPOINTE
                 0x000000000380ec10        0x8 build/src/subsystems/forearm.o
-                0x000000000380ec10                Forearm::STANDING_SETPOINT
+                0x000000000380ec10                Forearm::GROUND_SETPOINT
  .data._ZN7Forearm23ANGULAR_ERROR_TOLERANCEE
                 0x000000000380ec18        0x8 build/src/subsystems/forearm.o
                 0x000000000380ec18                Forearm::ANGULAR_ERROR_TOLERANCE
@@ -10504,9 +10506,9 @@ Linker script and memory map
                 0x000000000380f820        0x4 build/src/subsystems/forearm.o
                 0x000000000380f820                Forearm::globalPtr
  *fill*         0x000000000380f824        0x4 
- .bss._ZN7Forearm14PLACE_SETPOINTE
+ .bss._ZN7Forearm17STANDING_SETPOINTE
                 0x000000000380f828        0x8 build/src/subsystems/forearm.o
-                0x000000000380f828                Forearm::PLACE_SETPOINT
+                0x000000000380f828                Forearm::STANDING_SETPOINT
  .bss._ZN8Elevator9globalPtrE
                 0x000000000380f830        0x4 build/src/subsystems/elevator.o
                 0x000000000380f830                Elevator::globalPtr

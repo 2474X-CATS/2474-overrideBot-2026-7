@@ -17,7 +17,8 @@ class Forearm : public Subsystem {
        static double PLACE_SETPOINT; 
        static double PRIMING_SETPOINT; 
        static double GROUND_SETPOINT; 
-       static double STANDING_SETPOINT;  
+       static double STANDING_SETPOINT;   
+       static double RELEASE_SETPOINT;
 
        static double ANGULAR_ERROR_TOLERANCE; 
 

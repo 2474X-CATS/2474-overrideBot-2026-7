@@ -9,7 +9,7 @@ double ElevatorMech::DEFAULT_Y = 115;
 double ElevatorMech::MAX_WIDTH = 100; 
 double ElevatorMech::STAGE_HEIGHT = 120;
 
-double ElevatorMech::getHeight(){ 
+double ElevatorMech::getHeight(){
     return (Telemetry::inst.getValueAt<double>("elevator", "current_height") / 1000 * 240); 
 }
 
