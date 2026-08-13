@@ -8,9 +8,9 @@ double Elevator::LEVELED_HEIGHT = 0;
 double Elevator::MAX_HEIGHT = 1000;
 
 double Elevator::ELEVATOR_ERROR_TOLERANCE = 3; 
-double Elevator::STACK_HEIGHT = 0.0;  
+double Elevator::STACK_HEIGHT = 164.5;  
 
-double Elevator::PRIMING_SPEED = 500; 
+double Elevator::PRIMING_SPEED = STACK_HEIGHT * (20.0 / 1000.0) * 2; //Every half second
 
 double Elevator::MINIMUM_ALIGNER_DISTANCE = 0.0;  
 double Elevator::ALIGNER_ERROR_TOLERANCE = 0.0; 
@@ -32,7 +32,7 @@ void Elevator::init(){
 void Elevator::periodic(){  
    double elevatorVelocity;
    if (currentState == ElevatorState::E_HOLDING){//Stay Still
-     elevatorVelocity = PRIMING_SPEED * raisingDirection; 
+     elevatorVelocity = 0; 
    } else if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
      elevatorVelocity = PRIMING_SPEED;
    } else {  //Pursuing a setpoint
@@ -94,11 +94,13 @@ void Elevator::stateControl(){
 
     if (currentState == ElevatorState::E_PURSUING){ //
       if (reachedSetpoint()){  
-        currentState = ElevatorState::E_HOLDING;
+        currentState = ElevatorState::E_HOLDING; 
+        /*
         if (get<bool>("active")){ 
           set<bool>("active", false); 
           Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
-        }
+        } 
+        */
       }
     } else if (currentState == ElevatorState::E_PRIMING){   
         if (!get<bool>("sensing_stack")){ 
@@ -110,12 +112,12 @@ void Elevator::stateControl(){
         switch (pos){
             case AUTO: 
                if (get<bool>("active")){   
-                 if (get<bool>("sniper_score_enabled")){ 
+                 if (get<bool>("sniper_score_enabled")){  
+                   set<bool>("sniper_score_enabled", false);
                    setSetpoint(get<double>("priming_setpoint"));
                  } else { 
                    currentState = ElevatorState::E_PRIMING; 
                  }
-                 set<bool>("sniper_score_enabled", false);
                } 
                break; 
             case GROUND:
@@ -144,13 +146,31 @@ void Elevator::stateControl(){
 
 void Elevator::respondToRequests(){ 
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
-    //respond to driver/operator input 
+    
     if (pos == SuperStructurePosition::PRIMED && currentState == ElevatorState::E_HOLDING){ 
-      raisingDirection = get<int>("priming_direction");  
+      
+      if (raisingDirection == get<int>("priming_direction") && raisingDirection != 0){ 
+        if ((Brain.Timer.time() - get<double>("lifting_timestamp")) >= 500){ //Wait half a second
+          set<double>("lifting_timestamp", Brain.Timer.time());  
+          int stacks = (get<double>("current_height") / STACK_HEIGHT) + copysign(1, raisingDirection);  
+          if (stacks * STACK_HEIGHT <= MAX_HEIGHT && stacks > 0){ 
+            set<bool>("requesting_setpoint", true); 
+            set<double>("requested_height", stacks * 1.0 * STACK_HEIGHT); 
+          } 
+          raisingDirection = 0;
+        }
+      } else { 
+        set<double>("lifting_timestamp", Brain.Timer.time());  
+        raisingDirection = get<int>("priming_direction");
+      } 
+
+      /*
+      raisingDirection = get<int>("priming_direction");
       if (get<double>("current_height") >= MAX_HEIGHT){ 
         raisingDirection = min<int>(raisingDirection, 0);
       } else if (get<double>("current_height") <= GROUND_INTAKE_HEIGHT){ 
         raisingDirection = max<int>(raisingDirection, 0);
-      }
+      } 
+      */
     }
 }

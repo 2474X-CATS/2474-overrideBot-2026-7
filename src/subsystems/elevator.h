@@ -67,7 +67,8 @@ class Elevator : public Subsystem {
             (EntrySet){"sensing_stack", EntryType::BOOL},
             (EntrySet){"current_height", EntryType::DOUBLE},
             (EntrySet){"priming_direction", EntryType::INT}, 
-            (EntrySet){"sniper_score_enabled", EntryType::BOOL}
+            (EntrySet){"sniper_score_enabled", EntryType::BOOL}, 
+            (EntrySet){"lifting_timestamp", EntryType::DOUBLE}
          }
        )
        { 
