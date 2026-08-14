@@ -20,10 +20,10 @@ class Drivebase : public Subsystem {
           (EntrySet){"is_on", EntryType::BOOL}
         }
       ), 
-      leftFront(vex::motor(vex::PORT4)), 
-      leftBack(vex::motor(vex::PORT5)), 
-      rightFront(vex::motor(vex::PORT6)), 
-      rightBack(vex::motor(vex::PORT7)), 
+      leftFront(vex::motor(vex::PORT7)), 
+      leftBack(vex::motor(vex::PORT6)), 
+      rightFront(vex::motor(vex::PORT5)), 
+      rightBack(vex::motor(vex::PORT4)), 
       leftMotors(leftFront, leftBack), 
       rightMotors(rightFront, rightBack)
       { 
@@ -42,7 +42,7 @@ class Drivebase : public Subsystem {
       vex::motor leftBack; 
 
       vex::motor rightFront; 
-      vex::motor rightBack;     
+      vex::motor rightBack;  
 
       vex::motor_group leftMotors;
       vex::motor_group rightMotors;

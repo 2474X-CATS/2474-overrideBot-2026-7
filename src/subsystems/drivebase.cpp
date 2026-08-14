@@ -1,4 +1,5 @@
 #include "drivebase.h" 
+#include "../utilities/functools.h"
 
 Drivebase* Drivebase::globalPtr = nullptr; 
 
@@ -28,7 +29,7 @@ void Drivebase::periodic(){
 }
 
 void Drivebase::updateTelemetry(){ 
-  return;
+ return;
 }
 
 void Drivebase::stop(){ 
@@ -37,16 +38,16 @@ void Drivebase::stop(){
 } 
 
 void Drivebase::manualDrive(double voltage){ 
-    leftMotors.spin(vex::directionType::fwd, voltage, vex::voltageUnits::volt); 
-    rightMotors.spin(vex::directionType::rev, voltage, vex::voltageUnits::volt);
+    leftMotors.spin(vex::directionType::rev, voltage, vex::voltageUnits::volt); 
+    rightMotors.spin(vex::directionType::fwd, voltage, vex::voltageUnits::volt);
 } 
 
 void Drivebase::manualSpin(double voltage){ 
-    leftMotors.spin(vex::directionType::fwd, -voltage, vex::voltageUnits::volt); 
-    rightMotors.spin(vex::directionType::rev, voltage, vex::voltageUnits::volt); 
+    leftMotors.spin(vex::directionType::rev, -voltage, vex::voltageUnits::volt); 
+    rightMotors.spin(vex::directionType::fwd, voltage, vex::voltageUnits::volt); 
 } 
 
 void Drivebase::arcadeDrive(double speed, double rotation){ 
-    leftMotors.spin(vex::directionType::fwd, ((speed + rotation) / 100.0) * 12.0, vex::voltageUnits::volt); 
-    rightMotors.spin(vex::directionType::rev, ((speed + rotation) / 100.0) * 12.0, vex::voltageUnits::volt); 
+    leftMotors.spin(vex::directionType::rev, ((speed + rotation) / 100.0) * 12.0, vex::voltageUnits::volt); 
+    rightMotors.spin(vex::directionType::fwd, ((speed - rotation) / 100.0) * 12.0, vex::voltageUnits::volt); 
 }

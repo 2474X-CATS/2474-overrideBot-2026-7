@@ -35,8 +35,11 @@ void RobotState::initializeState()
        {
            (EntrySet){"in_autonomous", EntryType::BOOL}, 
            (EntrySet){"inverted", EntryType::BOOL}, 
-           (EntrySet){"is_team_color_blue", EntryType::BOOL}
-       });
+           (EntrySet){"is_team_color_blue", EntryType::BOOL}, 
+           (EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
+       }); 
+   
+   manuallyModifyState("field_type_is_vex", true);
 }
 
 void RobotState::updateRegular()

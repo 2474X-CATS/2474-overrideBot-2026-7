@@ -1,5 +1,7 @@
 #include "vex.h"
-#include "architecture/robot.h"
+#include "architecture/robot.h" 
+#include "subsystems/drivebase.h" 
+#include "streams/odometry.h"
 #include <iostream>
 
 using namespace vex;
@@ -56,6 +58,9 @@ int main()
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
+  Odometry odom = Odometry(); 
+
+  Drivebase drivebase = Drivebase();
   
   //-------------------------------------------------------
 
@@ -63,5 +68,5 @@ int main()
 
   //-------------------RUN PROTOCOLS HERE-------------------
  
-
+  testDrive();
 }
