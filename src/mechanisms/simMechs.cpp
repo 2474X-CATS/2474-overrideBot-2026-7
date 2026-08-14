@@ -378,7 +378,8 @@ bool Console::checkRect(int rectX, int rectY, int rectWidth, int rectHeight){
 
 
 bool Console::checkClawAction(){ 
-   bool successful = checkRect(x + width / 3 * 2, 140, width - (width / 3 * 2), 30); 
+   bool successful = checkRect(x + width / 3 * 2, 140, width - (width / 3 * 2), 30);  
+   
    if (successful){  
       if (Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached") && Telemetry::inst.getValueAt<bool>("claw", "senses_object")){ 
           Telemetry::inst.placeValueAt<bool>(true, "claw", "requesting_act"); 

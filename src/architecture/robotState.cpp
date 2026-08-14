@@ -46,8 +46,12 @@ void RobotState::initializeState()
            (EntrySet){"awaiting_land", EntryType::BOOL}, 
 
            (EntrySet){"requested_flip", EntryType::BOOL}, 
-           (EntrySet){"awaiting_flip", EntryType::BOOL}
-       });
+           (EntrySet){"awaiting_flip", EntryType::BOOL}, 
+
+           (EntrySet){"controller_connected", EntryType::BOOL}
+       }); 
+
+       manuallyModifyState("controller_connected", Controller1.installed());
 }
 
 void RobotState::updateRegular()
