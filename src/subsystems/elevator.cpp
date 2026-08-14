@@ -10,7 +10,7 @@ double Elevator::MAX_HEIGHT = 1000;
 double Elevator::ELEVATOR_ERROR_TOLERANCE = 3; 
 double Elevator::STACK_HEIGHT = 164.5;  
 
-double Elevator::PRIMING_SPEED = STACK_HEIGHT * (20.0 / 1000.0) * 2; //Every half second
+double Elevator::PRIMING_SPEED = 500; //Every half second
 
 double Elevator::MINIMUM_ALIGNER_DISTANCE = 0.0;  
 double Elevator::ALIGNER_ERROR_TOLERANCE = 0.0; 
@@ -149,19 +149,18 @@ void Elevator::respondToRequests(){
     
     if (pos == SuperStructurePosition::PRIMED && currentState == ElevatorState::E_HOLDING){ 
       
-      if (raisingDirection == get<int>("priming_direction") && raisingDirection != 0){ 
-        if ((Brain.Timer.time() - get<double>("lifting_timestamp")) >= 500){ //Wait half a second
-          set<double>("lifting_timestamp", Brain.Timer.time());  
-          int stacks = (get<double>("current_height") / STACK_HEIGHT) + copysign(1, raisingDirection);  
-          if (stacks * STACK_HEIGHT <= MAX_HEIGHT && stacks > 0){ 
-            set<bool>("requesting_setpoint", true); 
+      if (get<int>("priming_direction") != 0){ 
+        if ((Brain.Timer.time() - get<double>("lifting_timestamp")) >= 100){ //Wait half a second  
+          int stacks = (get<double>("current_height") / (STACK_HEIGHT - 2)) + copysign(1, get<int>("priming_direction"));  
+          if (stacks * STACK_HEIGHT <= MAX_HEIGHT && stacks >= 0){ 
+            set<bool>("requesting_setpoint", true);  
             set<double>("requested_height", stacks * 1.0 * STACK_HEIGHT); 
-          } 
+          }   
+          set<double>("lifting_timestamp", Brain.Timer.time());
           raisingDirection = 0;
         }
       } else { 
         set<double>("lifting_timestamp", Brain.Timer.time());  
-        raisingDirection = get<int>("priming_direction");
       } 
 
       /*
