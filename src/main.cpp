@@ -3,6 +3,7 @@
 #include "subsystems/drivebase.h" 
 #include "streams/odometry.h"
 #include <iostream>
+#include "gui/graph.h"
 
 using namespace vex;
 
@@ -46,6 +47,10 @@ void startCommandMatch()
   robot.configurateAutonomous();
   thread callBackTrigger = thread(scheduleCallbacks);
   robot.runTelemetryThread();
+} 
+
+int updateData(){   
+  return 0;
 }
 
 //------------------------------>-------------------------------------------------------------------------------------------------------------------
@@ -55,6 +60,8 @@ int main()
 {
 
   vexcodeInit();
+  
+   
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
