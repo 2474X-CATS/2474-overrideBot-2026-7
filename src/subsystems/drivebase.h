@@ -85,8 +85,7 @@ class DriveForward : public Command<Drivebase> {
      static double FF_CONSTANTS_S;
      static double FF_CONSTANTS_V;
      static double FF_CONSTANTS_A;
-    
-
+  
    public:
 
      static CommandInterface* getCommand(double distance){ 
@@ -98,6 +97,43 @@ class DriveForward : public Command<Drivebase> {
      drivebaseRef(drive), 
      direction(copysign(1, dist)),
      distance(fabs(dist))
+     {};
+
+   protected: 
+     Drivebase& drivebaseRef;  
+
+     void start() override; 
+     void periodic() override; 
+     bool isOver() override; 
+     void end() override; 
+}; 
+
+//-----------------------------------------------------------------
+
+class TurnToHeading : public Command<Drivebase> {  
+   
+   private: 
+     
+     double setpoint; 
+
+     pidcontroller* controller = nullptr; 
+
+     static double PID_CONSTANTS_KP;
+     static double PID_CONSTANTS_KI;
+     static double PID_CONSTANTS_KD;  
+
+     double getError(); 
+
+   public:
+
+     static CommandInterface* getCommand(double angle){ 
+         return new TurnToHeading(Drivebase::getObject(), angle);
+     }
+
+     TurnToHeading(Drivebase& drive, double angle):  
+     Command<Drivebase>(drive),
+     drivebaseRef(drive), 
+     setpoint(angle)
      {};
 
    protected: 

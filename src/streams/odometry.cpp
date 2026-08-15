@@ -42,12 +42,9 @@ void Odometry::refreshData(){
     set<double>("x_position_mm", xPos); 
     set<double>("y_position_mm", yPos); 
   
-    lastTimestamp = currentTimestamp; 
+    lastTimestamp = currentTimestamp;  
 
-    Brain.Screen.printAt(20, 120, "X Position: %.2f", get<double>("x_position_mm"));
-    Brain.Screen.printAt(20, 140, "Y Position: %.2f", get<double>("y_position_mm"));  
-    //Brain.Screen.printAt(20, 160, "Immediate Distance: %.2f", get<double>("immediate_distance"));
-    Brain.Screen.printAt(20, 180, "Angle Degrees: %.2f", get<double>("heading_deg"));
+    Brain.Screen.printAt(20, 100, "Angle Degrees: %.2f", get<double>("heading_deg"));
 
 } 
 

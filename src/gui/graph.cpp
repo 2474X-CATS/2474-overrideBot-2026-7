@@ -126,7 +126,7 @@ void Graph::drawTicks(){
     double range = maximumValue - minimumValue;
 
     for (int i = 0; i < 5; i ++){   
-        int val = (minimumValue + (range / 4.0 * i)) / 100;
+        double val = (minimumValue + (range / 4.0 * i)) / 100;
         stringstream currentVal; 
         currentVal << val * 100; 
         drawLine(x - 20, y + height - ((i / 4.0) * height), x, y + height - ((i / 4.0) * height), globalColor.black);

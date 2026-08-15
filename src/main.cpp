@@ -49,7 +49,39 @@ void startCommandMatch()
   robot.runTelemetryThread();
 } 
 
-int updateData(){   
+
+
+int initializeGraph(){  
+  
+  Telemetry::inst.registerSubtable( 
+    "blueprint", 
+    { 
+      (EntrySet){"velocity", EntryType::DOUBLE}
+    }
+  ); 
+
+  DataSupplier real; 
+  real.directory = "odometry";  
+  real.name = "velocity_ms"; 
+  real.label = "Real(m/s)"; 
+  
+
+  DataSupplier desired;  
+  desired.directory = "blueprint"; 
+  desired.name = "velocity";  
+  desired.label = "BP(m/s)";
+  
+
+  Graph g = Graph( 
+    "Velocity vs Desired Velocity", 
+    { 
+       real, 
+       desired
+    }
+  ); 
+
+  Sprite::frameLoop(); 
+
   return 0;
 }
 
@@ -61,8 +93,7 @@ int main()
 
   vexcodeInit();
   
-   
-
+  
   //--------------------SUBSYSTEM CREATION----------------- 
   
   Odometry odom = Odometry(); 
@@ -73,10 +104,13 @@ int main()
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
- 
+  
+  //thread t = thread(initializeGraph); 
+
   testAuto( 
     { 
-      SequentialCommandGroup::makeGroup(DriveForward::getCommand(1000))
+      TurnToHeading::getCommand(180), 
+      DriveForward::getCommand(1000)
     }
   ); 
 

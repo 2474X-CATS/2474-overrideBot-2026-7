@@ -39,8 +39,8 @@ class Graph : public Sprite {
       std::string header; 
       int charsInTitle;
 
-      double maximumValue = 1000; 
-      double minimumValue = -1000;  
+      double maximumValue = 1; 
+      double minimumValue = -1;  
 
       double displayTimeRange; 
       double minimumTimestamp;
@@ -58,7 +58,7 @@ class Graph : public Sprite {
     public:
       Graph(std::string title, vector<DataSupplier> outputs): 
       Sprite(40,25,360,180),
-      displayTimeRange(5000),
+      displayTimeRange(10000),
       minimumTimestamp(Brain.Timer.time()), 
       outputSupplier(outputs), 
       header(title), 
