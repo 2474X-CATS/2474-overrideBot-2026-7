@@ -59,7 +59,6 @@ int main()
   //--------------------SUBSYSTEM CREATION----------------- 
   
   Odometry odom = Odometry(); 
-
   Drivebase drivebase = Drivebase();
   
   //-------------------------------------------------------
@@ -68,5 +67,10 @@ int main()
 
   //-------------------RUN PROTOCOLS HERE-------------------
  
-  testDrive();
+  testAuto( 
+    { 
+      SequentialCommandGroup::makeGroup(DriveForward::getCommand(1000))
+    }
+  ); 
+
 }

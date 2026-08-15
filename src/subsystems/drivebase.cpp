@@ -3,21 +3,12 @@
 
 Drivebase* Drivebase::globalPtr = nullptr; 
 
+double Drivebase::MAX_RPM = 450; 
+double Drivebase::WHEEL_RADIUS_MM = 2.75 / 2 * 25.4;
+
 void Drivebase::init(){ 
-
-  ffConsts.kA = 0;
-  ffConsts.kV = 0;
-  ffConsts.kS = 0;
-   
-  correctionConsts.P = 0;
-  correctionConsts.I = 0;
-  correctionConsts.D = 0;
-
-  motionConsts.maxVelocity = 0;
-  motionConsts.maxAcceleration = 0;
-
-  leftMotors.setStopping(vex::brakeType::coast);  
-  rightMotors.setStopping(vex::brakeType::coast);
+  leftMotors.setStopping(vex::brakeType::brake);  
+  rightMotors.setStopping(vex::brakeType::brake);
 }  
 
 Drivebase& Drivebase::getObject(){ 
@@ -33,8 +24,8 @@ void Drivebase::updateTelemetry(){
 }
 
 void Drivebase::stop(){ 
-   leftMotors.stop(); 
-   rightMotors.stop();
+    leftMotors.stop(); 
+    rightMotors.stop();
 } 
 
 void Drivebase::manualDrive(double voltage){ 
@@ -50,4 +41,72 @@ void Drivebase::manualSpin(double voltage){
 void Drivebase::arcadeDrive(double speed, double rotation){ 
     leftMotors.spin(vex::directionType::rev, ((speed + rotation) / 100.0) * 12.0, vex::voltageUnits::volt); 
     rightMotors.spin(vex::directionType::fwd, ((speed - rotation) / 100.0) * 12.0, vex::voltageUnits::volt); 
+} 
+
+
+///-------------------------------------------------------------------------------------- 
+
+double DriveForward::MOTION_CONSTANTS_MAX_VELO = ((Drivebase::MAX_RPM * (2 * Drivebase::WHEEL_RADIUS_MM * M_PI)) / 60.0); 
+double DriveForward::MOTION_CONSTANTS_MAX_ACCEL = DriveForward::MOTION_CONSTANTS_MAX_VELO / 1;
+
+double DriveForward::PID_CONSTANTS_KP = 0; 
+double DriveForward::PID_CONSTANTS_KI = 0;
+double DriveForward::PID_CONSTANTS_KD = 0; 
+
+double DriveForward::FF_CONSTANTS_S = 0.01; 
+double DriveForward::FF_CONSTANTS_V = 0; 
+double DriveForward::FF_CONSTANTS_A = 0;  
+
+
+void DriveForward::start(){  
+    FFConstants forwardConstants;
+    forwardConstants.kS = FF_CONSTANTS_S; 
+    forwardConstants.kV = FF_CONSTANTS_V; 
+    forwardConstants.kA = FF_CONSTANTS_A;  
+    
+    PIDConstants pidConstants; 
+    pidConstants.P = PID_CONSTANTS_KP; 
+    pidConstants.I = PID_CONSTANTS_KI; 
+    pidConstants.D = PID_CONSTANTS_KD; 
+     
+    TrapezoidConstants motionConstants; 
+    motionConstants.maxVelocity = MOTION_CONSTANTS_MAX_VELO; 
+    motionConstants.maxAcceleration = MOTION_CONSTANTS_MAX_ACCEL; 
+
+    controller = new errorcontroller(pidConstants);  
+    motionProfile = new TrapezoidalMotionProfile(motionConstants, distance); 
+    ffController = new FeedForward(forwardConstants);  
+
+    controller->setLastTimestamp(Brain.Timer.time()); 
+    motionProfile->setLastTimestamp(Brain.Timer.time()); 
+
+} 
+
+void DriveForward::periodic(){   
+    //TrapezoidalSetpoint motionGoal = motionProfile->generateSetpoint(Brain.Timer.time());   
+
+    double setpointVelocity; 
+    double setpointAcceleration; 
+
+    setpointVelocity = 0; 
+    setpointAcceleration = 0;
+
+    double ffOutput = ffController->calculate(setpointVelocity, setpointAcceleration) * direction; 
+    //double correction = controller->calculate(Telemetry::inst.getValueAt<double>("odometry", "velocity_ms"), Brain.Timer.time()); 
+
+    //controller->setReference(motionGoal.velocity * direction);  
+
+    double output = ffOutput; //+ correction;
+    
+    drivebaseRef.manualDrive(output);  
+
+} 
+
+bool DriveForward::isOver(){ 
+    return (Brain.Timer.time() - motionProfile->getStartTime()) >= 1000; //motionProfile->getTotalDuration();
 }
+
+void DriveForward::end(){ 
+    drivebaseRef.manualDrive(0); 
+}
+

@@ -17,7 +17,8 @@ class Odometry : public DataStream {
            (EntrySet){"y_position_mm", EntryType::DOUBLE}, 
            (EntrySet){"heading_deg", EntryType::DOUBLE},  
 
-           (EntrySet){"velocity_ms", EntryType::DOUBLE}, 
+           (EntrySet){"velocity_ms", EntryType::DOUBLE},  
+           
            (EntrySet){"immediate_distance", EntryType::DOUBLE},  
 
            (EntrySet){"oriented_c", EntryType::BOOL}

@@ -5,11 +5,15 @@
 #include "../architecture/subsystem.h"  
 #include "../control/feedForward.h" 
 #include "../control/pidcontroller.h" 
-#include "../control/trapezoidalMotion.h"
+#include "../control/trapezoidalMotion.h" 
+#include "../architecture/command.h"
 
 class Drivebase : public Subsystem { 
     public:  
-      using Subsystem::get;   
+      using Subsystem::get;  
+      
+      static double MAX_RPM; 
+      static double WHEEL_RADIUS_MM;
       
       static Drivebase& getObject(); 
 
@@ -46,10 +50,6 @@ class Drivebase : public Subsystem {
 
       vex::motor_group leftMotors;
       vex::motor_group rightMotors;
-
-      FFConstants ffConsts;
-      PIDConstants correctionConsts; 
-      TrapezoidConstants motionConsts;
       
       void arcadeDrive(double speed, double rotation); 
 
@@ -59,7 +59,54 @@ class Drivebase : public Subsystem {
       void init() override;
       void periodic() override; 
       void updateTelemetry() override; 
-      void stop() override; 
+      void stop() override;
+}; 
+
+//--------------------------------------------------------------------------------- 
+
+
+class DriveForward : public Command<Drivebase> {  
+   
+   private: 
+     double distance;
+     int direction;
+     
+     TrapezoidalMotionProfile* motionProfile = nullptr;  
+     errorcontroller* controller = nullptr; 
+     FeedForward* ffController = nullptr;
+
+     static double MOTION_CONSTANTS_MAX_VELO; 
+     static double MOTION_CONSTANTS_MAX_ACCEL; 
+
+     static double PID_CONSTANTS_KP;
+     static double PID_CONSTANTS_KI;
+     static double PID_CONSTANTS_KD;
+
+     static double FF_CONSTANTS_S;
+     static double FF_CONSTANTS_V;
+     static double FF_CONSTANTS_A;
+    
+
+   public:
+
+     static CommandInterface* getCommand(double distance){ 
+         return new DriveForward(Drivebase::getObject(), distance);
+     }
+
+     DriveForward(Drivebase& drive, double dist):  
+     Command<Drivebase>(drive),
+     drivebaseRef(drive), 
+     direction(copysign(1, dist)),
+     distance(fabs(dist))
+     {};
+
+   protected: 
+     Drivebase& drivebaseRef;  
+
+     void start() override; 
+     void periodic() override; 
+     bool isOver() override; 
+     void end() override; 
 
 };
 
