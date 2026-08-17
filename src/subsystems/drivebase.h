@@ -34,9 +34,10 @@ class Drivebase : public Subsystem {
         globalPtr = this;
       };
       
-      void manualDrive(double voltage); 
       
-      void manualSpin(double voltage); //Negative for the opposite direction
+
+      void manualDrive(double voltageDrive, double voltageTurn); 
+      
 
 
     private:     
@@ -69,11 +70,20 @@ class DriveForward : public Command<Drivebase> {
    
    private: 
      double distance;
-     int direction;
+     int direction = 0; 
+
+     double startX;
+     double startY;  
+
+     double initialAngle;
+
+     double getDistTraveled(); 
      
      TrapezoidalMotionProfile* motionProfile = nullptr;  
-     errorcontroller* controller = nullptr; 
-     FeedForward* ffController = nullptr;
+     pidcontroller* controller = nullptr; 
+     FeedForward* ffController = nullptr; 
+
+     pidcontroller* straightener = nullptr;
 
      static double MOTION_CONSTANTS_MAX_VELO; 
      static double MOTION_CONSTANTS_MAX_ACCEL; 
@@ -84,8 +94,12 @@ class DriveForward : public Command<Drivebase> {
 
      static double FF_CONSTANTS_S;
      static double FF_CONSTANTS_V;
-     static double FF_CONSTANTS_A;
-  
+     static double FF_CONSTANTS_A; 
+
+     static double STRAIGHTEN_PID_KP; 
+     static double STRAIGHTEN_PID_KI; 
+     static double STRAIGHTEN_PID_KD;
+   
    public:
 
      static CommandInterface* getCommand(double distance){ 
@@ -94,10 +108,11 @@ class DriveForward : public Command<Drivebase> {
 
      DriveForward(Drivebase& drive, double dist):  
      Command<Drivebase>(drive),
-     drivebaseRef(drive), 
-     direction(copysign(1, dist)),
-     distance(fabs(dist))
-     {};
+     drivebaseRef(drive),
+     distance(dist)
+     {}; 
+
+     void setDistance(double distance);
 
    protected: 
      Drivebase& drivebaseRef;  
@@ -122,7 +137,7 @@ class TurnToHeading : public Command<Drivebase> {
      static double PID_CONSTANTS_KI;
      static double PID_CONSTANTS_KD;  
 
-     double getError(); 
+     double getError();
 
    public:
 
@@ -134,7 +149,9 @@ class TurnToHeading : public Command<Drivebase> {
      Command<Drivebase>(drive),
      drivebaseRef(drive), 
      setpoint(angle)
-     {};
+     {}; 
+
+     void setAngle(double angle); 
 
    protected: 
      Drivebase& drivebaseRef;  
@@ -145,6 +162,99 @@ class TurnToHeading : public Command<Drivebase> {
      void end() override; 
 
 };
+
+//----------------------------------------------------------------- 
+
+typedef enum { 
+   EUCLIDEAN,
+   MANHATTAN_XY,
+   MANHATTAN_YX
+} RouteType;
+
+class DriveToSetpoint : public SequentialCommandGroup {   
+
+  private:
+
+    RouteType path;
+
+    double setpointX;
+    double setpointY;
+
+    void calibrateSetpoints_man_xy(double currentX, double currentY, double currentAngle);
+    void calibrateSetpoints_man_yx(double currentX, double currentY, double currentAngle); 
+    void calibrateSetpoints_euc(double currentX, double currentY);
+
+  public: 
+    
+    static CommandInterface* getCommand(double x, double y, RouteType route){ 
+       return new DriveToSetpoint(x, y, route);
+    } 
+
+    DriveToSetpoint(double x, double y, RouteType route) :  
+    SequentialCommandGroup(TurnToHeading::getCommand(0)), 
+    setpointX(x), 
+    setpointY(y),
+    path(route)
+    {  
+      chainThen(DriveForward::getCommand(0));
+      if (path != RouteType::EUCLIDEAN){ 
+          chainThen(TurnToHeading::getCommand(0))->chainThen(DriveForward::getCommand(0));
+      }
+    } 
+
+  protected:
+      
+      void start() override;
+
+}; 
+
+//--------------------------------------------------------------------------- 
+
+class FaceTarget : public TurnToHeading {  
+  private:  
+
+    double targetX; 
+    double targetY;
+ 
+  public:  
+
+    static CommandInterface* getCommand(double tX, double tY){ 
+      return new FaceTarget(Drivebase::getObject(), tX, tY);
+    } 
+
+    FaceTarget(Drivebase& drive, double tX, double tY): 
+    TurnToHeading(drive, 0), 
+    targetX(tX),
+    targetY(tY){}; 
+
+  protected: 
+     void start() override;
+};   
+
+//----------------------------------------------------------------- 
+
+class ApproachTarget : public DriveForward {
+
+  private:
+    double targetX; 
+    double targetY;
+
+  public:
+
+    static CommandInterface* getCommand(double tX, double tY){ 
+      return new ApproachTarget(Drivebase::getObject(), tX, tY);
+    }
+
+    ApproachTarget(Drivebase& drive, double tX, double tY): 
+    DriveForward(drive, 0),
+    targetX(tX),
+    targetY(tY)
+    {};
+
+  protected: 
+     void start() override;
+};
+
 
 
 #endif

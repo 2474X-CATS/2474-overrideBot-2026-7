@@ -56,27 +56,41 @@ int initializeGraph(){
   Telemetry::inst.registerSubtable( 
     "blueprint", 
     { 
-      (EntrySet){"velocity", EntryType::DOUBLE}
+      (EntrySet){"desired_position", EntryType::DOUBLE}, 
+      (EntrySet){"progress", EntryType::DOUBLE}, 
+      (EntrySet){"desired_velocity", EntryType::DOUBLE}
     }
   ); 
 
-  DataSupplier real; 
-  real.directory = "odometry";  
-  real.name = "velocity_ms"; 
-  real.label = "Real(m/s)"; 
+  DataSupplier target; 
+  target.directory = "blueprint";  
+  target.name = "desired_position"; 
+  target.label = "Setp(mm)"; 
   
 
-  DataSupplier desired;  
-  desired.directory = "blueprint"; 
-  desired.name = "velocity";  
-  desired.label = "BP(m/s)";
-  
+  DataSupplier progress;  
+  progress.directory = "blueprint"; 
+  progress.name = "progress";
+  progress.label = "Pos(mm)"; 
+
+  DataSupplier speed;
+  speed.directory = "odometry"; 
+  speed.name = "velocity_ms"; 
+  speed.label = "V(mm/s)";   
+
+  DataSupplier desiredSpeed; 
+  desiredSpeed.directory = "blueprint"; 
+  desiredSpeed.name = "desired_velocity"; 
+  desiredSpeed.label = "DV(mm/s)"; 
+
 
   Graph g = Graph( 
-    "Velocity vs Desired Velocity", 
+    "Position vs Desired Position", 
     { 
-       real, 
-       desired
+       target, 
+       progress, 
+       //speed, 
+       //desiredSpeed
     }
   ); 
 
@@ -104,14 +118,22 @@ int main()
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
+  Telemetry::inst.placeValueAt<bool>(true, "odometry", "oriented_c"); 
   
-  //thread t = thread(initializeGraph); 
-
+  thread t = thread(initializeGraph);
+  
   testAuto( 
     { 
-      TurnToHeading::getCommand(180), 
-      DriveForward::getCommand(1000)
+      DriveToSetpoint::getCommand(TILE_SIZE_MM * 1, TILE_SIZE_MM * 2, RouteType::MANHATTAN_XY) 
+      //FaceTarget::getCommand(TILE_SIZE_MM * 3, TILE_SIZE_MM * 3)
+      /*
+      TurnToHeading::getCommand(270),
+      TurnToHeading::getCommand(180),
+      TurnToHeading::getCommand(135), 
+      TurnToHeading::getCommand(157.5) 
+      */
     }
-  ); 
+  );  
+  
 
 }

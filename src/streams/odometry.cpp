@@ -5,7 +5,8 @@ double Odometry::INERTIAL_WHEEL_RADIUS = 25.4;
 
 void Odometry::init(){ 
    setStartingOdometry();  
-   lastTimestamp = Brain.Timer.time(); 
+   lastTimestamp = Brain.Timer.time();  
+
 } 
 
 void Odometry::refreshData(){ 
@@ -44,7 +45,7 @@ void Odometry::refreshData(){
   
     lastTimestamp = currentTimestamp;  
 
-    Brain.Screen.printAt(20, 100, "Angle Degrees: %.2f", get<double>("heading_deg"));
+    //Brain.Screen.printAt(20, 100, "Angle Degrees: %.2f", get<double>("heading_deg"));
 
 } 
 
