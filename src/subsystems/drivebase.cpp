@@ -6,6 +6,9 @@ Drivebase* Drivebase::globalPtr = nullptr;
 double Drivebase::MAX_RPM = 450; 
 double Drivebase::WHEEL_RADIUS_MM = 2.75 / 2 * 25.4;
 
+double Drivebase::DRIVE_SENSITIVITY = 1; 
+double Drivebase::TURN_SENSITIVITY = 1;
+
 void Drivebase::init(){ 
   leftMotors.setStopping(vex::brakeType::brake);  
   rightMotors.setStopping(vex::brakeType::brake);
@@ -34,8 +37,10 @@ void Drivebase::manualDrive(double voltageDrive, double voltageTurn){
 } 
 
 
-void Drivebase::arcadeDrive(double speed, double rotation){ 
-    leftMotors.spin(vex::directionType::rev, ((speed + rotation) / 100.0) * 12.0, vex::voltageUnits::volt); 
+void Drivebase::arcadeDrive(double speed, double rotation){  
+    speed *= DRIVE_SENSITIVITY; 
+    rotation *= TURN_SENSITIVITY;
+    leftMotors.spin(vex::directionType::rev, (((speed + rotation) / 100.0) * 12.0), vex::voltageUnits::volt); 
     rightMotors.spin(vex::directionType::fwd, ((speed - rotation) / 100.0) * 12.0, vex::voltageUnits::volt); 
 } 
 
@@ -44,9 +49,9 @@ void Drivebase::arcadeDrive(double speed, double rotation){
 
 
 double DriveForward::MOTION_CONSTANTS_MAX_VELO = (((Drivebase::MAX_RPM * (2 * Drivebase::WHEEL_RADIUS_MM * M_PI)) / 60.0)) * 0.85; //0.75; 
-double DriveForward::MOTION_CONSTANTS_MAX_ACCEL = DriveForward::MOTION_CONSTANTS_MAX_VELO / (1);
+double DriveForward::MOTION_CONSTANTS_MAX_ACCEL = DriveForward::MOTION_CONSTANTS_MAX_VELO / 0.5;
 
-double DriveForward::PID_CONSTANTS_KP = 0.0003;//0.001;//75;
+double DriveForward::PID_CONSTANTS_KP = 0.00075;//0.001;//75;
 double DriveForward::PID_CONSTANTS_KI = 0;
 double DriveForward::PID_CONSTANTS_KD = 0.000;
 
@@ -165,9 +170,9 @@ void DriveForward::setDistance(double dist){
 
 //------------------------------------------------------------- 
 
-double TurnToHeading::PID_CONSTANTS_KP = 0.150;
-double TurnToHeading::PID_CONSTANTS_KI = 0.150;
-double TurnToHeading::PID_CONSTANTS_KD = 0.015;
+double TurnToHeading::PID_CONSTANTS_KP = 0.105;
+double TurnToHeading::PID_CONSTANTS_KI = 0.00175;//0.110;
+double TurnToHeading::PID_CONSTANTS_KD = 0.0021;
 
 void TurnToHeading::start(){ 
    PIDConstants pidConstants;
@@ -190,8 +195,8 @@ void TurnToHeading::periodic(){
     double error = getError();
     Telemetry::inst.placeValueAt<double>(error, "blueprint", "progress");
     double output = controller->calculate(error, Brain.Timer.time());   
-    output = max<double>(output, -12);
-    output = min<double>(output, 12);
+    output = max<double>(output, -8);
+    output = min<double>(output, 8);
     drivebaseRef.manualDrive(0, output); 
 } 
 
@@ -201,7 +206,7 @@ bool TurnToHeading::isOver(){
 
 void TurnToHeading::end(){ 
   drivebaseRef.manualDrive(0, 0); 
-  //vex::this_thread::sleep_for(1000);
+  vex::this_thread::sleep_for(1000);
 }
  
 double TurnToHeading::getError(){ 

@@ -35,13 +35,13 @@ class Drivebase : public Subsystem {
       };
       
       
-
       void manualDrive(double voltageDrive, double voltageTurn); 
       
 
-
     private:     
-      static Drivebase* globalPtr;
+      static Drivebase* globalPtr; 
+      static double TURN_SENSITIVITY; 
+      static double DRIVE_SENSITIVITY;
 
       vex::motor leftFront; 
       vex::motor leftBack; 

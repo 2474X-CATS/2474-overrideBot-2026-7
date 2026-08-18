@@ -77,8 +77,8 @@ void Odometry::setStartingOdometry(){ //Not finished
   } 
   */ 
 
-  cornerX = 0; 
-  cornerY = 0; 
+  cornerX = TILE_SIZE_MM; 
+  cornerY = TILE_SIZE_MM; 
 
   offsetX = halfWidth; 
   offsetY = halfLength; 
