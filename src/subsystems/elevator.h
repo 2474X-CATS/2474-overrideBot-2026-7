@@ -45,7 +45,7 @@ class Elevator : public Subsystem {
        TrapezoidalMotionProfile* motionProfile = nullptr; //When the robot has defined setpoints it needs to reach
        TrapezoidConstants motionConsts; 
        
-       errorcontroller* correctionController = nullptr; //Adjusting the output of ff so its more accurate
+       pidcontroller* correctionController = nullptr; //Adjusting the output of ff so its more accurate
       
        ElevatorFFConstants elevatorFF; //Elevator FF Running at almost all times
        

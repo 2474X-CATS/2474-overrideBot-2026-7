@@ -34,15 +34,17 @@ void Elevator::init(){
     pidConsts.I = 0; 
     pidConsts.D = 0; 
 
-    correctionController = new errorcontroller(pidConsts);   
+    correctionController = new pidcontroller(pidConsts, 0);   
 
     //Feedforward: Bulk of precision contol based on an inverse model of the elevator system 
 
     elevatorFF.ffConsts.kS = 0; 
     elevatorFF.ffConsts.kV = 0;
     elevatorFF.ffConsts.kA = 0;  
-    elevatorFF.kG = 0; 
+    elevatorFF.kG = 0;
 
+    correctionController->setLastTimestamp(Brain.Timer.time());
+   
 } 
 
 void Elevator::periodic(){   
@@ -88,8 +90,7 @@ void Elevator::updatePosition(){
 
 double Elevator::calculateOutput(double velocity, double acceleration){  
     double ffOutput = elevatorFF.calculate(velocity, acceleration); 
-    double pidOutput = correctionController->calculate(getVelocity(), Brain.Timer.time()); 
-    correctionController->setReference(velocity); 
+    double pidOutput = correctionController->calculate(getVelocity() - velocity, Brain.Timer.time()); 
     return ffOutput + pidOutput; 
 } 
 
@@ -101,7 +102,8 @@ void Elevator::setSetpoint(double setpoint){
     return;
    } 
    motionProfile = new TrapezoidalMotionProfile(motionConsts, error, getVelocity(), 0);   
-   motionProfile->setLastTimestamp(Brain.Timer.time());
+   motionProfile->setLastTimestamp(Brain.Timer.time()); 
+   correctionController->setLastTimestamp(Brain.Timer.time());
    currentState = ElevatorState::PURSUING;
 }
 

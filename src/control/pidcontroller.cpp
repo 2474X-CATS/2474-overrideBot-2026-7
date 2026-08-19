@@ -40,8 +40,12 @@ double pidcontroller::calculate(double position, double timestamp)
          integral = iLimit;
       else if (integral < -iLimit)
          integral = -iLimit;
+   } 
+   if (prevError != 0){ 
+      derivative = (error - prevError) / dt;
+   } else { 
+      derivative = 0;
    }
-   derivative = (error - prevError) / dt;
    prevError = error;
    double output = (kP * error) + (kI * integral) + (kD * derivative);  
 
