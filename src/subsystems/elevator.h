@@ -44,7 +44,7 @@ class Elevator : public Subsystem {
        TrapezoidalMotionProfile* motionProfile = nullptr; //When the robot has defined setpoints it needs to reach
        TrapezoidConstants motionConsts; 
        
-       errorcontroller* correctionController = nullptr; //Adjusting the output of ff so its more accurate
+       pidcontroller* correctionController = nullptr; //Adjusting the output of ff so its more accurate
       
        ElevatorFFConstants elevatorFF; //Elevator FF Running at almost all times
        
@@ -85,7 +85,8 @@ class Elevator : public Subsystem {
             (EntrySet){"sensing_stack", EntryType::BOOL},
             (EntrySet){"current_height", EntryType::DOUBLE},
             (EntrySet){"priming_direction", EntryType::INT}, 
-            (EntrySet){"sniper_score_enabled", EntryType::BOOL}
+            (EntrySet){"sniper_score_enabled", EntryType::BOOL}, 
+            (EntrySet){"lifting_timestamp", EntryType::DOUBLE}
          }
        ),
        lifter1(vex::motor(vex::PORT11)), 

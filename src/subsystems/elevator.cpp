@@ -35,14 +35,15 @@ void Elevator::init(){
     pidConsts.I = 0; 
     pidConsts.D = 0; 
 
-    correctionController = new errorcontroller(pidConsts);   
+    correctionController = new pidcontroller(pidConsts, 0);   
 
     //Feedforward: Bulk of precision contol based on an inverse model of the elevator system 
 
     elevatorFF.ffConsts.kS = 0; 
     elevatorFF.ffConsts.kV = 0;
     elevatorFF.ffConsts.kA = 0;  
-    elevatorFF.kG = 0; 
+    elevatorFF.kG = 0;  
+
 
 } 
 
@@ -53,7 +54,7 @@ void Elevator::stop(){
 void Elevator::periodic(){   
    double elevatorOutput;
    if (currentState == ElevatorState::E_HOLDING){//Stay Still
-     elevatorOutput = calculateOutput(PRIMING_SPEED * raisingDirection, 0); 
+     elevatorOutput = calculateOutput(0, 0); 
    } else if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
      elevatorOutput = calculateOutput(PRIMING_SPEED, 0); 
    } else {  //Pursuing a setpoint
@@ -93,8 +94,7 @@ void Elevator::updatePosition(){
 
 double Elevator::calculateOutput(double velocity, double acceleration){  
     double ffOutput = elevatorFF.calculate(velocity, acceleration); 
-    double pidOutput = correctionController->calculate(getVelocity(), Brain.Timer.time()); 
-    correctionController->setReference(velocity); 
+    double pidOutput = correctionController->calculate(getVelocity() - velocity, Brain.Timer.time());  
     return ffOutput + pidOutput; 
 } 
 
@@ -106,7 +106,8 @@ void Elevator::setSetpoint(double setpoint){
     return;
    } 
    motionProfile = new TrapezoidalMotionProfile(motionConsts, error, 0, 0);   
-   motionProfile->setLastTimestamp(Brain.Timer.time());
+   motionProfile->setLastTimestamp(Brain.Timer.time()); 
+   correctionController->setLastTimestamp(Brain.Timer.time());
    currentState = ElevatorState::E_PURSUING;
 }
 
@@ -130,10 +131,6 @@ void Elevator::stateControl(){
     if (currentState == ElevatorState::E_PURSUING){ //
       if (reachedSetpoint()){  
         currentState = ElevatorState::E_HOLDING; 
-        if (get<bool>("active")){ 
-          set<bool>("active", false); 
-          Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
-        }
       }
     } else if (currentState == ElevatorState::E_PRIMING){   
         if (!get<bool>("sensing_stack")){ 
@@ -161,11 +158,15 @@ void Elevator::stateControl(){
                set<bool>("requesting_setpoint", true); 
                set<double>("requested_height", LEVELED_HEIGHT); 
                break;  
-            case PRIMED: 
-            default: 
+            case PRIMED:  
+               if (get<bool>("sniper_score_enabled")){ 
+                  setSetpoint(get<double>("priming_setpoint")); 
+                  set<bool>("sniper_score_enabled", false);
+               } 
+               break;
+            default:
                break;
         }
-        
     }   
 
    set<bool>("at_setpoint", currentState == ElevatorState::E_HOLDING);  
@@ -173,13 +174,22 @@ void Elevator::stateControl(){
 
 void Elevator::respondToRequests(){ 
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
-    //respond to driver/operator input 
+    
     if (pos == SuperStructurePosition::PRIMED && currentState == ElevatorState::E_HOLDING){ 
-      raisingDirection = ((int)RobotState::getAxisState(AxisType::S_LEFT_VERTICAL)) / 100;  
-      if (get<double>("current_height") >= MAX_HEIGHT){ 
-        raisingDirection = min<int>(raisingDirection, 0);
-      } else if (get<double>("current_height") <= GROUND_INTAKE_HEIGHT){ 
-        raisingDirection = max<int>(raisingDirection, 0);
-      }
-    }
+      
+      if (get<int>("priming_direction") != 0){ 
+        if ((Brain.Timer.time() - get<double>("lifting_timestamp")) >= 100){ //Wait tenth of a second  
+          int stacks = (get<double>("current_height") / (STACK_HEIGHT - 20)); // 1 cm of grace
+          stacks += copysign(1, get<int>("priming_direction"));  
+          if (stacks * STACK_HEIGHT <= MAX_HEIGHT && stacks >= 0){ 
+            set<bool>("requesting_setpoint", true);  
+            set<double>("requested_height", stacks * 1.0 * STACK_HEIGHT); 
+          }   
+          set<double>("lifting_timestamp", Brain.Timer.time());
+          raisingDirection = 0;
+        }
+      } else { 
+        set<double>("lifting_timestamp", Brain.Timer.time());  
+      } 
+    } 
 }
