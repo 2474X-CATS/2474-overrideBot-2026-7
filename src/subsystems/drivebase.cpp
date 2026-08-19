@@ -171,7 +171,7 @@ void DriveForward::setDistance(double dist){
 //------------------------------------------------------------- 
 
 double TurnToHeading::PID_CONSTANTS_KP = 0.105;
-double TurnToHeading::PID_CONSTANTS_KI = 0.00175;//0.110;
+double TurnToHeading::PID_CONSTANTS_KI = 0.0018;//0.110;
 double TurnToHeading::PID_CONSTANTS_KD = 0.0021;
 
 void TurnToHeading::start(){ 
@@ -205,8 +205,7 @@ bool TurnToHeading::isOver(){
 } 
 
 void TurnToHeading::end(){ 
-  drivebaseRef.manualDrive(0, 0); 
-  vex::this_thread::sleep_for(1000);
+  drivebaseRef.manualDrive(0, 0);  
 }
  
 double TurnToHeading::getError(){ 

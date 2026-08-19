@@ -29,7 +29,8 @@ int scheduleCallbacks()
 }
 
 void testDrive()
-{  
+{   
+  drawLogo(RobotState::getStateOf("is_team_color_blue"));
   thread telemetryThread = thread(runTelemetry); 
   robot.driverControl(true);
 }
@@ -48,7 +49,6 @@ void startCommandMatch()
   thread callBackTrigger = thread(scheduleCallbacks);
   robot.runTelemetryThread();
 } 
-
 
 
 int initializeGraph(){  
@@ -120,19 +120,8 @@ int main()
   //-------------------RUN PROTOCOLS HERE-------------------
   Telemetry::inst.placeValueAt<bool>(true, "odometry", "oriented_c"); 
   
-  thread t = thread(initializeGraph);
+  //thread t = thread(initializeGraph);
   testDrive();
-
-  /*
-  testAuto( 
-    { 
-      TurnToHeading::getCommand(270), 
-      TurnToHeading::getCommand(180), 
-      TurnToHeading::getCommand(90), 
-      TurnToHeading::getCommand(0)
-    }
-  ); 
-  */  
 
   /*
   testAuto( 
@@ -142,7 +131,8 @@ int main()
       DriveToSetpoint::getCommand(TILE_SIZE_MM * 1, TILE_SIZE_MM * 4, RouteType::EUCLIDEAN), 
       DriveToSetpoint::getCommand(TILE_SIZE_MM * 5, TILE_SIZE_MM * 4, RouteType::EUCLIDEAN)
     }
-  );  
+  );   
   */
+  
 
 }
