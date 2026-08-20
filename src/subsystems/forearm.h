@@ -72,7 +72,9 @@ class Forearm : public Subsystem {
                (EntrySet){"requesting_setpoint", EntryType::BOOL}, 
                (EntrySet){"requested_angle", EntryType::DOUBLE}, 
                (EntrySet){"setpoint", EntryType::DOUBLE}, 
-               (EntrySet){"requested_velocity", EntryType::DOUBLE}
+               (EntrySet){"requested_velocity", EntryType::DOUBLE}, 
+               (EntrySet){"last_component_x", EntryType::DOUBLE}, 
+               (EntrySet){"last_component_y", EntryType::DOUBLE}
             }
          ), 
          forearmMotor(vex::motor(vex::PORT16)), 

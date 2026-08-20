@@ -125,14 +125,17 @@ void Forearm::respondToRequests(){
         int xComponent = RobotState::getAxisState(AxisType::M_LEFT_HORIZONTAL); 
         int yComponent = RobotState::getAxisState(AxisType::M_LEFT_VERTICAL);
         
-        if (xComponent == 0 && yComponent == 0){ 
-           double angle = atan2(yComponent, xComponent); 
-           if (angle < 0){ 
+        if ((xComponent == 0 && yComponent == 0) && get<double>("last_component_x") + get<double>("last_component_y") == 1){ 
+           double angle = atan2(get<double>("last_component_y"), get<double>("last_component_x")); 
+           if (angle < 0){
              angle = ((2 * M_PI) + angle);
            } 
            set<double>("requesting_setpoint", true); 
            set<double>("requested_angle", toDegrees(angle));
         } 
+        
+        set<double>("last_component_x", xComponent);
+        set<double>("last_component_y", yComponent); 
 
         RobotState::manuallyModifyState("scheduling_setpoint", false); 
 
