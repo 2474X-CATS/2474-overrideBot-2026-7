@@ -28,7 +28,7 @@ class Forearm : public Subsystem {
 
        AngularArmFFConstants armFFConsts; //Bulk (feedforward) 
 
-       errorcontroller* feedback = nullptr; //Rest done with feedback
+       pidcontroller* feedback = nullptr; //Rest done with feedback
        PIDConstants pidConsts; 
 
        TrapezoidConstants motionConsts; 
