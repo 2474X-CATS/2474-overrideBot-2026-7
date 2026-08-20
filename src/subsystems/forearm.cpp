@@ -6,7 +6,8 @@ Forearm* Forearm::globalPtr = nullptr;
 double Forearm::PLACE_SETPOINT = 0; 
 double Forearm::PRIMING_SETPOINT = 45; 
 double Forearm::GROUND_SETPOINT = 270; 
-double Forearm::STANDING_SETPOINT = 180;  
+double Forearm::STANDING_SETPOINT = 180;   
+double Forearm::RELEASE_SETPOINT = 75;
 
 double Forearm::ANGULAR_ERROR_TOLERANCE = 3.0;
 
@@ -104,7 +105,7 @@ void Forearm::stateControl(){
     if (requestingSetpoint){  
       requestingSetpoint = false;
       setSetpoint(requestedSetpoint, RobotState::getStateOf("inverted")); 
-    } 
+    }
 
     if (currentState == ForearmState::F_PURSUING){  
         if (reachedSetpoint()){ 
@@ -118,21 +119,26 @@ void Forearm::stateControl(){
             } else { 
               Telemetry::inst.placeValueAt(true, "claw","active"); 
             }
-          }  
-        } 
+          }
+        }
     } else if (currentState == ForearmState::F_HOLDING) {    
-        switch (pos){ 
+        bool canTransition = Telemetry::inst.getValueAt<bool>("ss_manager", "can_transition"); 
+        switch (pos){  
             case PRIMED:
               requestingSetpoint = true; 
-              requestedSetpoint = PRIMING_SETPOINT; 
+              requestedSetpoint = PRIMING_SETPOINT;
               break;
             case GROUND:  
-              requestingSetpoint = true; 
-              requestedSetpoint = GROUND_SETPOINT;
+              if (canTransition){ 
+                requestingSetpoint = true; 
+                requestedSetpoint = GROUND_SETPOINT;
+              } 
               break;
-            case STANDING:  
-              requestingSetpoint = true; 
-              requestedSetpoint = STANDING_SETPOINT;
+            case STANDING:   
+              if (canTransition){ 
+                requestingSetpoint = true; 
+                requestedSetpoint = STANDING_SETPOINT;
+              } 
               break; 
             case AUTO: 
               if (get<bool>("active")){  
@@ -140,7 +146,7 @@ void Forearm::stateControl(){
                 if (get<int>("task_id") == 0){ 
                     requestedSetpoint = PLACE_SETPOINT;
                 } else { 
-                    requestedSetpoint = PRIMING_SETPOINT;
+                    requestedSetpoint = RELEASE_SETPOINT;
                 }
               } 
               break;  
