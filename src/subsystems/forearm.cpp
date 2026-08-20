@@ -28,14 +28,13 @@ void Forearm::init(){
    pidConsts.I = 0; 
    pidConsts.D = 0;  
 
-   feedback = new errorcontroller(pidConsts); 
+   feedback = new pidcontroller(pidConsts, 0); 
    
    armFFConsts.kS_rot = 0.0; 
    armFFConsts.kV_rot = 0.0; 
    armFFConsts.kA_rot = 0.0; 
    armFFConsts.kCos = 0.0; 
-
-} 
+}
 
 void Forearm::periodic(){ 
     double forearmOutput; 
@@ -60,8 +59,7 @@ void Forearm::stop(){
 
 double Forearm::calculateOutput(double omega, double alpha){ 
     double ffOutput = armFFConsts.calculate(getCurrentAngle() / 360, omega / 360, alpha / 360); 
-    double pidOutput = feedback->calculate(getVelocity(), Brain.Timer.time());  
-    feedback->setReference(omega); 
+    double pidOutput = feedback->calculate(angleDifference(getVelocity(), omega) , Brain.Timer.time());  
     return ffOutput + pidOutput;
 }
 
@@ -94,7 +92,8 @@ void Forearm::setSetpoint(double setpoint, bool inverted){
   }
   setpointDirection = copysign(1, error); 
   motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), getVelocity(), 0);   
-  motionProfile->setLastTimestamp(Brain.Timer.time());
+  motionProfile->setLastTimestamp(Brain.Timer.time()); 
+  feedback->setLastTimestamp(Brain.Timer.time());
   currentState = ForearmState::F_PURSUING; 
 }
 
