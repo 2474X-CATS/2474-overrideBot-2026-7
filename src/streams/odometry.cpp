@@ -3,10 +3,84 @@
 
 double Odometry::INERTIAL_WHEEL_RADIUS = 25.4; 
 
-void Odometry::init(){ 
+double Odometry::GOAL_WIDTH = 6 * 25.4;
+
+Location* Odometry::locations[13] = { 
+   new Location( 
+     "all_nat_neu", 
+     TILE_SIZE_MM * 4, TILE_SIZE_MM, 
+     Odometry::GOAL_WIDTH/2
+   ),  
+   new Location(
+     "all_nat_all", 
+     TILE_SIZE_MM * 2, TILE_SIZE_MM *1, 
+     Odometry::GOAL_WIDTH/2
+   ),  
+   new Location( 
+     "all_for_all", 
+     TILE_SIZE_MM *1, TILE_SIZE_MM *2, 
+     Odometry::GOAL_WIDTH/2
+   ),  
+   new Location(
+     "all_for_neu", 
+     TILE_SIZE_MM *1, TILE_SIZE_MM *4,
+     Odometry::GOAL_WIDTH/2
+   ),   
+   new Location( 
+     "opp_nat_neu", 
+     TILE_SIZE_MM *5, TILE_SIZE_MM *2, 
+     Odometry::GOAL_WIDTH/2
+   ),  
+   new Location(
+     "opp_nat_all", 
+     TILE_SIZE_MM *5, TILE_SIZE_MM *4, 
+     Odometry::GOAL_WIDTH/2
+   ),   
+   new Location( 
+     "opp_for_all", 
+     TILE_SIZE_MM *4, TILE_SIZE_MM *5, 
+     Odometry::GOAL_WIDTH/2
+   ),   
+   new Location( 
+     "opp_for_neu", 
+     TILE_SIZE_MM *2, TILE_SIZE_MM *5, 
+     Odometry::GOAL_WIDTH/2
+   ),  
+   new Location(
+     "central_goal", 
+     TILE_SIZE_MM *3, TILE_SIZE_MM *3, 
+     Odometry::GOAL_WIDTH/2
+   ),  
+   new Location( 
+     "matchloader_bottom_left",
+     TILE_SIZE_MM *0.5, TILE_SIZE_MM *0.5, 
+     TILE_SIZE_MM / 2
+   ),  
+   new Location(
+     "matchloader_bottom_right", 
+     TILE_SIZE_MM *5.5, TILE_SIZE_MM *0.5, 
+     TILE_SIZE_MM / 2
+   ),   
+   new Location( 
+     "matchloader_top_left", 
+     TILE_SIZE_MM *0.5, TILE_SIZE_MM *5.5,
+     TILE_SIZE_MM / 2
+   ),   
+   new Location(
+     "matchloader_top_right", 
+     TILE_SIZE_MM *5.5, TILE_SIZE_MM *5.5,
+     TILE_SIZE_MM / 2
+   )
+};
+
+Location* Odometry::getLocation(int index){ 
+   return locations[index];
+}
+
+void Odometry::init(){  
+   calibratePerspective();
    setStartingOdometry();  
    lastTimestamp = Brain.Timer.time();  
-
 } 
 
 void Odometry::refreshData(){ 
@@ -45,7 +119,6 @@ void Odometry::refreshData(){
   
     lastTimestamp = currentTimestamp;  
 
-    //Brain.Screen.printAt(20, 100, "Angle Degrees: %.2f", get<double>("heading_deg"));
 
 } 
 
@@ -53,39 +126,13 @@ void Odometry::setStartingOdometry(){ //Not finished
   double halfWidth = (ROBOT_WIDTH_MM/2); 
   double halfLength = (ROBOT_LENGTH_MM/2);  
 
-  double cornerX; 
-  double cornerY; 
+  double cornerX = TILE_SIZE_MM; 
+  double cornerY = TILE_SIZE_MM; 
 
-  double offsetX; 
-  double offsetY; 
+  double offsetX = halfWidth; 
+  double offsetY = halfHeight; 
 
-  double angleHeading; 
-  
-  /*
-  if (RobotState::getStateOf("field_type_is_vex")){ 
-     if (get<bool>("starting_left")){ 
-      
-     } else { 
-
-     }
-  } else {  
-     if (get<bool>("starting_left")){ 
-        
-     } else { 
-
-     }
-  } 
-  */ 
-
-  cornerX = TILE_SIZE_MM; 
-  cornerY = TILE_SIZE_MM; 
-
-  offsetX = halfWidth; 
-  offsetY = halfLength; 
-
-  angleHeading = 90;  
-
-  // Filler code just to test odom
+  double angleHeading = 90; 
 
   if (get<bool>("oriented_c")){ 
      angleHeading = flipOrientation(angleHeading);
@@ -102,5 +149,20 @@ void Odometry::setStartingOdometry(){ //Not finished
   set<double>("x_position_mm", cornerX + offsetX); 
   set<double>("y_position_mm", cornerY + offsetY); 
   
+} 
+
+void Odometry::calibratePerspective(){ 
+  if (!get<bool>("starting_left")){ 
+     return;
+  }  
+  for (int i = 0; i < 8; i++){ 
+    Location* currentLocation = getLocation(i);  
+    string name = currentLocation->getName(); 
+    bool vertical = (name[0] == 'a' && name[4] = "f") || (name[0] == 'o' && name[4] = "n");
+    if (vertical){  
+      currentLocation->setY((TILE_SIZE_MM * 6) - currentLocation->getY()); 
+    } 
+     currentLocation->setX((TILE_SIZE_MM * 6) - currentLocation->getX()); 
+  }
 
 }

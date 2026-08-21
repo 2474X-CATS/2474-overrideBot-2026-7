@@ -6,7 +6,8 @@
 #include "../control/feedForward.h" 
 #include "../control/pidcontroller.h" 
 #include "../control/trapezoidalMotion.h" 
-#include "../architecture/command.h"
+#include "../architecture/command.h" 
+#include "../streams/odometry.h"
 
 class Drivebase : public Subsystem { 
     public:  
@@ -163,6 +164,71 @@ class TurnToHeading : public Command<Drivebase> {
 
 };
 
+//--------------------------------------------------------------------------- 
+
+class FaceTarget : public TurnToHeading {  
+  private:  
+
+    double targetX; 
+    double targetY;
+ 
+  public:  
+
+    static CommandInterface* getCommand(double tX, double tY){ 
+      return new FaceTarget(Drivebase::getObject(), tX, tY);
+    }  
+
+    static CommandInterface* getCommand(Setpoint setp){  
+      Location* location = Odometry::getLocation(setp);
+      return getCommand(location->getX(), location->getY());
+    } 
+
+
+    FaceTarget(Drivebase& drive, double tX, double tY): 
+    TurnToHeading(drive, 0), 
+    targetX(tX),
+    targetY(tY){}; 
+
+  protected: 
+     void start() override;
+};   
+
+//----------------------------------------------------------------- 
+
+class ApproachTarget : public DriveForward {
+
+  private:
+    double targetX; 
+    double targetY; 
+
+    double offset;
+
+  public:
+    
+    static CommandInterface* getCommand(double tX, double tY, double tOffset){ 
+      return new ApproachTarget(Drivebase::getObject(), tX, tY, tOffset);
+    }  
+
+    static CommandInterface* getCommand(double tX, double tY){ 
+      return new ApproachTarget(Drivebase::getObject(), tX, tY, 0);
+    } 
+
+    static CommandInterface* getCommand(Setpoint setp){  
+      Location* location = Odometry::getLocation(setp);
+      return getCommand(location->getX(), location->getY(), location->getRadius());
+    } 
+
+    ApproachTarget(Drivebase& drive, double tX, double tY, double off): 
+    DriveForward(drive, 0),
+    targetX(tX),
+    targetY(tY),
+    offset(off)
+    {};
+
+  protected: 
+     void start() override;
+};
+
 //----------------------------------------------------------------- 
 
 typedef enum { 
@@ -186,19 +252,27 @@ class DriveToSetpoint : public SequentialCommandGroup {
 
   public: 
     
+    static CommandInterface* getCommand(Setpoint setp, RouteType type){ 
+      Location* location = Odometry::getLocation(setp); 
+      return getCommand(location->getX(), location->getY(), type, location->getRadius());
+    }
+
     static CommandInterface* getCommand(double x, double y, RouteType route){ 
        return new DriveToSetpoint(x, y, route);
-    } 
+    }  
 
-    DriveToSetpoint(double x, double y, RouteType route) :  
+    DriveToSetpoint(double x, double y, RouteType route, double offset) :  
     SequentialCommandGroup(TurnToHeading::getCommand(0)), 
     setpointX(x), 
     setpointY(y),
     path(route)
     {  
-      chainThen(DriveForward::getCommand(0));
       if (path != RouteType::EUCLIDEAN){ 
-          chainThen(TurnToHeading::getCommand(0))->chainThen(DriveForward::getCommand(0));
+          chainThen(DriveForward::getCommand(0))-> 
+          chainThen(TurnToHeading::getCommand(0))-> 
+          chainThen(ApproachTarget::getCommand(x,y,offset));
+      } else { 
+          chainThen(ApproachTarget::getCommand(x,y,offset));
       }
     } 
 
@@ -207,53 +281,6 @@ class DriveToSetpoint : public SequentialCommandGroup {
       void start() override;
 
 }; 
-
-//--------------------------------------------------------------------------- 
-
-class FaceTarget : public TurnToHeading {  
-  private:  
-
-    double targetX; 
-    double targetY;
- 
-  public:  
-
-    static CommandInterface* getCommand(double tX, double tY){ 
-      return new FaceTarget(Drivebase::getObject(), tX, tY);
-    } 
-
-    FaceTarget(Drivebase& drive, double tX, double tY): 
-    TurnToHeading(drive, 0), 
-    targetX(tX),
-    targetY(tY){}; 
-
-  protected: 
-     void start() override;
-};   
-
-//----------------------------------------------------------------- 
-
-class ApproachTarget : public DriveForward {
-
-  private:
-    double targetX; 
-    double targetY;
-
-  public:
-
-    static CommandInterface* getCommand(double tX, double tY){ 
-      return new ApproachTarget(Drivebase::getObject(), tX, tY);
-    }
-
-    ApproachTarget(Drivebase& drive, double tX, double tY): 
-    DriveForward(drive, 0),
-    targetX(tX),
-    targetY(tY)
-    {};
-
-  protected: 
-     void start() override;
-};
 
 
 

@@ -120,19 +120,11 @@ int main()
   //-------------------RUN PROTOCOLS HERE-------------------
   Telemetry::inst.placeValueAt<bool>(true, "odometry", "oriented_c"); 
   
-  //thread t = thread(initializeGraph);
+  //thread t = thread(initializeGraph); 
+  
   testDrive();
 
-  /*
-  testAuto( 
-    { 
-      DriveToSetpoint::getCommand(TILE_SIZE_MM * 3, TILE_SIZE_MM * 1, RouteType::EUCLIDEAN), 
-      DriveToSetpoint::getCommand(TILE_SIZE_MM * 3, TILE_SIZE_MM * 4, RouteType::EUCLIDEAN), 
-      DriveToSetpoint::getCommand(TILE_SIZE_MM * 1, TILE_SIZE_MM * 4, RouteType::EUCLIDEAN), 
-      DriveToSetpoint::getCommand(TILE_SIZE_MM * 5, TILE_SIZE_MM * 4, RouteType::EUCLIDEAN)
-    }
-  );   
-  */
+  
   
 
 }

@@ -12,7 +12,7 @@ double Drivebase::TURN_SENSITIVITY = 1;
 void Drivebase::init(){ 
   leftMotors.setStopping(vex::brakeType::brake);  
   rightMotors.setStopping(vex::brakeType::brake);
-}  
+}
 
 Drivebase& Drivebase::getObject(){ 
     return *globalPtr;
@@ -220,37 +220,32 @@ void TurnToHeading::setAngle(double angle){
 
 void DriveToSetpoint::calibrateSetpoints_euc(double currentX, double currentY){ 
    double angle = angleSum(toDegrees(atan2(setpointY - currentY, setpointX - currentX)), 360);
-   double distance = hypot(setpointX - currentX, setpointY - currentY); 
-   
    static_cast<TurnToHeading*>(commands.at(0))->setAngle(angle); 
-   static_cast<DriveForward*>(commands.at(1))->setDistance(distance);
 } 
 
 void DriveToSetpoint::calibrateSetpoints_man_xy(double currentX, double currentY, double currentAngle){ 
-   double xDist = setpointX - currentX; 
-   double yDist = setpointY - currentY;  
+   double xDist = setpointX - currentX;  
    
-   double vertAngle = yDist > 0 ? 90 : 270;
+   double vertAngle = setpointY - currentY > 0 ? 90 : 270;
    double horiAngle = xDist > 0 ? 0 : 180;  
 
    if (fabs(angleDifference(currentAngle, horiAngle)) > 90){ 
-     horiAngle = angleSum(horiAngle, 180); 
+     horiAngle = angleSum(horiAngle, 180);
      xDist *= -1;
    } 
 
    static_cast<TurnToHeading*>(commands.at(0))->setAngle(horiAngle); 
    static_cast<DriveForward*>(commands.at(1))->setDistance(xDist); 
    static_cast<TurnToHeading*>(commands.at(2))->setAngle(vertAngle); 
-   static_cast<DriveForward*>(commands.at(3))->setDistance(yDist);
+  
 
 } 
 
 void DriveToSetpoint::calibrateSetpoints_man_yx(double currentX, double currentY, double currentAngle){ 
-   double xDist = setpointX - currentX; 
-   double yDist = setpointY - currentY;  
+   double yDist = setpointY - currentY;
    
    double vertAngle = yDist > 0 ? 90 : 270;
-   double horiAngle = xDist > 0 ? 0 : 180;  
+   double horiAngle = setpointX - currentX > 0 ? 0 : 180;  
 
    if (fabs(angleDifference(currentAngle, vertAngle)) > 90){ 
      vertAngle = angleSum(vertAngle, 180); 
@@ -260,7 +255,6 @@ void DriveToSetpoint::calibrateSetpoints_man_yx(double currentX, double currentY
    static_cast<TurnToHeading*>(commands.at(0))->setAngle(vertAngle); 
    static_cast<DriveForward*>(commands.at(1))->setDistance(yDist);
    static_cast<TurnToHeading*>(commands.at(2))->setAngle(horiAngle); 
-   static_cast<DriveForward*>(commands.at(3))->setDistance(xDist); 
    
 } 
 
@@ -289,15 +283,15 @@ void DriveToSetpoint::start(){
 void FaceTarget::start(){ 
     double currentX = Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"); 
     double currentY = Telemetry::inst.getValueAt<double>("odometry", "y_position_mm");  
-    setAngle(angleBetweenPts(targetX, targetY, currentX, currentY));
+    setAngle(angleBetweenPts(currentX, currentY, targetX, targetY));
     TurnToHeading::start();
-}; 
+};  
 
 //-------------------------------------------------------------------------- 
 
 void ApproachTarget::start(){ 
     double currentX = Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"); 
     double currentY = Telemetry::inst.getValueAt<double>("odometry", "y_position_mm");  
-    setDistance(hypot(currentX - targetX, currentY - targetY));
+    setDistance(hypot(currentX - targetX, currentY - targetY) - offset);
     DriveForward::start();
-}
+} 
