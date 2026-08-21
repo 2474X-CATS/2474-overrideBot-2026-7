@@ -50,19 +50,7 @@ void Elevator::init(){
 } 
 
 void Elevator::periodic(){   
-   double elevatorOutput;  
-   elevatorOutput = raisingDirection * (12.0/100);
-   /*
-   if (currentState == ElevatorState::HOLDING){//Stay Still
-     elevatorOutput = calculateOutput(PRIMING_SPEED * raisingDirection, 0); 
-   } else if (currentState == ElevatorState::PRIMING){ //Rise or fall at a constant rate
-     elevatorOutput = calculateOutput(PRIMING_SPEED, 0); 
-   } else {  //Pursuing a setpoint
-     TrapezoidalSetpoint motionGoal = motionProfile->generateSetpoint(Brain.Timer.time());
-     elevatorOutput = calculateOutput(motionGoal.velocity, motionGoal.acceleration) * setpointDirection;
-   }  
-   */ 
-   Brain.Screen.printAt(20, 145, "ON");
+   double elevatorOutput = get<int>("raising_direction") * 12;
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt);
 }  
 
@@ -74,7 +62,7 @@ void Elevator::updateTelemetry(){
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();
     } else { 
-       raisingDirection = 0;
+       set<int>("raising_direction", 0);
     } 
 } 
 
@@ -138,19 +126,7 @@ void Elevator::stateControl(){
 }
 
 void Elevator::respondToRequests(){  
-    
-    raisingDirection = (RobotState::getAxisState(AxisType::M_LEFT_VERTICAL)); 
-    Brain.Screen.printAt(20, 120, "Responding: %d", raisingDirection);
-    /*
-    if (currentState == ElevatorState::HOLDING){ 
-      raisingDirection = ((int)RobotState::getAxisState(AxisType::S_LEFT_VERTICAL)) / 100;  
-      if (get<double>("current_height") >= MAX_HEIGHT){ 
-        raisingDirection = min<int>(raisingDirection, 0);
-      } else if (get<double>("current_height") <= GROUND_INTAKE_HEIGHT){ 
-        raisingDirection = max<int>(raisingDirection, 0);
-      }
-    } 
-    */
+    return;
 } 
 
 void Elevator::stop(){ 

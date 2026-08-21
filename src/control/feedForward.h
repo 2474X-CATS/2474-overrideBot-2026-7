@@ -33,7 +33,6 @@ typedef struct {
 } ElevatorFFConstants;
 
 
-/*
 class FeedForward
 {
    double kS;
@@ -52,7 +51,7 @@ public:
    double calculate(double velocity);
    double calculate(double velocity, double accleration);
 };  
-*/ 
+
 
 
 #endif

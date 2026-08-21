@@ -25,5 +25,5 @@ double flipOrientation(double angle){
 } 
 
 double angleBetweenPts(double x1, double y1, double x2, double y2){ 
-  return toDegrees(atan2(y2 - y1, x2 - x1) + M_PI); 
+  return toDegrees(atan2(y2 - y1, x2 - x1) + (2 * M_PI)); 
 }

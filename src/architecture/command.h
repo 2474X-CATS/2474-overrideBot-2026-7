@@ -133,7 +133,6 @@ class ParallelCommandGroup : public CommandInterface
 
 private:
   vector<std::reference_wrapper<Subsystem>> allSubsystems;
-  vector<CommandInterface *> participatingCommands;
   vector<CommandInterface *> qualifiers;
 
   bool integrateSubsystems(vector<std::reference_wrapper<Subsystem>> subsystems); // Adds subsystems used in a command to
@@ -156,6 +155,8 @@ public:
   ParallelCommandGroup *chainWhile(CommandInterface *comm); //
 
 protected:
+  vector<CommandInterface *> participatingCommands; 
+
   void start() override;
   bool isOver() override;
   void periodic() override;
@@ -171,8 +172,6 @@ private:
 
   void initializeNext();
 
-  vector<CommandInterface *> commands;
-
 public:
   static SequentialCommandGroup *makeGroup(CommandInterface *initialCommand);
 
@@ -180,7 +179,9 @@ public:
 
   SequentialCommandGroup *chainThen(CommandInterface *comm);
 
-protected:
+protected: 
+  vector<CommandInterface *> commands; 
+
   void start() override;
   bool isOver() override;
   void periodic() override;

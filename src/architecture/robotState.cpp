@@ -46,12 +46,23 @@ void RobotState::initializeState()
            (EntrySet){"awaiting_land", EntryType::BOOL}, 
 
            (EntrySet){"requested_flip", EntryType::BOOL}, 
-           (EntrySet){"awaiting_flip", EntryType::BOOL}
-       });
+           (EntrySet){"awaiting_flip", EntryType::BOOL}, 
+           (EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
+       }); 
+   
+   manuallyModifyState("field_type_is_vex", true);
 }
 
 void RobotState::updateRegular()
-{  
+{    
+   if (Controller1.ButtonR2.pressing()){ 
+     Telemetry::inst.placeValueAt<int>(1, "elevator", "raising_direction");
+   } else if (Controller1.ButtonR1.pressing()){ 
+     Telemetry::inst.placeValueAt<int>(-1, "elevator", "raising_direction");
+   } else { 
+     Telemetry::inst.placeValueAt<int>(0, "elevator", "raising_direction");
+   }
+   /*
    if (Controller2.ButtonR2.pressing()){ //Macro
       manuallyModifyState("requested_macro", true);
    } else { 
@@ -92,7 +103,8 @@ void RobotState::updateRegular()
           manuallyModifyState("awaiting_flip", true); //Turned off by claw itself
           manuallyModifyState("requested_flip", false);
       }
-   }
+   } 
+   */
 
 
 };

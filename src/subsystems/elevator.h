@@ -35,12 +35,10 @@ class Elevator : public Subsystem {
 
        ElevatorState currentState; 
 
-       int raisingDirection = 0;
        int setpointDirection;  
 
        double previousHeight; 
        double previousTimestamp; 
-
 
        TrapezoidalMotionProfile* motionProfile = nullptr; //When the robot has defined setpoints it needs to reach
        TrapezoidConstants motionConsts; 
@@ -85,13 +83,14 @@ class Elevator : public Subsystem {
             (EntrySet){"has_setpoint", EntryType::BOOL}, //Do we have a specific height we want to reach 
             (EntrySet){"sensing_stack", EntryType::BOOL}, 
             (EntrySet){"current_height", EntryType::DOUBLE}, 
-            (EntrySet){"current_velocity", EntryType::DOUBLE},  
+            (EntrySet){"current_velocity", EntryType::DOUBLE},   
+            (EntrySet){"raising_direction", EntryType::INT}
          }
        ),
        lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 
        lifter2(vex::motor(vex::PORT10, vex::ratio18_1)), 
        lift(vex::motor_group(lifter1, lifter2)), 
-       rot(vex::rotation(vex::PORT19)), //Need correct port
+       rot(vex::rotation(vex::PORT2)), //Need correct port
        primingSensor(vex::distance(vex::PORT20))
        { 
         globalPtr = this;
