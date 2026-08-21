@@ -88,10 +88,10 @@ class Elevator : public Subsystem {
             (EntrySet){"current_velocity", EntryType::DOUBLE},  
          }
        ),
-       lifter1(vex::motor(vex::PORT11)), 
+       lifter1(vex::motor(vex::PORT14)), 
        lifter2(vex::motor(vex::PORT10)), 
        lift(vex::motor_group(lifter1, lifter2)), 
-       rot(vex::rotation(vex::PORT19)), 
+       rot(vex::rotation(vex::PORT19)), //Need correct port
        primingSensor(vex::distance(vex::PORT20))
        { 
         globalPtr = this;
