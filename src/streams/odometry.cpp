@@ -138,7 +138,7 @@ void Odometry::setStartingOdometry(){ //Not finished
      angleHeading = flipOrientation(angleHeading);
   }  
   
-  gyro.calibrate(); 
+  gyro.calibrate();
   while (gyro.isCalibrating()){ 
     vex::this_thread::yield();
   } 
