@@ -1,5 +1,6 @@
 #include "vex.h"
-#include "architecture/robot.h"
+#include "architecture/robot.h" 
+#include "subsystems/elevator.h"
 #include <iostream>
 
 using namespace vex;
@@ -56,12 +57,12 @@ int main()
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
-  
+  Elevator elevator = Elevator();
   //-------------------------------------------------------
 
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
- 
+  testDrive();
 
 }
