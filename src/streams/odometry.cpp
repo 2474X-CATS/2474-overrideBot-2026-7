@@ -130,7 +130,7 @@ void Odometry::setStartingOdometry(){ //Not finished
   double cornerY = TILE_SIZE_MM; 
 
   double offsetX = halfWidth; 
-  double offsetY = halfHeight; 
+  double offsetY = halfLength; 
 
   double angleHeading = 90; 
 
@@ -158,7 +158,7 @@ void Odometry::calibratePerspective(){
   for (int i = 0; i < 8; i++){ 
     Location* currentLocation = getLocation(i);  
     string name = currentLocation->getName(); 
-    bool vertical = (name[0] == 'a' && name[4] = "f") || (name[0] == 'o' && name[4] = "n");
+    bool vertical = (name[0] == 'a' && name[4] == 'f') || (name[0] == 'o' && name[4] == 'n');
     if (vertical){  
       currentLocation->setY((TILE_SIZE_MM * 6) - currentLocation->getY()); 
     } 

@@ -24,7 +24,7 @@ class Odometry : public DataStream {
 
     public: 
        
-       Location* getLocation(int index);  
+       static Location* getLocation(int index);  
 
        Odometry() : 
        DataStream( 
@@ -59,7 +59,7 @@ class Odometry : public DataStream {
 
        static Location* locations[];   
 
-       static void calibratePerspective();
+       void calibratePerspective();
 
        vex::inertial gyro; 
        vex::rotation rot;  
