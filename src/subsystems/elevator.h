@@ -91,7 +91,7 @@ class Elevator : public Subsystem {
        lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 
        lifter2(vex::motor(vex::PORT10, vex::ratio18_1)), 
        lift(vex::motor_group(lifter1, lifter2)), 
-       rot(vex::rotation(vex::PORT19)), //Need correct port
+       rot(vex::rotation(vex::PORT2)), //Need correct port
        primingSensor(vex::distance(vex::PORT20))
        { 
         globalPtr = this;
