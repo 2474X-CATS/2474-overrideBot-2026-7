@@ -19,8 +19,7 @@ Drivebase& Drivebase::getObject(){
 }
 
 void Drivebase::periodic(){ 
-  //arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL)); 
-  arcadeDrive(0,20);
+  arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL)); 
 }
 
 void Drivebase::updateTelemetry(){ 
