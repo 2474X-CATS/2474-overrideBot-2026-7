@@ -43,8 +43,8 @@ class Odometry : public DataStream {
            (EntrySet){"oriented_c", EntryType::BOOL}
          }
        ), 
-       gyro(vex::inertial(vex::PORT1)), 
-       rot(vex::rotation(vex::PORT2)) 
+       gyro(vex::inertial(vex::PORT16)), 
+       rot(vex::rotation(vex::PORT9)) 
        {};
 
        void refreshData() override; // Calls every telemetry frame

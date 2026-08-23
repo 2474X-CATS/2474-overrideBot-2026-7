@@ -37,8 +37,6 @@ void Elevator::init(){
   
     rot.setPosition(0, vex::rotationUnits::rev);
    
-    currentState = ElevatorState::PRIMING;
-
     correctionController = new pidcontroller(pidConsts, getPosition());   
     correctionController->setLastTimestamp(Brain.Timer.time());
 
@@ -53,7 +51,6 @@ void Elevator::periodic(){
    } else {  
      elevatorOutput = PRIMING_SPEED * raisingDirection;
    }
-   Telemetry::inst.placeValueAt<double>(correctionController->getSetpoint(), "test", "desired_velocity");
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt);
 }  
 
@@ -111,8 +108,14 @@ void Elevator::stateControl(){
     set<bool>("at_setpoint", currentState == ElevatorState::HOLDING);
 }
 
-void Elevator::respondToRequests(){     
-   raisingDirection = RobotState::getAxisState(AxisType::M_LEFT_VERTICAL) / 100;   
+void Elevator::respondToRequests(){      
+   if (RobotState::getStateOf("rise")){ 
+    raisingDirection = 1;
+   } else if (RobotState::getStateOf("fall")){ 
+    raisingDirection = -1; 
+   } else { 
+    raisingDirection = 0;
+   }
    
    if (currentState == ElevatorState::PURSUING){ 
     return;

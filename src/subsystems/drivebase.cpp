@@ -26,7 +26,7 @@ void Drivebase::periodic(){
 }
 
 void Drivebase::updateTelemetry(){ 
- return;
+  return;
 }
 
 void Drivebase::stop(){ 
@@ -51,7 +51,7 @@ void Drivebase::arcadeDrive(double speed, double rotation){
     rotation = std::min<double>(rotation, lastAngularVoltage + ((20/1000.0) * ACCELERATION_LIMIT_ANG));
     rotation = std::max<double>(rotation, lastAngularVoltage - ((20/1000.0) * ACCELERATION_LIMIT_ANG));
     */ 
-   
+
     leftMotors.spin(vex::directionType::rev, (speed + rotation), vex::voltageUnits::volt); 
     rightMotors.spin(vex::directionType::fwd, (speed - rotation), vex::voltageUnits::volt);  
 

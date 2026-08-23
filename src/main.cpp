@@ -60,12 +60,11 @@ int main()
 
   vexcodeInit();
   
-  
   //--------------------SUBSYSTEM CREATION----------------- 
   
-  //Drivebase drive = Drivebase(); 
-  //Odometry odom = Odometry(); 
-  //Elevator elev = Elevator();
+  Drivebase drive = Drivebase(); 
+  Odometry odom = Odometry(); 
+  Elevator elev = Elevator();
   
   //-------------------------------------------------------
 

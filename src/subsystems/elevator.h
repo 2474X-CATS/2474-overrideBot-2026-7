@@ -3,9 +3,7 @@
 
 #include "../architecture/subsystem.h"   
 
-#include "../control/feedForward.h" 
 #include "../control/pidcontroller.h" 
-#include "../control/trapezoidalMotion.h"
 
 
 typedef enum { 
@@ -74,10 +72,9 @@ class Elevator : public Subsystem {
             (EntrySet){"at_setpoint", EntryType::BOOL}, //Achieved setpoint or no setpoint? 
             (EntrySet){"requesting_setpoint", EntryType::BOOL},
             (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
-            (EntrySet){"has_setpoint", EntryType::BOOL}, //Do we have a specific height we want to reach 
             (EntrySet){"sensing_stack", EntryType::BOOL}, 
-            (EntrySet){"current_height", EntryType::DOUBLE}, 
-            (EntrySet){"current_velocity", EntryType::DOUBLE}, 
+            (EntrySet){"current_height", EntryType::DOUBLE},
+            (EntrySet){"current_velocity", EntryType::DOUBLE}
          }
        ),
        lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 

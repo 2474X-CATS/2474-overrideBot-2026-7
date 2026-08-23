@@ -36,13 +36,13 @@ void RobotState::initializeState()
            (EntrySet){"in_autonomous", EntryType::BOOL}, 
            (EntrySet){"inverted", EntryType::BOOL},
            (EntrySet){"is_team_color_blue", EntryType::BOOL},
-
-           (EntrySet){"awaiting_land", EntryType::BOOL}, 
-
+           (EntrySet){"awaiting_land", EntryType::BOOL},  
+           (EntrySet){"rise", EntryType::BOOL}, 
+           (EntrySet){"fall", EntryType::BOOL},
            (EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
        }); 
    
-   //manuallyModifyState("field_type_is_vex", true);
+   manuallyModifyState("field_type_is_vex", true);
 }
 
 void RobotState::updateRegular()
@@ -52,20 +52,13 @@ void RobotState::updateRegular()
       setVibrationCode("..");
    } else { 
       disableVibrations(); 
-   } 
-  
+   }  
+
    
-   manuallyModifyState("awaiting_land", Controller1.ButtonDown.pressing());
+   manuallyModifyState("awaiting_land", Controller1.ButtonY.pressing()); 
+   manuallyModifyState("rise", Controller1.ButtonUp.pressing()); 
+   manuallyModifyState("fall", Controller1.ButtonDown.pressing());
     
-
-   
-   //--------------------------------------------------------------------------- 
-   
-  
-   
-    
-
-
 };
 
 void RobotState::updateStopped() {
