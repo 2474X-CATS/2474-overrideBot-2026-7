@@ -34,77 +34,36 @@ void RobotState::initializeState()
        "robot_state",
        {
            (EntrySet){"in_autonomous", EntryType::BOOL}, 
-           (EntrySet){"inverted", EntryType::BOOL}, 
-           (EntrySet){"is_team_color_blue", EntryType::BOOL},   
-           
-           (EntrySet){"requested_macro", EntryType::BOOL},   
+           (EntrySet){"inverted", EntryType::BOOL},
+           (EntrySet){"is_team_color_blue", EntryType::BOOL},
 
-           (EntrySet){"requested_drop", EntryType::BOOL},  
-           (EntrySet){"awaiting_drop", EntryType::BOOL}, 
-
-           (EntrySet){"requested_land", EntryType::BOOL},  
            (EntrySet){"awaiting_land", EntryType::BOOL}, 
 
-           (EntrySet){"requested_flip", EntryType::BOOL}, 
-           (EntrySet){"awaiting_flip", EntryType::BOOL}, 
            (EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
        }); 
    
-   manuallyModifyState("field_type_is_vex", true);
+   //manuallyModifyState("field_type_is_vex", true);
 }
 
 void RobotState::updateRegular()
-{    
-   if (Controller1.ButtonR2.pressing()){ 
-     Telemetry::inst.placeValueAt<int>(1, "elevator", "raising_direction");
-   } else if (Controller1.ButtonR1.pressing()){ 
-     Telemetry::inst.placeValueAt<int>(-1, "elevator", "raising_direction");
-   } else { 
-     Telemetry::inst.placeValueAt<int>(0, "elevator", "raising_direction");
-   }
-   /*
-   if (Controller2.ButtonR2.pressing()){ //Macro
-      manuallyModifyState("requested_macro", true);
-   } else { 
-      if (getStateOf("requested_macro")){ 
-          Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");  
-          manuallyModifyState("requested_macro", false);
-      }
-   }
+{   
 
-   //--------------------------------------------------------------------------
-
-   if (Controller2.ButtonA.pressing()){ //Drop
-      manuallyModifyState("requested_drop", true);
+   if (Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint")){ 
+      setVibrationCode("..");
    } else { 
-      if (getStateOf("requested_drop")){ 
-          manuallyModifyState("awaiting_drop", true); //Turned off by claw itself
-          manuallyModifyState("requested_drop", false);
-      }
-   }  
+      disableVibrations(); 
+   } 
+  
+   
+   manuallyModifyState("awaiting_land", Controller1.ButtonDown.pressing());
+    
 
+   
    //--------------------------------------------------------------------------- 
    
-   if (Controller2.ButtonB.pressing()){ //Land
-      manuallyModifyState("requested_land", true);
-   } else { 
-      if (getStateOf("requested_land")){ 
-          manuallyModifyState("awaiting_land", true); //Turned off by the arm itself 
-          manuallyModifyState("requested_land", false);
-      }
-   } 
+  
    
-    //---------------------------------------------------------------------------
-
-   if (Controller2.ButtonX.pressing()){ //Flip
-      manuallyModifyState("requested_flip", true);
-   } else { 
-      if (getStateOf("requested_flip")){ 
-          manuallyModifyState("awaiting_flip", true); //Turned off by claw itself
-          manuallyModifyState("requested_flip", false);
-      }
-   } 
-   */
+    
 
 
 };

@@ -44,12 +44,14 @@ void Drivebase::arcadeDrive(double speed, double rotation){
     speed *= DRIVE_SENSITIVITY / 100 * 12.0; 
     rotation *= TURN_SENSITIVITY / 100 * 12.0; 
     
+    /*
     speed = std::min<double>(speed, lastLinearVoltage + ((20/1000.0) * ACCELERATION_LIMIT_LIN));
     speed = std::max<double>(speed, lastLinearVoltage - ((20/1000.0) * ACCELERATION_LIMIT_LIN)); 
 
     rotation = std::min<double>(rotation, lastAngularVoltage + ((20/1000.0) * ACCELERATION_LIMIT_ANG));
     rotation = std::max<double>(rotation, lastAngularVoltage - ((20/1000.0) * ACCELERATION_LIMIT_ANG));
-    
+    */ 
+   
     leftMotors.spin(vex::directionType::rev, (speed + rotation), vex::voltageUnits::volt); 
     rightMotors.spin(vex::directionType::fwd, (speed - rotation), vex::voltageUnits::volt);  
 
@@ -86,8 +88,6 @@ void DriveForward::start(){
 
     direction = copysign(1, distance); 
     distance = fabs(distance);  
-
-    Telemetry::inst.placeValueAt<double>(distance, "blueprint", "desired_position");
      
     FFConstants forwardConstants;
     forwardConstants.kS = FF_CONSTANTS_S; 
@@ -118,17 +118,6 @@ void DriveForward::start(){
     motionProfile->setLastTimestamp(Brain.Timer.time());    
     straightener->setLastTimestamp(Brain.Timer.time());
     
-    /*  
-    PIDConstants consts;  
-
-    consts.P = 0.017; 
-    consts.I = 0.001; 
-    consts.D = 0; 
-    consts.errorTolerance = 10;  
-
-    pidControl = new pidcontroller(consts, distance); 
-    pidControl->setLastTimestamp(Brain.Timer.time());   
-    */
 
 } 
 
@@ -137,9 +126,6 @@ void DriveForward::periodic(){
 
     double setpointVelocity = motionGoal.velocity; 
     double setpointAcceleration = motionGoal.acceleration; 
-
-    Telemetry::inst.placeValueAt<double>(setpointVelocity, "blueprint", "desired_velocity"); 
-    Telemetry::inst.placeValueAt<double>(getDistTraveled(), "blueprint", "progress");
 
     double ffOutput = ffController->calculate(setpointVelocity, setpointAcceleration);  
     double correction = controller->calculate(Telemetry::inst.getValueAt<double>("odometry", "velocity_ms") - setpointVelocity, Brain.Timer.time()); 
@@ -150,15 +136,6 @@ void DriveForward::periodic(){
     
     drivebaseRef.manualDrive(output, turnCorrection);
 
-    /*
-    double progress = getDistTraveled();
-    Telemetry::inst.placeValueAt<double>(getDistTraveled(), "blueprint", "progress");
-    double output = pidControl->calculate(progress, Brain.Timer.time()); 
-    output = max<double>(output, -12); 
-    output = min<double>(output, 12); 
-    output *= direction; 
-    drivebaseRef.manualDrive(output);   
-    */
 
 } 
 
@@ -199,14 +176,12 @@ void TurnToHeading::start(){
    controller = new pidcontroller(pidConstants, 0); 
    controller->setLastTimestamp(Brain.Timer.time());   
 
-   Telemetry::inst.placeValueAt<double>(0, "blueprint", "desired_position"); 
 
 
 } 
 
 void TurnToHeading::periodic(){   
     double error = getError();
-    Telemetry::inst.placeValueAt<double>(error, "blueprint", "progress");
     double output = controller->calculate(error, Brain.Timer.time());   
     output = max<double>(output, -8);
     output = min<double>(output, 8);

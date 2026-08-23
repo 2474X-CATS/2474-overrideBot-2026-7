@@ -2,18 +2,21 @@
 
 Elevator* Elevator::globalPtr = nullptr;
 
-double Elevator::GROUND_INTAKE_HEIGHT = 100;  
-double Elevator::LEVELED_HEIGHT = 0; 
-       
-double Elevator::MAX_HEIGHT = 1000;
+ 
+double Elevator::LEVELED_HEIGHT = (17.678 + 2.75) * 25.4; 
+double Elevator::GROUND_INTAKE_HEIGHT = LEVELED_HEIGHT + 40;  
+
+double Elevator::MAX_HEIGHT = (42 * 25.4);
 
 double Elevator::ELEVATOR_ERROR_TOLERANCE = 3; 
-double Elevator::STACK_HEIGHT = 0.0;  
+double Elevator::STACK_HEIGHT = 100;
 
-double Elevator::PRIMING_SPEED = 500; 
+double Elevator::PRIMING_SPEED = 12; 
 
 double Elevator::MINIMUM_ALIGNER_DISTANCE = 0.0;  
-double Elevator::ALIGNER_ERROR_TOLERANCE = 0.0; 
+double Elevator::ALIGNER_ERROR_TOLERANCE = 0.0;  
+
+double Elevator::SPOOL_DIAMETER = (Elevator::MAX_HEIGHT - Elevator::LEVELED_HEIGHT) / (2.534 * M_PI);
 
 Elevator& Elevator::getObject(){ 
   return *globalPtr;
@@ -22,87 +25,74 @@ Elevator& Elevator::getObject(){
 void Elevator::init(){ 
     //Set up all the constants   
 
-    //Motion: Max speed and acceleration
-     
-    motionConsts.maxVelocity = 0; 
-    motionConsts.maxAcceleration = 0; 
-  
     //Feedback: Correcting the Feedforward's shortcomings 
 
-    PIDConstants pidConsts;  
-    pidConsts.P = 0; 
-    pidConsts.I = 0; 
-    pidConsts.D = 0; 
+    PIDConstants pidConsts;
+    pidConsts.P = 0.5;
+    pidConsts.I = 0.0;
+    pidConsts.D = 0.001;
+    pidConsts.errorTolerance = 10;  
 
-    correctionController = new pidcontroller(pidConsts, 0);   
-
-    //Feedforward: Bulk of precision contol based on an inverse model of the elevator system 
-
-    elevatorFF.ffConsts.kS = 0; 
-    elevatorFF.ffConsts.kV = 0;
-    elevatorFF.ffConsts.kA = 0;  
-    elevatorFF.kG = 0;
-
-    correctionController->setLastTimestamp(Brain.Timer.time()); 
-
-    lift.setStopping(vex::brakeType::brake);
+    lift.setStopping(vex::brakeType::coast); 
+  
+    rot.setPosition(0, vex::rotationUnits::rev);
    
+    currentState = ElevatorState::PRIMING;
+
+    correctionController = new pidcontroller(pidConsts, getPosition());   
+    correctionController->setLastTimestamp(Brain.Timer.time());
+
 } 
 
-void Elevator::periodic(){   
-   double elevatorOutput = get<int>("raising_direction") * 12;
+void Elevator::periodic(){    
+   double elevatorOutput; 
+   if (currentState == ElevatorState::HOLDING || currentState == ElevatorState::PURSUING){ //
+     elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time()); 
+   } else if (currentState == ElevatorState::PRIMING){ 
+     elevatorOutput = PRIMING_SPEED;
+   } else {  
+     elevatorOutput = PRIMING_SPEED * raisingDirection;
+   }
+   Telemetry::inst.placeValueAt<double>(correctionController->getSetpoint(), "test", "desired_velocity");
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt);
 }  
 
 void Elevator::updateTelemetry(){     
     // Update status of stack sight   
-    set<bool>("sensing_stack", fabs(primingSensor.objectDistance(vex::distanceUnits::mm) - MINIMUM_ALIGNER_DISTANCE) < ALIGNER_ERROR_TOLERANCE);
-    updatePosition(); 
+    set<bool>("sensing_stack", get<double>("current_height") < 750);//fabs(primingSensor.objectDistance(vex::distanceUnits::mm) - MINIMUM_ALIGNER_DISTANCE) < ALIGNER_ERROR_TOLERANCE);
+    set<double>("current_velocity", getVelocity());      
+    set<double>("current_height", getPosition());
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();
-    } else { 
-       set<int>("raising_direction", 0);
     } 
+    //Brain.Screen.printAt(20, 120, "Current position: %.2f", getPosition()); 
+    //Brain.Screen.printAt(20, 140, "Current pos(rotations): %.2f", rot.position(vex::rotationUnits::rev)); 
 } 
 
 double Elevator::getPosition(){ 
-    return 0.0; 
+    return (rot.position(vex::rotationUnits::rev) * M_PI * SPOOL_DIAMETER) + LEVELED_HEIGHT;
 } 
 
 double Elevator::getVelocity(){
-   return (getPosition() - previousHeight) / ((Brain.Timer.time() - previousTimestamp) / 1000.0); 
+   return rot.velocity(vex::velocityUnits::rpm) / 60 * M_PI * SPOOL_DIAMETER; //(getPosition() - previousHeight) / ((Brain.Timer.time() - previousTimestamp) / 1000.0); 
 }
 
-void Elevator::updatePosition(){ 
-  double newPosition = getPosition();   
-  set<double>("current_velocity", getVelocity());   
-  previousHeight = get<double>("current_height");   
-  set<double>("current_height", newPosition);  
-  previousTimestamp = Brain.Timer.time(); 
-}
-
-double Elevator::calculateOutput(double velocity, double acceleration){  
-    double ffOutput = elevatorFF.calculate(velocity, acceleration); 
-    double pidOutput = correctionController->calculate(getVelocity() - velocity, Brain.Timer.time()); 
-    return ffOutput + pidOutput; 
-} 
-
-void Elevator::setSetpoint(double setpoint){ 
-   double error = setpoint - getPosition();  
-   setpointDirection = copysign(1, error); 
-   error = fabs(error); 
-   if (error < ELEVATOR_ERROR_TOLERANCE){ 
-    return;
-   } 
-   motionProfile = new TrapezoidalMotionProfile(motionConsts, error, getVelocity(), 0);   
-   motionProfile->setLastTimestamp(Brain.Timer.time()); 
+void Elevator::setSetpoint(double setpoint){  
+   correctionController->setSetpoint(setpoint);
    correctionController->setLastTimestamp(Brain.Timer.time());
    currentState = ElevatorState::PURSUING;
 }
 
 bool Elevator::reachedSetpoint(){ 
-   return Brain.Timer.time() - motionProfile->getStartTime() >= motionProfile->getTotalDuration(); 
+   return correctionController->atSetpoint(getPosition()); //Brain.Timer.time() - motionProfile->getStartTime() >= motionProfile->getTotalDuration(); 
+} 
+
+void Elevator::settle(){
+  correctionController->reset();
+  correctionController->setSetpoint(getPosition());  
+  correctionController->setLastTimestamp(Brain.Timer.time()); 
+  currentState = ElevatorState::HOLDING;
 }
 
 void Elevator::stateControl(){  
@@ -112,21 +102,36 @@ void Elevator::stateControl(){
       set<bool>("requesting_setpoint", false); 
     }
 
-    if (currentState == ElevatorState::PURSUING){ //
-      if (reachedSetpoint()){  
+    if (currentState == ElevatorState::PURSUING && reachedSetpoint()){ //
         currentState = ElevatorState::HOLDING; 
-      }
-    } else if (currentState == ElevatorState::PRIMING){   
-        if (!get<bool>("sensing_stack")){ 
-          currentState = ElevatorState::HOLDING; 
-        }
+    } else if (currentState == ElevatorState::PRIMING && (!get<bool>("sensing_stack"))){   
+        settle();
     }
 
-   set<bool>("at_setpoint", currentState == ElevatorState::HOLDING);
+    set<bool>("at_setpoint", currentState == ElevatorState::HOLDING);
 }
 
-void Elevator::respondToRequests(){  
+void Elevator::respondToRequests(){     
+   raisingDirection = RobotState::getAxisState(AxisType::M_LEFT_VERTICAL) / 100;   
+   
+   if (currentState == ElevatorState::PURSUING){ 
     return;
+   }  
+
+   if (RobotState::getStateOf("awaiting_land")){  
+     set<bool>("requesting_setpoint", true);
+     set<double>("requested_height", GROUND_INTAKE_HEIGHT); 
+     return;
+   }
+
+   if (raisingDirection == 0){ 
+     if (currentState == ElevatorState::ADJUSTING){  
+       settle();
+     } 
+   } else { 
+     currentState = ElevatorState::ADJUSTING;
+   }
+   
 } 
 
 void Elevator::stop(){ 

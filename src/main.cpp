@@ -3,8 +3,7 @@
 #include "subsystems/drivebase.h" 
 #include "streams/odometry.h" 
 #include "subsystems/elevator.h"
-#include <iostream>
-#include "gui/graph.h"
+#include <iostream> 
 
 using namespace vex;
 
@@ -49,56 +48,9 @@ void startCommandMatch()
   robot.configurateAutonomous();
   thread callBackTrigger = thread(scheduleCallbacks);
   robot.runTelemetryThread();
-} 
-
-
-int initializeGraph(){  
-  
-  Telemetry::inst.registerSubtable( 
-    "blueprint", 
-    { 
-      (EntrySet){"desired_position", EntryType::DOUBLE}, 
-      (EntrySet){"progress", EntryType::DOUBLE}, 
-      (EntrySet){"desired_velocity", EntryType::DOUBLE}
-    }
-  ); 
-
-  DataSupplier target; 
-  target.directory = "blueprint";  
-  target.name = "desired_position"; 
-  target.label = "Setp(mm)"; 
-  
-
-  DataSupplier progress;  
-  progress.directory = "blueprint"; 
-  progress.name = "progress";
-  progress.label = "Pos(mm)"; 
-
-  DataSupplier speed;
-  speed.directory = "odometry"; 
-  speed.name = "velocity_ms"; 
-  speed.label = "V(mm/s)";   
-
-  DataSupplier desiredSpeed; 
-  desiredSpeed.directory = "blueprint"; 
-  desiredSpeed.name = "desired_velocity"; 
-  desiredSpeed.label = "DV(mm/s)"; 
-
-
-  Graph g = Graph( 
-    "Position vs Desired Position", 
-    { 
-       target, 
-       progress, 
-       //speed, 
-       //desiredSpeed
-    }
-  ); 
-
-  Sprite::frameLoop(); 
-
-  return 0;
 }
+
+
 
 //------------------------------>-------------------------------------------------------------------------------------------------------------------
 
@@ -108,16 +60,19 @@ int main()
 
   vexcodeInit();
   
+  
   //--------------------SUBSYSTEM CREATION----------------- 
   
-  Drivebase drive = Drivebase();
-  Elevator elev = Elevator();
+  //Drivebase drive = Drivebase(); 
   //Odometry odom = Odometry(); 
+  //Elevator elev = Elevator();
+  
   //-------------------------------------------------------
 
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
   testDrive();
+
 
 }
