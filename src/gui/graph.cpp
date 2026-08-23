@@ -126,11 +126,11 @@ void Graph::drawTicks(){
     double range = maximumValue - minimumValue;
 
     for (int i = 0; i < 5; i ++){   
-        int val = (minimumValue + (range / 4.0 * i)) / 100;
+        double val = (minimumValue + (range / 4.0 * i)) / 100.0;
         stringstream currentVal; 
-        currentVal << val * 100; 
+        currentVal << val * 100;
         drawLine(x - 20, y + height - ((i / 4.0) * height), x, y + height - ((i / 4.0) * height), globalColor.black);
-        renderText(currentVal.str(), x - 10 - (currentVal.str().size() * 5), y + height - ((i / 4.0) * height) - 3, globalColor.black, globalColor.white, vex::fontType::mono12);
+        renderText(currentVal.str(), x - 7 - (currentVal.str().size() * 5), y + height - ((i / 4.0) * height) - 3, globalColor.black, globalColor.white, vex::fontType::mono12);
     }
 
     Brain.Screen.setPenWidth(1);

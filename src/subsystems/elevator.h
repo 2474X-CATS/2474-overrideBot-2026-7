@@ -11,7 +11,8 @@
 typedef enum { 
    HOLDING, 
    PRIMING, 
-   PURSUING
+   PURSUING, 
+   ADJUSTING
 } ElevatorState;
 
 class Elevator : public Subsystem { 
@@ -31,25 +32,16 @@ class Elevator : public Subsystem {
        static double PRIMING_SPEED; 
 
        static double MINIMUM_ALIGNER_DISTANCE; 
-       static double ALIGNER_ERROR_TOLERANCE;
+       static double ALIGNER_ERROR_TOLERANCE; 
 
-       ElevatorState currentState; 
+       static double SPOOL_DIAMETER;
 
-       int raisingDirection = 0;
-       int setpointDirection;  
-
-       double previousHeight; 
-       double previousTimestamp; 
-
-
-       TrapezoidalMotionProfile* motionProfile = nullptr; //When the robot has defined setpoints it needs to reach
-       TrapezoidConstants motionConsts; 
+       ElevatorState currentState = ElevatorState::HOLDING; 
        
-       pidcontroller* correctionController = nullptr; //Adjusting the output of ff so its more accurate
-      
-       ElevatorFFConstants elevatorFF; //Elevator FF Running at almost all times
+       int raisingDirection; 
        
-       double calculateOutput(double velocity, double acceleration); 
+       pidcontroller* correctionController = nullptr; 
+       
        bool reachedSetpoint(); 
 
        void stateControl();
@@ -58,8 +50,9 @@ class Elevator : public Subsystem {
        double getPosition();  
        double getVelocity();
 
-       void setSetpoint(double setpoint);  
-       void updatePosition();
+       void setSetpoint(double setpoint);   
+       void settle(); 
+
 
        vex::motor lifter1; 
        vex::motor lifter2;  
@@ -85,7 +78,7 @@ class Elevator : public Subsystem {
             (EntrySet){"has_setpoint", EntryType::BOOL}, //Do we have a specific height we want to reach 
             (EntrySet){"sensing_stack", EntryType::BOOL}, 
             (EntrySet){"current_height", EntryType::DOUBLE}, 
-            (EntrySet){"current_velocity", EntryType::DOUBLE},  
+            (EntrySet){"current_velocity", EntryType::DOUBLE}, 
          }
        ),
        lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 

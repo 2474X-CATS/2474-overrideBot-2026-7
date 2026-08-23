@@ -39,8 +39,8 @@ class Graph : public Sprite {
       std::string header; 
       int charsInTitle;
 
-      double maximumValue = 1000; 
-      double minimumValue = -1000;  
+      double maximumValue = 1; 
+      double minimumValue = -1;  
 
       double displayTimeRange; 
       double minimumTimestamp;
