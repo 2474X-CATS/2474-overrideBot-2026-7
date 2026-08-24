@@ -50,18 +50,24 @@ void Elevator::periodic(){
      elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time()); 
    } else if (currentState == ElevatorState::PRIMING){ 
      elevatorOutput = PRIMING_SPEED;
+   } else if (currentState == ElevatorState::LISTLESS) { 
+     elevatorOutput = 0; 
    } else {  
      elevatorOutput = PRIMING_SPEED * raisingDirection;
-   }
-   Telemetry::inst.placeValueAt<double>(correctionController->getSetpoint(), "test", "desired_velocity");
+   } 
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt);
 }  
 
 void Elevator::updateTelemetry(){     
-    // Update status of stack sight   
-    set<bool>("sensing_stack", get<double>("current_height") < 750);//fabs(primingSensor.objectDistance(vex::distanceUnits::mm) - MINIMUM_ALIGNER_DISTANCE) < ALIGNER_ERROR_TOLERANCE);
-    set<double>("current_velocity", getVelocity());      
-    set<double>("current_height", getPosition());
+    // Update status of stack sight    
+
+    double currentPosition = getPosition(); 
+    double currentVelocity = getVelocity();  
+
+    set<bool>("sensing_stack", currentPosition < 750);//fabs(primingSensor.objectDistance(vex::distanceUnits::mm) - MINIMUM_ALIGNER_DISTANCE) < ALIGNER_ERROR_TOLERANCE);
+    set<double>("current_velocity", currentVelocity);      
+    set<double>("current_height", currentPosition); 
+    set<double>("percentage_extended", (currentPosition - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT)); 
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();
@@ -88,11 +94,10 @@ bool Elevator::reachedSetpoint(){
    return correctionController->atSetpoint(getPosition()); //Brain.Timer.time() - motionProfile->getStartTime() >= motionProfile->getTotalDuration(); 
 } 
 
-void Elevator::settle(){
+void Elevator::lock(){
   correctionController->reset();
   correctionController->setSetpoint(getPosition());  
   correctionController->setLastTimestamp(Brain.Timer.time()); 
-  currentState = ElevatorState::HOLDING;
 }
 
 void Elevator::stateControl(){  
@@ -103,20 +108,27 @@ void Elevator::stateControl(){
     }
 
     if (currentState == ElevatorState::PURSUING && reachedSetpoint()){ //
-        currentState = ElevatorState::HOLDING; 
+        currentState = ElevatorState::HOLDING;
     } else if (currentState == ElevatorState::PRIMING && (!get<bool>("sensing_stack"))){   
-        settle();
+        lock();
+        currentState = ElevatorState::HOLDING; //Reached top of stack 
     }
 
-    set<bool>("at_setpoint", currentState == ElevatorState::HOLDING);
+    set<bool>("at_setpoint", currentState != ElevatorState::PURSUING && currentState != ElevatorState::PRIMING);
 }
 
 void Elevator::respondToRequests(){     
-   raisingDirection = RobotState::getAxisState(AxisType::M_LEFT_VERTICAL) / 100;   
-   
+   if (RobotState::getStateOf("rise")){ 
+      raisingDirection = 1;
+   } else if (RobotState::getStateOf("fall")){ 
+      raisingDirection = -1;
+   } else { 
+      raisingDirection = 0;
+   } 
+
    if (currentState == ElevatorState::PURSUING){ 
     return;
-   }  
+   }
 
    if (RobotState::getStateOf("awaiting_land")){  
      set<bool>("requesting_setpoint", true);
@@ -125,9 +137,9 @@ void Elevator::respondToRequests(){
    }
 
    if (raisingDirection == 0){ 
-     if (currentState == ElevatorState::ADJUSTING){  
-       settle();
-     } 
+     if (currentState == ElevatorState::ADJUSTING){
+       currentState = ElevatorState::LISTLESS;
+     }
    } else { 
      currentState = ElevatorState::ADJUSTING;
    }

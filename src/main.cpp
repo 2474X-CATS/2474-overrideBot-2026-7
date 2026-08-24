@@ -48,38 +48,6 @@ void startCommandMatch()
   robot.runTelemetryThread();
 }
 
-int initializeGraph(){  
-
-  DataSupplier desired; 
-  desired.directory = "test";
-  desired.name = "desired_velocity"; 
-  desired.label = "DV(mm/s)"; 
-
-  DataSupplier reality; 
-  reality.directory = "elevator";
-  reality.name = "current_velocity"; 
-  reality.label = "V(mm/s)";   
-  
-  DataSupplier position; 
-  position.directory = "elevator"; 
-  position.name = "current_height"; 
-  position.label = "X(mm)";
-  
-
-  Graph g = Graph( 
-     "Desired vs Real", 
-     { 
-      desired, 
-      //reality, 
-      position
-     }
-  ); 
-
-  Sprite::frameLoop(); 
-  return 0;
-
-}
-
 //------------------------------>-------------------------------------------------------------------------------------------------------------------
 
 
@@ -89,12 +57,6 @@ int main()
   vexcodeInit();
   
   //--------------------SUBSYSTEM CREATION----------------- 
-  Telemetry::inst.registerSubtable( 
-     "test", 
-     { 
-      (EntrySet){"desired_velocity", EntryType::DOUBLE}
-     }
-  );  
 
   Elevator elevator = Elevator();
   //-------------------------------------------------------
@@ -102,7 +64,7 @@ int main()
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------  
-  thread t = thread(initializeGraph);
+
   testDrive();
 
 }

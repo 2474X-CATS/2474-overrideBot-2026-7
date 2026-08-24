@@ -12,7 +12,8 @@ typedef enum {
    HOLDING, 
    PRIMING, 
    PURSUING, 
-   ADJUSTING
+   ADJUSTING, 
+   LISTLESS
 } ElevatorState;
 
 class Elevator : public Subsystem { 
@@ -51,8 +52,7 @@ class Elevator : public Subsystem {
        double getVelocity();
 
        void setSetpoint(double setpoint);   
-       void settle(); 
-
+       void lock(); 
 
        vex::motor lifter1; 
        vex::motor lifter2;  
@@ -79,6 +79,7 @@ class Elevator : public Subsystem {
             (EntrySet){"sensing_stack", EntryType::BOOL}, 
             (EntrySet){"current_height", EntryType::DOUBLE}, 
             (EntrySet){"current_velocity", EntryType::DOUBLE}, 
+            (EntrySet){"percentage_extended", EntryType::DOUBLE} 
          }
        ),
        lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 

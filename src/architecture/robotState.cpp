@@ -37,32 +37,21 @@ void RobotState::initializeState()
            (EntrySet){"inverted", EntryType::BOOL}, 
            (EntrySet){"is_team_color_blue", EntryType::BOOL},   
            
-           (EntrySet){"requested_macro", EntryType::BOOL},   
-
-           (EntrySet){"requested_drop", EntryType::BOOL},  
-           (EntrySet){"awaiting_drop", EntryType::BOOL}, 
-
            (EntrySet){"awaiting_land", EntryType::BOOL}, 
 
-           (EntrySet){"requested_flip", EntryType::BOOL}, 
-           (EntrySet){"awaiting_flip", EntryType::BOOL}
+           (EntrySet){"rise", EntryType::BOOL}, 
+           (EntrySet){"fall", EntryType::BOOL} 
+
        });
 }
 
 void RobotState::updateRegular()
 {   
-
-   if (Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint")){ 
-      setVibrationCode("..");
-   } else { 
-      disableVibrations(); 
-   } 
   
-   
    manuallyModifyState("awaiting_land", Controller1.ButtonDown.pressing());
-    
+   manuallyModifyState("rise", Controller1.ButtonUp.pressing()); 
+   manuallyModifyState("fall", Controller1.ButtonDown.pressing());
 
-   
    //--------------------------------------------------------------------------- 
    
   
