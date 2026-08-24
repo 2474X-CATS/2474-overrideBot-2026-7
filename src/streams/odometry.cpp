@@ -6,11 +6,11 @@ double Odometry::INERTIAL_WHEEL_RADIUS = 25.4;
 double Odometry::GOAL_WIDTH = 6 * 25.4;
 
 Location* Odometry::locations[13] = { 
-   new Location( 
-     "all_nat_neu", 
+   new Location(
+     "all_nat_neu",
      TILE_SIZE_MM * 4, TILE_SIZE_MM, 
      Odometry::GOAL_WIDTH/2
-   ),  
+   ),
    new Location(
      "all_nat_all", 
      TILE_SIZE_MM * 2, TILE_SIZE_MM *1, 

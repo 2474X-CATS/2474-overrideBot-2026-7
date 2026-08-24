@@ -1,22 +1,25 @@
 #ifndef __DRIVEBASE_H__ 
 #define __DRIVEBASE_H__ 
 
+#include "../architecture/subsystem.h"   
+#include "../architecture/command.h"  
 
-#include "../architecture/subsystem.h"  
 #include "../control/feedForward.h" 
 #include "../control/pidcontroller.h" 
 #include "../control/trapezoidalMotion.h" 
-#include "../architecture/command.h" 
-#include "../streams/odometry.h"
+
 
 class Drivebase : public Subsystem { 
-    public:  
+    public:
       using Subsystem::get;  
       
       static double MAX_RPM; 
-      static double WHEEL_RADIUS_MM;
+      static double WHEEL_RADIUS_MM; 
+
+      static double MAX_LIN_SPEED;
+      static double MAX_ANG_SPEED;
       
-      static Drivebase& getObject(); 
+      static Drivebase& getObject();
 
       Drivebase(): 
       Subsystem( 
@@ -24,25 +27,32 @@ class Drivebase : public Subsystem {
         { 
           (EntrySet){"is_on", EntryType::BOOL}
         }
-      ), 
+      ),
       leftFront(vex::motor(vex::PORT20)), 
       leftBack(vex::motor(vex::PORT19)), 
       rightFront(vex::motor(vex::PORT17)), 
       rightBack(vex::motor(vex::PORT18)), 
       leftMotors(leftFront, leftBack), 
       rightMotors(rightFront, rightBack)
-      { 
+      {
         globalPtr = this;
       };
       
-      
+    
       void manualDrive(double voltageDrive, double voltageTurn); 
       
 
     private:     
-      static Drivebase* globalPtr; 
+      static Drivebase* globalPtr;  
+
       static double TURN_SENSITIVITY; 
-      static double DRIVE_SENSITIVITY;
+      static double DRIVE_SENSITIVITY; 
+      
+      static double ACCELERATION_LIMIT_LIN; 
+      static double ACCELERATION_LIMIT_ANG;
+
+      double lastLinearVoltage = 0;
+      double lastAngularVoltage = 0;
 
       vex::motor leftFront; 
       vex::motor leftBack; 
@@ -62,7 +72,7 @@ class Drivebase : public Subsystem {
       void periodic() override; 
       void updateTelemetry() override; 
       void stop() override;
-}; 
+};
 
 //--------------------------------------------------------------------------------- 
 
@@ -82,7 +92,7 @@ class DriveForward : public Command<Drivebase> {
      
      TrapezoidalMotionProfile* motionProfile = nullptr;  
      pidcontroller* controller = nullptr; 
-     FeedForward* ffController = nullptr; 
+     FFConstants* ffController; 
 
      pidcontroller* straightener = nullptr;
 

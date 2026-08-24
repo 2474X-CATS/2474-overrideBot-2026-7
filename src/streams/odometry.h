@@ -28,23 +28,19 @@ class Odometry : public DataStream {
 
        Odometry() : 
        DataStream( 
-         "odometry", 
+         "odometry",
          {  
            (EntrySet){"starting_left", EntryType::BOOL}, 
-
            (EntrySet){"x_position_mm", EntryType::DOUBLE}, 
            (EntrySet){"y_position_mm", EntryType::DOUBLE}, 
-           (EntrySet){"heading_deg", EntryType::DOUBLE},  
-
+           (EntrySet){"heading_deg", EntryType::DOUBLE}, 
            (EntrySet){"velocity_ms", EntryType::DOUBLE},  
-           
-           (EntrySet){"immediate_distance", EntryType::DOUBLE},  
-
+           (EntrySet){"immediate_distance", EntryType::DOUBLE},
            (EntrySet){"oriented_c", EntryType::BOOL}
          }
-       ), 
-       gyro(vex::inertial(vex::PORT1)), 
-       rot(vex::rotation(vex::PORT2)) 
+       ),
+       gyro(vex::inertial(vex::PORT1)),
+       rot(vex::rotation(vex::PORT2))
        {};
 
        void refreshData() override; // Calls every telemetry frame

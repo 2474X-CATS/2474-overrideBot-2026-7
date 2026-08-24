@@ -1,5 +1,8 @@
 #include "drivebase.h" 
-#include "../utilities/functools.h"
+#include "../utilities/functools.h" 
+#include "../streams/odometry.h"
+
+
 
 Drivebase* Drivebase::globalPtr = nullptr; 
 
@@ -7,7 +10,13 @@ double Drivebase::MAX_RPM = 450;
 double Drivebase::WHEEL_RADIUS_MM = 2.75 / 2 * 25.4;
 
 double Drivebase::DRIVE_SENSITIVITY = 1; 
-double Drivebase::TURN_SENSITIVITY = 1;
+double Drivebase::TURN_SENSITIVITY = 1; 
+
+double Drivebase::ACCELERATION_LIMIT_LIN = 12 / 0.25; 
+double Drivebase::ACCELERATION_LIMIT_ANG = 12 / 0.25; 
+
+double Drivebase::MAX_LIN_SPEED = 12;
+double Drivebase::MAX_ANG_SPEED = 12;
 
 void Drivebase::init(){ 
   leftMotors.setStopping(vex::brakeType::brake);  
@@ -22,8 +31,12 @@ void Drivebase::periodic(){
   arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL)); 
 }
 
-void Drivebase::updateTelemetry(){ 
- return;
+void Drivebase::updateTelemetry(){  
+  double percentageHeight = Telemetry::inst.getValueAt<double>("elevator", "percentage_height"); 
+  /* 
+  Modify max speeds and accelerations
+  */
+  return;
 }
 
 void Drivebase::stop(){ 
@@ -36,14 +49,22 @@ void Drivebase::manualDrive(double voltageDrive, double voltageTurn){
     rightMotors.spin(vex::directionType::fwd, voltageDrive - voltageTurn, vex::voltageUnits::volt);
 } 
 
+void Drivebase::arcadeDrive(double speed, double rotation){   
+    speed *= DRIVE_SENSITIVITY / 100 * 12.0; 
+    rotation *= TURN_SENSITIVITY / 100 * 12.0; 
+    
+    speed = std::min<double>(std::min<double>(speed, lastLinearVoltage + ((20/1000.0) * ACCELERATION_LIMIT_LIN)), MAX_LIN_SPEED);
+    speed = std::max<double>(std::max<double>(speed, lastLinearVoltage - ((20/1000.0) * ACCELERATION_LIMIT_LIN)), -MAX_LIN_SPEED); 
+    
+    rotation = std::min<double>(std::min<double>(rotation, lastAngularVoltage + ((20/1000.0) * ACCELERATION_LIMIT_ANG)), MAX_ANG_SPEED);
+    rotation = std::max<double>(std::max<double>(rotation, lastAngularVoltage - ((20/1000.0) * ACCELERATION_LIMIT_ANG)), -MAX_ANG_SPEED); 
+   
+    leftMotors.spin(vex::directionType::rev, (speed + rotation), vex::voltageUnits::volt); 
+    rightMotors.spin(vex::directionType::fwd, (speed - rotation), vex::voltageUnits::volt);  
 
-void Drivebase::arcadeDrive(double speed, double rotation){  
-    speed *= DRIVE_SENSITIVITY; 
-    rotation *= TURN_SENSITIVITY;
-    leftMotors.spin(vex::directionType::rev, (((speed + rotation) / 100.0) * 12.0), vex::voltageUnits::volt); 
-    rightMotors.spin(vex::directionType::fwd, ((speed - rotation) / 100.0) * 12.0, vex::voltageUnits::volt); 
+    lastAngularVoltage = rotation; 
+    lastLinearVoltage = speed;
 } 
-
 
 ///-------------------------------------------------------------------------------------- 
 
@@ -73,13 +94,10 @@ void DriveForward::start(){
 
     direction = copysign(1, distance); 
     distance = fabs(distance);  
-
-    Telemetry::inst.placeValueAt<double>(distance, "blueprint", "desired_position");
      
-    FFConstants forwardConstants;
-    forwardConstants.kS = FF_CONSTANTS_S; 
-    forwardConstants.kV = FF_CONSTANTS_V; 
-    forwardConstants.kA = FF_CONSTANTS_A;  
+    ffController.kS = FF_CONSTANTS_S; 
+    ffController.kV = FF_CONSTANTS_V; 
+    ffController.kA = FF_CONSTANTS_A;  
     
     PIDConstants pidConstants; 
     pidConstants.P = PID_CONSTANTS_KP; 
@@ -97,25 +115,12 @@ void DriveForward::start(){
 
     controller = new pidcontroller(pidConstants, 0);   
     straightener = new pidcontroller(straightenConstants, 0); 
-    ffController = new FeedForward(forwardConstants);   
 
     motionProfile = new TrapezoidalMotionProfile(motionConstants, distance); 
     
     controller->setLastTimestamp(Brain.Timer.time()); 
     motionProfile->setLastTimestamp(Brain.Timer.time());    
     straightener->setLastTimestamp(Brain.Timer.time());
-    
-    /*  
-    PIDConstants consts;  
-
-    consts.P = 0.017; 
-    consts.I = 0.001; 
-    consts.D = 0; 
-    consts.errorTolerance = 10;  
-
-    pidControl = new pidcontroller(consts, distance); 
-    pidControl->setLastTimestamp(Brain.Timer.time());   
-    */
 
 } 
 
@@ -125,10 +130,7 @@ void DriveForward::periodic(){
     double setpointVelocity = motionGoal.velocity; 
     double setpointAcceleration = motionGoal.acceleration; 
 
-    Telemetry::inst.placeValueAt<double>(setpointVelocity, "blueprint", "desired_velocity"); 
-    Telemetry::inst.placeValueAt<double>(getDistTraveled(), "blueprint", "progress");
-
-    double ffOutput = ffController->calculate(setpointVelocity, setpointAcceleration);  
+    double ffOutput = ffController.calculate(setpointVelocity, setpointAcceleration);  
     double correction = controller->calculate(Telemetry::inst.getValueAt<double>("odometry", "velocity_ms") - setpointVelocity, Brain.Timer.time()); 
     
     double turnCorrection = straightener->calculate(angleDifference(initialAngle, Telemetry::inst.getValueAt<double>("odometry", "heading_deg")), Brain.Timer.time());
@@ -136,16 +138,6 @@ void DriveForward::periodic(){
     double output = ffOutput + correction;
     
     drivebaseRef.manualDrive(output, turnCorrection);
-
-    /*
-    double progress = getDistTraveled();
-    Telemetry::inst.placeValueAt<double>(getDistTraveled(), "blueprint", "progress");
-    double output = pidControl->calculate(progress, Brain.Timer.time()); 
-    output = max<double>(output, -12); 
-    output = min<double>(output, 12); 
-    output *= direction; 
-    drivebaseRef.manualDrive(output);   
-    */
 
 } 
 
