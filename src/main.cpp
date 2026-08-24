@@ -72,12 +72,6 @@ int main()
 
   //-------------------RUN PROTOCOLS HERE------------------- 
   testDrive();
-  /*
-  testAuto( 
-    { 
-      ParallelCommandGroup::makeGroup(DriveForward::getCommand(TILE_SIZE_MM))->chainAnd(RunElevator::getCommand())
-    }
-  );
-  */
+  
 
 }
