@@ -9,8 +9,8 @@ double Drivebase::WHEEL_RADIUS_MM = 2.75 / 2 * 25.4;
 double Drivebase::DRIVE_SENSITIVITY = 1; 
 double Drivebase::TURN_SENSITIVITY = 1; 
 
-double Drivebase::ACCELERATION_LIMIT_LIN = 12 / 0.25; 
-double Drivebase::ACCELERATION_LIMIT_ANG = 12 / 0.25; 
+double Drivebase::ACCELERATION_LIMIT_LIN = 12 / 0.001; 
+double Drivebase::ACCELERATION_LIMIT_ANG = 12 / 0.001; 
 
 double Drivebase::MAX_LIN_SPEED = 12;
 double Drivebase::MAX_ANG_SPEED = 12;

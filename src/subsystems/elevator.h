@@ -35,7 +35,7 @@ class Elevator : public Subsystem {
 
        static double SPOOL_DIAMETER;
 
-       ElevatorState currentState = ElevatorState::LISTLESS; 
+       ElevatorState currentState = ElevatorState::HOLDING; 
        
        int raisingDirection; 
        
