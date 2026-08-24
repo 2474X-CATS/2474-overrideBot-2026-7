@@ -1,7 +1,8 @@
 #ifndef __ELEVATOR_H__ 
 #define __ELEVATOR_H__ 
 
-#include "../architecture/subsystem.h"   
+#include "../architecture/subsystem.h"  
+#include "../architecture/command.h"  
 
 #include "../control/feedForward.h" 
 #include "../control/pidcontroller.h" 
@@ -11,7 +12,9 @@
 typedef enum { 
    E_HOLDING, 
    E_PRIMING, 
-   E_PURSUING
+   E_PURSUING, 
+   E_ADJUSTING, 
+   E_LISTLESS
 } ElevatorState;
 
 class Elevator : public Subsystem { 
@@ -33,31 +36,21 @@ class Elevator : public Subsystem {
        static double MINIMUM_ALIGNER_DISTANCE; 
        static double ALIGNER_ERROR_TOLERANCE;
 
-       int raisingDirection = 0;
-       int setpointDirection;  
-
-       double previousHeight; 
-       double previousTimestamp;  
+       int raisingDirection;
 
        ElevatorState currentState = ElevatorState::E_HOLDING;
-
-       TrapezoidalMotionProfile* motionProfile = nullptr; //When the robot has defined setpoints it needs to reach
-       TrapezoidConstants motionConsts; 
        
        pidcontroller* correctionController = nullptr; //Adjusting the output of ff so its more accurate
-      
-       ElevatorFFConstants elevatorFF; //Elevator FF Running at almost all times
        
-       vex::motor lifter1; 
-       vex::motor lifter2;  
+       vex::motor lifter1;
+       vex::motor lifter2;
 
-       vex::motor_group lift;  
+       vex::motor_group lift;
 
        vex::distance primingSensor;
 
        vex::rotation rot; 
 
-       double calculateOutput(double velocity, double acceleration); 
        bool reachedSetpoint(); 
 
        void stateControl();
@@ -66,8 +59,9 @@ class Elevator : public Subsystem {
        double getPosition();  
        double getVelocity();
 
-       void setSetpoint(double setpoint);  
-       void updatePosition();
+       void setSetpoint(double setpoint);   
+
+       void lock(); 
 
     public:   
        using Subsystem::get; 
@@ -84,9 +78,9 @@ class Elevator : public Subsystem {
             (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
             (EntrySet){"sensing_stack", EntryType::BOOL},
             (EntrySet){"current_height", EntryType::DOUBLE},
-            (EntrySet){"priming_direction", EntryType::INT}, 
-            (EntrySet){"sniper_score_enabled", EntryType::BOOL}, 
-            (EntrySet){"lifting_timestamp", EntryType::DOUBLE}
+            (EntrySet){"sniper_score_enabled", EntryType::BOOL},  
+            (EntrySet){"percentage_extended", EntryType::DOUBLE}
+            
          }
        ),
        lifter1(vex::motor(vex::PORT11)), 

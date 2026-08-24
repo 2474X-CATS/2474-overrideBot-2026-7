@@ -62,7 +62,6 @@ int main()
   //--------------------SUBSYSTEM CREATION----------------- 
    
   SuperSystem ss = SuperSystem();  
-
   Elevator elevator = Elevator();
   Forearm forearm = Forearm(); 
   Claw claw = Claw();
