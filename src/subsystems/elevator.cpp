@@ -33,7 +33,7 @@ void Elevator::init(){
     pidConsts.D = 0.001;
     pidConsts.errorTolerance = 10;  
 
-    lift.setStopping(vex::brakeType::coast); 
+    lift.setStopping(vex::brakeType::brake); 
   
     rot.setPosition(0, vex::rotationUnits::rev);
    
@@ -51,10 +51,10 @@ void Elevator::periodic(){
    } else if (currentState == ElevatorState::PRIMING){ 
      elevatorOutput = PRIMING_SPEED;
    } else if (currentState == ElevatorState::LISTLESS) { 
-     elevatorOutput = 0; 
+     elevatorOutput = 0;
    } else {  
      elevatorOutput = PRIMING_SPEED * raisingDirection;
-   } 
+   }
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt);
 }  
 
@@ -114,7 +114,8 @@ void Elevator::stateControl(){
         currentState = ElevatorState::HOLDING; //Reached top of stack 
     }
 
-    set<bool>("at_setpoint", currentState != ElevatorState::PURSUING && currentState != ElevatorState::PRIMING);
+    set<bool>("at_setpoint", currentState != ElevatorState::PURSUING && currentState != ElevatorState::PRIMING); 
+    
 }
 
 void Elevator::respondToRequests(){     
