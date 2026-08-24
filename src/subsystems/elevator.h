@@ -10,7 +10,8 @@ typedef enum {
    HOLDING, 
    PRIMING, 
    PURSUING, 
-   ADJUSTING
+   ADJUSTING, 
+   LISTLESS
 } ElevatorState;
 
 class Elevator : public Subsystem { 
@@ -34,7 +35,7 @@ class Elevator : public Subsystem {
 
        static double SPOOL_DIAMETER;
 
-       ElevatorState currentState = ElevatorState::HOLDING; 
+       ElevatorState currentState = ElevatorState::LISTLESS; 
        
        int raisingDirection; 
        
@@ -49,7 +50,7 @@ class Elevator : public Subsystem {
        double getVelocity();
 
        void setSetpoint(double setpoint);   
-       void settle(); 
+       void lock(); 
 
        vex::motor lifter1; 
        vex::motor lifter2;  

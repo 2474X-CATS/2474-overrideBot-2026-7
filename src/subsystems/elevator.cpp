@@ -51,7 +51,9 @@ void Elevator::periodic(){
      elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time()); 
    } else if (currentState == ElevatorState::PRIMING){ 
      elevatorOutput = PRIMING_SPEED;
-   } else {  
+   } else if (currentState == ElevatorState::LISTLESS){ 
+     elevatorOutput = 0; 
+   } else {
      elevatorOutput = PRIMING_SPEED * raisingDirection;
    }
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt);
@@ -89,27 +91,26 @@ bool Elevator::reachedSetpoint(){
    return correctionController->atSetpoint(getPosition()); //Brain.Timer.time() - motionProfile->getStartTime() >= motionProfile->getTotalDuration(); 
 } 
 
-void Elevator::settle(){
+void Elevator::lock(){
   correctionController->reset();
   correctionController->setSetpoint(getPosition());  
-  correctionController->setLastTimestamp(Brain.Timer.time()); 
-  currentState = ElevatorState::HOLDING;
+  correctionController->setLastTimestamp(Brain.Timer.time());
 }
 
 void Elevator::stateControl(){  
 
     if (get<bool>("requesting_setpoint")){   
       setSetpoint(get<double>("requested_height"));
-      set<bool>("requesting_setpoint", false); 
+      set<bool>("requesting_setpoint", false);
     }
 
     if (currentState == ElevatorState::PURSUING && reachedSetpoint()){ //
-        currentState = ElevatorState::HOLDING; 
+        currentState = ElevatorState::HOLDING;
     } else if (currentState == ElevatorState::PRIMING && (!get<bool>("sensing_stack"))){   
-        settle();
+        lock();
+        currentState = ElevatorState::HOLDING;
     }
-
-    set<bool>("at_setpoint", currentState == ElevatorState::HOLDING);
+    set<bool>("at_setpoint", currentState != ElevatorState::PURSUING);  
 }
 
 void Elevator::respondToRequests(){      
@@ -123,7 +124,7 @@ void Elevator::respondToRequests(){
    
    if (currentState == ElevatorState::PURSUING){ 
     return;
-   }  
+   }
 
    if (RobotState::getStateOf("awaiting_land")){  
      set<bool>("requesting_setpoint", true);
@@ -133,7 +134,7 @@ void Elevator::respondToRequests(){
 
    if (raisingDirection == 0){ 
      if (currentState == ElevatorState::ADJUSTING){  
-       settle();
+       currentState = ElevatorState::LISTLESS; 
      } 
    } else { 
      currentState = ElevatorState::ADJUSTING;
