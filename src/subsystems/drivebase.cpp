@@ -1,7 +1,5 @@
 #include "drivebase.h" 
 #include "../utilities/functools.h" 
-#include "../streams/odometry.h"
-
 
 
 Drivebase* Drivebase::globalPtr = nullptr; 
@@ -32,7 +30,7 @@ void Drivebase::periodic(){
 }
 
 void Drivebase::updateTelemetry(){  
-  double percentageHeight = Telemetry::inst.getValueAt<double>("elevator", "percentage_height"); 
+  //double percentageHeight = Telemetry::inst.getValueAt<double>("elevator", "percentage_height"); 
   /* 
   Modify max speeds and accelerations
   */
@@ -178,14 +176,10 @@ void TurnToHeading::start(){
    controller = new pidcontroller(pidConstants, 0); 
    controller->setLastTimestamp(Brain.Timer.time());   
 
-   Telemetry::inst.placeValueAt<double>(0, "blueprint", "desired_position"); 
-
-
 } 
 
 void TurnToHeading::periodic(){   
     double error = getError();
-    Telemetry::inst.placeValueAt<double>(error, "blueprint", "progress");
     double output = controller->calculate(error, Brain.Timer.time());   
     output = max<double>(output, -8);
     output = min<double>(output, 8);
@@ -266,7 +260,6 @@ void DriveToSetpoint::start(){
           calibrateSetpoints_man_yx(currentX, currentY, currentAngle);  
           break;
     }  
-
     SequentialCommandGroup::start();
 } 
 

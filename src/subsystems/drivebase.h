@@ -6,7 +6,9 @@
 
 #include "../control/feedForward.h" 
 #include "../control/pidcontroller.h" 
-#include "../control/trapezoidalMotion.h" 
+#include "../control/trapezoidalMotion.h"  
+
+#include "../streams/odometry.h"
 
 
 class Drivebase : public Subsystem { 
@@ -92,7 +94,7 @@ class DriveForward : public Command<Drivebase> {
      
      TrapezoidalMotionProfile* motionProfile = nullptr;  
      pidcontroller* controller = nullptr; 
-     FFConstants* ffController; 
+     FFConstants ffController; 
 
      pidcontroller* straightener = nullptr;
 
