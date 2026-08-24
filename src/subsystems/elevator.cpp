@@ -61,7 +61,8 @@ void Elevator::updateTelemetry(){
     // Update status of stack sight   
     set<bool>("sensing_stack", get<double>("current_height") < 750);//fabs(primingSensor.objectDistance(vex::distanceUnits::mm) - MINIMUM_ALIGNER_DISTANCE) < ALIGNER_ERROR_TOLERANCE);
     set<double>("current_velocity", getVelocity());      
-    set<double>("current_height", getPosition());
+    set<double>("current_height", getPosition()); 
+    set<double>("percentage_height", (get<double>("current_height") - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT));
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();

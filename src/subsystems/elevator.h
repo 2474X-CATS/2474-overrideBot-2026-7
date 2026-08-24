@@ -74,7 +74,8 @@ class Elevator : public Subsystem {
             (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
             (EntrySet){"sensing_stack", EntryType::BOOL}, 
             (EntrySet){"current_height", EntryType::DOUBLE},
-            (EntrySet){"current_velocity", EntryType::DOUBLE}
+            (EntrySet){"current_velocity", EntryType::DOUBLE}, 
+            (EntrySet){"percentage_height", EntryType::DOUBLE}
          }
        ),
        lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 

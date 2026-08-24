@@ -28,7 +28,11 @@ void Drivebase::periodic(){
   arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL)); 
 }
 
-void Drivebase::updateTelemetry(){ 
+void Drivebase::updateTelemetry(){  
+  double percentageHeight = Telemetry::inst.getValueAt<double>("elevator", "percentage_height"); 
+  /* 
+  Modify max speeds and accelerations
+  */
   return;
 }
 
@@ -41,7 +45,6 @@ void Drivebase::manualDrive(double voltageDrive, double voltageTurn){
     leftMotors.spin(vex::directionType::rev, voltageDrive + voltageTurn, vex::voltageUnits::volt); 
     rightMotors.spin(vex::directionType::fwd, voltageDrive - voltageTurn, vex::voltageUnits::volt);
 } 
-
 
 void Drivebase::arcadeDrive(double speed, double rotation){   
     speed *= DRIVE_SENSITIVITY / 100 * 12.0; 
@@ -118,7 +121,6 @@ void DriveForward::start(){
     motionProfile->setLastTimestamp(Brain.Timer.time());    
     straightener->setLastTimestamp(Brain.Timer.time());
     
-
 } 
 
 void DriveForward::periodic(){    
@@ -135,8 +137,6 @@ void DriveForward::periodic(){
     double output = ffOutput + correction;
     
     drivebaseRef.manualDrive(output, turnCorrection);
-
-
 } 
 
 bool DriveForward::isOver(){ 
