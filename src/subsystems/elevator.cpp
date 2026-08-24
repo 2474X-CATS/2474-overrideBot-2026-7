@@ -38,7 +38,10 @@ void Elevator::init(){
     rot.setPosition(0, vex::rotationUnits::rev);
    
     correctionController = new pidcontroller(pidConsts, getPosition());   
-    correctionController->setLastTimestamp(Brain.Timer.time());
+    correctionController->setLastTimestamp(Brain.Timer.time()); 
+
+    set<bool>("requesting_setpoint", true); 
+    set<double>("requested_height", 800);
 
 } 
 
@@ -139,4 +142,23 @@ void Elevator::respondToRequests(){
 
 void Elevator::stop(){ 
   return;
+} 
+
+//-------------------------------------------------------------------------- 
+
+
+void RunElevator::start(){ 
+   return;
+} 
+
+void RunElevator::periodic(){ 
+   elevatorRef.periodic();
+} 
+
+bool RunElevator::isOver(){ 
+   return false;
+} 
+
+void RunElevator::end(){ 
+   return;
 }

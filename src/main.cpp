@@ -70,8 +70,14 @@ int main()
 
   robot.initialize(); 
 
-  //-------------------RUN PROTOCOLS HERE-------------------
+  //-------------------RUN PROTOCOLS HERE------------------- 
   testDrive();
-
+  /*
+  testAuto( 
+    { 
+      ParallelCommandGroup::makeGroup(DriveForward::getCommand(TILE_SIZE_MM))->chainAnd(RunElevator::getCommand())
+    }
+  );
+  */
 
 }

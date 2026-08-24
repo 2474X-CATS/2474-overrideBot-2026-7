@@ -2,7 +2,7 @@
 #define __ELEVATOR_H__ 
 
 #include "../architecture/subsystem.h"   
-
+#include "../architecture/command.h"
 #include "../control/pidcontroller.h" 
 
 
@@ -93,6 +93,29 @@ class Elevator : public Subsystem {
       
     protected: 
        using Subsystem::set; 
+
+}; 
+
+class RunElevator :  public Command<Elevator> {  
+   private:  
+     Elevator& elevatorRef; 
+
+   public:
+     static CommandInterface* getCommand(){ 
+       return new RunElevator(Elevator::getObject());
+     } 
+
+     RunElevator(Elevator& elevator):   
+     Command<Elevator>(elevator), 
+     elevatorRef(elevator) 
+     {};    
+
+   protected:  
+     void start() override; 
+     void periodic() override; 
+     bool isOver() override; 
+     void end() override;
+     
 
 };
 

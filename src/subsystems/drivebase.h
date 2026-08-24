@@ -14,9 +14,12 @@ class Drivebase : public Subsystem {
       using Subsystem::get;  
       
       static double MAX_RPM; 
-      static double WHEEL_RADIUS_MM;
+      static double WHEEL_RADIUS_MM; 
+
+      static double MAX_LIN_SPEED;
+      static double MAX_ANG_SPEED;
       
-      static Drivebase& getObject();   
+      static Drivebase& getObject();
 
       Drivebase(): 
       Subsystem( 
@@ -89,7 +92,7 @@ class DriveForward : public Command<Drivebase> {
      
      TrapezoidalMotionProfile* motionProfile = nullptr;  
      pidcontroller* controller = nullptr; 
-     FeedForward* ffController = nullptr; 
+     FFConstants ffController;
 
      pidcontroller* straightener = nullptr;
 

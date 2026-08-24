@@ -47,18 +47,9 @@ void RobotState::initializeState()
 
 void RobotState::updateRegular()
 {   
-
-   if (Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint")){ 
-      setVibrationCode("..");
-   } else { 
-      disableVibrations(); 
-   }  
-
-   
    manuallyModifyState("awaiting_land", Controller1.ButtonY.pressing()); 
    manuallyModifyState("rise", Controller1.ButtonUp.pressing()); 
    manuallyModifyState("fall", Controller1.ButtonDown.pressing());
-    
 };
 
 void RobotState::updateStopped() {
