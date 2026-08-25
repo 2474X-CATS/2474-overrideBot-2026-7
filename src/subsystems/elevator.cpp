@@ -8,9 +8,9 @@ double Elevator::LEVELED_HEIGHT = 0;
 double Elevator::MAX_HEIGHT = 1000;
 
 double Elevator::ELEVATOR_ERROR_TOLERANCE = 3; 
-double Elevator::STACK_HEIGHT = 0.0;  
+double Elevator::STACK_HEIGHT = 0.0;
 
-double Elevator::PRIMING_SPEED = 500; 
+double Elevator::PRIMING_SPEED = 500;
 
 double Elevator::MINIMUM_ALIGNER_DISTANCE = 0.0;  
 double Elevator::ALIGNER_ERROR_TOLERANCE = 0.0;
@@ -22,35 +22,31 @@ Elevator& Elevator::getObject(){
 void Elevator::init(){  
 
     PIDConstants pidConsts;  
-    pidConsts.P = 0; 
-    pidConsts.I = 0; 
-    pidConsts.D = 0;   
+    pidConsts.P = 0;
+    pidConsts.I = 0;
+    pidConsts.D = 0;
 
     lift.setStopping(vex::brakeType::brake); 
     rot.setPosition(0, vex::rotationUnits::rev);  
 
-    set<double>("current_height", LEVELED_HEIGHT);
-
-    correctionController = new pidcontroller(pidConsts, get<double>("current_height")); 
-    correctionController->setLastTimestamp(Brain.Timer.time()); 
-
-    
-
+    correctionController = new pidcontroller(pidConsts, getPosition());
+    correctionController->setLastTimestamp(Brain.Timer.time());
 } 
 
 void Elevator::stop(){ 
    lift.spin(vex::directionType::fwd, 0, vex::voltageUnits::volt);
 }
 
-void Elevator::periodic(){   
+void Elevator::periodic(){
    double elevatorOutput;
-   if (currentState == ElevatorState::E_HOLDING){//Stay Still
-     elevatorOutput = calculateOutput(0, 0); 
+   if (currentState == ElevatorState::E_HOLDING || currentState == ElevatorState::E_PURSUING){//Stay Still
+     elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time()); 
    } else if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
-     elevatorOutput = calculateOutput(PRIMING_SPEED, 0); 
+     elevatorOutput = PRIMING_SPEED;
+   } else if (currentState == ElevatorState::E_ADJUSTING){ 
+     elevatorOutput = PRIMING_SPEED * raisingDirection;
    } else {  //Pursuing a setpoint
-     TrapezoidalSetpoint motionGoal = motionProfile->generateSetpoint(Brain.Timer.time());
-     elevatorOutput = calculateOutput(motionGoal.velocity, motionGoal.acceleration) * setpointDirection;
+     elevatorOutput = 0;
    } 
    lift.spin(vex::directionType::fwd, elevatorOutput, vex::voltageUnits::volt);
 }  
@@ -68,7 +64,7 @@ void Elevator::updateTelemetry(){
 } 
 
 double Elevator::getPosition(){ 
-    return 0.0; 
+    return 0.0;
 } 
 
 double Elevator::getVelocity(){
@@ -133,7 +129,7 @@ void Elevator::stateControl(){
                set<bool>("requesting_setpoint", true); 
                set<double>("requested_height", LEVELED_HEIGHT); 
                break;  
-            case PRIMED:  
+            case PRIMED:
                if (get<bool>("sniper_score_enabled")){ 
                   setSetpoint(get<double>("priming_setpoint")); 
                   set<bool>("sniper_score_enabled", false);
