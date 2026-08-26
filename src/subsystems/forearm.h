@@ -19,8 +19,6 @@ class Forearm : public Subsystem {
        static double GROUND_SETPOINT; 
        static double STANDING_SETPOINT;  
 
-       static double ANGULAR_ERROR_TOLERANCE; 
-
        static Forearm* globalPtr;     
 
        vex::motor forearmMotor;     
@@ -63,16 +61,14 @@ class Forearm : public Subsystem {
 
        Forearm(): 
          Subsystem( 
-            "forearm", 
-            {  
+            "forearm",
+            {
                (EntrySet){"at_setpoint", EntryType::BOOL}, 
                (EntrySet){"current_angle", EntryType::DOUBLE},  
                (EntrySet){"current_velocity", EntryType::DOUBLE},
                (EntrySet){"requesting_setpoint", EntryType::BOOL}, 
                (EntrySet){"requested_angle", EntryType::DOUBLE}, 
-               (EntrySet){"requested_velocity", EntryType::DOUBLE}, 
-               (EntrySet){"last_component_x", EntryType::DOUBLE}, 
-               (EntrySet){"last_component_y", EntryType::DOUBLE}
+               (EntrySet){"requested_velocity", EntryType::DOUBLE}
             }
          ),
          forearmMotor(vex::motor(vex::PORT4, vex::ratio18_1))
