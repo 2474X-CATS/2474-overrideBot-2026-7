@@ -93,7 +93,7 @@ int main()
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
-  thread graph = thread(displayGraphData);
+  //thread graph = thread(displayGraphData); 
   testDrive();
 
 }

@@ -5,7 +5,7 @@ Forearm* Forearm::globalPtr = nullptr;
 
 double Forearm::PLACE_SETPOINT = 0; 
 double Forearm::PRIMING_SETPOINT = 45; 
-double Forearm::GROUND_SETPOINT = 270; 
+double Forearm::GROUND_SETPOINT = 2; 
 double Forearm::STANDING_SETPOINT = 180;  
 
 double Forearm::ANGULAR_ERROR_TOLERANCE = 3.0; 
@@ -21,27 +21,28 @@ void Forearm::init(){
    angularDeadZones[0] = 0.0; 
    angularDeadZones[1] = 0.0;  
 
-   motionConsts.maxAcceleration = 180; 
+   motionConsts.maxAcceleration = 360 / 0.4; 
    motionConsts.maxVelocity = 360; 
 
-   pidConsts.P = 0.005; 
+   pidConsts.P = 0;//0.005; 
    pidConsts.I = 0.00; 
-   pidConsts.D = 0;
+   pidConsts.D = 0;//0.0003;
 
    feedback = new pidcontroller(pidConsts, 0); 
    
    //v1 = 3.35
-   //v2 = 0.61
+   //v2 = 0.61 
+
    armFFConsts.kS_rot = (3.35 - 0.61) / 2;
-   armFFConsts.kV_rot = 3.85;
-   armFFConsts.kA_rot = 0.8; 
-   armFFConsts.kCos = 0.61 + armFFConsts.kS_rot;
+   armFFConsts.kV_rot = 5.72;
+   armFFConsts.kA_rot = 0.2;//0.625; 
+   armFFConsts.kCos = 2.15; //0.61 + armFFConsts.kS_rot;
 
    startingAngle = 270;
    setpoint = startingAngle; 
 
-   set<double>("requested_angle", 0); 
-   set<bool>("requesting_setpoint",true);
+   //set<double>("requested_angle", PRIMING_SETPOINT); 
+   //set<bool>("requesting_setpoint",true);
 
    feedback->setLastTimestamp(Brain.Timer.time());
 
@@ -56,7 +57,8 @@ void Forearm::periodic(){
         TrapezoidalSetpoint outputGoal = motionProfile->generateSetpoint(Brain.Timer.time());  
         forearmOutput = calculateOutput(outputGoal.velocity, outputGoal.acceleration) * setpointDirection; 
     }   
-    
+    Brain.Screen.printAt(20, 120, "Current Voltage: %.2f", forearmOutput); 
+    Brain.Screen.printAt(20, 140, "Current Voltage: %.2f", getCurrentAngle());
     forearmMotor.spin(vex::directionType::fwd, forearmOutput, vex::voltageUnits::volt);
 } 
 
@@ -110,7 +112,7 @@ void Forearm::setSetpoint(double setpoint, bool inverted){
 
   setpointDirection = copysign(1, error); 
 
-  motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), getVelocity(), 0);   
+  motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), 0, 0);   
   motionProfile->setLastTimestamp(Brain.Timer.time()); 
   currentState = ForearmState::PURSUING;  
 }
@@ -124,7 +126,19 @@ void Forearm::stateControl(){
 
     if (currentState == ForearmState::PURSUING){ 
         if (reachedSetpoint()){ 
-            currentState = ForearmState::HOLDING; 
+            currentState = ForearmState::HOLDING;  
+            double nextSetpoint = -1;  
+
+            if (setpoint == PRIMING_SETPOINT){ 
+               nextSetpoint = PLACE_SETPOINT;
+            }  
+
+            if (nextSetpoint != -1){ 
+               set<double>("requested_angle", nextSetpoint); 
+               set<bool>("requesting_setpoint", true); 
+            }
+            
+            
         }
     }
 }  
