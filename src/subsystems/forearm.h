@@ -20,12 +20,10 @@ class Forearm : public Subsystem {
        static double STANDING_SETPOINT;   
        static double RELEASE_SETPOINT;
 
-       static double ANGULAR_ERROR_TOLERANCE; 
-
-       static Forearm* globalPtr;     
-
-       double previousAngle; 
-       double previousTimestamp;  
+       static Forearm* globalPtr;
+        
+       double setpoint;
+       double startingAngle;
 
        bool requestingSetpoint; 
        double requestedSetpoint;
@@ -36,26 +34,24 @@ class Forearm : public Subsystem {
        
        ForearmState currentState = ForearmState::F_HOLDING;  
 
-       vex::motor forearmMotor;  
-       vex::rotation rotarySensor;     
- 
+       vex::motor forearmMotor;
+       
        AngularArmFFConstants armFFConsts; //Bulk (feedforward) 
-
+     
        pidcontroller* feedback = nullptr; //Rest done with feedback
-       PIDConstants pidConsts; 
+       PIDConstants pidConsts;
 
-       TrapezoidConstants motionConsts; 
+       TrapezoidConstants motionConsts;
        TrapezoidalMotionProfile* motionProfile = nullptr;
         
-       
        double calculateOutput(double omega, double alpha); //velocity and acceleration but for angles
        
-       double getCurrentAngle();   
+       double getCurrentAngle();
        double getVelocity(); 
 
        void setSetpoint(double setpoint, bool inverted);    
-
-       bool reachedSetpoint();  
+       
+       bool reachedSetpoint();
        
        void updatePosition(); 
        void stateControl();  //ONLY (We can't manually modify the forearm with the controller)
@@ -67,16 +63,15 @@ class Forearm : public Subsystem {
 
        Forearm(): 
          Subsystem( 
-            "forearm", 
+            "forearm",
             {  
                (EntrySet){"task_id", EntryType::INT}, 
                (EntrySet){"active", EntryType::BOOL}, 
-               (EntrySet){"at_setpoint", EntryType::BOOL},  
-               (EntrySet){"current_angle", EntryType::DOUBLE}
+               (EntrySet){"at_setpoint", EntryType::BOOL}, 
+               (EntrySet){"current_angle", EntryType::DOUBLE} 
             }
-         ), 
-         forearmMotor(vex::motor(vex::PORT16)), 
-         rotarySensor(vex::rotation(vex::PORT12)) 
+         ),
+         forearmMotor(vex::motor(vex::PORT16))
          { 
             globalPtr = this;
          };    

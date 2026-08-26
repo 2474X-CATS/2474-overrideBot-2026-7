@@ -6,8 +6,14 @@ double FFConstants::calculate(double velocity, double acceleration){ //m/s
     return kS * copysign(1, velocity) + kV * velocity + kA * acceleration;
 } 
 
-double AngularArmFFConstants::calculate(double absPosition, double velocity, double acceleration){ // rot/s
-    return ((kCos * kCos_ratio) * cos(absPosition * 2 * M_PI)) + (kS_rot * copysign(1, velocity)) + (kV_rot * velocity) + (kA_rot * acceleration);
+double AngularArmFFConstants::calculate(double theta, double velocity, double acceleration){ // rot/s
+    double static_output;  
+    if (velocity == 0){ 
+        static_output = 0;
+    } else {
+        static_output = (copysign(1, velocity)) * kS_rot;
+    }
+    return ((kCos * kCos_ratio) * cos(theta)) + static_output + (kV_rot * velocity) + (kA_rot * acceleration);
 }
 
 double ElevatorFFConstants::calculate(double velocity, double acceleration){ // m/s

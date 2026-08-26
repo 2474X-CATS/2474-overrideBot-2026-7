@@ -10,8 +10,8 @@ class Claw : public Subsystem {
        static Claw* globalPtr;  
        static double MAXIMUM_TOLERABLE_DISTANCE;
 
-       vex::pneumatics wrist; 
-       vex::pneumatics claw; 
+       vex::pneumatics wrist;
+       vex::pneumatics claw;
 
        vex::distance objectDetector;
 
@@ -35,8 +35,8 @@ class Claw : public Subsystem {
            (EntrySet){"senses_object", EntryType::BOOL}
         } 
         ), 
-       claw(vex::pneumatics(Brain.ThreeWirePort.B)), 
-       wrist(vex::pneumatics(Brain.ThreeWirePort.E)), 
+       claw(vex::pneumatics(Brain.ThreeWirePort.A)), 
+       wrist(vex::pneumatics(Brain.ThreeWirePort.B)), 
        objectDetector(vex::distance(vex::PORT13))
        { 
         globalPtr = this;
