@@ -19,7 +19,7 @@ typedef struct {
    double kCos;  
    double kCos_ratio = 1;  
 
-   double calculate(double absPosition, double velocity, double acceleration);
+   double calculate(double theta, double velocity, double acceleration);
 
 } AngularArmFFConstants; 
 

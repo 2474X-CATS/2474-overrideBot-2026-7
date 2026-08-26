@@ -36,8 +36,7 @@ void RobotState::initializeState()
        {
            (EntrySet){"in_autonomous", EntryType::BOOL}, 
            (EntrySet){"inverted", EntryType::BOOL}, 
-           (EntrySet){"is_team_color_blue", EntryType::BOOL},  
-
+           (EntrySet){"is_team_color_blue", EntryType::BOOL}, 
            (EntrySet){"k_scheduling_setpoint", EntryType::BOOL}, 
            (EntrySet){"scheduling_setpoint", EntryType::BOOL}
        });

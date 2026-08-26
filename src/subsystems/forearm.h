@@ -23,8 +23,10 @@ class Forearm : public Subsystem {
 
        static Forearm* globalPtr;     
 
-       vex::motor forearmMotor;  
-       vex::rotation rotarySensor;    
+       vex::motor forearmMotor;     
+
+       double startingAngle; 
+       double setpoint;
 
        AngularArmFFConstants armFFConsts; //Bulk (feedforward) 
 
@@ -40,9 +42,6 @@ class Forearm : public Subsystem {
        
        double getCurrentAngle();   
        double getVelocity(); 
-
-       double previousAngle; 
-       double previousTimestamp; 
 
        void setSetpoint(double setpoint, bool inverted);    
 
@@ -71,14 +70,12 @@ class Forearm : public Subsystem {
                (EntrySet){"current_velocity", EntryType::DOUBLE},
                (EntrySet){"requesting_setpoint", EntryType::BOOL}, 
                (EntrySet){"requested_angle", EntryType::DOUBLE}, 
-               (EntrySet){"setpoint", EntryType::DOUBLE}, 
                (EntrySet){"requested_velocity", EntryType::DOUBLE}, 
                (EntrySet){"last_component_x", EntryType::DOUBLE}, 
                (EntrySet){"last_component_y", EntryType::DOUBLE}
             }
-         ), 
-         forearmMotor(vex::motor(vex::PORT16)), 
-         rotarySensor(vex::rotation(vex::PORT12)) 
+         ),
+         forearmMotor(vex::motor(vex::PORT4, vex::ratio18_1))
          { 
             globalPtr = this;
          };    

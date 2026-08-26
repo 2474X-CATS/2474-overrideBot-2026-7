@@ -59,7 +59,8 @@ int displayGraphData(){
 
   actualOutput.directory = "forearm"; 
   actualOutput.name = "current_velocity"; 
-  actualOutput.label = "R(deg/sec)";
+  actualOutput.label = "R(deg/sec)"; 
+
   
   Graph g = Graph( 
     "(D)esired & (R)eal Forearm Velocity", 
