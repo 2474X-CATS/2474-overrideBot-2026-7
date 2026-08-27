@@ -20,5 +20,3 @@ double AngularArmFFConstants::calculate(double theta, double velocity, double ac
 double ElevatorFFConstants::calculate(double velocity, double acceleration){ // m/s
     return kG + ffConsts.calculate(velocity, acceleration);
 }
-
-
