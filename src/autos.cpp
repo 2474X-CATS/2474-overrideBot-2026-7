@@ -1,6 +1,7 @@
 #include "autos.h"
 
-/*
+
+/* 
 -------------------------------------------------------------------------------------------------------------------------------------------------
      _              _______   _____    _____
     / \    |     |     |     |     |   |
@@ -32,7 +33,7 @@ vector<AutonOption> getOptionVector(vector<Routine> routines)
 }
 
 vector<Routine> generateRoutinePool(){ 
-  vector<Routine> routines;  
+  vector<Routine> routines;
   /* 
   Add routines here
   */
