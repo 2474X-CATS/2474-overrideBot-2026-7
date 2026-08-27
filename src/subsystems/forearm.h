@@ -2,6 +2,8 @@
 #define __FOREARM_H__ 
 
 #include "../architecture/subsystem.h"   
+#include "../architecture/command.h"  
+
 #include "../control/feedForward.h" 
 #include "../control/pidcontroller.h"   
 #include "../control/trapezoidalMotion.h"
@@ -85,6 +87,27 @@ class Forearm : public Subsystem {
       
 }; 
 
+class RunForearm : public Command<Forearm> { 
+  private: 
+   Forearm& forearmRef; 
+
+  public:   
+
+   static CommandInterface* getCommand(){ 
+      return new RunForearm(Forearm::getObject()); 
+   } 
+
+   RunForearm(Forearm& forearm) :   
+   Command<Forearm>(forearm),
+   forearmRef(forearm)
+   {};   
+
+  protected: 
+   void start() override; 
+   void periodic() override; 
+   bool isOver() override; 
+   void end() override;
+};
 
   
 

@@ -191,4 +191,22 @@ void Elevator::respondToRequests(){
         set<double>("lifting_timestamp", Brain.Timer.time());  
       }   
       */ 
+} 
+
+//--------------------------------------- 
+
+void RunElevator::start(){ 
+  return;
+} 
+
+void RunElevator::periodic(){ 
+  elevatorRef.periodic();
+} 
+
+bool RunElevator::isOver(){ 
+  return false;
+} 
+
+void RunElevator::end(){ 
+  return;
 }

@@ -158,3 +158,21 @@ void Forearm::stateControl(){
     set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING);  
 }  
 
+
+//------------------------------------------------------------------- 
+
+void RunForearm::start(){ 
+  return;
+} 
+
+void RunForearm::periodic(){ 
+  forearmRef.periodic();
+} 
+
+bool RunForearm::isOver(){ 
+  return false;
+} 
+
+void RunForearm::end(){ 
+  return;
+}

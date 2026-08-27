@@ -1,7 +1,9 @@
 #ifndef __CLAW_H__ 
 #define __CLAW_H__ 
 
-#include "../architecture/subsystem.h"
+#include "../architecture/subsystem.h" 
+#include "../architecture/command.h"   
+
 #include "vex.h" 
 
 class Claw : public Subsystem {  
@@ -53,7 +55,27 @@ class Claw : public Subsystem {
        
     protected: 
        using Subsystem::set; 
+}; 
 
+class RunClaw : public Command<Claw> { 
+  private: 
+   Claw& clawRef; 
+
+  public:   
+
+   static CommandInterface* getCommand(){ 
+      return new RunClaw(Claw::getObject()); 
+   } 
+   RunClaw(Claw& claw) :   
+   Command<Claw>(claw),
+   clawRef(claw) 
+   {};   
+
+  protected: 
+   void start() override; 
+   void periodic() override; 
+   bool isOver() override; 
+   void end() override;
 };
 
 #endif 

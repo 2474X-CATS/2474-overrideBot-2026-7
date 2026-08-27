@@ -7,7 +7,8 @@
 #include "streams/odometry.h"
 #include "subsystems/claw.h" 
 #include "subsystems/elevator.h" 
-#include "subsystems/forearm.h"
+#include "subsystems/forearm.h" 
+#include "gui/graph.h" 
 
 using namespace vex;
 
@@ -34,7 +35,7 @@ int scheduleCallbacks()
 
 void testDrive()
 {   
-  drawLogo(RobotState::getStateOf("is_team_color_blue"));
+  //drawLogo(RobotState::getStateOf("is_team_color_blue"));
   thread telemetryThread = thread(runTelemetry); 
   robot.driverControl(true);
 }

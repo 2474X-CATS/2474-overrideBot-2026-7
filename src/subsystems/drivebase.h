@@ -31,9 +31,9 @@ class Drivebase : public Subsystem {
         }
       ),
       leftFront(vex::motor(vex::PORT20)), 
-      leftBack(vex::motor(vex::PORT19)), 
+      leftBack(vex::motor(vex::PORT19, true)), 
       rightFront(vex::motor(vex::PORT17)), 
-      rightBack(vex::motor(vex::PORT18)), 
+      rightBack(vex::motor(vex::PORT18, true)), 
       leftMotors(leftFront, leftBack), 
       rightMotors(rightFront, rightBack)
       {

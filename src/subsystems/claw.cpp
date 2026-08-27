@@ -103,4 +103,22 @@ void Claw::flip(bool facingDown){
       facingDown = !facingDown;
     } 
     wrist.set(facingDown);
+} 
+
+//---------------------------------------------------------------------- 
+
+void RunClaw::start(){ 
+  return;
+} 
+
+void RunClaw::periodic(){ 
+  clawRef.periodic();
+} 
+
+bool RunClaw::isOver(){ 
+  return false;
+} 
+
+void RunClaw::end(){ 
+  return;
 }
