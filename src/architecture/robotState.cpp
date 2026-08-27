@@ -43,11 +43,11 @@ void RobotState::initializeState()
            (EntrySet){"awaiting_flip", EntryType::BOOL},  
            (EntrySet){"k_claw_await", EntryType::BOOL},
            (EntrySet){"k_score", EntryType::BOOL}, 
-           (EntrySet){"switch_score_mode", EntryType::BOOL}
-           //(EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
+           (EntrySet){"switch_score_mode", EntryType::BOOL},
+           (EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
        }); 
    
-   //manuallyModifyState("field_type_is_vex", true);
+   manuallyModifyState("field_type_is_vex", true);
 }
 
 void RobotState::updateRegular()

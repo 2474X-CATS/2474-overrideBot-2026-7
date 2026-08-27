@@ -2,7 +2,9 @@
 #include "architecture/robot.h"
 #include <iostream> 
 
-#include "streams/supersystem.h"
+#include "streams/supersystem.h" 
+#include "subsystems/drivebase.h" 
+#include "streams/odometry.h"
 #include "subsystems/claw.h" 
 #include "subsystems/elevator.h" 
 #include "subsystems/forearm.h"
@@ -31,7 +33,8 @@ int scheduleCallbacks()
 }
 
 void testDrive()
-{  
+{   
+  drawLogo(RobotState::getStateOf("is_team_color_blue"));
   thread telemetryThread = thread(runTelemetry); 
   robot.driverControl(true);
 }
@@ -61,8 +64,11 @@ int main()
   
 
   //--------------------SUBSYSTEM CREATION----------------- 
-   
-  SuperSystem ss = SuperSystem();  
+  
+     
+  Odometry odom = Odometry(); 
+  Drivebase drive = Drivebase(); 
+  SuperSystem ss = SuperSystem();
   Elevator elevator = Elevator();
   Forearm forearm = Forearm(); 
   Claw claw = Claw();

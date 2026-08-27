@@ -12,12 +12,12 @@ vex::brain Brain;
 //-------
 // Constants: PLACE HERE [regularly]
 
-double ROBOT_WIDTH_MM = 340;  // mm 13in
-double ROBOT_LENGTH_MM = 415; // mm 16in
+double ROBOT_WIDTH_MM = 13 * 25.4;  // mm 13in
+double ROBOT_LENGTH_MM = 15 * 25.4; // mm 16in
 
 double MOTOR_TEMP_LIMIT_CELSIUS = 55.0;
 
-double TILE_SIZE_MM = (3.6576 / 6) * 1000; // mm
+double TILE_SIZE_MM = (12 * 12 * 25.4) / 6; //mm 12 feet by 12 feet field
 
 void vexcodeInit() {
 

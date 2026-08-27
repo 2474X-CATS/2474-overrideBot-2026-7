@@ -158,7 +158,7 @@ void SequentialCommandGroup::periodic()
 
 bool SequentialCommandGroup::isOver()
 {
-    return commandIndex == numCommands - 1;
+    return commandIndex == numCommands;
 }
 
 void SequentialCommandGroup::end()

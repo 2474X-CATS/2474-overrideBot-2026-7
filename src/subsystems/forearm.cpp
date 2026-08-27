@@ -54,7 +54,6 @@ void Forearm::periodic(){
 } 
 
 void Forearm::updateTelemetry(){  
-    Brain.Screen.printAt(20, 140, "Current Angle: %.2f", getCurrentAngle());
     stateControl();  
 } 
 
