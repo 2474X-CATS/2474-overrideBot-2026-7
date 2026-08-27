@@ -19,7 +19,7 @@ typedef struct {
    double kCos;  
    double kCos_ratio = 1;  
 
-   double calculate(double absPosition, double velocity, double acceleration);
+   double calculate(double theta, double velocity, double acceleration);
 
 } AngularArmFFConstants; 
 
@@ -31,28 +31,5 @@ typedef struct {
    double calculate(double velocity, double acceleration);  
 
 } ElevatorFFConstants;
-
-
-/*
-class FeedForward
-{
-   double kS;
-   double kV;
-   double kA;
-
-public:
-   FeedForward(FFConstants consts) : kS(consts.kS),
-                                     kV(consts.kV),
-                                     kA(consts.kA) {};     
-
-   FeedForward(double cS, double cV, double cA) : kS(cS),
-                                                  kV(cV),
-                                                  kA(cA) {};   
-
-   double calculate(double velocity);
-   double calculate(double velocity, double accleration);
-};  
-*/ 
-
 
 #endif
