@@ -28,7 +28,7 @@ private:
   double decelTime;
 
   double maxVelocity;
-  double maxAcceleration;
+  double maxAcceleration; 
 
   int phaseOneDirection;
   int phaseTwoDirection;

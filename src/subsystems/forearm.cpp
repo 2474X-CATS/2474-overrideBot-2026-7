@@ -14,35 +14,38 @@ Forearm& Forearm::getObject(){
   return *globalPtr;
 }
 
-void Forearm::init(){  
+void Forearm::init(){
+
    forearmMotor.setPosition(0, vex::rotationUnits::deg);  
-   forearmMotor.setBrake(vex::brakeType::coast); 
+   forearmMotor.setBrake(vex::brakeType::hold); 
 
    angularDeadZones[0] = 0.0; 
    angularDeadZones[1] = 0.0;  
 
-   motionConsts.maxAcceleration = 360 / 0.4; 
-   motionConsts.maxVelocity = 360; 
+   motionConsts.maxAcceleration = 540 / 0.5;
+   motionConsts.maxVelocity = 540;
 
-   pidConsts.P = 0;//0.005;
+   pidConsts.P = 0.000;
    pidConsts.I = 0.00;
    pidConsts.D = 0;//0.0003;
 
    feedback = new pidcontroller(pidConsts, 0); 
    
-   //v1 = 3.35
-   //v2 = 0.61 
+   //v1 = 2
+   //v2 = 3.925
 
-   armFFConsts.kS_rot = (3.35 - 0.61) / 2;
-   armFFConsts.kV_rot = 5.72;
-   armFFConsts.kA_rot = 0.2;//0.625; 
-   armFFConsts.kCos = 2.15; //0.61 + armFFConsts.kS_rot;
+   //Tune later (Try modifying kCos)
+   armFFConsts.kS_rot = (3.925 - 0.825) / 2; //(3.35 - 0.61) / 2;
+   armFFConsts.kV_rot = 7;
+   armFFConsts.kA_rot = 0.0;//0.625;
+   armFFConsts.kCos = 0.825 + (3.925 - 0.825) / 2; //2.5; //0.61 + armFFConsts.kS_rot;  
+   //If holding then hold brake type handles (fall)
 
    startingAngle = 270;
    setpoint = startingAngle; 
 
-   //set<double>("requested_angle", PRIMING_SETPOINT); 
-   //set<bool>("requesting_setpoint",true);
+   set<double>("requested_angle", 0); 
+   set<bool>("requesting_setpoint",true);
 
    feedback->setLastTimestamp(Brain.Timer.time());
 
@@ -55,11 +58,11 @@ void Forearm::periodic(){
         forearmOutput = calculateOutput(0,0); 
     } else {
         TrapezoidalSetpoint outputGoal = motionProfile->generateSetpoint(Brain.Timer.time());  
-        forearmOutput = calculateOutput(outputGoal.velocity, outputGoal.acceleration) * setpointDirection; 
+        forearmOutput = calculateOutput(outputGoal.velocity, outputGoal.acceleration);// * setpointDirection; 
     }    
 
-    Brain.Screen.printAt(20, 120, "Current Voltage: %.2f", forearmOutput); 
-    Brain.Screen.printAt(20, 140, "Current Voltage: %.2f", getCurrentAngle());
+    //Brain.Screen.printAt(20, 120, "Current Voltage: %.2f", forearmOutput); 
+    //Brain.Screen.printAt(20, 140, "Current Voltage: %.2f", getCurrentAngle());
     forearmMotor.spin(vex::directionType::fwd, forearmOutput, vex::voltageUnits::volt);
 } 
 
@@ -74,17 +77,18 @@ void Forearm::updateTelemetry(){
 
 void Forearm::stop(){
     forearmMotor.spin(vex::directionType::fwd, 0, vex::voltageUnits::volt);
-}   
+}
 
 double Forearm::calculateOutput(double omega, double alpha){  
-    set<double>("requested_velocity", omega); 
+    set<double>("requested_velocity", omega);   
     double ffOutput = armFFConsts.calculate(toRadians(getCurrentAngle()), omega / 360, alpha / 360);  
     double pidOutput;
-    if (currentState == ForearmState::HOLDING){ 
+    if (currentState == ForearmState::HOLDING){  
        pidOutput = feedback->calculate(angleDifference(getCurrentAngle(), setpoint), Brain.Timer.time());   
     } else {
        pidOutput = feedback->calculate(angleDifference(getVelocity(), omega), Brain.Timer.time());   
-    }
+    } 
+    
     return ffOutput + pidOutput;
 }
 
@@ -111,9 +115,7 @@ void Forearm::setSetpoint(double setpoint, bool inverted){
   double error = angleDifference(setpoint, currentAngle); 
   this->setpoint = setpoint;  
 
-  setpointDirection = copysign(1, error); 
-
-  motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), 0, 0);   
+  motionProfile = new TrapezoidalMotionProfile(motionConsts, error, 0, 0);   
   motionProfile->setLastTimestamp(Brain.Timer.time()); 
   currentState = ForearmState::PURSUING;  
 }
@@ -127,19 +129,7 @@ void Forearm::stateControl(){
 
     if (currentState == ForearmState::PURSUING){ 
         if (reachedSetpoint()){ 
-            currentState = ForearmState::HOLDING;  
-            double nextSetpoint = -1;  
-
-            if (setpoint == PRIMING_SETPOINT){ 
-               nextSetpoint = PLACE_SETPOINT;
-            }  
-
-            if (nextSetpoint != -1){ 
-               set<double>("requested_angle", nextSetpoint); 
-               set<bool>("requesting_setpoint", true); 
-            }
-            
-            
+            currentState = ForearmState::HOLDING; 
         }
     }
 }  
