@@ -2,9 +2,9 @@
 double SuperSystem::BACKUP_DISTANCE = 100;
 
 void SuperSystem::init(){ 
-    set<int>("pickup_position", SuperStructurePosition::GROUND); 
-    set<int>("position", get<int>("pickup_position"));   
-    set<int>("last_position", get<int>("position"));  
+    set<int>("pickup_position", SuperStructurePosition::STANDING); 
+    set<int>("position", get<int>("pickup_position"));
+    //set<int>("last_position", get<int>("position"));
     set<bool>("can_transition", true); 
     set<double>("distance_backed", 0);
 }  
@@ -14,10 +14,18 @@ void SuperSystem::resetTaskProgress(){
 }
 
 void SuperSystem::refreshData(){    
-
     set<bool>("setpoints_reached",  
         Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint") &&  
         Telemetry::inst.getValueAt<bool>("forearm", "at_setpoint"));   
+      
+    if (get<bool>("pickup_switch_requested")){ 
+      if (get<int>("pickup_position") == SuperStructurePosition::STANDING){ 
+         set<int>("pickup_position", SuperStructurePosition::GROUND);
+      } else { 
+         set<int>("pickup_position", SuperStructurePosition::STANDING);
+      } 
+      set<bool>("pickup_switch_requested", false); 
+    }
     
     if (!get<bool>("can_transition")){ 
       double interval = 2; //Backwards velocity (fetched from odometry subtable)
@@ -32,7 +40,7 @@ void SuperSystem::refreshData(){
     if (get<bool>("setpoints_reached") && get<bool>("can_transition")){    
         bool inPossession = Telemetry::inst.getValueAt<bool>("claw","clenched") && Telemetry::inst.getValueAt<bool>("claw","senses_object");
         switch (get<int>("position")){ 
-            case GROUND:
+            case GROUND: 
                 if (inPossession){ 
                   set<int>("position", SuperStructurePosition::PRIMED);
                 } else { 
@@ -58,7 +66,7 @@ void SuperSystem::refreshData(){
                   resetTaskProgress();
                 } else if (!inPossession){ 
                   set<int>("position", get<int>("pickup_position"));
-                }
+                } 
                 break; 
             case AUTO:  
                 if (get<bool>("task_completed")){  //Must have another indicator that we are okay to drop (Back up to a certain extent)

@@ -16,7 +16,8 @@ class SuperSystem : public DataStream {
           (EntrySet){"task_completed", EntryType::BOOL}, //Is the macro done running?  
           (EntrySet){"pickup_position", EntryType::INT}, 
           (EntrySet){"can_transition", EntryType::BOOL}, 
-          (EntrySet){"distance_backed", EntryType::DOUBLE}
+          (EntrySet){"distance_backed", EntryType::DOUBLE}, 
+          (EntrySet){"pickup_switch_requested", EntryType::BOOL}
         }
        ){}; 
 

@@ -9,41 +9,35 @@ void TrapezoidalMotionProfile::init(double startingVelocity, double finalVelocit
    maxVelocity = setpoint < 0 ? maxVelocity * -1 : maxVelocity; 
 
    phaseOneDirection = (int)(copysign(1, maxVelocity - startingVelocity)); 
-
-   //Brain.Screen.printAt(20, 60, "Direction p1: %d", phaseOneDirection); 
    
    accelTime = fabs((maxVelocity - startingVelocity)) / maxAcceleration; 
 
-   //Brain.Screen.printAt(20, 80, "Time for initial accel: %.2f", accelTime);  
-
    accelDist = (startingVelocity * accelTime) + (0.5 * (phaseOneDirection * maxAcceleration) * pow(accelTime, 2));
-   //Brain.Screen.printAt(20, 100, "Setpoint / AccelDist: %.2f", setpoint / accelDist);  
+   
 
    if (setpoint / accelDist < 2)
    {  
-      //Brain.Screen.printAt(20, 120, "Didn't accel on time"); 
+    
       maxVelocity = sqrt(
           pow(startingVelocity, 2) + (2 * (phaseOneDirection * maxAcceleration) * (setpoint / 2))) * phaseOneDirection; 
-      //Brain.Screen.printAt(20, 140, " New Max Velocity: %.2f", maxVelocity); 
       
       accelTime = fabs((maxVelocity - startingVelocity)) / maxAcceleration; 
-      //Brain.Screen.printAt(20, 160, " New Accel time: %.2f", accelTime);
+    
       accelDist = (startingVelocity * accelTime) + (0.5 * (phaseOneDirection * maxAcceleration) * pow(accelTime, 2)); 
-      //Brain.Screen.printAt(20, 180, " New Accel Dist: %.2f", accelDist);
+     
    } 
 
    phaseTwoDirection = (int)(copysign(1, finalVelocity - maxVelocity));
-   //Brain.Screen.printAt(20, 200, "Direction p2: %d", phaseTwoDirection);  
+   
 
    decelTime = fabs((finalVelocity - maxVelocity)) / maxAcceleration; 
-   //Brain.Screen.printAt(20, 220, "Decel time: %.2f", decelTime); 
+   
 
    decelDist = (maxVelocity * decelTime) + (0.5 * (phaseTwoDirection * maxAcceleration) * pow(decelTime, 2));
-   //Brain.Screen.printAt(20, 220, "Decel Dist: %.2f", decelDist); 
-
+  
    cruiseDist = setpoint - accelDist - decelDist;
    cruiseTime = cruiseDist / maxVelocity; 
-   Brain.Screen.printAt(20, 220, "Cruise Dist: %.2f", cruiseTime);
+   
 };
 
 double TrapezoidalMotionProfile::calculateVelocity(double time)

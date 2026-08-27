@@ -1,7 +1,7 @@
 #include "claw.h" 
 
 Claw* Claw::globalPtr = nullptr;
-double Claw::MAXIMUM_TOLERABLE_DISTANCE = 0.0;
+double Claw::MAXIMUM_TOLERABLE_DISTANCE = 50;
 
 
 Claw& Claw::getObject(){ 
@@ -49,7 +49,7 @@ void Claw::stateControl(){
        set<bool>("clenched", true);
        set<bool>("requesting_act", false); 
        
-       if (pos == SuperStructurePosition::GROUND && sensesObject()){ 
+       if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING && sensesObject()){ 
           set<bool>("clenched", false);
        }
 
@@ -60,41 +60,34 @@ void Claw::stateControl(){
        }  
        
     } else {    
-        bool willClench; 
-        if (pos == SuperStructurePosition::PRIMED){ 
-           willClench = true;
-        } else { 
-           willClench = false;
-        }  
-        //willClench = !willClench [essentially approves the action]
+
         if (get<bool>("requesting_act")){ 
           set<bool>("requesting_act", false);   
-          if (sensesObject()){   
-            willClench = !willClench;
+          if (sensesObject()){
+            set<bool>("clenched", !get<bool>("clenched")); 
           }
         }
-
-        set<bool>("clenched", willClench);
     }
       
    }   
 }
 
 void Claw::respondToRequests(){  
-
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
     bool still = Telemetry::inst.getValueAt<bool>("ss_manager","setpoints_reached");  
 
-    if (pos == SuperStructurePosition::PRIMED && still){  
-
-        if (RobotState::getStateOf("awaiting_claw_act")){ 
-            set<bool>("requesting_act", true);  
+    if (still){  
+        if (RobotState::getStateOf("awaiting_claw_act")){  
+            if (pos != SuperStructurePosition::AUTO){ 
+               set<bool>("requesting_act", true);
+            }
         }  
-
-        if (RobotState::getStateOf("awaiting_flip")){ 
-            set<bool>("facing_down", !get<bool>("facing_down"));  
+        if (RobotState::getStateOf("awaiting_flip")){  
+            if (pos == SuperStructurePosition::PRIMED){ 
+               set<bool>("facing_down", !get<bool>("facing_down"));
+            }
         }   
-        
+
         RobotState::manuallyModifyState("awaiting_claw_act", false); 
         RobotState::manuallyModifyState("awaiting_flip", false); 
 

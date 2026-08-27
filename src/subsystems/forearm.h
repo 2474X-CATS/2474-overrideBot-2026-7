@@ -25,7 +25,7 @@ class Forearm : public Subsystem {
        double setpoint;
        double startingAngle;
 
-       bool requestingSetpoint; 
+       bool requestingSetpoint = false; 
        double requestedSetpoint;
 
        double angularDeadZones[2];   
@@ -47,7 +47,7 @@ class Forearm : public Subsystem {
        double getCurrentAngle();
        double getVelocity(); 
 
-       void setSetpoint(double setpoint, bool inverted);    
+       void setSetpoint(double setp, bool inverted);    
        
        bool reachedSetpoint();
        

@@ -6,8 +6,8 @@ Forearm* Forearm::globalPtr = nullptr;
 double Forearm::PLACE_SETPOINT = 0; 
 double Forearm::PRIMING_SETPOINT = 45; 
 double Forearm::GROUND_SETPOINT = 270; 
-double Forearm::STANDING_SETPOINT = 180;   
-double Forearm::RELEASE_SETPOINT = 75;
+double Forearm::STANDING_SETPOINT = 0;   
+double Forearm::RELEASE_SETPOINT = 60;
 
 Forearm& Forearm::getObject(){ 
   return *globalPtr;
@@ -38,7 +38,8 @@ void Forearm::init(){
    armFFConsts.kCos = 0.825 + (3.925 - 0.825) / 2;
 
    startingAngle = 270;
-   setpoint = startingAngle;
+   setpoint = startingAngle; 
+
 }
 
 void Forearm::periodic(){
@@ -52,7 +53,8 @@ void Forearm::periodic(){
     forearmMotor.spin(vex::directionType::fwd, forearmOutput, vex::voltageUnits::volt);
 } 
 
-void Forearm::updateTelemetry(){ 
+void Forearm::updateTelemetry(){  
+    Brain.Screen.printAt(20, 140, "Current Angle: %.2f", getCurrentAngle());
     stateControl();  
 } 
 
@@ -79,19 +81,20 @@ double Forearm::getVelocity(){
     return (forearmMotor.velocity(vex::velocityUnits::dps) / 2); 
 }
 
-
 bool Forearm::reachedSetpoint(){ 
   return (Brain.Timer.time() - motionProfile->getStartTime()) >= motionProfile->getTotalDuration();
 }
 
-void Forearm::setSetpoint(double setpoint, bool inverted){ 
-  double currentAngle = get<double>("current_angle"); 
-
+void Forearm::setSetpoint(double setp, bool inverted){  
+  if (setp == setpoint){ 
+    return; 
+  } 
+  setpoint = setp; 
+  double currentAngle = getCurrentAngle(); 
   double error = angleDifference(setpoint, currentAngle);  
-  
-  this->setpoint = setpoint;
+ 
 
-  motionProfile = new TrapezoidalMotionProfile(motionConsts, error, getVelocity(), 0);   
+  motionProfile = new TrapezoidalMotionProfile(motionConsts, error, 0, 0);   
   motionProfile->setLastTimestamp(Brain.Timer.time()); 
   feedback->setLastTimestamp(Brain.Timer.time());
   currentState = ForearmState::F_PURSUING; 
@@ -105,7 +108,7 @@ void Forearm::stateControl(){
 
     if (currentState == ForearmState::F_PURSUING){  
         if (reachedSetpoint()){ 
-          currentState = ForearmState::F_HOLDING; 
+          currentState = ForearmState::F_HOLDING;  
           if (get<bool>("active")){ 
             set<bool>("active", false); 
             set<int>("task_id", get<int>("task_id") + 1); 
@@ -115,9 +118,10 @@ void Forearm::stateControl(){
             } else { 
               Telemetry::inst.placeValueAt(true, "claw","active"); 
             }
-          }
+          } 
         }
-    } else if (currentState == ForearmState::F_HOLDING) {     
+    }   
+    if (currentState == ForearmState::F_HOLDING) {     
         SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position")); 
         bool canTransition = Telemetry::inst.getValueAt<bool>("ss_manager", "can_transition"); 
         switch (pos){  
@@ -150,7 +154,7 @@ void Forearm::stateControl(){
             default: 
               break;
         }  
-    }  
+    }   
 
     set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING);  
 }  

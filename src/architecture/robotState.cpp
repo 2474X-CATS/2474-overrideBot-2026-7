@@ -40,7 +40,10 @@ void RobotState::initializeState()
            (EntrySet){"rise", EntryType::BOOL}, 
            (EntrySet){"fall", EntryType::BOOL}, 
            (EntrySet){"awaiting_claw_act", EntryType::BOOL}, 
-           (EntrySet){"awaiting_flip", EntryType::BOOL}
+           (EntrySet){"awaiting_flip", EntryType::BOOL},  
+           (EntrySet){"k_claw_await", EntryType::BOOL},
+           (EntrySet){"k_score", EntryType::BOOL}, 
+           (EntrySet){"switch_score_mode", EntryType::BOOL}
            //(EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
        }); 
    
@@ -49,9 +52,37 @@ void RobotState::initializeState()
 
 void RobotState::updateRegular()
 {   
-   manuallyModifyState("awaiting_land", Controller1.ButtonA.pressing()); 
-   manuallyModifyState("rise", Controller1.ButtonY.pressing()); 
-   manuallyModifyState("fall", Controller1.ButtonRight.pressing());
+   manuallyModifyState("awaiting_land", Controller1.ButtonY.pressing()); 
+   manuallyModifyState("rise", Controller1.ButtonUp.pressing()); 
+   manuallyModifyState("fall", Controller1.ButtonDown.pressing()); 
+   
+   if (Controller1.ButtonR1.pressing()){ 
+      manuallyModifyState("k_claw_await", true);
+   } else if (getStateOf("k_claw_await")){ 
+      manuallyModifyState("k_claw_await", false);
+      manuallyModifyState("awaiting_claw_act", true);
+   } 
+
+   if (Controller1.ButtonX.pressing()){ 
+      manuallyModifyState("k_score", true);
+   } else if (getStateOf("k_score")){ 
+      manuallyModifyState("k_score", false); 
+      Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");
+   } 
+
+   if (Controller1.ButtonL1.pressing()){ 
+      manuallyModifyState("switch_score_mode", true); 
+      if (Telemetry::inst.getValueAt<int>("ss_manager", "pickup_position") == SuperStructurePosition::GROUND){ 
+         setVibrationCode("..");
+      } else {
+         setVibrationCode("."); 
+      }
+   } else if (getStateOf("switch_score_mode")){ 
+      manuallyModifyState("switch_score_mode", false);  
+      disableVibrations(); 
+      Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "pickup_switch_requested");
+   }
+
 };
 
 void RobotState::updateStopped() {
