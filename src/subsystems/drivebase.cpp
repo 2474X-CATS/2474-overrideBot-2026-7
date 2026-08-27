@@ -89,9 +89,6 @@ void DriveForward::start(){
     startY = Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"); 
     
     initialAngle = Telemetry::inst.getValueAt<double>("odometry", "heading_deg");
-
-    direction = copysign(1, distance); 
-    distance = fabs(distance);  
      
     ffController.kS = FF_CONSTANTS_S; 
     ffController.kV = FF_CONSTANTS_V; 

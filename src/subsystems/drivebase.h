@@ -83,7 +83,6 @@ class DriveForward : public Command<Drivebase> {
    
    private: 
      double distance;
-     int direction = 0; 
 
      double startX;
      double startY;  
