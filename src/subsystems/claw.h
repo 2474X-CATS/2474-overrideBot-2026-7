@@ -37,7 +37,7 @@ class Claw : public Subsystem {
         ), 
        claw(vex::pneumatics(Brain.ThreeWirePort.A)), 
        wrist(vex::pneumatics(Brain.ThreeWirePort.B)), 
-       objectDetector(vex::distance(vex::PORT13))
+       objectDetector(vex::distance(vex::PORT21))
        { 
         globalPtr = this;
        };

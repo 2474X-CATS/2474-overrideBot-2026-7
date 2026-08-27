@@ -34,7 +34,9 @@ class Elevator : public Subsystem {
        static double PRIMING_SPEED; 
 
        static double MINIMUM_ALIGNER_DISTANCE; 
-       static double ALIGNER_ERROR_TOLERANCE;
+       static double ALIGNER_ERROR_TOLERANCE; 
+
+       static double SPOOL_DIAMETER;
 
        int raisingDirection;
 
@@ -49,7 +51,11 @@ class Elevator : public Subsystem {
 
        vex::distance primingSensor;
 
-       vex::rotation rot; 
+       vex::rotation rot;  
+
+       bool requestingSetpoint; 
+       double primingSetpoint; 
+       double requestedHeight;
 
        bool reachedSetpoint(); 
 
@@ -73,20 +79,19 @@ class Elevator : public Subsystem {
           { 
             (EntrySet){"active", EntryType::BOOL}, //In a macro?
             (EntrySet){"at_setpoint", EntryType::BOOL}, //Achieved setpoint or no setpoint? 
-            (EntrySet){"requesting_setpoint", EntryType::BOOL}, 
-            (EntrySet){"priming_setpoint", EntryType::DOUBLE},
-            (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
+            //(EntrySet){"requesting_setpoint", EntryType::BOOL}, 
+            //(EntrySet){"priming_setpoint", EntryType::DOUBLE},
+            //(EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
             (EntrySet){"sensing_stack", EntryType::BOOL},
-            (EntrySet){"current_height", EntryType::DOUBLE},
             (EntrySet){"sniper_score_enabled", EntryType::BOOL},  
             (EntrySet){"percentage_extended", EntryType::DOUBLE}
             
          }
        ),
-       lifter1(vex::motor(vex::PORT11)), 
-       lifter2(vex::motor(vex::PORT10)), 
+       lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 
+       lifter2(vex::motor(vex::PORT10, vex::ratio18_1)), 
        lift(vex::motor_group(lifter1, lifter2)), 
-       rot(vex::rotation(vex::PORT19)), 
+       rot(vex::rotation(vex::PORT2)), 
        primingSensor(vex::distance(vex::PORT20))
        { 
         globalPtr = this;

@@ -14,27 +14,28 @@ Forearm& Forearm::getObject(){
 }
 
 void Forearm::init(){  
- 
-   forearmMotor.setBrake();
-   set<double>("current_angle", PRIMING_SETPOINT); 
+   forearmMotor.setPosition(0, vex::rotationUnits::deg); 
+   forearmMotor.setBrake(vex::brakeType::hold); 
 
-   angularDeadZones[0] = 135;
-   angularDeadZones[1] = 160;
+   //set<double>("current_angle", PRIMING_SETPOINT); 
 
-   motionConsts.maxAcceleration = 2160; 
-   motionConsts.maxVelocity = 1080; 
+   angularDeadZones[0] = 0;
+   angularDeadZones[1] = 0;
 
-   pidConsts.P = 0.005; 
+   motionConsts.maxAcceleration = 1080; 
+   motionConsts.maxVelocity = 540; 
+
+   pidConsts.P = 0.001; 
    pidConsts.I = 0; 
-   pidConsts.D = 0.0003;
+   pidConsts.D = 0;
 
    feedback = new pidcontroller(pidConsts, 0); 
    feedback->setLastTimestamp(Brain.Timer.time());  
 
-   armFFConsts.kS_rot = (3.35 - 0.61) / 2;
-   armFFConsts.kV_rot = 5.72;
-   armFFConsts.kA_rot = 0.2;
-   armFFConsts.kCos = 0;
+   armFFConsts.kS_rot = (3.925 - 0.825) / 2;
+   armFFConsts.kV_rot = 4.35;
+   armFFConsts.kA_rot = 0.5;
+   armFFConsts.kCos = 0.825 + (3.925 - 0.825) / 2;
 
    startingAngle = 270;
    setpoint = startingAngle;
@@ -46,13 +47,12 @@ void Forearm::periodic(){
         forearmOutput = calculateOutput(0,0);
     } else { 
         TrapezoidalSetpoint outputGoal = motionProfile->generateSetpoint(Brain.Timer.time());  
-        forearmOutput = calculateOutput(outputGoal.velocity, outputGoal.acceleration) * setpointDirection; 
+        forearmOutput = calculateOutput(outputGoal.velocity, outputGoal.acceleration); 
     }  
     forearmMotor.spin(vex::directionType::fwd, forearmOutput, vex::voltageUnits::volt);
 } 
 
 void Forearm::updateTelemetry(){ 
-    updatePosition(); 
     stateControl();  
 } 
 
@@ -61,12 +61,12 @@ void Forearm::stop(){
 }   
 
 double Forearm::calculateOutput(double omega, double alpha){ 
-    double ffOutput = armFFConsts.calculate(getCurrentAngle(), omega / 360, alpha / 360);  
+    double ffOutput = armFFConsts.calculate(toRadians(getCurrentAngle()), omega / 360, alpha / 360);  
     double pidOutput;
     if (currentState == ForearmState::F_PURSUING){ 
-        pidOutput = feedback->calculate(angleDifference(getVelocity(), omega) , Brain.Timer.time());
+        pidOutput = feedback->calculate(angleDifference(getVelocity(), omega), Brain.Timer.time());
     } else { 
-        pidOutput = feedback->calculate(angleDifference(getPosition(), position) , Brain.Timer.time());  
+        pidOutput = feedback->calculate(angleDifference(getCurrentAngle(), setpoint), Brain.Timer.time());  
     }
     return ffOutput + pidOutput;
 }
@@ -79,9 +79,6 @@ double Forearm::getVelocity(){
     return (forearmMotor.velocity(vex::velocityUnits::dps) / 2); 
 }
 
-void Forearm::updatePosition(){
-    set<double>("current_angle", getCurrentAngle());
-}
 
 bool Forearm::reachedSetpoint(){ 
   return (Brain.Timer.time() - motionProfile->getStartTime()) >= motionProfile->getTotalDuration();
@@ -92,19 +89,15 @@ void Forearm::setSetpoint(double setpoint, bool inverted){
 
   double error = angleDifference(setpoint, currentAngle);  
   
-  this->setpoint = setpoint; 
+  this->setpoint = setpoint;
 
-  setpointDirection = copysign(1, error); 
-  motionProfile = new TrapezoidalMotionProfile(motionConsts, fabs(error), getVelocity(), 0);   
+  motionProfile = new TrapezoidalMotionProfile(motionConsts, error, getVelocity(), 0);   
   motionProfile->setLastTimestamp(Brain.Timer.time()); 
   feedback->setLastTimestamp(Brain.Timer.time());
   currentState = ForearmState::F_PURSUING; 
 }
 
 void Forearm::stateControl(){ 
-    
-    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position")); 
-
     if (requestingSetpoint){  
       requestingSetpoint = false;
       setSetpoint(requestedSetpoint, RobotState::getStateOf("inverted")); 
@@ -124,7 +117,8 @@ void Forearm::stateControl(){
             }
           }
         }
-    } else if (currentState == ForearmState::F_HOLDING) {    
+    } else if (currentState == ForearmState::F_HOLDING) {     
+        SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position")); 
         bool canTransition = Telemetry::inst.getValueAt<bool>("ss_manager", "can_transition"); 
         switch (pos){  
             case PRIMED:

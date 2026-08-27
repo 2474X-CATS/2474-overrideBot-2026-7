@@ -93,9 +93,8 @@ void Claw::respondToRequests(){
 
         if (RobotState::getStateOf("awaiting_flip")){ 
             set<bool>("facing_down", !get<bool>("facing_down"));  
-             
-        }  
-
+        }   
+        
         RobotState::manuallyModifyState("awaiting_claw_act", false); 
         RobotState::manuallyModifyState("awaiting_flip", false); 
 

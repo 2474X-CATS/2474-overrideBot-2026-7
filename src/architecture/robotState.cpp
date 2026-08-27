@@ -38,7 +38,9 @@ void RobotState::initializeState()
            (EntrySet){"is_team_color_blue", EntryType::BOOL},
            (EntrySet){"awaiting_land", EntryType::BOOL},
            (EntrySet){"rise", EntryType::BOOL}, 
-           (EntrySet){"fall", EntryType::BOOL},
+           (EntrySet){"fall", EntryType::BOOL}, 
+           (EntrySet){"awaiting_claw_act", EntryType::BOOL}, 
+           (EntrySet){"awaiting_flip", EntryType::BOOL}
            //(EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
        }); 
    

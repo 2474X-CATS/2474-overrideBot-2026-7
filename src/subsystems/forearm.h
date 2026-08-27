@@ -29,8 +29,6 @@ class Forearm : public Subsystem {
        double requestedSetpoint;
 
        double angularDeadZones[2];   
-
-       int setpointDirection;
        
        ForearmState currentState = ForearmState::F_HOLDING;  
 
@@ -53,7 +51,6 @@ class Forearm : public Subsystem {
        
        bool reachedSetpoint();
        
-       void updatePosition(); 
        void stateControl();  //ONLY (We can't manually modify the forearm with the controller)
 
     public:   
@@ -68,10 +65,10 @@ class Forearm : public Subsystem {
                (EntrySet){"task_id", EntryType::INT}, 
                (EntrySet){"active", EntryType::BOOL}, 
                (EntrySet){"at_setpoint", EntryType::BOOL}, 
-               (EntrySet){"current_angle", EntryType::DOUBLE} 
+               //(EntrySet){"current_angle", EntryType::DOUBLE} 
             }
          ),
-         forearmMotor(vex::motor(vex::PORT16))
+         forearmMotor(vex::motor(vex::PORT4))
          { 
             globalPtr = this;
          };    
