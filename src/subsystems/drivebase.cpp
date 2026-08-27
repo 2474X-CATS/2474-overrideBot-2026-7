@@ -1,7 +1,6 @@
 #include "drivebase.h" 
 #include "../utilities/functools.h" 
 
-
 Drivebase* Drivebase::globalPtr = nullptr; 
 
 double Drivebase::MAX_RPM = 450; 
@@ -25,7 +24,7 @@ Drivebase& Drivebase::getObject(){
     return *globalPtr;
 }
 
-void Drivebase::periodic(){ 
+void Drivebase::periodic(){  
   arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL)); 
 }
 

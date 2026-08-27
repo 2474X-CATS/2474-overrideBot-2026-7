@@ -48,10 +48,6 @@ void Claw::stateControl(){
     if (!still){  
        set<bool>("clenched", true);
        set<bool>("requesting_act", false); 
-       
-       if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING && sensesObject()){ 
-          set<bool>("clenched", false);
-       }
 
        if (pos == SuperStructurePosition::STANDING){ 
          set<bool>("facing_down", true);
@@ -60,6 +56,9 @@ void Claw::stateControl(){
        }  
        
     } else {    
+        if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING){ 
+          set<bool>("clenched", false);
+        } 
 
         if (get<bool>("requesting_act")){ 
           set<bool>("requesting_act", false);   
