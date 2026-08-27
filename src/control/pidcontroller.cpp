@@ -38,10 +38,11 @@ double pidcontroller::calculate(double position, double timestamp)
          integral = iLimit;
       else if (integral < -iLimit)
          integral = -iLimit;
-   }  
-   derivative = 0;
+   } 
    if (prevError != 0){ 
       derivative = (error - prevError) / dt;
+   } else { 
+      derivative = 0;
    }
    prevError = error;
    double output = (kP * error) + (kI * integral) + (kD * derivative);  
@@ -61,16 +62,15 @@ void pidcontroller::setLastTimestamp(double timestamp)
 double pidcontroller::getDerivative()
 {
    return derivative;
-}
-
-double pidcontroller::setSetpoint(double setpoint){
-   this-setpoint = setpoint;
-   reset(); 
-}
+} 
 
 double pidcontroller::getSetpoint()
 {
    return setpoint;
+} 
+
+void pidcontroller::setSetpoint(double setpoint){ 
+   this->setpoint = setpoint;
 }
 
 void pidcontroller::reset()
