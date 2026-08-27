@@ -46,8 +46,8 @@ class Forearm : public Subsystem {
         
        double calculateOutput(double omega, double alpha); //velocity and acceleration but for angles
        
-       double getCurrentAngle();
-       double getVelocity(); 
+       double getCurrentAngle(); 
+       double getVelocity();
 
        void setSetpoint(double setp, bool inverted);    
        

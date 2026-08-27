@@ -168,12 +168,126 @@ Discarded input sections
                 0x0000000000000000       0x3a build/src/autos.o
  .llvm_addrsig  0x0000000000000000        0x1 build/src/autos.o
  .text          0x0000000000000000        0x0 build/src/commands.o
+ .text._ZN16ModifyRobotState5startEv
+                0x0000000000000000        0x4 build/src/commands.o
+ .ARM.exidx.text._ZN16ModifyRobotState5startEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN16ModifyRobotState8periodicEv
+                0x0000000000000000       0xbc build/src/commands.o
+ .ARM.exidx.text._ZN16ModifyRobotState8periodicEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN16ModifyRobotState3endEv
+                0x0000000000000000        0x4 build/src/commands.o
+ .ARM.exidx.text._ZN16ModifyRobotState3endEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN16ModifyRobotState6isOverEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .ARM.exidx.text._ZN16ModifyRobotState6isOverEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN9WaitUntil5startEv
+                0x0000000000000000        0x4 build/src/commands.o
+ .ARM.exidx.text._ZN9WaitUntil5startEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN9WaitUntil8periodicEv
+                0x0000000000000000        0x4 build/src/commands.o
+ .ARM.exidx.text._ZN9WaitUntil8periodicEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN9WaitUntil3endEv
+                0x0000000000000000        0x4 build/src/commands.o
+ .ARM.exidx.text._ZN9WaitUntil3endEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN9WaitUntil6isOverEv
+                0x0000000000000000       0xc8 build/src/commands.o
+ .ARM.exidx.text._ZN9WaitUntil6isOverEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN7WaitFor5startEv
+                0x0000000000000000       0x24 build/src/commands.o
+ .ARM.exidx.text._ZN7WaitFor5startEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN7WaitFor8periodicEv
+                0x0000000000000000        0x4 build/src/commands.o
+ .ARM.exidx.text._ZN7WaitFor8periodicEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN7WaitFor6isOverEv
+                0x0000000000000000       0x38 build/src/commands.o
+ .ARM.exidx.text._ZN7WaitFor6isOverEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN7WaitFor3endEv
+                0x0000000000000000        0x4 build/src/commands.o
+ .ARM.exidx.text._ZN7WaitFor3endEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .text._ZN16ModifyRobotStateD2Ev
+                0x0000000000000000       0x54 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .group         0x0000000000000000       0x10 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .group         0x0000000000000000       0x14 build/src/commands.o
+ .group         0x0000000000000000        0xc build/src/commands.o
+ .ARM.exidx.text._ZN16ModifyRobotStateD2Ev
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN16ModifyRobotStateD0Ev
+                0x0000000000000000       0x58 build/src/commands.o
+ .ARM.exidx.text._ZN16ModifyRobotStateD0Ev
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN16CommandInterface4reprEv
+                0x0000000000000000       0x24 build/src/commands.o
+ .ARM.exidx.text._ZN16CommandInterface4reprEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN7CommandIJ11DummySystemEE10getSystemsEv
+                0x0000000000000000       0x14 build/src/commands.o
+ .ARM.exidx.text._ZN7CommandIJ11DummySystemEE10getSystemsEv
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN7WaitForD0Ev
+                0x0000000000000000       0x38 build/src/commands.o
+ .ARM.exidx.text._ZN7WaitForD0Ev
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN9WaitUntilD2Ev
+                0x0000000000000000       0x54 build/src/commands.o
+ .ARM.exidx.text._ZN9WaitUntilD2Ev
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN9WaitUntilD0Ev
+                0x0000000000000000       0x58 build/src/commands.o
+ .ARM.exidx.text._ZN9WaitUntilD0Ev
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN7CommandIJ11DummySystemEED2Ev
+                0x0000000000000000       0x34 build/src/commands.o
+ .ARM.exidx.text._ZN7CommandIJ11DummySystemEED2Ev
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZN7CommandIJ11DummySystemEED0Ev
+                0x0000000000000000        0x4 build/src/commands.o
+ .ARM.exidx.text._ZN7CommandIJ11DummySystemEED0Ev
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZNSt6vectorISt17reference_wrapperI9SubsystemESaIS2_EEC2ERKS4_
+                0x0000000000000000       0x6c build/src/commands.o
+ .ARM.exidx.text._ZNSt6vectorISt17reference_wrapperI9SubsystemESaIS2_EEC2ERKS4_
+                0x0000000000000000        0x8 build/src/commands.o
+ .text._ZNSt12_Vector_baseISt17reference_wrapperI9SubsystemESaIS2_EE11_M_allocateEj
+                0x0000000000000000       0x30 build/src/commands.o
+ .ARM.exidx.text._ZNSt12_Vector_baseISt17reference_wrapperI9SubsystemESaIS2_EE11_M_allocateEj
+                0x0000000000000000        0x8 build/src/commands.o
+ .rodata._ZTV16ModifyRobotState
+                0x0000000000000000       0x28 build/src/commands.o
+ .rodata._ZTV7WaitFor
+                0x0000000000000000       0x28 build/src/commands.o
+ .rodata._ZTV9WaitUntil
+                0x0000000000000000       0x28 build/src/commands.o
+ .rodata._ZTV7CommandIJ11DummySystemEE
+                0x0000000000000000       0x28 build/src/commands.o
+ .rodata.str1.1
+                0x0000000000000000        0x1 build/src/commands.o
  .comment       0x0000000000000000       0x2e build/src/commands.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/src/commands.o
  .ARM.attributes
-                0x0000000000000000       0x38 build/src/commands.o
- .llvm_addrsig  0x0000000000000000        0x0 build/src/commands.o
+                0x0000000000000000       0x3a build/src/commands.o
+ .llvm_addrsig  0x0000000000000000        0x3 build/src/commands.o
  .text          0x0000000000000000        0x0 build/src/main.o
  .group         0x0000000000000000       0x14 build/src/main.o
  .group         0x0000000000000000       0x14 build/src/main.o
