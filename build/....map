@@ -1412,7 +1412,7 @@ Discarded input sections
  .ARM.exidx.text._ZN11FFConstants9calculateEdd
                 0x0000000000000000        0x8 build/src/control/feedForward.o
  .text._ZN21AngularArmFFConstants9calculateEddd
-                0x0000000000000000       0x78 build/src/control/feedForward.o
+                0x0000000000000000       0x7c build/src/control/feedForward.o
  .ARM.exidx.text._ZN21AngularArmFFConstants9calculateEddd
                 0x0000000000000000        0x8 build/src/control/feedForward.o
  .text._ZN19ElevatorFFConstants9calculateEdd
@@ -1453,7 +1453,7 @@ Discarded input sections
  .llvm_addrsig  0x0000000000000000        0x0 build/src/control/pidcontroller.o
  .text          0x0000000000000000        0x0 build/src/control/trapezoidalMotion.o
  .text._ZN24TrapezoidalMotionProfile4initEdd
-                0x0000000000000000      0x144 build/src/control/trapezoidalMotion.o
+                0x0000000000000000      0x188 build/src/control/trapezoidalMotion.o
  .ARM.exidx.text._ZN24TrapezoidalMotionProfile4initEdd
                 0x0000000000000000        0x8 build/src/control/trapezoidalMotion.o
  .text._ZN24TrapezoidalMotionProfile17calculateVelocityEd
@@ -1516,12 +1516,14 @@ Discarded input sections
                 0x0000000000000000       0x10 build/src/control/trapezoidalMotion.o
  .ARM.exidx.text._ZN24TrapezoidalMotionProfile16setLastTimestampEd
                 0x0000000000000000        0x8 build/src/control/trapezoidalMotion.o
+ .rodata.str1.1
+                0x0000000000000000       0x12 build/src/control/trapezoidalMotion.o
  .comment       0x0000000000000000       0x2e build/src/control/trapezoidalMotion.o
  .note.GNU-stack
                 0x0000000000000000        0x0 build/src/control/trapezoidalMotion.o
  .ARM.attributes
                 0x0000000000000000       0x3a build/src/control/trapezoidalMotion.o
- .llvm_addrsig  0x0000000000000000        0x0 build/src/control/trapezoidalMotion.o
+ .llvm_addrsig  0x0000000000000000        0x1 build/src/control/trapezoidalMotion.o
  .text          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
  .data          0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
  .bss           0x0000000000000000        0x0 /home/talon-robotics/.config/Code/User/globalStorage/vexrobotics.vexcode/sdk/cpp/V5/V5_20240802_15_00_00/vexv5/libv5rt.a(v5_startup.c.obj)
