@@ -34,9 +34,9 @@ class Claw : public Subsystem {
            (EntrySet){"senses_object", EntryType::BOOL}
         } 
         ), 
-       claw(vex::pneumatics(Brain.ThreeWirePort.B)), 
-       wrist(vex::pneumatics(Brain.ThreeWirePort.E)), 
-       objectDetector(vex::distance(vex::PORT13))
+       claw(vex::pneumatics(Brain.ThreeWirePort.A)), 
+       wrist(vex::pneumatics(Brain.ThreeWirePort.B)), 
+       objectDetector(vex::distance(vex::PORT21))
        { 
         globalPtr = this;
        };

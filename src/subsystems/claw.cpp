@@ -1,5 +1,9 @@
 #include "claw.h" 
 
+Claw* Claw::globalPtr = nullptr; 
+
+double Claw::MAXIMUM_TOLERABLE_DISTANCE = 50; 
+
 Claw& Claw::getObject(){ 
     return *globalPtr;
 } 
@@ -14,7 +18,8 @@ void Claw::periodic(){
 } 
 
 void Claw::updateTelemetry(){  
-   stateControl(); 
+   stateControl();  
+   set<bool>("senses_object", sensesObject()); 
    if (!RobotState::getStateOf("in_autonomous")){ 
      respondToRequests();
    }
@@ -22,7 +27,7 @@ void Claw::updateTelemetry(){
 }  
 
 void Claw::stop(){ 
-    clench(false);
+    clench(true);
 } 
 
 bool Claw::sensesObject(){ 
@@ -30,7 +35,7 @@ bool Claw::sensesObject(){
 }
 
 void Claw::stateControl(){ 
-    return;
+    set<bool>("clenched", get<bool>("senses_object"));
 }
 
 void Claw::respondToRequests(){   

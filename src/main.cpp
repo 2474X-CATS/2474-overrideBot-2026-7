@@ -1,5 +1,6 @@
 #include "vex.h"
-#include "architecture/robot.h"
+#include "architecture/robot.h" 
+#include "subsystems/claw.h"
 #include <iostream>
 
 using namespace vex;
@@ -56,12 +57,14 @@ int main()
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
+  Claw claw = Claw();
   
   //-------------------------------------------------------
 
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
- 
+  
+  testDrive();
 
 }
