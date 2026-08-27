@@ -25,7 +25,7 @@ void Forearm::init(){
    motionConsts.maxAcceleration = 540 / 0.5;
    motionConsts.maxVelocity = 540;
 
-   pidConsts.P = 0.000;
+   pidConsts.P = 0.001;
    pidConsts.I = 0.00;
    pidConsts.D = 0;//0.0003;
 
@@ -36,8 +36,8 @@ void Forearm::init(){
 
    //Tune later (Try modifying kCos)
    armFFConsts.kS_rot = (3.925 - 0.825) / 2; //(3.35 - 0.61) / 2;
-   armFFConsts.kV_rot = 7;
-   armFFConsts.kA_rot = 0.0;//0.625;
+   armFFConsts.kV_rot = 4.35;
+   armFFConsts.kA_rot = 0.5;//0.625;
    armFFConsts.kCos = 0.825 + (3.925 - 0.825) / 2; //2.5; //0.61 + armFFConsts.kS_rot;  
    //If holding then hold brake type handles (fall)
 
