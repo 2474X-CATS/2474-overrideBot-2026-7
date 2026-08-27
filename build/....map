@@ -1268,6 +1268,10 @@ Discarded input sections
                 0x0000000000000000        0xc build/src/control/pidcontroller.o
  .ARM.exidx.text._ZN13pidcontroller11getSetpointEv
                 0x0000000000000000        0x8 build/src/control/pidcontroller.o
+ .text._ZN13pidcontroller11setSetpointEd
+                0x0000000000000000       0x10 build/src/control/pidcontroller.o
+ .ARM.exidx.text._ZN13pidcontroller11setSetpointEd
+                0x0000000000000000        0x8 build/src/control/pidcontroller.o
  .text._ZN13pidcontroller5resetEv
                 0x0000000000000000       0x1c build/src/control/pidcontroller.o
  .ARM.exidx.text._ZN13pidcontroller5resetEv
