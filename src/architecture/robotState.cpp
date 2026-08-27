@@ -48,7 +48,7 @@ void RobotState::initializeState()
 void RobotState::updateRegular()
 {   
   
-   manuallyModifyState("awaiting_land", Controller1.ButtonDown.pressing());
+   manuallyModifyState("awaiting_land", Controller1.ButtonY.pressing());
    manuallyModifyState("rise", Controller1.ButtonUp.pressing()); 
    manuallyModifyState("fall", Controller1.ButtonDown.pressing());
 

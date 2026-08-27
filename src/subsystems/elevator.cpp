@@ -28,20 +28,21 @@ void Elevator::init(){
     //Feedback: Correcting the Feedforward's shortcomings 
 
     PIDConstants pidConsts;
-    pidConsts.P = 0.5;
-    pidConsts.I = 0.0;
-    pidConsts.D = 0.001;
+    pidConsts.P = 0.525;
+    pidConsts.I = 0.001;
+    pidConsts.D = 0.000;
     pidConsts.errorTolerance = 10;  
 
     lift.setStopping(vex::brakeType::brake); 
   
     rot.setPosition(0, vex::rotationUnits::rev);
-   
-    currentState = ElevatorState::PRIMING;
 
     correctionController = new pidcontroller(pidConsts, getPosition());   
-    correctionController->setLastTimestamp(Brain.Timer.time());
+    correctionController->setLastTimestamp(Brain.Timer.time()); 
 
+    set<double>("requested_height", 800); 
+    set<bool>("requesting_setpoint", true); 
+    
 } 
 
 void Elevator::periodic(){    
@@ -66,7 +67,8 @@ void Elevator::updateTelemetry(){
 
     set<bool>("sensing_stack", currentPosition < 750);//fabs(primingSensor.objectDistance(vex::distanceUnits::mm) - MINIMUM_ALIGNER_DISTANCE) < ALIGNER_ERROR_TOLERANCE);
     set<double>("current_velocity", currentVelocity);      
-    set<double>("current_height", currentPosition); 
+    set<double>("current_height", currentPosition);   
+    Brain.Screen.printAt(20, 120, "Current height: %.2f", currentPosition);
     set<double>("percentage_extended", (currentPosition - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT)); 
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
