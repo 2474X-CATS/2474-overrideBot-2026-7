@@ -40,7 +40,8 @@ class Odometry : public DataStream {
          }
        ),
        gyro(vex::inertial(vex::PORT16)),
-       rot(vex::rotation(vex::PORT9))
+       linRot(vex::rotation(vex::PORT9)), 
+       angRot(vex::rotation(vex::PORT13))
        {};
 
        void refreshData() override; // Calls every telemetry frame
@@ -58,7 +59,8 @@ class Odometry : public DataStream {
        void calibratePerspective();
 
        vex::inertial gyro; 
-       vex::rotation rot;  
+       vex::rotation linRot;   
+       vex::rotation angRot;
 
        double lastTimestamp = 0; 
        

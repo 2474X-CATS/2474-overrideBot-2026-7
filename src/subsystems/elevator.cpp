@@ -103,7 +103,7 @@ void Elevator::stateControl(){
       }
       requestingSetpoint = false;
     }
-
+    /* Uncomment when forearm tuned better
     if (currentState == ElevatorState::E_PURSUING){ //
       if (reachedSetpoint()){  
         currentState = ElevatorState::E_HOLDING; 
@@ -145,7 +145,7 @@ void Elevator::stateControl(){
                break;
         }
     }   
-
+   */
    set<bool>("at_setpoint", currentState != ElevatorState::E_PURSUING && currentState != ElevatorState::E_PRIMING);   
 }
 

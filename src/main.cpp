@@ -55,6 +55,32 @@ void startCommandMatch()
   robot.runTelemetryThread();
 }
 
+int graphTableData(){ 
+  DataSupplier actualForearmVelocity; 
+  DataSupplier desiredForearmVelocity;  
+   
+  actualForearmVelocity.directory = "graph";
+  actualForearmVelocity.name = "actual_velocity";
+  actualForearmVelocity.label = "A(m/s)";
+  
+  desiredForearmVelocity.directory = "graph";
+  desiredForearmVelocity.name = "desired_velocity";
+  desiredForearmVelocity.label = "D(m/s)";
+
+
+  Graph g = Graph( 
+    "Forearm velocity (Desired vs Actual)", 
+    { 
+      actualForearmVelocity, 
+      desiredForearmVelocity
+    }
+  ); 
+
+  Sprite::frameLoop();  
+
+  return 0; 
+}
+
 //------------------------------>-------------------------------------------------------------------------------------------------------------------
 
 
@@ -63,12 +89,19 @@ int main()
 
   vexcodeInit();
   
+  Telemetry::inst.registerSubtable(  
+    "graph", 
+    { 
+      (EntrySet){"actual_velocity", EntryType::DOUBLE}, 
+      (EntrySet){"desired_velocity", EntryType::DOUBLE}
+    }
+  ); 
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
      
-  Odometry odom = Odometry(); 
-  Drivebase drive = Drivebase(); 
+  //Odometry odom = Odometry(); 
+  //Drivebase drive = Drivebase(); 
   SuperSystem ss = SuperSystem();
   Elevator elevator = Elevator();
   Forearm forearm = Forearm();
@@ -79,6 +112,6 @@ int main()
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
- 
+  thread graphics = thread(graphTableData); 
   testDrive();
 }

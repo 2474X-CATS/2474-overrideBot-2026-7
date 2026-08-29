@@ -88,13 +88,13 @@ void Odometry::refreshData(){
     double currentTimestamp = Brain.Timer.time(); 
     double delta = (currentTimestamp - lastTimestamp) / 1000.0;
 
-    double currentVelocity = (rot.velocity(vex::velocityUnits::rpm) / 60) * 2 * M_PI * INERTIAL_WHEEL_RADIUS; 
+    double currentVelocity = (linRot.velocity(vex::velocityUnits::rpm) / 60) * 2 * M_PI * INERTIAL_WHEEL_RADIUS; 
     double currentHeading = gyro.heading();
 
     double xPos = get<double>("x_position_mm"); 
     double yPos = get<double>("y_position_mm"); 
 
-    double distance =  currentVelocity * delta;
+    double distance = currentVelocity * delta;
 
     if (get<bool>("oriented_c")){ 
        currentHeading = flipOrientation(currentHeading);
@@ -144,7 +144,7 @@ void Odometry::setStartingOdometry(){ //Not finished
   } 
 
   gyro.setHeading(angleHeading, vex::rotationUnits::deg); 
-  rot.setReversed(true); 
+  linRot.setReversed(true); 
   
   set<double>("x_position_mm", cornerX + offsetX); 
   set<double>("y_position_mm", cornerY + offsetY); 
