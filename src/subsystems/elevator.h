@@ -9,7 +9,9 @@
 typedef enum { 
    E_HOLDING, 
    E_PRIMING, 
-   E_PURSUING
+   E_PURSUING, 
+   E_ADJUSTING, 
+   E_LISTLESS
 } ElevatorState;
 
 class Elevator : public Subsystem { 
@@ -29,14 +31,14 @@ class Elevator : public Subsystem {
        static double PRIMING_SPEED; 
 
        static double MINIMUM_ALIGNER_DISTANCE; 
-       static double ALIGNER_ERROR_TOLERANCE;
+       static double ALIGNER_ERROR_TOLERANCE; 
 
        ElevatorState currentState = ElevatorState::E_HOLDING; 
 
        int raisingDirection = 0;
-       int setpointDirection;  
+       int setpointDirection;
 
-       double previousTimestamp; 
+       double previousTimestamp;
 
        TrapezoidalMotionProfile* motionProfile = nullptr; //When the robot has defined setpoints it needs to reach
        TrapezoidConstants motionConsts; 
@@ -48,7 +50,6 @@ class Elevator : public Subsystem {
        
        void setSetpoint(double setpoint);
        void updatePosition(double velocity); 
-
 
 
     public:   
@@ -66,7 +67,6 @@ class Elevator : public Subsystem {
             (EntrySet){"requested_height", EntryType::DOUBLE}, //Specifically what height do we want to reach 
             (EntrySet){"sensing_stack", EntryType::BOOL},
             (EntrySet){"current_height", EntryType::DOUBLE},
-            (EntrySet){"priming_direction", EntryType::INT}, 
             (EntrySet){"sniper_score_enabled", EntryType::BOOL}, 
             (EntrySet){"lifting_timestamp", EntryType::DOUBLE}
          }

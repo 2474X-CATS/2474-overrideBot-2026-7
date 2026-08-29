@@ -4,9 +4,7 @@ double SuperSystem::BACKUP_DISTANCE = 100;
 
 void SuperSystem::init(){ 
     set<int>("pickup_position", SuperStructurePosition::GROUND); 
-    set<int>("position", get<int>("pickup_position"));   
-    set<int>("last_position", get<int>("position"));  
-
+    set<int>("position", get<int>("pickup_position"));     
     set<bool>("can_transition", true); 
     set<double>("distance_backed", 0);
 }  

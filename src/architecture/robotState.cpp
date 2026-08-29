@@ -34,70 +34,55 @@ void RobotState::initializeState()
        "robot_state",
        {
            (EntrySet){"in_autonomous", EntryType::BOOL}, 
-           (EntrySet){"inverted", EntryType::BOOL}, 
-           (EntrySet){"is_team_color_blue", EntryType::BOOL},   
-           
-           (EntrySet){"requested_macro", EntryType::BOOL},   
-
-           (EntrySet){"requested_claw_act", EntryType::BOOL},  
+           (EntrySet){"inverted", EntryType::BOOL},
+           (EntrySet){"is_team_color_blue", EntryType::BOOL},
+           (EntrySet){"awaiting_land", EntryType::BOOL},
+           (EntrySet){"rise", EntryType::BOOL}, 
+           (EntrySet){"fall", EntryType::BOOL}, 
            (EntrySet){"awaiting_claw_act", EntryType::BOOL}, 
-
-           (EntrySet){"requested_land", EntryType::BOOL},  
-           (EntrySet){"awaiting_land", EntryType::BOOL}, 
-
-           (EntrySet){"requested_flip", EntryType::BOOL}, 
-           (EntrySet){"awaiting_flip", EntryType::BOOL}, 
-
-           (EntrySet){"controller_connected", EntryType::BOOL}
+           (EntrySet){"awaiting_flip", EntryType::BOOL},  
+           (EntrySet){"k_claw_await", EntryType::BOOL},
+           (EntrySet){"k_score", EntryType::BOOL}, 
+           (EntrySet){"switch_score_mode", EntryType::BOOL},
+           (EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
        }); 
-
-       manuallyModifyState("controller_connected", Controller1.installed());
+   
+   manuallyModifyState("field_type_is_vex", true);
 }
 
 void RobotState::updateRegular()
-{  
-   if (Controller2.ButtonR2.pressing()){ //Macro
-      manuallyModifyState("requested_macro", true);
-   } else { 
-      if (getStateOf("requested_macro")){ 
-          Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");  
-          manuallyModifyState("requested_macro", false);
-      }
-   }
-
-   //--------------------------------------------------------------------------
-
-   if (Controller2.ButtonA.pressing()){ //Drop
-      manuallyModifyState("requested_claw_act", true);
-   } else { 
-      if (getStateOf("requested_claw_act")){ 
-          manuallyModifyState("awaiting_claw_act", true); //Turned off by claw itself
-          manuallyModifyState("requested_claw_act", false);
-      }
-   }  
-
-   //--------------------------------------------------------------------------- 
+{   
+   manuallyModifyState("awaiting_land", Controller1.ButtonY.pressing()); 
+   manuallyModifyState("rise", Controller1.ButtonUp.pressing()); 
+   manuallyModifyState("fall", Controller1.ButtonDown.pressing()); 
    
-   if (Controller2.ButtonB.pressing()){ //Land
-      manuallyModifyState("requested_land", true);
-   } else { 
-      if (getStateOf("requested_land")){ 
-          manuallyModifyState("awaiting_land", true); //Turned off by the arm itself 
-          manuallyModifyState("requested_land", false);
-      }
+   
+   if (Controller1.ButtonR1.pressing()){ 
+      manuallyModifyState("k_claw_await", true);
+   } else if (getStateOf("k_claw_await")){ 
+      manuallyModifyState("k_claw_await", false);
+      manuallyModifyState("awaiting_claw_act", true);
    } 
-   
-    //---------------------------------------------------------------------------
 
-   if (Controller2.ButtonX.pressing()){ //Flip
-      manuallyModifyState("requested_flip", true);
-   } else { 
-      if (getStateOf("requested_flip")){ 
-          manuallyModifyState("awaiting_flip", true); //Turned off by claw itself
-          manuallyModifyState("requested_flip", false);
+   if (Controller1.ButtonX.pressing()){ 
+      manuallyModifyState("k_score", true);
+   } else if (getStateOf("k_score")){ 
+      manuallyModifyState("k_score", false); 
+      Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");
+   } 
+
+   if (Controller1.ButtonL1.pressing()){ 
+      manuallyModifyState("switch_score_mode", true); 
+      if (Telemetry::inst.getValueAt<int>("ss_manager", "pickup_position") == SuperStructurePosition::GROUND){ 
+         setVibrationCode("..");
+      } else {
+         setVibrationCode("."); 
       }
+   } else if (getStateOf("switch_score_mode")){ 
+      manuallyModifyState("switch_score_mode", false);  
+      disableVibrations(); 
+      Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "pickup_switch_requested");
    }
-
 
 };
 

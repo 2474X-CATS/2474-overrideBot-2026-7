@@ -43,10 +43,6 @@ void Claw::stateControl(){
     if (!still){  
        set<bool>("clenched", true);
        set<bool>("requesting_act", false); 
-       
-       if (pos == SuperStructurePosition::GROUND && get<bool>("senses_object")){ 
-          set<bool>("clenched", false);
-       }
 
        if (pos == SuperStructurePosition::STANDING){ 
          set<bool>("facing_down", true);
@@ -55,46 +51,42 @@ void Claw::stateControl(){
        }  
        
     } else {    
-        bool willClench; 
-        if (pos == SuperStructurePosition::PRIMED){ 
-           willClench = true;
-        } else { 
-           willClench = false;
-        }  
-        //willClench = !willClench [essentially approves the action]
+        if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING){ 
+          set<bool>("clenched", false);
+        } 
+
         if (get<bool>("requesting_act")){ 
           set<bool>("requesting_act", false);   
-          if (get<bool>("senses_object")){   
-            willClench = !willClench;
+          if (get<bool>("senses_object")){
+            set<bool>("clenched", !get<bool>("clenched")); 
           }
-        }   
-
-        set<bool>("clenched", willClench);
-    } 
+        }
+    }
       
    }   
-
 }
 
 void Claw::respondToRequests(){  
 
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
-    bool still = Telemetry::inst.getValueAt<bool>("forearm","at_setpoint") && Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint"); 
+    bool still = Telemetry::inst.getValueAt<bool>("ss_manager","setpoints_reached");  
 
-    if (pos == SuperStructurePosition::PRIMED && still){  
-
-        if (RobotState::getStateOf("awaiting_claw_act")){ 
-            set<bool>("requesting_act", true);  
+    if (still){  
+        if (RobotState::getStateOf("awaiting_claw_act")){  
+            if (pos != SuperStructurePosition::AUTO){ 
+               set<bool>("requesting_act", true);
+            }
         }  
-
-        if (RobotState::getStateOf("awaiting_flip")){ 
-            set<bool>("facing_down", !get<bool>("facing_down"));  
-        }  
+        if (RobotState::getStateOf("awaiting_flip")){  
+            if (pos == SuperStructurePosition::PRIMED){ 
+               set<bool>("facing_down", !get<bool>("facing_down"));
+            }
+        }   
 
         RobotState::manuallyModifyState("awaiting_claw_act", false); 
         RobotState::manuallyModifyState("awaiting_flip", false); 
-    } 
 
+    } 
 }
  
 void Claw::clench(bool clenched){ 

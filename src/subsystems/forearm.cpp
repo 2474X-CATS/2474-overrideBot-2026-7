@@ -4,7 +4,7 @@
 Forearm* Forearm::globalPtr = nullptr; 
 
 double Forearm::PLACE_SETPOINT = 30; 
-double Forearm::PRIMING_SETPOINT = 90;
+double Forearm::PRIMING_SETPOINT = 45;
 double Forearm::GROUND_SETPOINT = 270;
 double Forearm::STANDING_SETPOINT = 0;
 double Forearm::RELEASE_SETPOINT = 90;
@@ -137,6 +137,5 @@ void Forearm::stateControl(){
     set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING);  
 
 
-    
 }  
 

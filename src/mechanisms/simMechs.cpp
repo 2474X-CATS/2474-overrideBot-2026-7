@@ -262,24 +262,25 @@ void Console::displayActions(){
    drawLine(x, 120, x + width, 120, globalColor.black);  
    renderText("Actions", x+90, 135, globalColor.black, globalColor.rgb(100,100,100), vex::fontType::mono15); 
    drawLine(x, 140, x + width, 140, globalColor.black);
-   displayPrimingAction();
-   displayClawAction(); 
+   //displayPrimingAction();
+   //displayClawAction(); 
    displayEnableGameObject(); 
-   displaySwitchPickupMode(); 
-   displayActivateMacro();
+   //displaySwitchPickupMode(); 
+   //displayActivateMacro();
    return;
 }
 
 
 void Console::update(){ 
-    maintainPrimingAction();
+    //maintainPrimingAction();
 } 
 
 void Console::mousePressed(int mx, int my){ 
     return;
 } 
 
-void Console::mouseReleased(){ 
+void Console::mouseReleased(){  
+    /*
     if (checkClawAction()){ 
         return;
     }  
@@ -287,16 +288,18 @@ void Console::mouseReleased(){
     if (checkActivateMacro()){ 
         return;
     } 
+    */ 
 
     if (checkGOEnable()){ 
         return;
     } 
-
+    
+    /*
     if (checkSwitchUp()){ 
         return;
-    }  
+    }   
+    */
 
-   
 }
 
 

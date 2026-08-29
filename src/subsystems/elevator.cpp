@@ -30,15 +30,18 @@ void Elevator::init(){
 } 
 
 void Elevator::periodic(){  
-   double elevatorVelocity;
-   if (currentState == ElevatorState::E_HOLDING){//Stay Still
-     elevatorVelocity = 0; 
-   } else if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
+   double elevatorVelocity; 
+
+   if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
      elevatorVelocity = PRIMING_SPEED;
-   } else {  //Pursuing a setpoint
+   } else if (currentState == ElevatorState::E_PURSUING){  //Pursuing a setpoint
      TrapezoidalSetpoint motionGoal = motionProfile->generateSetpoint(Brain.Timer.time());
      elevatorVelocity = motionGoal.velocity * 1.0 * setpointDirection;
-   } 
+   } else if (currentState == ElevatorState::E_ADJUSTING){ 
+     elevatorVelocity = PRIMING_SPEED * 1; 
+   } else { 
+     elevatorVelocity = 0;
+   }
    updatePosition(elevatorVelocity);
 }  
 
@@ -95,12 +98,6 @@ void Elevator::stateControl(){
     if (currentState == ElevatorState::E_PURSUING){ //
       if (reachedSetpoint()){  
         currentState = ElevatorState::E_HOLDING; 
-        /*
-        if (get<bool>("active")){ 
-          set<bool>("active", false); 
-          Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
-        } 
-        */
       }
     } else if (currentState == ElevatorState::E_PRIMING){   
         if (!get<bool>("sensing_stack")){ 
@@ -145,31 +142,29 @@ void Elevator::stateControl(){
 }
 
 void Elevator::respondToRequests(){ 
+    if (currentState == E_PRIMING || currentState == E_PURSUING){ 
+      return;
+    } 
+
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
     
-    if (pos == SuperStructurePosition::PRIMED && currentState == ElevatorState::E_HOLDING){ 
-      
-      if (get<int>("priming_direction") != 0){ 
-        if ((Brain.Timer.time() - get<double>("lifting_timestamp")) >= 100){ //Wait half a second  
-          int stacks = (get<double>("current_height") / (STACK_HEIGHT - 2)) + copysign(1, get<int>("priming_direction"));  
-          if (stacks * STACK_HEIGHT <= MAX_HEIGHT && stacks >= 0){ 
-            set<bool>("requesting_setpoint", true);  
-            set<double>("requested_height", stacks * 1.0 * STACK_HEIGHT); 
-          }   
-          set<double>("lifting_timestamp", Brain.Timer.time());
-          raisingDirection = 0;
-        }
-      } else { 
-        set<double>("lifting_timestamp", Brain.Timer.time());  
-      } 
-
-      /*
-      raisingDirection = get<int>("priming_direction");
-      if (get<double>("current_height") >= MAX_HEIGHT){ 
-        raisingDirection = min<int>(raisingDirection, 0);
-      } else if (get<double>("current_height") <= GROUND_INTAKE_HEIGHT){ 
-        raisingDirection = max<int>(raisingDirection, 0);
-      } 
-      */
+    if (pos == SuperStructurePosition::PRIMED && Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached")){   
+      if (RobotState::getStateOf("awaiting_land")){ 
+        set<bool>("requestingSetpoint", true); 
+        set<double>("requestedHeight", GROUND_INTAKE_HEIGHT); 
+        return;
+      }  
+      if (RobotState::getStateOf("rise")){ 
+        currentState = E_ADJUSTING; 
+        raisingDirection = 1;
+      } else if (RobotState::getStateOf("fall")){ 
+        raisingDirection = -1; 
+        currentState = E_ADJUSTING; 
+      } else {   
+        currentState = E_LISTLESS;
+        raisingDirection = 0;
+      }
+    } else { 
+      raisingDirection = 0;
     }
 }
