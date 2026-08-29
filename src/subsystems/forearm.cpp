@@ -25,9 +25,9 @@ void Forearm::init(){
    motionConsts.maxAcceleration = 480; 
    motionConsts.maxVelocity = 480; 
 
-   pidConsts.P = 0.0725; 
-   pidConsts.I = 0.075;//0.1;
-   pidConsts.D = 0;//0.02;
+   pidConsts.P = 0.5; 
+   pidConsts.I = 0.0;//75;//0.1;
+   pidConsts.D = 0.025;//0.02;
    pidConsts.errorTolerance = 0.75;
 
    feedback = new pidcontroller(pidConsts, 0);  
@@ -37,20 +37,20 @@ void Forearm::init(){
    armFFConsts.kS_rot = (3.925 - 0.825) / 2;
    armFFConsts.kV_rot = 2.5;
    armFFConsts.kA_rot = 0;
-   armFFConsts.kCos = 2;//0.825 + (3.925 - 0.825) / 2;
+   armFFConsts.kCos = 2.5;//0.825 + (3.925 - 0.825) / 2;
 
    startingAngle = 270;
    setpoint = startingAngle;  
 
-   requestingSetpoint = true; 
-   requestedSetpoint = 0; 
+   //requestingSetpoint = true; 
+   //requestedSetpoint = 0; 
 
 }
 
 void Forearm::periodic(){
     double forearmOutput;
     if (currentState == ForearmState::F_HOLDING){ 
-        forearmOutput = calculateOutput(0,0);
+        forearmOutput = 0;  //= calculateOutput(0,0);
     } else { 
         TrapezoidalSetpoint outputGoal = motionProfile->generateSetpoint(Brain.Timer.time());  
         forearmOutput = calculateOutput(outputGoal.velocity, outputGoal.acceleration); 
@@ -68,15 +68,15 @@ void Forearm::stop(){
 }   
 
 double Forearm::calculateOutput(double omega, double alpha){  
-    Telemetry::inst.placeValueAt<double>(omega, "graph", "desired_velocity");  
-    Telemetry::inst.placeValueAt<double>(getVelocity(), "graph", "actual_velocity"); 
+    Telemetry::inst.placeValueAt<double>(angleDifference(getCurrentAngle(), setpoint), "graph", "desired_velocity");  
+    Telemetry::inst.placeValueAt<double>(0, "graph", "actual_velocity"); 
     double ffOutput = armFFConsts.calculate(toRadians(getCurrentAngle()), 0,0/*omega / 360, alpha / 360*/);  
     double pidOutput = feedback->calculate(angleDifference(getCurrentAngle(), setpoint), Brain.Timer.time()); 
     
     double output = ffOutput + pidOutput; 
 
-    pidOutput = max<double>(output, -12);  
-    pidOutput = min<double>(output, 12);
+    output = max<double>(output, -12);  
+    output = min<double>(output, 12);
   
     /*
     if (currentState == ForearmState::F_PURSUING){ 
@@ -85,7 +85,7 @@ double Forearm::calculateOutput(double omega, double alpha){
         pidOutput = feedback->calculate(angleDifference(getCurrentAngle(), setpoint), Brain.Timer.time());  
     } 
         */
-    return pidOutput + ffOutput;
+    return output;
 }
 
 double Forearm::getCurrentAngle(){ 
@@ -124,12 +124,6 @@ void Forearm::stateControl(){
     if (currentState == ForearmState::F_PURSUING){  
         if (reachedSetpoint()){ 
           currentState = ForearmState::F_HOLDING;   
-          /*
-          if (setpoint == 45){ 
-            requestedSetpoint = 0; 
-            requestingSetpoint = true;
-          }  
-          */
 
           if (get<bool>("active")){ 
             set<bool>("active", false); 
@@ -143,7 +137,7 @@ void Forearm::stateControl(){
           } 
         }
     }    
-    /*
+    
     if (currentState == ForearmState::F_HOLDING) {     
         SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position")); 
         bool canTransition = Telemetry::inst.getValueAt<bool>("ss_manager", "can_transition"); 
@@ -178,7 +172,7 @@ void Forearm::stateControl(){
               break;
         }  
     }    
-    */
+    
 
     set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING);  
 }  
