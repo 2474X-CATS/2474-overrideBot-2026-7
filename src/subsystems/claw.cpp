@@ -1,24 +1,21 @@
 #include "claw.h" 
 
 Claw* Claw::globalPtr = nullptr;
-double Claw::MAXIMUM_TOLERABLE_DISTANCE = 50;
-
+double Claw::MAXIMUM_TOLERABLE_DISTANCE = 0.0;
 
 Claw& Claw::getObject(){ 
     return *globalPtr;
-} 
+}
 
 void Claw::init(){ 
-    return;
-}  
+     set<bool>("senses_object", false);
+}
 
-void Claw::periodic(){ 
-   clench(get<bool>("clenched")); 
-   flip(get<bool>("facing_down")); 
+void Claw::periodic(){  
+    return;
 } 
 
 void Claw::updateTelemetry(){   
-   set<bool>("senses_object", sensesObject());
    stateControl(); 
    if (!RobotState::getStateOf("in_autonomous")){ 
      respondToRequests();
@@ -26,14 +23,12 @@ void Claw::updateTelemetry(){
 }  
 
 void Claw::stop(){ 
-    clench(false);
+    return;
 } 
 
-bool Claw::sensesObject(){ 
-    return objectDetector.objectDistance(vex::distanceUnits::mm) <= MAXIMUM_TOLERABLE_DISTANCE; //If the claw is picking something up basically [Using sensors]
-}
 
-void Claw::stateControl(){ 
+void Claw::stateControl(){  
+
    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
    
    bool still = Telemetry::inst.getValueAt<bool>("forearm","at_setpoint") && Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint"); 
@@ -46,32 +41,37 @@ void Claw::stateControl(){
      }
    } else {   
     if (!still){  
-       set<bool>("clenched", true);
-       set<bool>("requesting_act", false); 
-
-       if (pos == SuperStructurePosition::STANDING){ 
-         set<bool>("facing_down", true);
-       } else { 
+       set<bool>("clenched", true); 
+       set<bool>("requesting_act", false);      
+       if (pos == SuperStructurePosition::GROUND){ 
          set<bool>("facing_down", false);
-       }  
-       
-    } else {    
-        if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING){ 
+       } 
+    } else {  
+        if (pos == SuperStructurePosition::STANDING){ 
+          set<bool>("facing_down", true);
+        } 
+
+        if (pos == SuperStructurePosition::PRIMED && get<bool>("senses_object")){ 
+          set<bool>("clenched", true);
+        } else { 
           set<bool>("clenched", false);
         } 
 
+
         if (get<bool>("requesting_act")){ 
           set<bool>("requesting_act", false);   
-          if (sensesObject()){
+          if (get<bool>("senses_object")){
             set<bool>("clenched", !get<bool>("clenched")); 
           }
-        }
+        } 
+
     }
       
    }   
 }
 
 void Claw::respondToRequests(){  
+
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
     bool still = Telemetry::inst.getValueAt<bool>("ss_manager","setpoints_reached");  
 
@@ -91,34 +91,12 @@ void Claw::respondToRequests(){
         RobotState::manuallyModifyState("awaiting_flip", false); 
 
     } 
-
 }
  
-void Claw::clench(bool clenched){
-    claw.set(!clenched);
+void Claw::clench(bool clenched){ 
+    return;
 } 
 
-void Claw::flip(bool facingDown){ 
-    if (RobotState::getStateOf("inverted")){ 
-      facingDown = !facingDown;
-    } 
-    wrist.set(facingDown);
-} 
-
-//---------------------------------------------------------------------- 
-
-void RunClaw::start(){ 
-  return;
-} 
-
-void RunClaw::periodic(){ 
-  clawRef.periodic();
-} 
-
-bool RunClaw::isOver(){ 
-  return false;
-} 
-
-void RunClaw::end(){ 
-  return;
+void Claw::flip(bool facingDown){   
+    return;
 }
