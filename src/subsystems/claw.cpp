@@ -1,21 +1,23 @@
 #include "claw.h" 
 
 Claw* Claw::globalPtr = nullptr;
-double Claw::MAXIMUM_TOLERABLE_DISTANCE = 0.0;
+double Claw::MAXIMUM_TOLERABLE_DISTANCE = 50;
 
 Claw& Claw::getObject(){ 
     return *globalPtr;
 }
 
 void Claw::init(){ 
-     set<bool>("senses_object", false);
+     //set<bool>("senses_object", objectDetector.);
 }
 
 void Claw::periodic(){  
-    return;
+    clench(get<bool>("clenched"));  
+    flip(get<bool>("facing_down")); 
 } 
 
-void Claw::updateTelemetry(){   
+void Claw::updateTelemetry(){    
+   set<bool>("senses_object", objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE); 
    stateControl(); 
    if (!RobotState::getStateOf("in_autonomous")){ 
      respondToRequests();
@@ -57,7 +59,6 @@ void Claw::stateControl(){
           set<bool>("clenched", false);
         } 
 
-
         if (get<bool>("requesting_act")){ 
           set<bool>("requesting_act", false);   
           if (get<bool>("senses_object")){
@@ -94,9 +95,9 @@ void Claw::respondToRequests(){
 }
  
 void Claw::clench(bool clenched){ 
-    return;
+    claw.set(!clenched);
 } 
 
 void Claw::flip(bool facingDown){   
-    return;
+    wrist.set(facingDown);
 }

@@ -31,11 +31,9 @@ double pidcontroller::calculate(double position, double timestamp)
    double dt = (timestamp - lastTimestamp) / 1000;
    lastTimestamp = timestamp;
    double error = setpoint - position; 
-   if (atSetpoint(position)){ 
-    integral = 0;
-   } else { 
-    integral += error * dt;
-   }
+
+   integral += error * dt;
+   
    if (iLimit > 0)
    {
       if (integral > iLimit)

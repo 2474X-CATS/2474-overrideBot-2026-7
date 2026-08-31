@@ -56,12 +56,6 @@ void RobotState::updateRegular()
    manuallyModifyState("rise", Controller1.ButtonUp.pressing()); 
    manuallyModifyState("fall", Controller1.ButtonDown.pressing()); 
    
-   if (Telemetry::inst.getValueAt<bool>("forearm", "at_setpoint")){ 
-      setVibrationCode("..");
-   } else { 
-      disableVibrations();
-   } 
-   
    if (Controller1.ButtonR1.pressing()){ 
       manuallyModifyState("k_claw_await", true);
    } else if (getStateOf("k_claw_await")){ 

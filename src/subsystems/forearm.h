@@ -28,7 +28,9 @@ class Forearm : public Subsystem {
        double startingAngle;
 
        bool requestingSetpoint = false; 
-       double requestedSetpoint;
+       double requestedSetpoint; 
+
+       static double KCOS; 
 
        double angularDeadZones[2];   
        
@@ -41,10 +43,10 @@ class Forearm : public Subsystem {
        pidcontroller* feedback = nullptr; //Rest done with feedback
        PIDConstants pidConsts;
 
-       TrapezoidConstants motionConsts;
-       TrapezoidalMotionProfile* motionProfile = nullptr;
+       //TrapezoidConstants motionConsts;
+       //TrapezoidalMotionProfile* motionProfile = nullptr;
         
-       double calculateOutput(double omega, double alpha); //velocity and acceleration but for angles
+       double getOutput(); //velocity and acceleration but for angles
        
        double getCurrentAngle(); 
        double getVelocity();
