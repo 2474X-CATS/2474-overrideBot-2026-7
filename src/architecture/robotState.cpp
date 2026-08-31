@@ -62,7 +62,7 @@ void RobotState::updateRegular()
    } else if (getStateOf("k_claw_await")){ 
       manuallyModifyState("k_claw_await", false);
       manuallyModifyState("awaiting_claw_act", true);
-   } 
+   }
 
    if (Controller1.ButtonX.pressing()){ 
       manuallyModifyState("k_score", true);
@@ -72,17 +72,27 @@ void RobotState::updateRegular()
    } 
 
    if (Controller1.ButtonL1.pressing()){ 
-      manuallyModifyState("switch_score_mode", true); 
+      manuallyModifyState("switch_score_mode", true);  
+      /*
       if (Telemetry::inst.getValueAt<int>("ss_manager", "pickup_position") == SuperStructurePosition::GROUND){ 
          setVibrationCode("..");
       } else {
          setVibrationCode("."); 
-      }
+      } 
+      */
    } else if (getStateOf("switch_score_mode")){ 
       manuallyModifyState("switch_score_mode", false);  
-      disableVibrations(); 
+      //disableVibrations(); 
       Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "pickup_switch_requested");
-   }
+   }  
+   
+   /*
+   if (Telemetry::inst.getValueAt<bool>("forearm", "hold") || Telemetry::inst.getValueAt<bool>("elevator", "hold")){ 
+         setVibrationCode("..");
+   } else {
+         disableVibrations();
+   } 
+   */
 
 };
 

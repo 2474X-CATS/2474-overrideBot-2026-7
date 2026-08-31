@@ -43,7 +43,7 @@ class Elevator : public Subsystem {
        TrapezoidalMotionProfile* motionProfile = nullptr; //When the robot has defined setpoints it needs to reach
        TrapezoidConstants motionConsts; 
        
-       bool reachedSetpoint(); 
+       bool reachedSetpoint();  
 
        void stateControl();
        void respondToRequests();  
@@ -68,7 +68,8 @@ class Elevator : public Subsystem {
             (EntrySet){"sensing_stack", EntryType::BOOL},
             (EntrySet){"current_height", EntryType::DOUBLE},
             (EntrySet){"sniper_score_enabled", EntryType::BOOL}, 
-            (EntrySet){"lifting_timestamp", EntryType::DOUBLE}
+            (EntrySet){"lifting_timestamp", EntryType::DOUBLE}, 
+            (EntrySet){"hold", EntryType::BOOL}
          }
        )
        { 

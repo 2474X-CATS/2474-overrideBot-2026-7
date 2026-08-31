@@ -75,7 +75,7 @@ int main()
   
   Elevator elevator = Elevator();
   Forearm forearm = Forearm(); 
-  Claw claw = Claw(); 
+  Claw claw = Claw();
   
   //-------------------------------------------------------
 

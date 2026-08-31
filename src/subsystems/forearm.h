@@ -42,7 +42,7 @@ class Forearm : public Subsystem {
 
        int setpointDirection; 
 
-       bool reachedSetpoint();  
+       bool reachedSetpoint();   
 
        ForearmState currentState = ForearmState::F_HOLDING; 
        
@@ -61,7 +61,8 @@ class Forearm : public Subsystem {
                (EntrySet){"task_id", EntryType::INT}, 
                (EntrySet){"active", EntryType::BOOL}, 
                (EntrySet){"at_setpoint", EntryType::BOOL}, 
-               (EntrySet){"current_angle", EntryType::DOUBLE}
+               (EntrySet){"current_angle", EntryType::DOUBLE}, 
+               (EntrySet){"hold", EntryType::BOOL}
             }
          )
          { 

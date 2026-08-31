@@ -118,12 +118,24 @@ double ClawMech::getOutwardAngle(){
     return angle;
 }
 
-double ClawMech::getPivotX(){ 
-    return foreRef.getPivotX() + (ForearmMech::FOREARM_LENGTH * cos(toRadians(foreRef.getAngle()))) ;
+double ClawMech::getPivotX(){  
+    double offset; 
+    if (Telemetry::inst.getValueAt<bool>("claw", "facing_down")){ 
+        offset = 0.25;
+    } else {
+        offset = -0.25;
+    }
+    return foreRef.getPivotX() + (ForearmMech::FOREARM_LENGTH * cos(toRadians(foreRef.getAngle()) + offset)) ;
 } 
 
-double ClawMech::getPivotY(){ 
-    return foreRef.getPivotY() + (ForearmMech::FOREARM_LENGTH * sin(toRadians(foreRef.getAngle())));
+double ClawMech::getPivotY(){  
+    double offset; 
+    if (Telemetry::inst.getValueAt<bool>("claw", "facing_down")){ 
+        offset = 0.25;
+    } else {
+        offset = -0.25;
+    }
+    return foreRef.getPivotY() + (ForearmMech::FOREARM_LENGTH * sin(toRadians(foreRef.getAngle()) + offset));
 }
 
 void ClawMech::draw(){   
@@ -178,11 +190,11 @@ void ClawMech::draw(){
 
     Brain.Screen.setPenWidth(10); 
     
-    drawLine(x1, y1, x2, y2, globalColor.black);  
-    drawLine(x1, y1, x3, y3, globalColor.black);  
-    drawLine(x2, y2, x4, y4, globalColor.black); 
-    drawLine(x4, y4, x5, y5, globalColor.black); 
-    drawLine(x3, y3, x6, y6, globalColor.black);
+    drawLine(x1, y1, x2, y2, globalColor.rgb(150, 150, 150));  
+    drawLine(x1, y1, x3, y3, globalColor.rgb(150, 150, 150));  
+    drawLine(x2, y2, x4, y4, globalColor.rgb(150, 150, 150)); 
+    drawLine(x4, y4, x5, y5, globalColor.rgb(150, 150, 150)); 
+    drawLine(x3, y3, x6, y6, globalColor.rgb(150, 150, 150));
    
     Brain.Screen.setPenWidth(1);    
 
@@ -326,7 +338,6 @@ void Console::displayPrimingAction(){
  
 void Console::displayClawAction(){  
     drawRectangle(x + width / 3 * 2, 140, width - (width / 3 * 2), 30, globalColor.rgb(50,50,50));  
-    
     SuperStructurePosition currentPos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position")); 
     bool rested = Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached"); 
     bool sensesObject = Telemetry::inst.getValueAt<bool>("claw", "senses_object"); 

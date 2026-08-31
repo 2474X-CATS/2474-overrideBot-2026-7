@@ -41,26 +41,31 @@ void Claw::stateControl(){
      }
    } else {   
     if (!still){  
-       set<bool>("clenched", true);
-       set<bool>("requesting_act", false); 
-
-       if (pos == SuperStructurePosition::STANDING){ 
-         set<bool>("facing_down", true);
-       } else { 
+       set<bool>("clenched", true); 
+       set<bool>("requesting_act", false);      
+       if (pos == SuperStructurePosition::GROUND){ 
          set<bool>("facing_down", false);
-       }  
-       
-    } else {    
-        if (pos == SuperStructurePosition::GROUND || pos == SuperStructurePosition::STANDING){ 
+       } 
+
+    } else {  
+        if (pos == SuperStructurePosition::STANDING){ 
+          set<bool>("facing_down", true);
+        } 
+
+        if (pos == SuperStructurePosition::PRIMED && get<bool>("senses_object")){ 
+          set<bool>("clenched", true);
+        } else { 
           set<bool>("clenched", false);
         } 
+
 
         if (get<bool>("requesting_act")){ 
           set<bool>("requesting_act", false);   
           if (get<bool>("senses_object")){
             set<bool>("clenched", !get<bool>("clenched")); 
           }
-        }
+        } 
+
     }
       
    }   

@@ -4,7 +4,7 @@
 Forearm* Forearm::globalPtr = nullptr; 
 
 double Forearm::PLACE_SETPOINT = 30; 
-double Forearm::PRIMING_SETPOINT = 45;
+double Forearm::PRIMING_SETPOINT = 90;
 double Forearm::GROUND_SETPOINT = 270;
 double Forearm::STANDING_SETPOINT = 0;
 double Forearm::RELEASE_SETPOINT = 90;
@@ -55,7 +55,7 @@ bool Forearm::reachedSetpoint(){
   return (Brain.Timer.time() - motionProfile->getStartTime()) >= motionProfile->getTotalDuration();
 }
 
-void Forearm::setSetpoint(double setpoint, bool inverted){ 
+void Forearm::setSetpoint(double setpoint, bool inverted){  
   double currentAngle = get<double>("current_angle"); 
 
   if (inverted){ 
@@ -84,11 +84,17 @@ void Forearm::stateControl(){
     if (requestingSetpoint){  
       requestingSetpoint = false;
       setSetpoint(requestedSetpoint, RobotState::getStateOf("inverted")); 
-    } 
+    }  
+
+    if (get<bool>("hold")){ 
+      if (Telemetry::inst.getValueAt<double>("elevator", "current_height") > 90){ 
+         set<bool>("hold", false);
+      }
+    }
 
     if (currentState == ForearmState::F_PURSUING){  
         if (reachedSetpoint()){ 
-          currentState = ForearmState::F_HOLDING; 
+          currentState = ForearmState::F_HOLDING;
           if (get<bool>("active")){ 
             set<bool>("active", false); 
             set<int>("task_id", get<int>("task_id") + 1); 
@@ -100,24 +106,19 @@ void Forearm::stateControl(){
             }
           }  
         } 
-    } else if (currentState == ForearmState::F_HOLDING) {   
-        bool canTransition = Telemetry::inst.getValueAt<bool>("ss_manager", "can_transition"); 
-        switch (pos){  
+    } else if (currentState == ForearmState::F_HOLDING && !get<bool>("hold") && Telemetry::inst.getValueAt<bool>("ss_manager", "can_transition")) {   
+        switch (pos){
             case PRIMED:
               requestingSetpoint = true; 
               requestedSetpoint = PRIMING_SETPOINT;
               break;
-            case GROUND:  
-              if (canTransition){ 
-                requestingSetpoint = true; 
-                requestedSetpoint = GROUND_SETPOINT;
-              } 
+            case GROUND: 
+              requestingSetpoint = true;
+              requestedSetpoint = GROUND_SETPOINT;
               break;
-            case STANDING:   
-              if (canTransition){ 
-                requestingSetpoint = true; 
-                requestedSetpoint = STANDING_SETPOINT;
-              } 
+            case STANDING:
+              requestingSetpoint = true; 
+              requestedSetpoint = STANDING_SETPOINT;
               break; 
             case AUTO: 
               if (get<bool>("active")){  
@@ -134,8 +135,8 @@ void Forearm::stateControl(){
         }  
     }  
 
-    set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING);  
-
+    set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING && !get<bool>("hold")); 
+    
 
 }  
 

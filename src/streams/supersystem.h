@@ -16,17 +16,24 @@ class SuperSystem : public DataStream {
           (EntrySet){"task_completed", EntryType::BOOL}, //Is the macro done running?  
           (EntrySet){"pickup_position", EntryType::INT}, 
           (EntrySet){"can_transition", EntryType::BOOL}, 
-          (EntrySet){"distance_backed", EntryType::DOUBLE}
+          (EntrySet){"distance_backed", EntryType::DOUBLE}, 
+          (EntrySet){"pickup_switch_requested", EntryType::BOOL}, 
+          //(EntrySet){"requesting_claw_action", EntryType::BOOL}
         }
        ){}; 
 
        void refreshData() override; 
 
-       void init() override;   
+       void init() override; 
+
 
     private:  
-       static double BACKUP_DISTANCE;
-       void resetTaskProgress();
+       static double BACKUP_DISTANCE;  
+       static double DANGER_ZONE_HEIGHT;
+
+       void resetTaskProgress();  
+
+       void setPosition(int pos); 
 
 
 };
