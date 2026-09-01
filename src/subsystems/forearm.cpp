@@ -33,7 +33,7 @@ void Forearm::periodic(){
     } else { 
         TrapezoidalSetpoint outputGoal = motionProfile->generateSetpoint(Brain.Timer.time());  
         forearmVelocity = outputGoal.velocity * setpointDirection; 
-    }  
+    } 
     updatePosition(forearmVelocity);
 }
 
@@ -43,7 +43,7 @@ void Forearm::updateTelemetry(){
 
 void Forearm::stop(){ 
     return;
-}   
+}
 
 void Forearm::updatePosition(double velocity){  
     double frameTranslation = velocity * (20.0/1000); 
@@ -99,8 +99,9 @@ void Forearm::stateControl(){
             set<bool>("active", false); 
             set<int>("task_id", get<int>("task_id") + 1); 
             if (get<int>("task_id") == 2){ 
-              Telemetry::inst.placeValueAt<bool>(true, "ss_manager","task_completed"); 
-              set<int>("task_id", 0);  
+              //Telemetry::inst.placeValueAt<bool>(true, "ss_manager","task_completed");  
+              Telemetry::inst.placeValueAt<bool>(true, "elevator", "active");
+              set<int>("task_id", 0); 
             } else { 
               Telemetry::inst.placeValueAt(true, "claw","active"); 
             }

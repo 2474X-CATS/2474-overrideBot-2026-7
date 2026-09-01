@@ -29,7 +29,6 @@ class SuperSystem : public DataStream {
 
     private:  
        static double BACKUP_DISTANCE;  
-       static double DANGER_ZONE_HEIGHT;
 
        void resetTaskProgress();  
 

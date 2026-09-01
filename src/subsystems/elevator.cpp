@@ -107,8 +107,18 @@ void Elevator::stateControl(){
     } else if (currentState == ElevatorState::E_PRIMING){   
         if (!get<bool>("sensing_stack")){
           currentState = ElevatorState::E_HOLDING; 
-          set<bool>("active", false);  
-          Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
+          set<bool>("active", false);   
+          set<int>("task_id", get<int>("task_id") + 1); 
+
+          if (get<int>("task_id") == 1){ 
+             Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
+          } else { 
+             Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "task_completed");    
+             set<int>("task_id", 0);
+             set<bool>("requesting_setpoint", true);
+             set<double>("requested_height", GROUND_INTAKE_HEIGHT);
+          }
+          
         }
     } else if (!get<bool>("hold")) {
         switch (pos){
@@ -134,6 +144,9 @@ void Elevator::stateControl(){
                if (get<bool>("sniper_score_enabled")){ 
                    setSetpoint(get<double>("priming_setpoint")); 
                    set<bool>("sniper_score_enabled", false);
+               } else if (!Telemetry::inst.getValueAt<bool>("claw", "senses_object")){ 
+                   set<bool>("requesting_setpoint", true); 
+                   set<double>("requested_height", GROUND_INTAKE_HEIGHT);  
                }
                break;
             default: 
@@ -153,7 +166,7 @@ void Elevator::respondToRequests(){
 
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
     
-    if (pos == SuperStructurePosition::PRIMED && Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached")){   
+    if (pos == SuperStructurePosition::PRIMED && Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached") && Telemetry::inst.getValueAt<bool>("claw", "senses_object")){   
       if (RobotState::getStateOf("awaiting_land")){ 
         set<bool>("requesting_setpoint", true); 
         set<double>("requested_height", GROUND_INTAKE_HEIGHT); 

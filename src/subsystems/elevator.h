@@ -69,7 +69,8 @@ class Elevator : public Subsystem {
             (EntrySet){"current_height", EntryType::DOUBLE},
             (EntrySet){"sniper_score_enabled", EntryType::BOOL}, 
             (EntrySet){"lifting_timestamp", EntryType::DOUBLE}, 
-            (EntrySet){"hold", EntryType::BOOL}
+            (EntrySet){"hold", EntryType::BOOL}, 
+            (EntrySet){"task_id", EntryType::INT}
          }
        )
        { 
