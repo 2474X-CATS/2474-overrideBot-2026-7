@@ -2,7 +2,7 @@
 double SuperSystem::BACKUP_DISTANCE = 100;
 
 void SuperSystem::init(){ 
-    set<int>("pickup_position", SuperStructurePosition::STANDING); 
+    set<int>("pickup_position", SuperStructurePosition::GROUND); 
     set<int>("position", get<int>("pickup_position"));
     //set<int>("last_position", get<int>("position"));
     set<bool>("can_transition", true); 
@@ -71,7 +71,7 @@ void SuperSystem::refreshData(){
             case AUTO:  
                 if (get<bool>("task_completed")){  //Must have another indicator that we are okay to drop (Back up to a certain extent)
                   set<int>("position", get<int>("pickup_position")); 
-                  set<bool>("can_transition", false);
+                  //set<bool>("can_transition", false);
                 }  
                 break; 
             default: 

@@ -42,13 +42,13 @@ void Drivebase::stop(){
 } 
 
 void Drivebase::manualDrive(double voltageDrive, double voltageTurn){ 
-    leftMotors.spin(vex::directionType::rev, voltageDrive + voltageTurn, vex::voltageUnits::volt); 
+    leftMotors.spin(vex::directionType::fwd, voltageDrive + voltageTurn, vex::voltageUnits::volt); 
     rightMotors.spin(vex::directionType::fwd, voltageDrive - voltageTurn, vex::voltageUnits::volt);
 } 
 
 void Drivebase::arcadeDrive(double speed, double rotation){   
     speed *= DRIVE_SENSITIVITY / 100 * 12.0; 
-    rotation *= TURN_SENSITIVITY / 100 * 12.0; 
+    rotation *= TURN_SENSITIVITY / 100 * 12.0;
     
     speed = std::min<double>(std::min<double>(speed, lastLinearVoltage + ((20/1000.0) * ACCELERATION_LIMIT_LIN)), MAX_LIN_SPEED);
     speed = std::max<double>(std::max<double>(speed, lastLinearVoltage - ((20/1000.0) * ACCELERATION_LIMIT_LIN)), -MAX_LIN_SPEED); 
@@ -56,7 +56,7 @@ void Drivebase::arcadeDrive(double speed, double rotation){
     rotation = std::min<double>(std::min<double>(rotation, lastAngularVoltage + ((20/1000.0) * ACCELERATION_LIMIT_ANG)), MAX_ANG_SPEED);
     rotation = std::max<double>(std::max<double>(rotation, lastAngularVoltage - ((20/1000.0) * ACCELERATION_LIMIT_ANG)), -MAX_ANG_SPEED); 
    
-    leftMotors.spin(vex::directionType::rev, (speed + rotation), vex::voltageUnits::volt); 
+    leftMotors.spin(vex::directionType::fwd, (speed + rotation), vex::voltageUnits::volt); 
     rightMotors.spin(vex::directionType::fwd, (speed - rotation), vex::voltageUnits::volt);  
 
     lastAngularVoltage = rotation; 
@@ -64,7 +64,6 @@ void Drivebase::arcadeDrive(double speed, double rotation){
 } 
 
 ///-------------------------------------------------------------------------------------- 
-
 
 double DriveForward::MOTION_CONSTANTS_MAX_VELO = (((Drivebase::MAX_RPM * (2 * Drivebase::WHEEL_RADIUS_MM * M_PI)) / 60.0)) * 0.85; //0.75; 
 double DriveForward::MOTION_CONSTANTS_MAX_ACCEL = DriveForward::MOTION_CONSTANTS_MAX_VELO / 0.5;

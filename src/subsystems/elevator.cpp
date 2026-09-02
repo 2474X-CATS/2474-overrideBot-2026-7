@@ -12,8 +12,8 @@ double Elevator::STACK_HEIGHT = 100;
 
 double Elevator::PRIMING_SPEED = 12;
 
-double Elevator::MINIMUM_ALIGNER_DISTANCE = 0.0;  
-double Elevator::ALIGNER_ERROR_TOLERANCE = 0.0;  
+double Elevator::MINIMUM_ALIGNER_DISTANCE = ROBOT_LENGTH_MM/2 * 1.5;  
+double Elevator::ALIGNER_ERROR_TOLERANCE = 10;  
 
 double Elevator::SPOOL_DIAMETER = (Elevator::MAX_HEIGHT - Elevator::LEVELED_HEIGHT) / (2.534 * M_PI);
 
@@ -57,7 +57,8 @@ void Elevator::periodic(){
 
 void Elevator::updateTelemetry(){     
     // Update status of stack sight   
-    set<bool>("sensing_stack", getPosition() < 750);//fabs(primingSensor.objectDistance(vex::distanceUnits::mm) - MINIMUM_ALIGNER_DISTANCE) < ALIGNER_ERROR_TOLERANCE);
+    set<bool>("sensing_stack", primingSensor.objectDistance(vex::distanceUnits::mm) < MINIMUM_ALIGNER_DISTANCE);  
+    Brain.Screen.printAt(20, 120, "Detected distance: %.2f", primingSensor.objectDistance(vex::distanceUnits::mm));
     set<double>("percentage_extended", (getPosition() - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT));
     
     stateControl();
@@ -103,7 +104,7 @@ void Elevator::stateControl(){
       }
       requestingSetpoint = false;
     }
-    /* Uncomment when forearm tuned better
+    
     if (currentState == ElevatorState::E_PURSUING){ //
       if (reachedSetpoint()){  
         currentState = ElevatorState::E_HOLDING; 
@@ -145,8 +146,8 @@ void Elevator::stateControl(){
                break;
         }
     }   
-   */
-   set<bool>("at_setpoint", currentState != ElevatorState::E_PURSUING && currentState != ElevatorState::E_PRIMING);   
+   
+    set<bool>("at_setpoint", currentState != ElevatorState::E_PURSUING && currentState != ElevatorState::E_PRIMING);   
 }
 
 void Elevator::respondToRequests(){   

@@ -81,6 +81,12 @@ void RobotState::updateRegular()
       manuallyModifyState("switch_score_mode", false);  
       disableVibrations(); 
       Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "pickup_switch_requested");
+   } 
+
+   if (Telemetry::inst.getValueAt<bool>("elevator", "sensing_stack")){ 
+      setVibrationCode("."); 
+   } else { 
+      disableVibrations(); 
    }
 
 };

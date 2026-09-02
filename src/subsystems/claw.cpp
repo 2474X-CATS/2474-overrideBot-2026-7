@@ -13,10 +13,10 @@ void Claw::init(){
 
 void Claw::periodic(){  
     clench(get<bool>("clenched"));  
-    flip(get<bool>("facing_down")); 
+    //flip(get<bool>("facing_down")); 
 } 
 
-void Claw::updateTelemetry(){    
+void Claw::updateTelemetry(){
    set<bool>("senses_object", objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE); 
    stateControl(); 
    if (!RobotState::getStateOf("in_autonomous")){ 

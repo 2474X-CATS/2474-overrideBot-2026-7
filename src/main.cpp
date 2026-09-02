@@ -88,20 +88,20 @@ int main()
 {
 
   vexcodeInit();
-  
+  /* 
   Telemetry::inst.registerSubtable(  
     "graph", 
     { 
       (EntrySet){"actual_velocity", EntryType::DOUBLE}, 
       (EntrySet){"desired_velocity", EntryType::DOUBLE}
     }
-  ); 
+  );
+  */ 
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
-     
-  //Odometry odom = Odometry(); 
-  //Drivebase drive = Drivebase(); 
+  Odometry odom = Odometry();
+  Drivebase drive = Drivebase();
   SuperSystem ss = SuperSystem();
   Elevator elevator = Elevator();
   Forearm forearm = Forearm();
@@ -112,6 +112,6 @@ int main()
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
-  thread graphics = thread(graphTableData); 
+  // thread graphics = thread(graphTableData); 
   testDrive();
 }

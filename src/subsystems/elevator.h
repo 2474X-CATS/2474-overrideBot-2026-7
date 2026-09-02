@@ -88,13 +88,13 @@ class Elevator : public Subsystem {
        lifter2(vex::motor(vex::PORT10, vex::ratio18_1)), 
        lift(vex::motor_group(lifter1, lifter2)), 
        rot(vex::rotation(vex::PORT2)), 
-       primingSensor(vex::distance(vex::PORT20))
+       primingSensor(vex::distance(vex::PORT5))
        { 
         globalPtr = this;
        };
        
        void init() override; 
-       void periodic() override; 
+       void periodic() override;
        void updateTelemetry() override; 
        void stop() override;  
       

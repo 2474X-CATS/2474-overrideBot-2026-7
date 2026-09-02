@@ -3,11 +3,11 @@
 
 Forearm* Forearm::globalPtr = nullptr; 
 
-double Forearm::PLACE_SETPOINT = 0; 
-double Forearm::PRIMING_SETPOINT = 45; 
-double Forearm::GROUND_SETPOINT = 270; 
-double Forearm::STANDING_SETPOINT = 0;   
-double Forearm::RELEASE_SETPOINT = 60; 
+double Forearm::PLACE_SETPOINT = 30;
+double Forearm::PRIMING_SETPOINT = 85;
+double Forearm::GROUND_SETPOINT = 270;
+double Forearm::STANDING_SETPOINT = 0;
+double Forearm::RELEASE_SETPOINT = 60;
 
 double Forearm::KCOS = 1.45; 
 
@@ -22,7 +22,7 @@ void Forearm::init(){
    angularDeadZones[0] = 0;
    angularDeadZones[1] = 0;
 
-   pidConsts.P = 0.225; 
+   pidConsts.P = 0.225;
    pidConsts.I = 0.02;
    pidConsts.D = 0.0075;
    pidConsts.errorTolerance = 3;
@@ -32,7 +32,7 @@ void Forearm::init(){
    feedback->setLastTimestamp(Brain.Timer.time());  
 
    startingAngle = 270;
-   setpoint = startingAngle;  
+   setpoint = startingAngle;
 }
 
 void Forearm::periodic(){
@@ -40,7 +40,7 @@ void Forearm::periodic(){
 } 
 
 void Forearm::updateTelemetry(){   
-    Brain.Screen.printAt(20, 150, "Current angle: %.2f", getCurrentAngle()); 
+    //Brain.Screen.printAt(20, 150, "Current angle: %.2f", getCurrentAngle()); 
     stateControl();  
 } 
 
