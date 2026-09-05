@@ -38,7 +38,7 @@ class Elevator : public Subsystem {
 
        static double SPOOL_DIAMETER;
 
-       int raisingDirection;
+       int raisingDirection = 0;
 
        ElevatorState currentState = ElevatorState::E_HOLDING;
        
@@ -81,7 +81,9 @@ class Elevator : public Subsystem {
             (EntrySet){"at_setpoint", EntryType::BOOL}, //Achieved setpoint or no setpoint? 
             (EntrySet){"sensing_stack", EntryType::BOOL},
             (EntrySet){"sniper_score_enabled", EntryType::BOOL},  
-            (EntrySet){"percentage_extended", EntryType::DOUBLE}
+            (EntrySet){"percentage_extended", EntryType::DOUBLE}, 
+            (EntrySet){"current_height", EntryType::DOUBLE},
+            (EntrySet){"hold", EntryType::BOOL}
          }
        ),
        lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 

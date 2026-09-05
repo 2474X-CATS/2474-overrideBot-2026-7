@@ -14,8 +14,8 @@ class SuperSystem : public DataStream {
           (EntrySet){"position", EntryType::INT}, //The position state the robot is in [AUTO when a macro]
           (EntrySet){"setpoints_reached", EntryType::BOOL}, //Is the elevator and forearm finished pursuing?
           (EntrySet){"task_completed", EntryType::BOOL}, //Is the macro done running?  
-          (EntrySet){"pickup_position", EntryType::INT}, 
-          (EntrySet){"can_transition", EntryType::BOOL}, 
+          //(EntrySet){"pickup_position", EntryType::INT}, 
+          //(EntrySet){"can_transition", EntryType::BOOL}, 
           (EntrySet){"distance_backed", EntryType::DOUBLE}, 
           (EntrySet){"pickup_switch_requested", EntryType::BOOL}
         }
@@ -25,9 +25,11 @@ class SuperSystem : public DataStream {
 
        void init() override;   
 
-    private:  
-       static double BACKUP_DISTANCE;
-       void resetTaskProgress();
+    private: 
+       
+       void setPosition(int pos);
+       //static double BACKUP_DISTANCE;
+       //void resetTaskProgress();
 };
 
 #endif 

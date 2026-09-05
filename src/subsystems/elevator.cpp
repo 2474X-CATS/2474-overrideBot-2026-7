@@ -1,9 +1,10 @@
 #include "elevator.h" 
+#include "../utilities/functools.h"
 
 Elevator* Elevator::globalPtr = nullptr;
 
 double Elevator::LEVELED_HEIGHT = (17.678 + 2.75) * 25.4; 
-double Elevator::GROUND_INTAKE_HEIGHT = LEVELED_HEIGHT + 40;  
+double Elevator::GROUND_INTAKE_HEIGHT = LEVELED_HEIGHT + 70;  
        
 double Elevator::MAX_HEIGHT = (42 * 25.4);
 
@@ -42,25 +43,22 @@ void Elevator::stop(){
 }
 
 void Elevator::periodic(){
-   double elevatorOutput;
+   double elevatorOutput = 0;
    if (currentState == ElevatorState::E_HOLDING || currentState == ElevatorState::E_PURSUING){//Stay Still
      elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time()); 
    } else if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
      elevatorOutput = PRIMING_SPEED;
    } else if (currentState == ElevatorState::E_ADJUSTING){ 
      elevatorOutput = PRIMING_SPEED * raisingDirection;
-   } else {  //Pursuing a setpoint
-     elevatorOutput = 0;
    } 
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt);
 }  
 
 void Elevator::updateTelemetry(){     
-    // Update status of stack sight   
+    set<double>("current_height", getPosition());  
     set<bool>("sensing_stack", primingSensor.objectDistance(vex::distanceUnits::mm) < MINIMUM_ALIGNER_DISTANCE);  
-    Brain.Screen.printAt(20, 120, "Detected distance: %.2f", primingSensor.objectDistance(vex::distanceUnits::mm));
-    set<double>("percentage_extended", (getPosition() - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT));
-    
+    set<double>("percentage_extended", (get<double>("current_height") - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT));
+    //Brain.Screen.printAt(20, 120, "Current height: %.2f", get<double>("current_height")); 
     stateControl();
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();
@@ -103,6 +101,12 @@ void Elevator::stateControl(){
         setSetpoint(requestedHeight); 
       }
       requestingSetpoint = false;
+    } 
+
+    if (get<bool>("hold")){ 
+      if (sin(toRadians(Telemetry::inst.getValueAt<double>("forearm", "current_angle"))) > -0.7){ 
+         set<bool>("hold", false);
+      }
     }
     
     if (currentState == ElevatorState::E_PURSUING){ //
@@ -116,7 +120,7 @@ void Elevator::stateControl(){
           set<bool>("active", false); 
           Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
         }
-    } else {  
+    } else if (!get<bool>("hold")){  
         switch (pos){
             case AUTO:
                if (get<bool>("active")){   
@@ -140,6 +144,9 @@ void Elevator::stateControl(){
                if (get<bool>("sniper_score_enabled")){ 
                   setSetpoint(primingSetpoint); 
                   set<bool>("sniper_score_enabled", false);
+               } else if (!Telemetry::inst.getValueAt<bool>("claw", "senses_object")){ 
+                  requestingSetpoint = true; 
+                  requestedHeight = GROUND_INTAKE_HEIGHT;  
                } 
                break;
             default:
@@ -147,51 +154,33 @@ void Elevator::stateControl(){
         }
     }   
    
-    set<bool>("at_setpoint", currentState != ElevatorState::E_PURSUING && currentState != ElevatorState::E_PRIMING);   
+    set<bool>("at_setpoint", (currentState == ElevatorState::E_HOLDING || currentState == ElevatorState::E_ADJUSTING) && !get<bool>("hold"));   
 }
 
 void Elevator::respondToRequests(){   
-    if (currentState == E_PRIMING || currentState == E_PURSUING){ 
+    if (!get<bool>("at_setpoint")){ 
       return;
     } 
 
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
     
-    if (pos == SuperStructurePosition::PRIMED && Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached")){   
+    if (pos == SuperStructurePosition::PRIMED && Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached") && Telemetry::inst.getValueAt<bool>("claw", "senses_object")){   
       if (RobotState::getStateOf("awaiting_land")){ 
-        requestingSetpoint = true; 
+        requestingSetpoint = true;
         requestedHeight = GROUND_INTAKE_HEIGHT; 
         return;
       }  
+      currentState = E_ADJUSTING; 
       if (RobotState::getStateOf("rise")){ 
-        currentState = E_ADJUSTING; 
         raisingDirection = 1;
       } else if (RobotState::getStateOf("fall")){ 
         raisingDirection = -1; 
-        currentState = E_ADJUSTING; 
-      } else {   
-        currentState = E_LISTLESS;
+      } else {
         raisingDirection = 0;
       }
     } else { 
       raisingDirection = 0;
     }
-    /*
-      if (get<int>("priming_direction") != 0){ 
-        if ((Brain.Timer.time() - get<double>("lifting_timestamp")) >= 100){ //Wait tenth of a second  
-          int stacks = (get<double>("current_height") / (STACK_HEIGHT - 20)); // 1 cm of grace
-          stacks += copysign(1, get<int>("priming_direction"));  
-          if (stacks * STACK_HEIGHT <= MAX_HEIGHT && stacks >= 0){ 
-            set<bool>("requesting_setpoint", true);  
-            set<double>("requested_height", stacks * 1.0 * STACK_HEIGHT); 
-          }   
-          set<double>("lifting_timestamp", Brain.Timer.time());
-          raisingDirection = 0;
-        }
-      } else { 
-        set<double>("lifting_timestamp", Brain.Timer.time());  
-      }   
-      */ 
 } 
 
 //--------------------------------------- 

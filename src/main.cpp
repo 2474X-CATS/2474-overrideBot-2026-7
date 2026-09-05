@@ -56,23 +56,23 @@ void startCommandMatch()
 }
 
 int graphTableData(){ 
-  DataSupplier actualForearmVelocity; 
-  DataSupplier desiredForearmVelocity;  
+  DataSupplier zero; 
+  DataSupplier error;  
    
-  actualForearmVelocity.directory = "graph";
-  actualForearmVelocity.name = "actual_velocity";
-  actualForearmVelocity.label = "A(m/s)";
+  zero.directory = "graph";
+  zero.name = "zero";
+  zero.label = "O";
   
-  desiredForearmVelocity.directory = "graph";
-  desiredForearmVelocity.name = "desired_velocity";
-  desiredForearmVelocity.label = "D(m/s)";
+  error.directory = "graph";
+  error.name = "error";
+  error.label = "err(deg)";
 
 
   Graph g = Graph( 
-    "Forearm velocity (Desired vs Actual)", 
+    "Forearm Error", 
     { 
-      actualForearmVelocity, 
-      desiredForearmVelocity
+      zero, 
+      error
     }
   ); 
 
@@ -88,15 +88,17 @@ int main()
 {
 
   vexcodeInit();
-  /* 
+  
   Telemetry::inst.registerSubtable(  
     "graph", 
     { 
-      (EntrySet){"actual_velocity", EntryType::DOUBLE}, 
-      (EntrySet){"desired_velocity", EntryType::DOUBLE}
+      (EntrySet){"error", EntryType::DOUBLE}, 
+      (EntrySet){"zero", EntryType::DOUBLE}
     }
-  );
-  */ 
+  ); 
+
+  Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
+   
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
@@ -112,6 +114,6 @@ int main()
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
-  // thread graphics = thread(graphTableData); 
+  thread graphics = thread(graphTableData); 
   testDrive();
 }
