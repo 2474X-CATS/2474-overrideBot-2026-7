@@ -12,12 +12,11 @@ class Claw : public Subsystem {
        static Claw* globalPtr;  
        static double MAXIMUM_TOLERABLE_DISTANCE;
 
-       vex::pneumatics wrist;
+       //vex::pneumatics wrist;
        vex::pneumatics claw;
 
        vex::distance objectDetector;
 
-       void flip(bool facingDown);  
        void clench(bool clenched); 
 
        bool sensesObject();
@@ -31,14 +30,14 @@ class Claw : public Subsystem {
         "claw", 
         { 
            (EntrySet){"clenched", EntryType::BOOL}, 
-           (EntrySet){"facing_down", EntryType::BOOL}, 
+           //(EntrySet){"facing_down", EntryType::BOOL}, 
            (EntrySet){"active", EntryType::BOOL}, 
            //(EntrySet){"requesting_act", EntryType::BOOL}, //Does the next action want to be taken depending on the state
            (EntrySet){"senses_object", EntryType::BOOL}
         } 
         ), 
-       claw(vex::pneumatics(Brain.ThreeWirePort.A)), 
-       wrist(vex::pneumatics(Brain.ThreeWirePort.B)), 
+       claw(vex::pneumatics(Brain.ThreeWirePort.A)),
+       //wrist(vex::pneumatics(Brain.ThreeWirePort.B)), 
        objectDetector(vex::distance(vex::PORT21))
        { 
         globalPtr = this;

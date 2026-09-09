@@ -22,8 +22,8 @@ void Forearm::init(){
    angularDeadZones[0] = 0;
    angularDeadZones[1] = 0;
 
-   pidConsts.P = 0.085;
-   pidConsts.I = 0.001;//0.0025;//0.02;
+   pidConsts.P = 0.125;
+   pidConsts.I = 0.0075;//0.0025;//0.02;
    pidConsts.D = 0;//0.00625;//0.0075;
    pidConsts.errorTolerance = 3;
 
@@ -37,25 +37,22 @@ void Forearm::init(){
 
 void Forearm::periodic(){
     forearmMotor.spin(vex::directionType::fwd, getOutput(), vex::voltageUnits::volt);
-} 
+}
 
-void Forearm::updateTelemetry(){    
+void Forearm::updateTelemetry(){
     set<double>("current_angle", getCurrentAngle());
-    stateControl();  
-} 
+    stateControl();
+}
 
-void Forearm::stop(){ 
+void Forearm::stop(){
     forearmMotor.stop();
-}   
+}
 
 double Forearm::getOutput(){
     double pidOutput = feedback->calculate(angleDifference(getCurrentAngle(), setpoint), Brain.Timer.time()); 
-    Telemetry::inst.placeValueAt<double>(angleDifference(getCurrentAngle(), setpoint), "graph", "error");
-    double output = (KCOS * cos(toRadians(getCurrentAngle()))) + pidOutput; 
-
-    output = max<double>(output, -10);  
-    output = min<double>(output, 10);
-
+    double output = (KCOS * cos(toRadians(getCurrentAngle()))) + pidOutput;  
+    output = max<double>(output, -12);
+    output = min<double>(output, 12);
     return output;
 }
 
@@ -83,16 +80,14 @@ void Forearm::stateControl(){
     if (requestingSetpoint){  
       requestingSetpoint = false;
       setSetpoint(requestedSetpoint, RobotState::getStateOf("inverted")); 
-    }  
-
-    if (get<bool>("hold")){ 
-      if (Telemetry::inst.getValueAt<double>("elevator", "current_height") > 9){ 
-         set<bool>("hold", false);
-      }
     }
 
+    if (get<bool>("hold")){  
+      set<bool>("hold", Telemetry::inst.getValueAt<double>("elevator", "current_height") < 700);
+    }
+    
     if (currentState == ForearmState::F_PURSUING){  
-        if (reachedSetpoint()){ 
+      if (reachedSetpoint()){ 
           currentState = ForearmState::F_HOLDING;   
           if (get<bool>("active")){ 
             set<bool>("active", false); 
@@ -104,10 +99,8 @@ void Forearm::stateControl(){
               Telemetry::inst.placeValueAt(true, "claw","active"); 
             }
           } 
-        }
-    }    
-    
-    if (currentState == ForearmState::F_HOLDING) {     
+      }
+    } else if (currentState == ForearmState::F_HOLDING && !get<bool>("hold")) {     
         SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));  
         switch (pos){  
             case PRIMED:
@@ -135,9 +128,8 @@ void Forearm::stateControl(){
             default: 
               break;
         }  
-    }    
+    }  
     
-
     set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING && !get<bool>("hold"));  
 }  
 

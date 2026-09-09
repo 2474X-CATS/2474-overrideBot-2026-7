@@ -4,10 +4,13 @@
 void SuperSystem::setPosition(int pos){ 
     switch (pos){ 
       case GROUND:  
-        Telemetry::inst.placeValueAt<bool>(true, "forearm", "hold");
+        Telemetry::inst.placeValueAt<bool>(true, "elevator", "hold");
         break;
       case STANDING:  
         Telemetry::inst.placeValueAt<bool>(true, "elevator", "hold"); 
+        break; 
+      case PRIMED:
+        Telemetry::inst.placeValueAt<bool>(true, "forearm", "hold"); 
         break;
       default:
         break;
@@ -17,7 +20,7 @@ void SuperSystem::setPosition(int pos){
 
 void SuperSystem::init(){ 
     //set<int>("pickup_position", SuperStructurePosition::GROUND); 
-    set<int>("position", SuperStructurePosition::PRIMED);
+    setPosition(SuperStructurePosition::PRIMED);
     //set<int>("last_position", get<int>("position"));
     //set<bool>("can_transition", true); 
     //set<double>("distance_backed", 0);
@@ -42,8 +45,14 @@ void SuperSystem::refreshData(){
                 } 
                 break;
             case STANDING:
-                if (!RobotState::getStateOf("standing") || (Telemetry::inst.getValueAt<bool>("claw","clenched") && Telemetry::inst.getValueAt<bool>("claw","senses_object"))){ 
+                if ((Telemetry::inst.getValueAt<bool>("claw","clenched") && Telemetry::inst.getValueAt<bool>("claw","senses_object"))){ 
                   setPosition(SuperStructurePosition::PRIMED); 
+                } else if (!RobotState::getStateOf("standing")){ 
+                  if (RobotState::getStateOf("grounded")){ 
+                    setPosition(SuperStructurePosition::GROUND); 
+                  } else { 
+                    setPosition(SuperStructurePosition::PRIMED); 
+                  }
                 }
                 break;
             case PRIMED:

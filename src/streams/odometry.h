@@ -40,7 +40,7 @@ class Odometry : public DataStream {
          }
        ),
        gyro(vex::inertial(vex::PORT16)),
-       linRot(vex::rotation(vex::PORT9)), 
+       linRot(vex::rotation(vex::PORT8)), 
        angRot(vex::rotation(vex::PORT13))
        {};
 

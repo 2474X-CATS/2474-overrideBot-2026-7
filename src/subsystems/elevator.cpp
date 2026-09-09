@@ -4,8 +4,8 @@
 Elevator* Elevator::globalPtr = nullptr;
 
 double Elevator::LEVELED_HEIGHT = (17.678 + 2.75) * 25.4; 
-double Elevator::GROUND_INTAKE_HEIGHT = LEVELED_HEIGHT + 70;  
-       
+double Elevator::GROUND_INTAKE_HEIGHT = LEVELED_HEIGHT + 110;  
+
 double Elevator::MAX_HEIGHT = (42 * 25.4);
 
 //double Elevator::ELEVATOR_ERROR_TOLERANCE = 3; 
@@ -25,17 +25,17 @@ Elevator& Elevator::getObject(){
 void Elevator::init(){  
 
     PIDConstants pidConsts;  
-    pidConsts.P = 0.525;
-    pidConsts.I = 0.001;
-    pidConsts.D = 0; 
+    pidConsts.P = 0.25;
+    pidConsts.I = 0.000;
+    pidConsts.D = 0.0000;
     pidConsts.errorTolerance = 10;
 
     lift.setStopping(vex::brakeType::brake); 
-    rot.setPosition(0, vex::rotationUnits::rev);  
+    rot.setPosition((GROUND_INTAKE_HEIGHT - LEVELED_HEIGHT) / (M_PI * SPOOL_DIAMETER), vex::rotationUnits::rev);  
 
     correctionController = new pidcontroller(pidConsts, getPosition());
     correctionController->setLastTimestamp(Brain.Timer.time()); 
-
+    
 } 
 
 void Elevator::stop(){ 
@@ -45,30 +45,34 @@ void Elevator::stop(){
 void Elevator::periodic(){
    double elevatorOutput = 0;
    if (currentState == ElevatorState::E_HOLDING || currentState == ElevatorState::E_PURSUING){//Stay Still
-     elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time()); 
+     elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time());
+     Telemetry::inst.placeValueAt<double>(correctionController->getSetpoint() - getPosition(), "graph", "error"); 
    } else if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
      elevatorOutput = PRIMING_SPEED;
    } else if (currentState == ElevatorState::E_ADJUSTING){ 
      elevatorOutput = PRIMING_SPEED * raisingDirection;
-   } 
+   }
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt);
 }  
 
 void Elevator::updateTelemetry(){     
+    
     set<double>("current_height", getPosition());  
     set<bool>("sensing_stack", primingSensor.objectDistance(vex::distanceUnits::mm) < MINIMUM_ALIGNER_DISTANCE);  
     set<double>("percentage_extended", (get<double>("current_height") - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT));
-    //Brain.Screen.printAt(20, 120, "Current height: %.2f", get<double>("current_height")); 
+    
+    Brain.Screen.printAt(20, 120, "Current Height: %.2f", getPosition());
     stateControl();
+    
     if (!RobotState::getStateOf("in_autonomous")){ 
        respondToRequests();
-    } else { 
+    } else {
        raisingDirection = 0;
     } 
 } 
 
 double Elevator::getPosition(){ 
-    return (rot.position(vex::rotationUnits::rev) * M_PI * SPOOL_DIAMETER) + LEVELED_HEIGHT;
+    return (rot.position(vex::rotationUnits::rev) * M_PI * SPOOL_DIAMETER) + LEVELED_HEIGHT; 
 } 
 
 double Elevator::getVelocity(){
@@ -102,11 +106,15 @@ void Elevator::stateControl(){
       }
       requestingSetpoint = false;
     } 
-
-    if (get<bool>("hold")){ 
-      if (sin(toRadians(Telemetry::inst.getValueAt<double>("forearm", "current_angle"))) > -0.7){ 
-         set<bool>("hold", false);
-      }
+    
+    if (get<bool>("hold")){   
+      bool canExitHold;
+      if (pos == SuperStructurePosition::GROUND){ 
+        canExitHold = sin(toRadians(Telemetry::inst.getValueAt<double>("forearm", "current_angle"))) < -0.75;
+      } else { 
+        canExitHold = sin(toRadians(Telemetry::inst.getValueAt<double>("forearm", "current_angle"))) > -0.25; 
+      } 
+      set<bool>("hold", !canExitHold);
     }
     
     if (currentState == ElevatorState::E_PURSUING){ //
@@ -146,7 +154,7 @@ void Elevator::stateControl(){
                   set<bool>("sniper_score_enabled", false);
                } else if (!Telemetry::inst.getValueAt<bool>("claw", "senses_object")){ 
                   requestingSetpoint = true; 
-                  requestedHeight = GROUND_INTAKE_HEIGHT;  
+                  requestedHeight = GROUND_INTAKE_HEIGHT + 100;  
                } 
                break;
             default:

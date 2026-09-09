@@ -39,11 +39,8 @@ void RobotState::initializeState()
            (EntrySet){"awaiting_land", EntryType::BOOL},
            (EntrySet){"rise", EntryType::BOOL}, 
            (EntrySet){"fall", EntryType::BOOL},  
-           (EntrySet){"grounded", EntryType::BOOL}, 
+           (EntrySet){"grounded", EntryType::BOOL},
            (EntrySet){"standing", EntryType::BOOL},
-           //(EntrySet){"awaiting_claw_act", EntryType::BOOL}, 
-           //(EntrySet){"awaiting_flip", EntryType::BOOL},   
-           //(EntrySet){"k_claw_await", EntryType::BOOL},
            (EntrySet){"k_score", EntryType::BOOL}, 
            (EntrySet){"switch_score_mode", EntryType::BOOL},
            (EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
@@ -90,14 +87,14 @@ void RobotState::updateRegular()
       disableVibrations(); 
       Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "pickup_switch_requested");
    }  
-   
+   */
 
-   if (Telemetry::inst.getValueAt<bool>("elevator", "sensing_stack")){ 
+   if (Telemetry::inst.getValueAt<bool>("elevator", "hold")){ 
       setVibrationCode("."); 
    } else { 
       disableVibrations(); 
    } 
-   */
+   
 
 };
 

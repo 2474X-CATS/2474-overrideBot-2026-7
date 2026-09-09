@@ -8,22 +8,16 @@ Claw& Claw::getObject(){
 }
 
 void Claw::init(){ 
-     //set<bool>("senses_object", objectDetector.);
+     return;
 }
 
 void Claw::periodic(){  
     clench(get<bool>("clenched"));  
-    //flip(get<bool>("facing_down")); 
 } 
 
 void Claw::updateTelemetry(){
-   set<bool>("senses_object", objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE); 
-   stateControl();  
-   /*
-   if (!RobotState::getStateOf("in_autonomous")){ 
-     respondToRequests();
-   } 
-   */
+   set<bool>("senses_object", true/*objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE*/); 
+   stateControl();
 }  
 
 void Claw::stop(){ 
@@ -42,7 +36,7 @@ void Claw::stateControl(){
          set<bool>("active", false); 
          Telemetry::inst.placeValueAt<bool>(true, "forearm", "active"); 
      }
-   } else {   
+   } else {
       if (!still){  
         set<bool>("clenched", true); 
       } else {  
@@ -93,7 +87,3 @@ void Claw::respondToRequests(){
 void Claw::clench(bool clenched){ 
     claw.set(!clenched);
 } 
-
-void Claw::flip(bool facingDown){   
-    wrist.set(facingDown);
-}
