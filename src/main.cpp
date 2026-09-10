@@ -90,12 +90,12 @@ int main()
   vexcodeInit();
   
   Telemetry::inst.registerSubtable(  
-    "graph", 
+    "graph",
     { 
       (EntrySet){"error", EntryType::DOUBLE}, 
       (EntrySet){"zero", EntryType::DOUBLE}
     }
-  ); 
+  );
 
   Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
    
@@ -114,6 +114,6 @@ int main()
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
-  //thread graphics = thread(graphTableData); 
+  thread graphics = thread(graphTableData);
   testDrive();
 }

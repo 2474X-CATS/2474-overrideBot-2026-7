@@ -5,7 +5,8 @@ void ModifyRobotState::start(){
 } 
 
 void ModifyRobotState::periodic(){ 
-    Telemetry::inst.placeValueAt<bool>(entryVal, modDirectory, modName);
+    Telemetry::inst.placeValueAt<bool>(entryVal, modDirectory, modName); 
+    ran = true;
 } 
 
 void ModifyRobotState::end(){ 
@@ -13,7 +14,7 @@ void ModifyRobotState::end(){
 } 
 
 bool ModifyRobotState::isOver(){ 
-    return true;
+    return ran;
 }
 
 //-------------------------------------------------------------------------- 

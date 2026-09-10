@@ -79,8 +79,10 @@ class Elevator : public Subsystem {
           { 
             (EntrySet){"active", EntryType::BOOL}, //In a macro?
             (EntrySet){"at_setpoint", EntryType::BOOL}, //Achieved setpoint or no setpoint? 
-            (EntrySet){"sensing_stack", EntryType::BOOL},
-            (EntrySet){"sniper_score_enabled", EntryType::BOOL},  
+            (EntrySet){"sensing_stack", EntryType::BOOL}, 
+            (EntrySet){"requested_setpoint", EntryType::DOUBLE}, 
+            (EntrySet){"requesting_setpoint", EntryType::BOOL},
+            (EntrySet){"sniper_score_enabled", EntryType::BOOL},
             (EntrySet){"percentage_extended", EntryType::DOUBLE}, 
             (EntrySet){"current_height", EntryType::DOUBLE},
             (EntrySet){"hold", EntryType::BOOL}
@@ -125,6 +127,35 @@ class RunElevator : public Command<Elevator> {
    void periodic() override; 
    bool isOver() override; 
    void end() override;
+};  
+
+//---------------------------------------------------------------------
+
+class FrontRunElevatorSetpoint : public Command<Elevator> { 
+   
+   private:
+
+     Elevator& elevatorRef;  
+     bool ran = false;
+     double elevatorSetpoint;
+
+   public:
+
+     CommandInterface* getCommand(double setpoint){ 
+        return new FrontRunElevatorSetpoint(Elevator::getObject(), setpoint); 
+     };
+
+     FrontRunElevatorSetpoint(Elevator& elevator, double setpoint): 
+     Command<Elevator>(elevator),
+     elevatorRef(elevator),
+     elevatorSetpoint(setpoint)
+     {};
+
+   protected: 
+     void start() override; 
+     void periodic() override; 
+     bool isOver() override; 
+     void end() override;
 };
 
 

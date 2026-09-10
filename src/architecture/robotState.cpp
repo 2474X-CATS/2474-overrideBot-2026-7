@@ -89,10 +89,10 @@ void RobotState::updateRegular()
    }  
    */
 
-   if (Telemetry::inst.getValueAt<bool>("elevator", "hold")){ 
-      setVibrationCode("."); 
+   if (Telemetry::inst.getValueAt<bool>("forearm", "hold")){ 
+      setVibrationCode(".");
    } else { 
-      disableVibrations(); 
+      disableVibrations();
    } 
    
 

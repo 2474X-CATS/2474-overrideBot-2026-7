@@ -42,4 +42,25 @@ vector<Routine> generateRoutinePool(){
 
 //-------------------------------------------------------------------------------------- 
 
+vector<CommandInterface*> two_pin_alliance_left(){ 
+  return { 
+    ParallelCommandGroup::makeGroup(
+       SequentialCommandGroup::makeGroup(DriveForward::getCommand(500))->
+       chainThen(TurnToHeading::getCommand(180))->
+       chainThen(WaitFor::getCommand(1000))->
+       chainThen(DriveForward::getCommand(500))
+    )->chainWhile(RunSuperStructure::getCommand())
+  };
+}   
+
+vector<CommandInterface*> two_pin_alliance_right(){ 
+  return { 
+    ParallelCommandGroup::makeGroup(
+       SequentialCommandGroup::makeGroup(DriveForward::getCommand(500))->
+       chainThen(TurnToHeading::getCommand(180))->
+       chainThen(WaitFor::getCommand(1000))->
+       chainThen(DriveForward::getCommand(500))
+    )->chainWhile(RunSuperStructure::getCommand())
+  };
+} 
 

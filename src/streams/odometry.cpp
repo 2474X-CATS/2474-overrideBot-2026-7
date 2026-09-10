@@ -2,7 +2,7 @@
 #include "../utilities/functools.h" 
 
 double Odometry::INERTIAL_WHEEL_RADIUS = 25.4; 
-double Odometry::ANG_ROT_DIST_FROM_CENTER = 4 * 25.4;
+double Odometry::ANG_ROT_DIST_FROM_CENTER = 3.369586 * 25.4; //
 double Odometry::GOAL_WIDTH = 6 * 25.4;
 
 Location* Odometry::locations[13] = { 
@@ -13,62 +13,62 @@ Location* Odometry::locations[13] = {
    ),
    new Location(
      "all_nat_all", 
-     TILE_SIZE_MM * 2, TILE_SIZE_MM *1, 
+     TILE_SIZE_MM * 2, TILE_SIZE_MM * 1, 
      Odometry::GOAL_WIDTH/2
    ),  
    new Location( 
      "all_for_all", 
-     TILE_SIZE_MM *1, TILE_SIZE_MM *2, 
+     TILE_SIZE_MM *1, TILE_SIZE_MM * 2, 
      Odometry::GOAL_WIDTH/2
    ),  
    new Location(
      "all_for_neu", 
-     TILE_SIZE_MM *1, TILE_SIZE_MM *4,
+     TILE_SIZE_MM *1, TILE_SIZE_MM * 4,
      Odometry::GOAL_WIDTH/2
    ),   
    new Location( 
      "opp_nat_neu", 
-     TILE_SIZE_MM *5, TILE_SIZE_MM *2, 
+     TILE_SIZE_MM *5, TILE_SIZE_MM * 2, 
      Odometry::GOAL_WIDTH/2
    ),  
    new Location(
      "opp_nat_all", 
-     TILE_SIZE_MM *5, TILE_SIZE_MM *4, 
+     TILE_SIZE_MM *5, TILE_SIZE_MM * 4, 
      Odometry::GOAL_WIDTH/2
    ),   
    new Location( 
      "opp_for_all", 
-     TILE_SIZE_MM *4, TILE_SIZE_MM *5, 
+     TILE_SIZE_MM *4, TILE_SIZE_MM * 5, 
      Odometry::GOAL_WIDTH/2
    ),   
    new Location( 
      "opp_for_neu", 
-     TILE_SIZE_MM *2, TILE_SIZE_MM *5, 
+     TILE_SIZE_MM * 2, TILE_SIZE_MM * 5, 
      Odometry::GOAL_WIDTH/2
    ),  
    new Location(
      "central_goal", 
-     TILE_SIZE_MM *3, TILE_SIZE_MM *3, 
+     TILE_SIZE_MM * 3, TILE_SIZE_MM * 3, 
      Odometry::GOAL_WIDTH/2
    ),  
    new Location( 
      "matchloader_bottom_left",
-     TILE_SIZE_MM *0.5, TILE_SIZE_MM *0.5, 
+     TILE_SIZE_MM * 0.5, TILE_SIZE_MM * 0.5, 
      TILE_SIZE_MM / 2
    ),  
    new Location(
      "matchloader_bottom_right", 
-     TILE_SIZE_MM *5.5, TILE_SIZE_MM *0.5, 
+     TILE_SIZE_MM * 5.5, TILE_SIZE_MM * 0.5, 
      TILE_SIZE_MM / 2
    ),   
    new Location( 
      "matchloader_top_left", 
-     TILE_SIZE_MM *0.5, TILE_SIZE_MM *5.5,
+     TILE_SIZE_MM * 0.5, TILE_SIZE_MM * 5.5,
      TILE_SIZE_MM / 2
    ),   
    new Location(
      "matchloader_top_right", 
-     TILE_SIZE_MM *5.5, TILE_SIZE_MM *5.5,
+     TILE_SIZE_MM * 5.5, TILE_SIZE_MM * 5.5,
      TILE_SIZE_MM / 2
    )
 };
@@ -79,7 +79,7 @@ Location* Odometry::getLocation(int index){
 
 void Odometry::init(){  
    calibratePerspective();
-   setStartingOdometry();  
+   setStartingOdometry();
    lastTimestamp = Brain.Timer.time();  
 } 
 
@@ -105,7 +105,7 @@ void Odometry::refreshData(){
     double posXDistance = posXVelocity * delta;
 
     if (RobotState::getStateOf("inverted")){ 
-       posYDistance *= -1;  
+       posYDistance *= -1;
        posXDistance *= -1;
        currentHeading = angleSum(currentHeading, 180);
     }    
@@ -125,7 +125,7 @@ void Odometry::refreshData(){
     xPos += sin(currentHeading) * posXDistance; 
     yPos += cos(currentHeading) * posXDistance;
     
-    Brain.Screen.printAt(20, 120, "X: %.2f, Y: %.2f, Omega Offset: %.2f", xPos, yPos, omegaToRPS); 
+    //Brain.Screen.printAt(20, 120, "X: %.2f, Y: %.2f, Omega Offset: %.2f", xPos, yPos, omegaToRPS); 
 
     set<double>("x_position_mm", xPos); 
     set<double>("y_position_mm", yPos); 

@@ -48,7 +48,11 @@ void Elevator::periodic(){
      elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time());
      Telemetry::inst.placeValueAt<double>(correctionController->getSetpoint() - getPosition(), "graph", "error"); 
    } else if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
-     elevatorOutput = PRIMING_SPEED;
+     if (get<bool>("sensing_stack")){
+       elevatorOutput = PRIMING_SPEED;
+     } else {
+       elevatorOutput = 0;
+     }
    } else if (currentState == ElevatorState::E_ADJUSTING){ 
      elevatorOutput = PRIMING_SPEED * raisingDirection;
    }
@@ -96,13 +100,13 @@ void Elevator::stateControl(){
     
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
 
-    if (requestingSetpoint){  
+    if (get<bool>("requesting_setpoint")){  
       if (get<bool>("sniper_score_enabled")){ 
-        primingSetpoint = requestedHeight;
+        primingSetpoint = get<double>("requested_setpoint");
       } else { 
-        setSetpoint(requestedHeight); 
+        setSetpoint(get<double>("requested_setpoint"));
       }
-      requestingSetpoint = false;
+      set<bool>("requesting_setpoint", false);
     } 
     
     if (get<bool>("hold")){   
@@ -131,28 +135,28 @@ void Elevator::stateControl(){
             case AUTO:
                if (get<bool>("active")){   
                  if (get<bool>("sniper_score_enabled")){ 
-                   setSetpoint(primingSetpoint);
-                 } else { 
+                   setSetpoint(primingSetpoint); 
+                   set<bool>("sniper_score_enabled", false);
+                 } else {  
                    currentState = ElevatorState::E_PRIMING; 
                  }
-                 set<bool>("sniper_score_enabled", false);
                }
                break; 
             case GROUND:  
-               requestingSetpoint = true;
-               requestedHeight = GROUND_INTAKE_HEIGHT;  
+               set<bool>("requesting_setpoint", true);
+               set<double>("requested_height", GROUND_INTAKE_HEIGHT);
                break; 
             case STANDING: 
-               requestingSetpoint = true; 
-               requestedHeight = LEVELED_HEIGHT; 
+               set<bool>("requesting_setpoint",true);
+               set<double>("requested_height", LEVELED_HEIGHT); 
                break;
             case PRIMED:
                if (get<bool>("sniper_score_enabled")){ 
                   setSetpoint(primingSetpoint); 
                   set<bool>("sniper_score_enabled", false);
                } else if (!Telemetry::inst.getValueAt<bool>("claw", "senses_object")){ 
-                  requestingSetpoint = true; 
-                  requestedHeight = GROUND_INTAKE_HEIGHT + 100;  
+                  set<bool>("requesting_setpoint", true); 
+                  set<double>("requested_setpoint", GROUND_INTAKE_HEIGHT + 100);
                } 
                break;
             default:
@@ -173,7 +177,7 @@ void Elevator::respondToRequests(){
     if (pos == SuperStructurePosition::PRIMED && Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached") && Telemetry::inst.getValueAt<bool>("claw", "senses_object")){   
       if (RobotState::getStateOf("awaiting_land")){ 
         requestingSetpoint = true;
-        requestedHeight = GROUND_INTAKE_HEIGHT; 
+        requestedHeight = GROUND_INTAKE_HEIGHT + 100; 
         return;
       }  
       currentState = E_ADJUSTING; 
@@ -204,5 +208,26 @@ bool RunElevator::isOver(){
 } 
 
 void RunElevator::end(){ 
+  return;
+} 
+
+//--------------------------------------------------------------------------------------------- 
+
+void FrontRunElevatorSetpoint::start(){ 
+   return;
+} 
+
+void FrontRunElevatorSetpoint::periodic(){  
+   Telemetry::inst.placeValueAt<bool>(true, "elevator", "sniper_score_enabled");
+   Telemetry::inst.placeValueAt<bool>(true, "elevator", "requesting_setpoint"); 
+   Telemetry::inst.placeValueAt<double>(elevatorSetpoint, "elevator", "requested_setpoint"); 
+   ran = true;
+} 
+
+bool FrontRunElevatorSetpoint::isOver(){ 
+  return ran; 
+} 
+
+void FrontRunElevatorSetpoint::end(){ 
   return;
 }

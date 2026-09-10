@@ -27,10 +27,12 @@ class RunSuperStructure : public ParallelCommandGroup {
 
 class ModifyRobotState : public Command<DummySystem> {  
     
-    private:
+    private:  
+
       std::string modDirectory; 
       std::string modName; 
-      bool entryVal; 
+      bool entryVal;
+      bool ran = false;
 
     public:
       
@@ -57,7 +59,7 @@ class WaitFor : public Command<DummySystem>{
 
     private: 
       int startingTimestamp;   
-      int duration;
+      int duration; 
 
     public:
 

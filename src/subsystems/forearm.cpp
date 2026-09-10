@@ -23,9 +23,9 @@ void Forearm::init(){
    angularDeadZones[1] = 0;
 
    pidConsts.P = 0.125;
-   pidConsts.I = 0.0075;//0.0025;//0.02;
-   pidConsts.D = 0;//0.00625;//0.0075;
-   pidConsts.errorTolerance = 5;
+   pidConsts.I = 0.01;//0.0025;//0.02;
+   pidConsts.D = 0.001;//0.00625;//0.0075;
+   pidConsts.errorTolerance = 7.5;
 
    feedback = new pidcontroller(pidConsts, 0);  
 
@@ -35,7 +35,7 @@ void Forearm::init(){
    setpoint = startingAngle;
 }
 
-void Forearm::periodic(){
+void Forearm::periodic(){   
     forearmMotor.spin(vex::directionType::fwd, getOutput(), vex::voltageUnits::volt);
 }
 
@@ -48,7 +48,7 @@ void Forearm::stop(){
     forearmMotor.stop();
 }
 
-double Forearm::getOutput(){
+double Forearm::getOutput(){  
     double pidOutput = feedback->calculate(angleDifference(getCurrentAngle(), setpoint), Brain.Timer.time()); 
     double output = (KCOS * cos(toRadians(getCurrentAngle()))) + pidOutput;  
     output = max<double>(output, -12);
@@ -83,7 +83,9 @@ void Forearm::stateControl(){
     }
 
     if (get<bool>("hold")){  
-      set<bool>("hold", Telemetry::inst.getValueAt<double>("elevator", "current_height") < 700);
+      if (sin(toRadians(getCurrentAngle())) > 0 || Telemetry::inst.getValueAt<double>("elevator", "current_height") < 700){ 
+        set<bool>("hold", false);
+      }
     }
     
     if (currentState == ForearmState::F_PURSUING){  

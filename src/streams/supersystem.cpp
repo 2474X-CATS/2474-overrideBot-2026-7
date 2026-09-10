@@ -39,10 +39,10 @@ void SuperSystem::refreshData(){
                 if (!RobotState::getStateOf("grounded")){  
                   if (RobotState::getStateOf("standing")){ 
                     setPosition(SuperStructurePosition::STANDING); 
-                  } else { 
+                  } else {
                     setPosition(SuperStructurePosition::PRIMED); 
                   }
-                } 
+                }
                 break;
             case STANDING:
                 if ((Telemetry::inst.getValueAt<bool>("claw","clenched") && Telemetry::inst.getValueAt<bool>("claw","senses_object"))){ 

@@ -16,7 +16,7 @@ void Claw::periodic(){
 } 
 
 void Claw::updateTelemetry(){
-   set<bool>("senses_object", true/*objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE*/); 
+   set<bool>("senses_object", objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE); 
    stateControl();
 }  
 

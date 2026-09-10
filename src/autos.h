@@ -35,5 +35,10 @@ vector<Routine> generateRoutinePool();
  
 //------------------------------------------------------------------------------- 
 
+vector<CommandInterface*> two_pin_alliance_left();  
+
+vector<CommandInterface*> two_pin_alliance_right(); 
+
+//-------------------------------------------------------------------------------
 
 #endif
