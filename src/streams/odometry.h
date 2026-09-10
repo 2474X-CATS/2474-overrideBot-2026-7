@@ -51,7 +51,8 @@ class Odometry : public DataStream {
        
        void setStartingOdometry();
 
-       static double INERTIAL_WHEEL_RADIUS;  
+       static double INERTIAL_WHEEL_RADIUS;   
+       static double ANG_ROT_DIST_FROM_CENTER;
        static double GOAL_WIDTH;
 
        static Location* locations[];   

@@ -2,7 +2,7 @@
 #include "../utilities/functools.h" 
 
 double Odometry::INERTIAL_WHEEL_RADIUS = 25.4; 
-
+double Odometry::ANG_ROT_DIST_FROM_CENTER = 4 * 25.4;
 double Odometry::GOAL_WIDTH = 6 * 25.4;
 
 Location* Odometry::locations[13] = { 
@@ -87,32 +87,45 @@ void Odometry::refreshData(){
      
     double currentTimestamp = Brain.Timer.time(); 
     double delta = (currentTimestamp - lastTimestamp) / 1000.0;
-
-    double currentVelocity = (linRot.velocity(vex::velocityUnits::rpm) / 60) * 2 * M_PI * INERTIAL_WHEEL_RADIUS; 
+    
     double currentHeading = gyro.heading();
-
-    double xPos = get<double>("x_position_mm"); 
-    double yPos = get<double>("y_position_mm"); 
-
-    double distance = currentVelocity * delta;
-
+    double omega = gyro.gyroRate(vex::axisType::zaxis, vex::velocityUnits::dps);  
+    
     if (get<bool>("oriented_c")){ 
-       currentHeading = flipOrientation(currentHeading);
-    } 
+       currentHeading = flipOrientation(currentHeading); 
+       omega *= -1;
+    }
+
+    double omegaToRPS = ((omega / 360) * (2 * ANG_ROT_DIST_FROM_CENTER * M_PI)) / (2 * M_PI * INERTIAL_WHEEL_RADIUS);
+
+    double posYVelocity = (linRot.velocity(vex::velocityUnits::rpm) / 60) * 2 * M_PI * INERTIAL_WHEEL_RADIUS; 
+    double posXVelocity = ((angRot.velocity(vex::velocityUnits::rpm) / 60) - omegaToRPS) * 2 * M_PI * INERTIAL_WHEEL_RADIUS;  
+
+    double posYDistance = posYVelocity * delta;  
+    double posXDistance = posXVelocity * delta;
 
     if (RobotState::getStateOf("inverted")){ 
-       distance *= -1;
+       posYDistance *= -1;  
+       posXDistance *= -1;
        currentHeading = angleSum(currentHeading, 180);
     }    
     
     set<double>("heading_deg", currentHeading);
-    set<double>("immediate_distance", distance); 
-    set<double>("velocity_ms", currentVelocity);
+    set<double>("immediate_distance", hypot(posXDistance, posYDistance)); 
+    set<double>("velocity_ms", hypot(posXVelocity, posYVelocity));
 
-    currentHeading = toRadians(currentHeading); 
+    currentHeading = toRadians(currentHeading);  
+
+    double xPos = get<double>("x_position_mm"); 
+    double yPos = get<double>("y_position_mm"); 
     
-    xPos += cos(currentHeading) * distance; 
-    yPos += sin(currentHeading) * distance; 
+    xPos += cos(currentHeading) * posYDistance; 
+    yPos += sin(currentHeading) * posYDistance;  
+
+    xPos += sin(currentHeading) * posXDistance; 
+    yPos += cos(currentHeading) * posXDistance;
+    
+    Brain.Screen.printAt(20, 120, "X: %.2f, Y: %.2f, Omega Offset: %.2f", xPos, yPos, omegaToRPS); 
 
     set<double>("x_position_mm", xPos); 
     set<double>("y_position_mm", yPos); 

@@ -114,6 +114,6 @@ int main()
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
-  thread graphics = thread(graphTableData); 
+  //thread graphics = thread(graphTableData); 
   testDrive();
 }

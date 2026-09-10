@@ -60,8 +60,6 @@ void Elevator::updateTelemetry(){
     set<double>("current_height", getPosition());  
     set<bool>("sensing_stack", primingSensor.objectDistance(vex::distanceUnits::mm) < MINIMUM_ALIGNER_DISTANCE);  
     set<double>("percentage_extended", (get<double>("current_height") - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT));
-    
-    Brain.Screen.printAt(20, 120, "Current Height: %.2f", getPosition());
     stateControl();
     
     if (!RobotState::getStateOf("in_autonomous")){ 

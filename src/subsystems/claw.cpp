@@ -20,7 +20,8 @@ void Claw::updateTelemetry(){
    stateControl();
 }  
 
-void Claw::stop(){ 
+void Claw::stop(){  
+    claw.set(true);
     return;
 } 
 

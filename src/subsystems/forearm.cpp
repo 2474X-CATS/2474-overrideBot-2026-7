@@ -25,7 +25,7 @@ void Forearm::init(){
    pidConsts.P = 0.125;
    pidConsts.I = 0.0075;//0.0025;//0.02;
    pidConsts.D = 0;//0.00625;//0.0075;
-   pidConsts.errorTolerance = 3;
+   pidConsts.errorTolerance = 5;
 
    feedback = new pidcontroller(pidConsts, 0);  
 
