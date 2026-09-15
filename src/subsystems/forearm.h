@@ -36,7 +36,8 @@ class Forearm : public Subsystem {
        
        ForearmState currentState = ForearmState::F_HOLDING;  
 
-       vex::motor forearmMotor;
+       vex::motor forearmMotor; 
+       vex::rotation rot;
        
        AngularArmFFConstants armFFConsts; //Bulk (feedforward) 
      
@@ -49,13 +50,23 @@ class Forearm : public Subsystem {
        double getOutput(); //velocity and acceleration but for angles
        
        double getCurrentAngle(); 
-       double getVelocity();
+       double getVelocity(); 
+
+       bool safeToManuever(); 
+
+       void maintainHoldLock();  
+
+       void receiveSetpoints(); 
 
        void setSetpoint(double setp, bool inverted);    
        
-       bool reachedSetpoint();
+       bool reachedSetpoint(); 
+
+       void passMacroTurn(); 
        
-       void stateControl();  //ONLY (We can't manually modify the forearm with the controller)
+       void stateControl();  //ONLY (We can't manually modify the forearm with the controller) 
+
+       void findNextSetpoint(); 
 
     public:   
        using Subsystem::get;  
@@ -73,7 +84,8 @@ class Forearm : public Subsystem {
                (EntrySet){"hold", EntryType::BOOL} 
             }
          ),
-         forearmMotor(vex::motor(vex::PORT4))
+         forearmMotor(vex::motor(vex::PORT4)), 
+         rot(vex::rotation(vex::PORT12))
          { 
             globalPtr = this;
          };    

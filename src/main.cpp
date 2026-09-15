@@ -7,7 +7,8 @@
 #include "streams/odometry.h"
 #include "subsystems/claw.h" 
 #include "subsystems/elevator.h" 
-#include "subsystems/forearm.h" 
+#include "subsystems/forearm.h"  
+#include "subsystems/intake.h"
 #include "gui/graph.h" 
 
 using namespace vex;
@@ -103,17 +104,19 @@ int main()
   //--------------------SUBSYSTEM CREATION----------------- 
   
   Odometry odom = Odometry();
-  Drivebase drive = Drivebase();
+  Drivebase drive = Drivebase();  
+  Intake intake = Intake(); 
+  
   SuperSystem ss = SuperSystem();
   Elevator elevator = Elevator();
   Forearm forearm = Forearm();
   Claw claw = Claw();
-  
-  //-------------------------------------------------------
 
+  //-------------------------------------------------------
+  
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
   thread graphics = thread(graphTableData);
   testDrive();
-}
+} 

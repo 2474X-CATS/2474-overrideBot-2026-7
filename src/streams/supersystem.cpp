@@ -45,8 +45,8 @@ void SuperSystem::refreshData(){
                 }
                 break;
             case STANDING:
-                if ((Telemetry::inst.getValueAt<bool>("claw","clenched") && Telemetry::inst.getValueAt<bool>("claw","senses_object"))){ 
-                  setPosition(SuperStructurePosition::PRIMED); 
+                if (Telemetry::inst.getValueAt<bool>("claw","in_possession") && !RobotState::getStateOf("command_grip")){ 
+                  setPosition(SuperStructurePosition::PRIMED);
                 } else if (!RobotState::getStateOf("standing")){ 
                   if (RobotState::getStateOf("grounded")){ 
                     setPosition(SuperStructurePosition::GROUND); 
@@ -56,11 +56,11 @@ void SuperSystem::refreshData(){
                 }
                 break;
             case PRIMED:
-                if (get<bool>("macro_requested") && Telemetry::inst.getValueAt<bool>("claw", "senses_object")){ 
+                if (get<bool>("macro_requested") && Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
                   Telemetry::inst.placeValueAt<bool>(true, "elevator", "active"); //First subsystem to act
                   set<bool>("task_completed", false); //Task is not completed
                   setPosition(SuperStructurePosition::AUTO); //Set the position to AUTO (essentially undefined)
-                } else if (!Telemetry::inst.getValueAt<bool>("claw", "senses_object")){ 
+                } else if (!Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
                   if (RobotState::getStateOf("grounded")){ 
                     setPosition(SuperStructurePosition::GROUND);
                   } else if (RobotState::getStateOf("standing")){ 

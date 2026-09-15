@@ -10,14 +10,19 @@ class Claw : public Subsystem {
     
     private:  
        static Claw* globalPtr;  
-       static double MAXIMUM_TOLERABLE_DISTANCE;
+       static double MAXIMUM_TOLERABLE_DISTANCE; 
+       static int SCORE_DELAY_MILLIS;
 
-       //vex::pneumatics wrist;
        vex::pneumatics claw;
 
        vex::distance objectDetector;
 
-       void clench(bool clenched); 
+       void clench(bool clenched);  
+       
+       bool clenched = true; 
+
+       int lastScoreStamp = 0; 
+       bool waiting = false;
 
        bool sensesObject();
 
@@ -29,11 +34,11 @@ class Claw : public Subsystem {
        Subsystem( 
         "claw", 
         { 
-           (EntrySet){"clenched", EntryType::BOOL}, 
-           //(EntrySet){"facing_down", EntryType::BOOL}, 
+           //(EntrySet){"clenched", EntryType::BOOL},  
+
            (EntrySet){"active", EntryType::BOOL}, 
-           //(EntrySet){"requesting_act", EntryType::BOOL}, //Does the next action want to be taken depending on the state
-           (EntrySet){"senses_object", EntryType::BOOL}
+           
+           (EntrySet){"in_possession", EntryType::BOOL}
         } 
         ), 
        claw(vex::pneumatics(Brain.ThreeWirePort.A)),
@@ -50,10 +55,10 @@ class Claw : public Subsystem {
 
        void respondToRequests(); 
 
-       void stateControl();   
+       void stateControl();
        
-    protected: 
-       using Subsystem::set; 
+    protected:
+       using Subsystem::set;
 }; 
 
 class RunClaw : public Command<Claw> { 

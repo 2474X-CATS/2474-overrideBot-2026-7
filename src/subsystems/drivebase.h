@@ -33,7 +33,7 @@ class Drivebase : public Subsystem {
       leftFront(vex::motor(vex::PORT20, true)), 
       leftBack(vex::motor(vex::PORT19)),
       rightFront(vex::motor(vex::PORT17)), 
-      rightBack(vex::motor(vex::PORT18, true)), 
+      rightBack(vex::motor(vex::PORT18, true)),  
       leftMotors(leftFront, leftBack), 
       rightMotors(rightFront, rightBack)
       {
@@ -63,7 +63,8 @@ class Drivebase : public Subsystem {
       vex::motor rightBack;  
 
       vex::motor_group leftMotors;
-      vex::motor_group rightMotors;
+      vex::motor_group rightMotors; 
+
       
       void arcadeDrive(double speed, double rotation); 
 

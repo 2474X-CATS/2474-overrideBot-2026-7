@@ -1,22 +1,27 @@
 #include "claw.h" 
 
 Claw* Claw::globalPtr = nullptr;
-double Claw::MAXIMUM_TOLERABLE_DISTANCE = 50;
+double Claw::MAXIMUM_TOLERABLE_DISTANCE = 50; 
+int Claw::SCORE_DELAY_MILLIS = 250;
 
 Claw& Claw::getObject(){ 
     return *globalPtr;
 }
 
 void Claw::init(){ 
-     return;
+    return;
 }
 
 void Claw::periodic(){  
-    clench(get<bool>("clenched"));  
-} 
+    clench(clenched);  
+}  
+
+bool Claw::sensesObject(){ 
+    return objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE;
+}
 
 void Claw::updateTelemetry(){
-   set<bool>("senses_object", objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE); 
+   set<bool>("in_possession", clenched && sensesObject()); 
    stateControl();
 }  
 
@@ -31,29 +36,31 @@ void Claw::stateControl(){
    
    bool still = Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached");
    
-   if (pos == SuperStructurePosition::AUTO){ //Whenever macro is running
-     if (get<bool>("active")){
-         set<bool>("clenched", false); 
+   if (waiting){ 
+      if (Brain.Timer.time() - lastScoreStamp >= SCORE_DELAY_MILLIS){ 
          set<bool>("active", false); 
-         Telemetry::inst.placeValueAt<bool>(true, "forearm", "active"); 
+         Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
+         waiting = false;
+      }
+   } else if (pos == SuperStructurePosition::AUTO){ //Whenever macro is running
+     if (get<bool>("active")){
+         clenched = false; 
+         waiting = true;
+         lastScoreStamp = Brain.Timer.time();
      }
    } else {
       if (!still){  
-        set<bool>("clenched", true); 
+        clenched = true; 
       } else {  
         switch (pos){ 
-          case STANDING:    
-             if (get<bool>("senses_object")){ 
-               set<bool>("clenched", true);
-             } else { 
-               set<bool>("clenched", false);
-             } 
+          case STANDING:
+             clenched = RobotState::getStateOf("command_grip");
              break; 
-          case GROUND:   
-             set<bool>("clenched", false); 
+          case GROUND:
+             clenched = false; 
              break;
           case PRIMED:    
-             set<bool>("clenched", true); 
+             clenched = true; 
              break;  
           default: 
              break;

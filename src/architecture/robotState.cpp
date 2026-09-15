@@ -43,7 +43,10 @@ void RobotState::initializeState()
            (EntrySet){"standing", EntryType::BOOL},
            (EntrySet){"k_score", EntryType::BOOL}, 
            (EntrySet){"switch_score_mode", EntryType::BOOL},
-           (EntrySet){"field_type_is_vex", EntryType::BOOL} // True = VEX, False = RECF
+           (EntrySet){"field_type_is_vex", EntryType::BOOL}, // True = VEX, False = RECF 
+           (EntrySet){"intaking", EntryType::BOOL}, 
+           (EntrySet){"outtaking", EntryType::BOOL}, 
+           (EntrySet){"command_grip", EntryType::BOOL}
        }); 
    
    manuallyModifyState("field_type_is_vex", true);
@@ -56,16 +59,12 @@ void RobotState::updateRegular()
    manuallyModifyState("fall", Controller1.ButtonDown.pressing()); 
    
    manuallyModifyState("grounded", Controller1.ButtonR2.pressing()); 
-   manuallyModifyState("standing", Controller1.ButtonL2.pressing());  
+   manuallyModifyState("standing", Controller1.ButtonL2.pressing());   
 
-   /*
-   if (Controller1.ButtonR1.pressing()){ 
-      manuallyModifyState("k_claw_await", true);
-   } else if (getStateOf("k_claw_await")){ 
-      manuallyModifyState("k_claw_await", false);
-      manuallyModifyState("awaiting_claw_act", true);
-   }  
-   */
+   manuallyModifyState("intaking", Controller1.ButtonA.pressing()); 
+   manuallyModifyState("outtaking", Controller1.ButtonLeft.pressing());
+   
+   manuallyModifyState("command_grip", Controller1.ButtonR1.pressing());
 
    if (Controller1.ButtonX.pressing()){ 
       manuallyModifyState("k_score", true);
@@ -89,11 +88,6 @@ void RobotState::updateRegular()
    }  
    */
 
-   if (Telemetry::inst.getValueAt<bool>("forearm", "hold")){ 
-      setVibrationCode(".");
-   } else { 
-      disableVibrations();
-   } 
    
 
 };

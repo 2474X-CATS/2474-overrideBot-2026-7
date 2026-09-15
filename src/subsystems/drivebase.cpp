@@ -24,7 +24,7 @@ Drivebase& Drivebase::getObject(){
     return *globalPtr;
 }
 
-void Drivebase::periodic(){  
+void Drivebase::periodic(){
   arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL)); 
 }
 
@@ -43,7 +43,8 @@ void Drivebase::stop(){
 
 void Drivebase::manualDrive(double voltageDrive, double voltageTurn){ 
     leftMotors.spin(vex::directionType::fwd, voltageDrive + voltageTurn, vex::voltageUnits::volt); 
-    rightMotors.spin(vex::directionType::fwd, voltageDrive - voltageTurn, vex::voltageUnits::volt);
+    rightMotors.spin(vex::directionType::fwd, voltageDrive - voltageTurn, vex::voltageUnits::volt); 
+
 } 
 
 void Drivebase::arcadeDrive(double speed, double rotation){   

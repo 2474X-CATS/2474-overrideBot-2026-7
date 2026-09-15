@@ -24,7 +24,8 @@ class Elevator : public Subsystem {
        static Elevator* globalPtr;  
         
        static double GROUND_INTAKE_HEIGHT;  
-       static double LEVELED_HEIGHT; 
+       static double LEVELED_HEIGHT;  
+       static double PRIMING_HEIGHT;
        
        static double MAX_HEIGHT;
 
@@ -46,21 +47,23 @@ class Elevator : public Subsystem {
        
        vex::motor lifter1;
        vex::motor lifter2;
-
        vex::motor_group lift;
-
        vex::distance primingSensor;
-
        vex::rotation rot;  
 
-       bool requestingSetpoint = false; 
-       double primingSetpoint; 
-       double requestedHeight;
-
+       double primingSetpoint = 0; 
        bool reachedSetpoint(); 
 
        void stateControl();
-       void respondToRequests();  
+       void respondToRequests();   
+
+       void receiveSetpoints();  
+
+       bool safeToManuever(); 
+       void maintainHoldLock();  
+
+       void findNextSetpoint(); 
+       void regulatePriming();
        
        double getPosition();  
        double getVelocity();
@@ -131,23 +134,20 @@ class RunElevator : public Command<Elevator> {
 
 //---------------------------------------------------------------------
 
-class FrontRunElevatorSetpoint : public Command<Elevator> { 
+class FrontRunElevatorSetpoint : public Command<DummySystem> { 
    
    private:
-
-     Elevator& elevatorRef;  
      bool ran = false;
      double elevatorSetpoint;
 
    public:
 
      CommandInterface* getCommand(double setpoint){ 
-        return new FrontRunElevatorSetpoint(Elevator::getObject(), setpoint); 
+        return new FrontRunElevatorSetpoint(GLOBAL_DUMMY, setpoint); 
      };
 
-     FrontRunElevatorSetpoint(Elevator& elevator, double setpoint): 
-     Command<Elevator>(elevator),
-     elevatorRef(elevator),
+     FrontRunElevatorSetpoint(DummySystem& dummy, double setpoint): 
+     Command<DummySystem>(dummy),
      elevatorSetpoint(setpoint)
      {};
 
