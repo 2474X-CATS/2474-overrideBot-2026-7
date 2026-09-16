@@ -22,16 +22,16 @@ class Elevator : public Subsystem {
     private:   
        
        static Elevator* globalPtr;  
-        
-       static double GROUND_INTAKE_HEIGHT;  
-       static double LEVELED_HEIGHT;  
+      
+       static double GROUND_PRESSURE; 
+
+       static double GROUND_INTAKE_HEIGHT;   
        static double PRIMING_HEIGHT;
        
        static double MAX_HEIGHT;
 
        static double ELEVATOR_ERROR_TOLERANCE; 
-       static double STACK_HEIGHT;  
-
+   
        static double PRIMING_SPEED; 
 
        static double MINIMUM_ALIGNER_DISTANCE; 
@@ -72,9 +72,11 @@ class Elevator : public Subsystem {
 
        void lock(); 
 
-    public:   
+    public:    
        using Subsystem::get; 
-       static Elevator& getObject();
+       static Elevator& getObject(); 
+
+       static double LEVELED_HEIGHT;
 
        Elevator() : 
        Subsystem( 

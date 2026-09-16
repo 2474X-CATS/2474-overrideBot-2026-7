@@ -6,10 +6,12 @@ Elevator* Elevator::globalPtr = nullptr;
 double Elevator::LEVELED_HEIGHT = (17.678 + 2.75) * 25.4; 
 double Elevator::GROUND_INTAKE_HEIGHT = LEVELED_HEIGHT + 105;  
 double Elevator::PRIMING_HEIGHT = GROUND_INTAKE_HEIGHT + 100;
-double Elevator::MAX_HEIGHT = (42 * 25.4);
+double Elevator::MAX_HEIGHT = (42 * 25.4); 
+
+double Elevator::GROUND_PRESSURE = -4; 
 
 //double Elevator::ELEVATOR_ERROR_TOLERANCE = 3; 
-double Elevator::STACK_HEIGHT = 100;
+//double Elevator::STACK_HEIGHT = 100;
 
 double Elevator::PRIMING_SPEED = 12;
 
@@ -48,11 +50,10 @@ void Elevator::periodic(){
    if (currentState == ElevatorState::E_HOLDING || currentState == ElevatorState::E_PURSUING){//Stay Still
      SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
      if (pos == SuperStructurePosition::GROUND && get<bool>("at_setpoint")){ 
-       elevatorOutput = -4;
+       elevatorOutput = GROUND_PRESSURE;
      } else { 
        elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time());
      }
-     //Telemetry::inst.placeValueAt<double>(correctionController->getSetpoint() - getPosition(), "graph", "error"); 
    } else if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
      if (get<bool>("sensing_stack")){
        elevatorOutput = PRIMING_SPEED;
@@ -70,8 +71,7 @@ void Elevator::updateTelemetry(){
     set<double>("current_height", getPosition());  
     set<bool>("sensing_stack", primingSensor.objectDistance(vex::distanceUnits::mm) < MINIMUM_ALIGNER_DISTANCE);  
     set<double>("percentage_extended", (get<double>("current_height") - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT));
-     
-    //Brain.Screen.printAt(20, 120, "Elevator Height: %.2f", getPosition()); 
+    
     stateControl();
     
 } 
