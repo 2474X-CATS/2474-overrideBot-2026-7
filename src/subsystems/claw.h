@@ -6,6 +6,8 @@
 
 #include "vex.h" 
 
+//vex::PORT5 
+
 class Claw : public Subsystem {  
     
     private:  

@@ -22,21 +22,37 @@ Goal targets are chosen in one of two ways by
 
 typedef enum {
     LOCATION = 0, // Find the nearest goal 
-    TOGGLE,   // Switch between points from the origin
-    SILENT    // Setpoints are not preset
+    MANUAL,   // Switch between points from the origin
+    SILENT  // Setpoints are not preset
 } DestinationProtocol;
 
 // Represents a single goal that has a current height and location   
 
-//[+5g, +6g, +7g, +8g, origin, +1g, +2g, +3g, +4g]
+//[+5g, +6g, +7g, +8g, origin, +1g, +2g, +3g, +4g] 
 
+/*
+[
+| A_GOAL; //All 
+---------------> Start here
+| N_GOAL;
+| A_GOAL; //Opp
+| N_GOAL;
+| A_GOAL; //Opp
+| N_GOAL;
+---------------> Or here
+| A_GOAL; //All
+| N_GOAL; 
+V
+]
+*/
 
 double STACK_HEIGHT_MM;
 
 typedef struct { 
 
-   Location* goalPosition; 
-   double goalHeight = Elevator::LEVELED_HEIGHT;
+   Location* goalPosition;  
+   int goalIndex;
+   double goalHeight = Elevator::LEVELED_HEIGHT; 
    
    void score();
    double getHeight();
@@ -52,21 +68,38 @@ class AutoPrimer : public DataStream {
        AutoPrimer(): 
          DataStream( 
            "primer", 
-           {  
-             (EntrySet){"front_ran_setpoint", EntryType::DOUBLE}, //Sent to the elevator
-             (EntrySet){"goal_index", EntryType::INT}
+           {   
+             (EntrySet){"priming_method", EntryType::INT}, //Able to be typecasted to a DestinationProtocol
            }
          )
        {};
 
-       void refreshData() override; // Calls every telemetry frame
-       void init() override; // Sets up sensors for data-collection
+       void refreshData() override; //Update based on the priming method  
+       /* 
+        If the robot is in possesion and priming  
+             - Then update the front ran setpoint dynamically (if the last index is not equal to the current) 
+        If the robot is in auto
+          When the elevator is activated
+             - Then switches a state for elevator pending 
+          When the elevator is not activated if elevator pending  
+             - Then record the height of the elevator when deactivated   
+             - Pending is false  
+       */
+       void init() override; // Sets up sensors for data-collection 
+         
+       void initializeGoalVector(); 
     
-    private:   
-       int shiftVal = 1;
-       Goal[] goals; 
-      
+    private: 
+       
+       void locationBasedShiftUpdate(); //Reference the closest index
+       void manualBasedShiftUpdate(); //Simply reference the correct index
 
+       int findClosestShiftValue(); 
+       
+       int goalIndex;
+       int lastGoalIndex;
+
+       Goal[] Goals;
 };
 
 
