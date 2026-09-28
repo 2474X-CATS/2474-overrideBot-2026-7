@@ -3,26 +3,49 @@
 
 Elevator* Elevator::globalPtr = nullptr;
 
-double Elevator::LEVELED_HEIGHT = (17.678 + 2.75) * 25.4; 
-double Elevator::GROUND_INTAKE_HEIGHT = LEVELED_HEIGHT + 105;  
-double Elevator::PRIMING_HEIGHT = GROUND_INTAKE_HEIGHT + 100;
-double Elevator::MAX_HEIGHT = (42 * 25.4); 
+const double Elevator::LEVELED_HEIGHT = (17.678 + 2.75) * 25.4; 
+const double Elevator::GROUND_INTAKE_HEIGHT = LEVELED_HEIGHT + 50;  
+const double Elevator::PRIMING_HEIGHT = GROUND_INTAKE_HEIGHT + 150;
+const double Elevator::MAX_HEIGHT = (42 * 25.4); 
 
-double Elevator::GROUND_PRESSURE = -4; 
+const double Elevator::GROUND_PRESSURE = -4; 
 
-//double Elevator::ELEVATOR_ERROR_TOLERANCE = 3; 
-//double Elevator::STACK_HEIGHT = 100;
+const double Elevator::PRIMING_SPEED = 12;
 
-double Elevator::PRIMING_SPEED = 12;
+const double Elevator::MINIMUM_ALIGNER_DISTANCE = ROBOT_LENGTH_MM/2 * 1.5;  
+const double Elevator::ALIGNER_ERROR_TOLERANCE = 10;
 
-double Elevator::MINIMUM_ALIGNER_DISTANCE = ROBOT_LENGTH_MM/2 * 1.5;  
-double Elevator::ALIGNER_ERROR_TOLERANCE = 10;  
-
-double Elevator::SPOOL_DIAMETER = (Elevator::MAX_HEIGHT - Elevator::LEVELED_HEIGHT) / (2.534 * M_PI);
+const double Elevator::SPOOL_DIAMETER = (Elevator::MAX_HEIGHT - Elevator::LEVELED_HEIGHT) / (2.534 * M_PI);
 
 Elevator& Elevator::getObject(){ 
   return *globalPtr;
 }
+
+
+Elevator::Elevator() : 
+    Subsystem( 
+        "elevator", 
+        { 
+            (EntrySet){"active", EntryType::BOOL}, //In a macro?
+            (EntrySet){"at_setpoint", EntryType::BOOL}, //Achieved setpoint or no setpoint? 
+            (EntrySet){"sensing_stack", EntryType::BOOL}, 
+            (EntrySet){"requested_setpoint", EntryType::DOUBLE}, 
+            (EntrySet){"requesting_setpoint", EntryType::BOOL},
+            (EntrySet){"sniper_score_enabled", EntryType::BOOL},
+            (EntrySet){"percentage_extended", EntryType::DOUBLE}, 
+            (EntrySet){"current_height", EntryType::DOUBLE},
+            (EntrySet){"hold", EntryType::BOOL}
+         }
+    ),
+    lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 
+    lifter2(vex::motor(vex::PORT10, vex::ratio18_1)), 
+    lift(vex::motor_group(lifter1, lifter2)),
+    rot(vex::rotation(vex::PORT2)),
+    primingSensor(vex::distance(vex::PORT3))
+    { 
+        globalPtr = this;
+    };
+
 
 void Elevator::init(){  
 
@@ -45,11 +68,10 @@ void Elevator::stop(){
 }
 
 void Elevator::periodic(){ 
-   
    double elevatorOutput = 0;
    if (currentState == ElevatorState::E_HOLDING || currentState == ElevatorState::E_PURSUING){//Stay Still
      SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
-     if (pos == SuperStructurePosition::GROUND && get<bool>("at_setpoint")){ 
+     if (pos == SuperStructurePosition::STANDING && get<bool>("at_setpoint")){ 
        elevatorOutput = GROUND_PRESSURE;
      } else { 
        elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time());
@@ -63,15 +85,14 @@ void Elevator::periodic(){
    } else if (currentState == ElevatorState::E_ADJUSTING){ 
      elevatorOutput = PRIMING_SPEED * raisingDirection;
    }
-   lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt);
+   lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt); 
 }  
 
 void Elevator::updateTelemetry(){     
     
-    set<double>("current_height", getPosition());  
-    set<bool>("sensing_stack", primingSensor.objectDistance(vex::distanceUnits::mm) < MINIMUM_ALIGNER_DISTANCE);  
+    set<double>("current_height", getPosition());    
     set<double>("percentage_extended", (get<double>("current_height") - LEVELED_HEIGHT) / (MAX_HEIGHT - LEVELED_HEIGHT));
-    
+    set<bool>("sensing_stack", primingSensor.objectDistance(vex::distanceUnits::mm) < MINIMUM_ALIGNER_DISTANCE && get<double>("percentage_extended") < 1.35); 
     stateControl();
     
 } 
@@ -126,7 +147,11 @@ bool Elevator::safeToManuever(){
 
 void Elevator::maintainHoldLock(){ 
   if (get<bool>("hold")){   
-    set<bool>("hold", !safeToManuever());
+    set<bool>("hold", !safeToManuever());  
+    if (Telemetry::inst.getValueAt<bool>("forearm", "hold")){  
+      set<bool>("requesting_setpoint", true); 
+      set<double>("requested_setpoint", PRIMING_HEIGHT);
+    }
   }
 }
 
@@ -158,7 +183,7 @@ void Elevator::findNextSetpoint(){
           } else if (!Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
               set<bool>("requesting_setpoint", true); 
               set<double>("requested_setpoint", PRIMING_HEIGHT);
-          } 
+          }
           break;
         default:
           break;
@@ -231,22 +256,3 @@ void RunElevator::end(){
 } 
 
 //--------------------------------------------------------------------------------------------- 
-
-void FrontRunElevatorSetpoint::start(){ 
-   return;
-} 
-
-void FrontRunElevatorSetpoint::periodic(){  
-   Telemetry::inst.placeValueAt<bool>(true, "elevator", "sniper_score_enabled");
-   Telemetry::inst.placeValueAt<bool>(true, "elevator", "requesting_setpoint"); 
-   Telemetry::inst.placeValueAt<double>(elevatorSetpoint, "elevator", "requested_setpoint"); 
-   ran = true;
-} 
-
-bool FrontRunElevatorSetpoint::isOver(){ 
-  return ran; 
-} 
-
-void FrontRunElevatorSetpoint::end(){ 
-  return;
-}

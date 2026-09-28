@@ -23,21 +23,19 @@ class Elevator : public Subsystem {
        
        static Elevator* globalPtr;  
       
-       static double GROUND_PRESSURE; 
+       static const double GROUND_PRESSURE; 
 
-       static double GROUND_INTAKE_HEIGHT;   
-       static double PRIMING_HEIGHT;
+       static const double GROUND_INTAKE_HEIGHT;   
+       static const double PRIMING_HEIGHT;
        
-       static double MAX_HEIGHT;
-
-       static double ELEVATOR_ERROR_TOLERANCE; 
+       static const double MAX_HEIGHT;
    
-       static double PRIMING_SPEED; 
+       static const double PRIMING_SPEED; 
 
-       static double MINIMUM_ALIGNER_DISTANCE; 
-       static double ALIGNER_ERROR_TOLERANCE; 
+       static const double MINIMUM_ALIGNER_DISTANCE; 
+       static const double ALIGNER_ERROR_TOLERANCE; 
 
-       static double SPOOL_DIAMETER;
+       static const double SPOOL_DIAMETER;
 
        int raisingDirection = 0;
 
@@ -76,31 +74,9 @@ class Elevator : public Subsystem {
        using Subsystem::get; 
        static Elevator& getObject(); 
 
-       static double LEVELED_HEIGHT;
+       static const double LEVELED_HEIGHT;
 
-       Elevator() : 
-       Subsystem( 
-          "elevator", 
-          { 
-            (EntrySet){"active", EntryType::BOOL}, //In a macro?
-            (EntrySet){"at_setpoint", EntryType::BOOL}, //Achieved setpoint or no setpoint? 
-            (EntrySet){"sensing_stack", EntryType::BOOL}, 
-            (EntrySet){"requested_setpoint", EntryType::DOUBLE}, 
-            (EntrySet){"requesting_setpoint", EntryType::BOOL},
-            (EntrySet){"sniper_score_enabled", EntryType::BOOL},
-            (EntrySet){"percentage_extended", EntryType::DOUBLE}, 
-            (EntrySet){"current_height", EntryType::DOUBLE},
-            (EntrySet){"hold", EntryType::BOOL}
-         }
-       ),
-       lifter1(vex::motor(vex::PORT14, vex::ratio18_1, true)), 
-       lifter2(vex::motor(vex::PORT10, vex::ratio18_1)), 
-       lift(vex::motor_group(lifter1, lifter2)),
-       rot(vex::rotation(vex::PORT2)),
-       primingSensor(vex::distance(vex::PORT3))
-       { 
-        globalPtr = this;
-       };
+       Elevator();
        
        void init() override; 
        void periodic() override;
@@ -125,9 +101,9 @@ class RunElevator : public Command<Elevator> {
    RunElevator(Elevator& elevator) :   
    Command<Elevator>(elevator),
    elevatorRef(elevator) 
-   {};  
+   {};
 
-  protected: 
+  protected:
    void start() override; 
    void periodic() override; 
    bool isOver() override; 
@@ -136,29 +112,6 @@ class RunElevator : public Command<Elevator> {
 
 //---------------------------------------------------------------------
 
-class FrontRunElevatorSetpoint : public Command<DummySystem> { 
-   
-   private:
-     bool ran = false;
-     double elevatorSetpoint;
-
-   public:
-
-     CommandInterface* getCommand(double setpoint){ 
-        return new FrontRunElevatorSetpoint(GLOBAL_DUMMY, setpoint); 
-     };
-
-     FrontRunElevatorSetpoint(DummySystem& dummy, double setpoint): 
-     Command<DummySystem>(dummy),
-     elevatorSetpoint(setpoint)
-     {};
-
-   protected: 
-     void start() override; 
-     void periodic() override; 
-     bool isOver() override; 
-     void end() override;
-};
 
 
 #endif

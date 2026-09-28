@@ -1,168 +1,105 @@
 #ifndef __PATH_H__
 #define __PATH_H__
 
-#include "../utilities/bezier.h"
-#include "trapezoidalMotion.h"
-#include "pidcontroller.h"
-#include "math.h" 
-#include "../utilities/functools.h"
+#include <vector> 
 
-typedef struct
-{
-   double linearVelocity;  // The calculated base speed derived from a trapzeoidal motion profile
-   double angularVelocity; // Based on the calculated linear velocity and the angular error calculate the angular velocity
-} PathFrameOutput;
-
-typedef struct
-{
-   array<double, 2> point;
-   double progressT; // Closest t point
-} BezierReferencePoint;
-
-typedef struct
-{
-   PIDConstants correctiveTurnConstants; 
-   PIDConstants correctiveLinConstants;
-   TrapezoidConstants motionConstants;
-   double maximumCentripetalAcceleration;
-   double positionX;
-   double positionY;
-   double angleHeading;
-} PathMetadata; 
-
-typedef struct{ 
-   double positionX; 
-   double positionY; 
-   double angleHeading; 
-   double linearVelocity; 
-   double angularVelocity; 
-   double timestamp;
-} PathFrame;
-
-class HomingPath
-{
-
-private:
-   static double TUNED_LDIST;
-   static double TUNED_L_SCALE;
-   static double OPTIMUM_TOLERANCE;
-
-   BezierCurve *curve = nullptr; 
-
-   errorcontroller *omegaController = nullptr; 
-   errorcontroller *alphaController = nullptr; 
-
-   TrapezoidalMotionProfile *curveProfile = nullptr;
-
-   double lDist;
-   double maxCentripetalAcceleration;
-   double lastVelocity = 0;
-
-   double lastTimestamp;
-
-   double pathProgress = 0;
-   double deriveMaxVelocity(double radius);
-
-   double distanceTolerance = 0;
-   double distanceTraveled = 0;
-
-   double k_scale;
-
-   array<double, 2> endpoint;
-
-   void updateAnchorPoint(double closestT);
-
-   double getOptimumLookaheadDist(double velocity);
-
-   TrapezoidalMotionProfile *getProfile();
-
-   BezierReferencePoint findReferencePoint(double x, double y, double lookAhead);
-
-   double getAcceleration();
-
-   double getPathProgress();
-
-   BezierCurve *getCurve();
-
-public:
-   HomingPath(BezierCurve *curve, TrapezoidConstants motionConstants, PIDConstants correctiveAng, PIDConstants correctiveLin, double lookAheadDistance, double k_scale, double maxCentripAccel, double distTolerance);
-
-   HomingPath(array<array<double, 2>, 3> points, TrapezoidConstants motionConstants, PIDConstants correctiveAng, PIDConstants correctiveLin, double maxCentripAccel);
-
-   HomingPath(array<array<double, 2>, 2> points, PathMetadata metadata);
-
-   PathFrameOutput calculateFrameOutput(double x, double y, double heading, double linearVelocity, double angularVelocity, double timestamp);
-   
-   PathFrameOutput calculateFrameOutput(PathFrame frameData);
-
-   void init(double timestamp);
-
-   bool completed(double x, double y);
-};
 
 typedef struct { 
-   array<double,2> endpoint; 
-   bool cuttingCorners;
-} BiarcEnum;
-
-class CirclePath
-{
-
-private:
-   bool activated = false;
-
-   double startingVelocity = 0;
-   double endingVelocity = 0;
-   
-   errorcontroller *omegaController = nullptr; 
-   errorcontroller *alphaController = nullptr; 
-   
-   TrapezoidalMotionProfile *profile = nullptr; 
-
-   double radius;
-   double lastTimestamp = -1;
-   
-   double arcLength;
-
-   bool straight = false;
-   int turningDirection = 0;
-   int drivingDirection = 1;
-
-   bool cuttingCorners;
-   array<double, 2> endpoint;
-
-   double endingHeading;
-
-   double getAngularVelocity(double linearVelocity);
-   
-   double getMaximumVelocity();
-
-   double getEndpointX();
-   double getEndpointY();
-  
-   double getEndingHeading();  
+   double x = 0.0; 
+   double y = 0.0; 
+   double heading = -1.0; 
+} Point; 
 
 
-public:
-   CirclePath(BiarcEnum biarc, PathMetadata metadata);
-   CirclePath(BiarcEnum biarc);
+class Trajectory { //Maps out the points for a path 
 
-   PathFrameOutput calculateFrameOutput(double linearVelocity, double angularVelocity, double timestamp); 
+   public: 
 
-   PathFrameOutput calculateFrameOutput(PathFrame frameData);
+     Trajectory(){};
 
-   static void linkLeftToRight(CirclePath *path1, CirclePath *path2);
+     virtual Point getEndPoint(){ 
+      Point p; 
+      return p;
+     };    
 
-   void transformMetadata(PathMetadata *metadata); 
+     void generatePoints(std::vector<Point>& resultantVector, int steps); //How far apart each point should be when generating 
 
-   void setStartingVelocity(double velocity);
-   void setEndingVelocity(double velocity);
+     virtual double calculateLength(){return 0;}; //Length of the trajectory
+     
+     virtual double generateX(double n){return 0;}; //Find x-coordinate
+     virtual double generateY(double n){return 0;}; //Find y-coordinate 
 
-   void activate(PathMetadata metadata);
+}; 
 
-   void init(double timestamp);
+class Bezier : public Trajectory {  
 
-   bool completed(double timestamp);
+    private:
+
+      Point pStart; 
+      Point pHandle;  
+      Point pEnd; 
+
+    public:
+
+      Bezier(Point start, Point handle, Point end);
+
+      Point getEndPoint() override;  
+
+      double calculateLength() override;
+
+      double generateX(double n) override; 
+      double generateY(double n) override;  
+
 };
+
+class Line : public Trajectory {   
+
+    private:
+
+      Point pStart; 
+      Point pEnd; 
+
+      double heading;
+
+    public: 
+
+      Line(Point start, Point end);
+
+      Point getEndPoint() override;  
+
+      double calculateLength() override;
+       
+      double generateX(double n) override;
+      double generateY(double n) override; 
+
+}; 
+
+class Arc : public Trajectory {  
+   
+  private:
+    int curveDirection;
+
+    Point startPoint; 
+    Point endPoint; 
+
+    Point getCenter(); 
+    double getRadius(); 
+    
+    double getPointDist(); 
+
+    double getAngleChange(); 
+
+  public: 
+    Arc(Point start, Point end);  
+
+    Point getEndPoint() override;  
+
+    double calculateLength() override; 
+    double generateX(double n) override; 
+    double generateY(double n) override;
+ 
+  
+};
+
 
 #endif

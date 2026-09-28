@@ -6,7 +6,8 @@
 #include "subsystems/claw.h"
 #include "subsystems/drivebase.h" 
 #include "subsystems/elevator.h" 
-#include "subsystems/forearm.h" 
+#include "subsystems/forearm.h"  
+#include "subsystems/intake.h"
 
 
 class RunSuperStructure : public ParallelCommandGroup {  
@@ -20,8 +21,7 @@ class RunSuperStructure : public ParallelCommandGroup {
       RunSuperStructure(): 
       ParallelCommandGroup(RunElevator::getCommand()) 
       { 
-         chainAnd(RunForearm::getCommand())-> 
-         chainAnd(RunClaw::getCommand());
+         chainAnd(RunForearm::getCommand())->chainAnd(RunClaw::getCommand())->chainAnd(RunIntake::getCommand());
       }
 };  
 
@@ -76,8 +76,7 @@ class WaitFor : public Command<DummySystem>{
       void periodic() override; 
       bool isOver() override;  
       void end() override;
-}; 
-
+};  
 
 class WaitUntil : public Command<DummySystem> { 
 
@@ -105,8 +104,39 @@ class WaitUntil : public Command<DummySystem> {
       void periodic() override; 
       bool isOver() override;  
       void end() override;
+};  
+
+
+class WaitForSSState : public Command<DummySystem> { 
+
+    private:  
+
+       SuperStructurePosition state; 
+
+    public:
+
+       static CommandInterface* getCommand(SuperStructurePosition state){ 
+         return new WaitForSSState(GLOBAL_DUMMY, state);
+       }
        
+       WaitForSSState(DummySystem& dummy, SuperStructurePosition ssState): 
+       Command<DummySystem>(dummy),
+       state(ssState)
+       {}; 
+
+    protected:
+      void start() override; 
+      void periodic() override; 
+      bool isOver() override;  
+      void end() override;
+
 };
+
+CommandInterface* Score();  
+CommandInterface* GroundIntakeMode(bool waitUntilReached);  
+CommandInterface* StandingMode(bool waitUntilReached);  
+CommandInterface* Bounce(int nBounces);
+
 
 
 

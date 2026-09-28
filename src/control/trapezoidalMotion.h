@@ -45,14 +45,11 @@ private:
   double calculateVelocity(double time);
   double calculateAcceleration(double time);
 
-  TrapezoidConstants consts;
-
 public:
   TrapezoidalMotionProfile(TrapezoidConstants constants, double setpoint, double startingVelocity, double finalVelocity) : maxVelocity(constants.maxVelocity),
                                                                                                                            maxAcceleration(constants.maxAcceleration),
                                                                                                                            startingVelocity(startingVelocity),
-                                                                                                                           setpoint(setpoint),
-                                                                                                                           consts(constants)
+                                                                                                                           setpoint(setpoint)                                                                                     
   {
     init(startingVelocity, finalVelocity);
   };

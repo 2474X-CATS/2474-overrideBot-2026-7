@@ -3,36 +3,75 @@
 
 Drivebase* Drivebase::globalPtr = nullptr; 
 
-double Drivebase::MAX_RPM = 450; 
-double Drivebase::WHEEL_RADIUS_MM = 2.75 / 2 * 25.4;
+const double Drivebase::MAX_RPM = 450; 
+const double Drivebase::WHEEL_RADIUS_MM = 2.75 / 2 * 25.4;
 
-double Drivebase::DRIVE_SENSITIVITY = 1; 
-double Drivebase::TURN_SENSITIVITY = 1; 
+const double Drivebase::DRIVE_SENSITIVITY = 1; 
+const double Drivebase::TURN_SENSITIVITY = 1; 
 
-double Drivebase::ACCELERATION_LIMIT_LIN = 12 / 0.01; 
-double Drivebase::ACCELERATION_LIMIT_ANG = 12 / 0.01; 
+const double Drivebase::ACCELERATION_LIMIT_LIN = 12 / 0.00001; 
+const double Drivebase::ACCELERATION_LIMIT_ANG = 12 / 0.00001; 
 
-double Drivebase::MAX_LIN_SPEED = 12;
-double Drivebase::MAX_ANG_SPEED = 12;
+const double Drivebase::MAX_LIN_SPEED = 12;
+const double Drivebase::MAX_ANG_SPEED = 12;
+
+Drivebase::Drivebase(): 
+Subsystem( 
+   "drivebase", 
+   { 
+    (EntrySet){"is_on", EntryType::BOOL}
+   }
+),
+leftFront(vex::motor(vex::PORT4)), //20 true
+leftBack(vex::motor(vex::PORT5, true)), //19 
+leftExtra(vex::motor(vex::PORT6)),
+rightFront(vex::motor(vex::PORT1, true)), //17
+rightBack(vex::motor(vex::PORT2)), //18 true   
+rightExtra(vex::motor(vex::PORT3, true)),
+leftMotors(leftFront, leftBack, leftExtra), //Get rid of extra motors later
+rightMotors(rightFront, rightBack, rightExtra)
+{
+  globalPtr = this;  
+  Point p1; 
+  Point p2; 
+  p1.x = ROBOT_WIDTH_MM / 2; 
+  p1.y = ROBOT_LENGTH_MM / 2; 
+  p2.x = TILE_SIZE_MM * 3; 
+  p2.y = TILE_SIZE_MM * 1;  
+
+  path = new Line(p1, p2); 
+  vector<Point> points;
+  path->generatePoints(points, 7);
+  donkey = new PurePursuit(points, ROBOT_LENGTH_MM/2);
+};
 
 void Drivebase::init(){ 
   leftMotors.setStopping(vex::brakeType::brake);  
   rightMotors.setStopping(vex::brakeType::brake);
 }
 
-Drivebase& Drivebase::getObject(){ 
+Drivebase& Drivebase::getObject(){
     return *globalPtr;
 }
 
 void Drivebase::periodic(){
-  arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL)); 
+  //arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL));  
+  //setSpeeds(0, 90); 
+  double linearError; 
+  double angularError; 
+  donkey->calculateError( 
+    Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"), 
+    Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"),  
+    Telemetry::inst.getValueAt<double>("odometry", "heading_deg"), 
+    linearError, 
+    angularError
+  );
+  Brain.Screen.printAt(20, 120, "Distance from setpoint: %.2f", linearError); 
+  Brain.Screen.printAt(20, 140, "Angular Error: %.2f", angularError); 
+  setSpeeds(linearError * 0.5, angularError * 0.5);
 }
 
-void Drivebase::updateTelemetry(){  
-  //double percentageHeight = Telemetry::inst.getValueAt<double>("elevator", "percentage_height"); 
-  /* 
-  Modify max speeds and accelerations
-  */
+void Drivebase::updateTelemetry(){   
   return;
 }
 
@@ -41,10 +80,12 @@ void Drivebase::stop(){
     rightMotors.stop();
 } 
 
-void Drivebase::manualDrive(double voltageDrive, double voltageTurn){ 
+void Drivebase::manualDrive(double voltageDrive, double voltageTurn){   
+    if (RobotState::getStateOf("inverted")){ 
+      voltageDrive *= -1;
+    }
     leftMotors.spin(vex::directionType::fwd, voltageDrive + voltageTurn, vex::voltageUnits::volt); 
     rightMotors.spin(vex::directionType::fwd, voltageDrive - voltageTurn, vex::voltageUnits::volt); 
-
 } 
 
 void Drivebase::arcadeDrive(double speed, double rotation){   
@@ -56,30 +97,40 @@ void Drivebase::arcadeDrive(double speed, double rotation){
     
     rotation = std::min<double>(std::min<double>(rotation, lastAngularVoltage + ((20/1000.0) * ACCELERATION_LIMIT_ANG)), MAX_ANG_SPEED);
     rotation = std::max<double>(std::max<double>(rotation, lastAngularVoltage - ((20/1000.0) * ACCELERATION_LIMIT_ANG)), -MAX_ANG_SPEED); 
-   
-    leftMotors.spin(vex::directionType::fwd, (speed + rotation), vex::voltageUnits::volt); 
-    rightMotors.spin(vex::directionType::fwd, (speed - rotation), vex::voltageUnits::volt);  
+     
+    manualDrive(speed, rotation);
 
     lastAngularVoltage = rotation; 
     lastLinearVoltage = speed;
-} 
+}   
+
+
+void Drivebase::setSpeeds(double linearVelocity, double angularVelocity){ 
+    double linRPM = linearVelocity / (WHEEL_RADIUS_MM * 2 * M_PI) * 60 * 600 / MAX_RPM; 
+    double angRPM = ((ROBOT_WIDTH_MM * M_PI) * (angularVelocity / 360.0)) / (WHEEL_RADIUS_MM * 2 * M_PI) * 60 * 600 / MAX_RPM; 
+    leftMotors.setVelocity(linRPM - angRPM, vex::velocityUnits::rpm);
+    rightMotors.setVelocity(linRPM + angRPM, vex::velocityUnits::rpm); 
+    leftMotors.spin(vex::directionType::fwd); 
+    rightMotors.spin(vex::directionType::fwd);
+}
+
 
 ///-------------------------------------------------------------------------------------- 
 
-double DriveForward::MOTION_CONSTANTS_MAX_VELO = (((Drivebase::MAX_RPM * (2 * Drivebase::WHEEL_RADIUS_MM * M_PI)) / 60.0)) * 0.85; //0.75; 
-double DriveForward::MOTION_CONSTANTS_MAX_ACCEL = DriveForward::MOTION_CONSTANTS_MAX_VELO / 0.5;
+const double DriveForward::MOTION_CONSTANTS_MAX_VELO = (((Drivebase::MAX_RPM * (2 * Drivebase::WHEEL_RADIUS_MM * M_PI)) / 60.0)) * 0.85; //0.75; 
+const double DriveForward::MOTION_CONSTANTS_MAX_ACCEL = DriveForward::MOTION_CONSTANTS_MAX_VELO / 0.5;
 
-double DriveForward::PID_CONSTANTS_KP = 0.00075;//0.001;//75;
-double DriveForward::PID_CONSTANTS_KI = 0;
-double DriveForward::PID_CONSTANTS_KD = 0.000;
+const double DriveForward::PID_CONSTANTS_KP = 0.01;//0.001;//75;
+const double DriveForward::PID_CONSTANTS_KI = 0;
+const double DriveForward::PID_CONSTANTS_KD = 0.000;
 
-double DriveForward::FF_CONSTANTS_S = 0.71922;
-double DriveForward::FF_CONSTANTS_V = 0.00583825;
-double DriveForward::FF_CONSTANTS_A = 0.0009; 
+const double DriveForward::FF_CONSTANTS_S = 0.71922;
+const double DriveForward::FF_CONSTANTS_V = 0.00625;//0.05;
+const double DriveForward::FF_CONSTANTS_A = 0.0022; 
 
-double DriveForward::STRAIGHTEN_PID_KP = 0.115;//0.05;//0.033
-double DriveForward::STRAIGHTEN_PID_KI = 0;
-double DriveForward::STRAIGHTEN_PID_KD = 0.000;
+const double DriveForward::STRAIGHTEN_PID_KP = 0.115;//0.05;//0.033
+const double DriveForward::STRAIGHTEN_PID_KI = 0;
+const double DriveForward::STRAIGHTEN_PID_KD = 0.000;
 
 
 void DriveForward::start(){ 
@@ -104,8 +155,8 @@ void DriveForward::start(){
     straightenConstants.D = STRAIGHTEN_PID_KD;
      
     TrapezoidConstants motionConstants; 
-    motionConstants.maxVelocity = MOTION_CONSTANTS_MAX_VELO; 
-    motionConstants.maxAcceleration = MOTION_CONSTANTS_MAX_ACCEL; 
+    motionConstants.maxVelocity = MOTION_CONSTANTS_MAX_VELO * (percentVelo / 100.0); 
+    motionConstants.maxAcceleration = MOTION_CONSTANTS_MAX_ACCEL * (percentAccel / 100.0); 
 
     controller = new pidcontroller(pidConstants, 0);   
     straightener = new pidcontroller(straightenConstants, 0); 
@@ -122,7 +173,11 @@ void DriveForward::periodic(){
     TrapezoidalSetpoint motionGoal = motionProfile->generateSetpoint(Brain.Timer.time());   
 
     double setpointVelocity = motionGoal.velocity; 
-    double setpointAcceleration = motionGoal.acceleration; 
+    double setpointAcceleration = motionGoal.acceleration;  
+
+    Telemetry::inst.placeValueAt<double>(setpointVelocity, "graph", "expected_velocity"); 
+    Telemetry::inst.placeValueAt<double>(setpointAcceleration, "graph", "expected_acceleration");
+    Telemetry::inst.placeValueAt<double>(Telemetry::inst.getValueAt<double>("odometry", "velocity_ms"), "graph", "current_velocity");
 
     double ffOutput = ffController.calculate(setpointVelocity, setpointAcceleration);  
     double correction = controller->calculate(Telemetry::inst.getValueAt<double>("odometry", "velocity_ms") - setpointVelocity, Brain.Timer.time()); 
@@ -156,9 +211,9 @@ void DriveForward::setDistance(double dist){
 
 //------------------------------------------------------------- 
 
-double TurnToHeading::PID_CONSTANTS_KP = 0.105;
-double TurnToHeading::PID_CONSTANTS_KI = 0.0018;//0.110;
-double TurnToHeading::PID_CONSTANTS_KD = 0.0021;
+const double TurnToHeading::PID_CONSTANTS_KP = 12.0/75;
+const double TurnToHeading::PID_CONSTANTS_KI = 0.025;//0.110;
+const double TurnToHeading::PID_CONSTANTS_KD = 0.001;
 
 void TurnToHeading::start(){ 
    PIDConstants pidConstants;
@@ -190,8 +245,10 @@ void TurnToHeading::end(){
   drivebaseRef.manualDrive(0, 0);  
 }
  
-double TurnToHeading::getError(){ 
-    return angleDifference(setpoint, Telemetry::inst.getValueAt<double>("odometry", "heading_deg")); 
+double TurnToHeading::getError(){  
+    double error = angleDifference(setpoint, Telemetry::inst.getValueAt<double>("odometry", "heading_deg"));
+    //Telemetry::inst.placeValueAt<double>(error, "graph", "error");
+    return error; 
 } 
 
 void TurnToHeading::setAngle(double angle){ 

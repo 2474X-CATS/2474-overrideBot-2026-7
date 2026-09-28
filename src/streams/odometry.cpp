@@ -1,9 +1,9 @@
 #include "odometry.h" 
 #include "../utilities/functools.h" 
 
-double Odometry::INERTIAL_WHEEL_RADIUS = 25.4; 
-double Odometry::ANG_ROT_DIST_FROM_CENTER = 3.369586 * 25.4; //
-double Odometry::GOAL_WIDTH = 6 * 25.4;
+const double Odometry::INERTIAL_WHEEL_RADIUS = 25.4; 
+const double Odometry::ANG_ROT_DIST_FROM_CENTER = 3.369586 * 25.4; //
+const double Odometry::GOAL_WIDTH = 6 * 25.4;
 
 Location* Odometry::locations[13] = { 
    new Location(
@@ -77,7 +77,27 @@ Location* Odometry::getLocation(int index){
    return locations[index];
 }
 
-void Odometry::init(){  
+Odometry::Odometry() : 
+    DataStream( 
+      "odometry",
+       {  
+           (EntrySet){"starting_left", EntryType::BOOL}, 
+           (EntrySet){"x_position_mm", EntryType::DOUBLE}, 
+           (EntrySet){"y_position_mm", EntryType::DOUBLE}, 
+           (EntrySet){"heading_deg", EntryType::DOUBLE}, 
+           (EntrySet){"velocity_ms", EntryType::DOUBLE},  
+           (EntrySet){"immediate_distance", EntryType::DOUBLE},
+           (EntrySet){"oriented_c", EntryType::BOOL},
+           (EntrySet){"forward_acceleration", EntryType::DOUBLE}
+       }
+    ),
+    gyro(vex::inertial(vex::PORT12)), //16
+    linRot(vex::rotation(vex::PORT11)) //8 
+    //angRot(vex::rotation(vex::PORT13))
+    {};
+
+void Odometry::init(){   
+   set<bool>("oriented_c", true);
    calibratePerspective();
    setStartingOdometry();
    lastTimestamp = Brain.Timer.time();  
@@ -89,7 +109,9 @@ void Odometry::refreshData(){
     double delta = (currentTimestamp - lastTimestamp) / 1000.0;
     
     double currentHeading = gyro.heading();
-    double omega = gyro.gyroRate(vex::axisType::zaxis, vex::velocityUnits::dps);  
+    double omega = gyro.gyroRate(vex::axisType::zaxis, vex::velocityUnits::dps);   
+
+    set<double>("forward_acceleration", gyro.acceleration(vex::axisType::yaxis));
     
     if (get<bool>("oriented_c")){ 
        currentHeading = flipOrientation(currentHeading); 
@@ -99,20 +121,20 @@ void Odometry::refreshData(){
     double omegaToRPS = ((omega / 360) * (2 * ANG_ROT_DIST_FROM_CENTER * M_PI)) / (2 * M_PI * INERTIAL_WHEEL_RADIUS);
 
     double posYVelocity = (linRot.velocity(vex::velocityUnits::rpm) / 60) * 2 * M_PI * INERTIAL_WHEEL_RADIUS; 
-    double posXVelocity = ((angRot.velocity(vex::velocityUnits::rpm) / 60) - omegaToRPS) * 2 * M_PI * INERTIAL_WHEEL_RADIUS;  
+    //double posXVelocity = ((angRot.velocity(vex::velocityUnits::rpm) / 60) - omegaToRPS) * 2 * M_PI * INERTIAL_WHEEL_RADIUS;  
 
     double posYDistance = posYVelocity * delta;  
-    double posXDistance = posXVelocity * delta;
+    //double posXDistance = posXVelocity * delta;
 
     if (RobotState::getStateOf("inverted")){ 
        posYDistance *= -1;
-       posXDistance *= -1;
+       //posXDistance *= -1;
        currentHeading = angleSum(currentHeading, 180);
     }    
     
     set<double>("heading_deg", currentHeading);
-    set<double>("immediate_distance", hypot(posXDistance, posYDistance)); 
-    set<double>("velocity_ms", hypot(posXVelocity, posYVelocity));
+    set<double>("immediate_distance", hypot(0,/*posXDistance,*/posYDistance)); 
+    set<double>("velocity_ms", posYVelocity);
 
     currentHeading = toRadians(currentHeading);  
 
@@ -122,10 +144,10 @@ void Odometry::refreshData(){
     xPos += cos(currentHeading) * posYDistance; 
     yPos += sin(currentHeading) * posYDistance;  
 
-    xPos += sin(currentHeading) * posXDistance; 
-    yPos += cos(currentHeading) * posXDistance;
+    //xPos += sin(currentHeading) * posXDistance; 
+    //yPos += cos(currentHeading) * posXDistance;
     
-    //Brain.Screen.printAt(20, 120, "X: %.2f, Y: %.2f, Omega Offset: %.2f", xPos, yPos, omegaToRPS); 
+    //Brain.Screen.printAt(20, 100, "X: %.2f, Y: %.2f, Heading: %.2f", xPos, yPos, get<double>("heading_deg")); 
 
     set<double>("x_position_mm", xPos); 
     set<double>("y_position_mm", yPos); 
@@ -139,11 +161,8 @@ void Odometry::setStartingOdometry(){ //Not finished
   double halfWidth = (ROBOT_WIDTH_MM/2); 
   double halfLength = (ROBOT_LENGTH_MM/2);  
 
-  double cornerX = TILE_SIZE_MM; 
-  double cornerY = TILE_SIZE_MM; 
-
-  double offsetX = halfWidth; 
-  double offsetY = halfLength; 
+  double cornerX = 0;//TILE_SIZE_MM * 3 - halfWidth; 
+  double cornerY = 0;//4 * 25.4; 
 
   double angleHeading = 90; 
 
@@ -157,10 +176,10 @@ void Odometry::setStartingOdometry(){ //Not finished
   } 
 
   gyro.setHeading(angleHeading, vex::rotationUnits::deg); 
-  linRot.setReversed(true); 
+  //linRot.setReversed(true); 
   
-  set<double>("x_position_mm", cornerX + offsetX); 
-  set<double>("y_position_mm", cornerY + offsetY); 
+  set<double>("x_position_mm", cornerX + halfWidth); 
+  set<double>("y_position_mm", cornerY + halfLength); 
   
 } 
 

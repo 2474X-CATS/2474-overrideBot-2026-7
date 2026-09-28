@@ -4,13 +4,13 @@
 void SuperSystem::setPosition(int pos){ 
     switch (pos){ 
       case GROUND:  
-        Telemetry::inst.placeValueAt<bool>(true, "elevator", "hold");
+        Telemetry::inst.placeValueAt<bool>(true, "elevator", "hold"); 
+        Telemetry::inst.placeValueAt<bool>(true, "forearm", "hold");
         break;
-      case STANDING:  
+      case STANDING:
         Telemetry::inst.placeValueAt<bool>(true, "elevator", "hold"); 
         break; 
       case PRIMED:
-        Telemetry::inst.placeValueAt<bool>(true, "forearm", "hold"); 
         break;
       default:
         break;
@@ -19,15 +19,11 @@ void SuperSystem::setPosition(int pos){
 } 
 
 void SuperSystem::init(){ 
-    //set<int>("pickup_position", SuperStructurePosition::GROUND); 
     setPosition(SuperStructurePosition::PRIMED);
-    //set<int>("last_position", get<int>("position"));
-    //set<bool>("can_transition", true); 
-    //set<double>("distance_backed", 0);
 }  
 
+void SuperSystem::refreshData(){   
 
-void SuperSystem::refreshData(){    
     set<bool>("setpoints_reached",  
         Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint") &&  
         Telemetry::inst.getValueAt<bool>("forearm", "at_setpoint"));   
@@ -44,29 +40,28 @@ void SuperSystem::refreshData(){
                   }
                 }
                 break;
-            case STANDING:
-                if (Telemetry::inst.getValueAt<bool>("claw","in_possession") && !RobotState::getStateOf("command_grip")){ 
-                  setPosition(SuperStructurePosition::PRIMED);
-                } else if (!RobotState::getStateOf("standing")){ 
-                  if (RobotState::getStateOf("grounded")){ 
+            case STANDING: 
+                if (RobotState::getStateOf("in_autonomous") && !Telemetry::inst.getValueAt<bool>("claw", "waiting") && Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
+                  RobotState::manuallyModifyState("standing", false);
+                }
+                if (!RobotState::getStateOf("standing")){ 
+                  if (RobotState::getStateOf("grounded")){
                     setPosition(SuperStructurePosition::GROUND); 
                   } else { 
                     setPosition(SuperStructurePosition::PRIMED); 
                   }
-                }
+                } 
                 break;
             case PRIMED:
                 if (get<bool>("macro_requested") && Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
                   Telemetry::inst.placeValueAt<bool>(true, "elevator", "active"); //First subsystem to act
                   set<bool>("task_completed", false); //Task is not completed
                   setPosition(SuperStructurePosition::AUTO); //Set the position to AUTO (essentially undefined)
-                } else if (!Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
-                  if (RobotState::getStateOf("grounded")){ 
-                    setPosition(SuperStructurePosition::GROUND);
-                  } else if (RobotState::getStateOf("standing")){ 
-                    setPosition(SuperStructurePosition::STANDING); 
-                  }
-                } 
+                } else if (!Telemetry::inst.getValueAt<bool>("claw", "in_possession") && RobotState::getStateOf("standing")){ 
+                  setPosition(SuperStructurePosition::STANDING);
+                } else if (RobotState::getStateOf("grounded")){ 
+                  setPosition(SuperStructurePosition::GROUND); 
+                }
                 break;
             case AUTO:
                 if (get<bool>("task_completed")){  //Must have another indicator that we are okay to drop (Back up to a certain extent)
@@ -77,8 +72,6 @@ void SuperSystem::refreshData(){
                 break;
             }  
             set<bool>("macro_requested", false);
-    }   
-
+    }    
         
-
 }

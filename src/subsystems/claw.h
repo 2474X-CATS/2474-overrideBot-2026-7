@@ -12,50 +12,29 @@ class Claw : public Subsystem {
     
     private:  
        static Claw* globalPtr;  
-       static double MAXIMUM_TOLERABLE_DISTANCE; 
-       static int SCORE_DELAY_MILLIS;
+       static const double MAXIMUM_TOLERABLE_DISTANCE; 
+       static const int SCORE_DELAY_MILLIS; 
+       static const int PICKUP_DELAY_MILLIS;
 
-       vex::pneumatics claw;
+       vex::pneumatics clamp;
 
        vex::distance objectDetector;
 
-       void clench(bool clenched);  
-       
+       int lastTransitionStamp = 0;   
        bool clenched = true; 
-
-       int lastScoreStamp = 0; 
-       bool waiting = false;
-
-       bool sensesObject();
+       
+       bool sensesObject(); 
 
     public:   
        using Subsystem::get; 
        static Claw& getObject();
        
-       Claw() : 
-       Subsystem( 
-        "claw", 
-        { 
-           //(EntrySet){"clenched", EntryType::BOOL},  
-
-           (EntrySet){"active", EntryType::BOOL}, 
-           
-           (EntrySet){"in_possession", EntryType::BOOL}
-        } 
-        ), 
-       claw(vex::pneumatics(Brain.ThreeWirePort.A)),
-       //wrist(vex::pneumatics(Brain.ThreeWirePort.B)), 
-       objectDetector(vex::distance(vex::PORT21))
-       { 
-        globalPtr = this;
-       };
+       Claw();
        
        void init() override; 
        void periodic() override; 
        void updateTelemetry() override; 
-       void stop() override;
-
-       void respondToRequests(); 
+       void stop() override; 
 
        void stateControl();
        

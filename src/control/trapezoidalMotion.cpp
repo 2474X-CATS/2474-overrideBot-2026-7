@@ -29,7 +29,6 @@ void TrapezoidalMotionProfile::init(double startingVelocity, double finalVelocit
 
    phaseTwoDirection = (int)(copysign(1, finalVelocity - maxVelocity));
    
-
    decelTime = fabs((finalVelocity - maxVelocity)) / maxAcceleration; 
    
 

@@ -1,8 +1,25 @@
 #include "claw.h" 
 
-Claw* Claw::globalPtr = nullptr;
-double Claw::MAXIMUM_TOLERABLE_DISTANCE = 50; 
-int Claw::SCORE_DELAY_MILLIS = 250;
+Claw* Claw::globalPtr = nullptr; 
+
+const double Claw::MAXIMUM_TOLERABLE_DISTANCE = 50; 
+const int Claw::SCORE_DELAY_MILLIS = 250; 
+const int Claw::PICKUP_DELAY_MILLIS = 450;
+
+Claw::Claw() : 
+Subsystem( 
+   "claw", 
+   { 
+    (EntrySet){"active", EntryType::BOOL}, 
+    (EntrySet){"in_possession", EntryType::BOOL},
+    (EntrySet){"waiting", EntryType::BOOL}
+   } 
+),  
+clamp(vex::pneumatics(Brain.ThreeWirePort.A)),
+objectDetector(vex::distance(vex::PORT5))
+{ 
+   globalPtr = this;
+}; 
 
 Claw& Claw::getObject(){ 
     return *globalPtr;
@@ -12,21 +29,20 @@ void Claw::init(){
     return;
 }
 
-void Claw::periodic(){  
-    clench(clenched);  
-}  
+void Claw::periodic(){   
+    clamp.set(clenched); 
+}
 
-bool Claw::sensesObject(){ 
+bool Claw::sensesObject(){  
     return objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE;
 }
 
 void Claw::updateTelemetry(){
-   set<bool>("in_possession", clenched && sensesObject()); 
+   set<bool>("in_possession", sensesObject()); 
    stateControl();
 }  
 
 void Claw::stop(){  
-    claw.set(true);
     return;
 } 
 
@@ -36,62 +52,61 @@ void Claw::stateControl(){
    
    bool still = Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached");
    
-   if (waiting){ 
-      if (Brain.Timer.time() - lastScoreStamp >= SCORE_DELAY_MILLIS){ 
-         set<bool>("active", false); 
-         Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
-         waiting = false;
-      }
+   if (get<bool>("waiting")){
+      if (get<bool>("active") && (Brain.Timer.time() - lastTransitionStamp >= SCORE_DELAY_MILLIS)){ 
+        set<bool>("active", false);
+        Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
+        set<bool>("waiting", false);
+      } else if ((Brain.Timer.time() - lastTransitionStamp >= PICKUP_DELAY_MILLIS)){ 
+        set<bool>("waiting", false);
+      }  
    } else if (pos == SuperStructurePosition::AUTO){ //Whenever macro is running
-     if (get<bool>("active")){
-         clenched = false; 
-         waiting = true;
-         lastScoreStamp = Brain.Timer.time();
-     }
+      if (get<bool>("active")){
+         set<bool>("waiting", true);
+         clenched = false;
+         lastTransitionStamp = Brain.Timer.time();
+      }
    } else {
-      if (!still){  
-        clenched = true; 
+      if (!still){
+        clenched = true;
       } else {  
         switch (pos){ 
           case STANDING:
-             clenched = RobotState::getStateOf("command_grip");
+             clenched = false;
+             if (get<bool>("in_possession")){  
+                if (RobotState::getStateOf("in_autonomous")){ 
+                 set<bool>("waiting", true);
+                }
+                clenched = true;
+                lastTransitionStamp = Brain.Timer.time();
+             }
              break; 
           case GROUND:
-             clenched = false; 
+             clenched = false;
              break;
           case PRIMED:    
-             clenched = true; 
+             clenched = true;
              break;  
           default: 
              break;
         } 
       } 
    }   
-}
-
-void Claw::respondToRequests(){  
-
-    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
-    bool still = Telemetry::inst.getValueAt<bool>("ss_manager","setpoints_reached");  
-
-    if (still){  
-        if (RobotState::getStateOf("awaiting_claw_act")){  
-            if (pos != SuperStructurePosition::AUTO){ 
-               set<bool>("requesting_act", true);
-            }
-        }  
-        if (RobotState::getStateOf("awaiting_flip")){  
-            if (pos == SuperStructurePosition::PRIMED){ 
-               set<bool>("facing_down", !get<bool>("facing_down"));
-            }
-        }   
-
-        RobotState::manuallyModifyState("awaiting_claw_act", false); 
-        RobotState::manuallyModifyState("awaiting_flip", false); 
-
-    } 
-}
- 
-void Claw::clench(bool clenched){ 
-    claw.set(!clenched);
 } 
+
+void RunClaw::start(){ 
+  return;
+} 
+
+void RunClaw::periodic(){ 
+   clawRef.periodic();
+} 
+
+bool RunClaw::isOver(){ 
+    return false;
+} 
+
+void RunClaw::end(){ 
+    return;
+}
+

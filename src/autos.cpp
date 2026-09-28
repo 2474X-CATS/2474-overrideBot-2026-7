@@ -58,7 +58,6 @@ vector<CommandInterface*> two_pin_alliance_right(){
     ParallelCommandGroup::makeGroup(
        SequentialCommandGroup::makeGroup(DriveForward::getCommand(500))->
        chainThen(TurnToHeading::getCommand(180))->
-       chainThen(WaitFor::getCommand(1000))->
        chainThen(DriveForward::getCommand(500))
     )->chainWhile(RunSuperStructure::getCommand())
   };

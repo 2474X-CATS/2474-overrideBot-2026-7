@@ -8,8 +8,11 @@
 #include "subsystems/claw.h" 
 #include "subsystems/elevator.h" 
 #include "subsystems/forearm.h"  
-#include "subsystems/intake.h"
-#include "gui/graph.h" 
+#include "subsystems/intake.h" 
+#include "streams/autoPrimer.h" 
+
+#include "gui/graph.h"  
+#include "gui/pathBoard.h"
 
 using namespace vex;
 
@@ -56,30 +59,50 @@ void startCommandMatch()
   robot.runTelemetryThread();
 }
 
-int graphTableData(){ 
+int runGraphics(){   
+
+  Point p1;
+  p1.x = TILE_SIZE_MM; 
+  p1.y = TILE_SIZE_MM;  
+  p1.heading = 135;
+
+  Point p2;
+  p2.x = TILE_SIZE_MM * 4; 
+  p2.y = TILE_SIZE_MM * 4;  
+  p2.heading = 90;
+
+  Point p3;
+  p3.x = TILE_SIZE_MM * 1; 
+  p3.y = TILE_SIZE_MM * 4; 
+  
+  Arc traj = Arc(p1, p2);
+  PathBoard pBoard = PathBoard(traj, 15);
+  Sprite::frameLoop();
+
+  return 0;
+
+  /*
   DataSupplier zero; 
-  DataSupplier error;  
+  DataSupplier error;   
    
   zero.directory = "graph";
   zero.name = "zero";
-  zero.label = "O";
+  zero.label = "Goal";
   
   error.directory = "graph";
   error.name = "error";
-  error.label = "err(deg)";
-
+  error.label = "Err";  
 
   Graph g = Graph( 
-    "Forearm Error", 
+    "Forearm PID", 
     { 
-      zero, 
+      zero,
       error
     }
   ); 
+  */
+  
 
-  Sprite::frameLoop();  
-
-  return 0; 
 }
 
 //------------------------------>-------------------------------------------------------------------------------------------------------------------
@@ -90,33 +113,36 @@ int main()
 
   vexcodeInit();
   
-  Telemetry::inst.registerSubtable(  
+  /*
+  Telemetry::inst.registerSubtable(
     "graph",
     { 
+      (EntrySet){"zero", EntryType::DOUBLE}, 
       (EntrySet){"error", EntryType::DOUBLE}, 
-      (EntrySet){"zero", EntryType::DOUBLE}
     }
-  );
+  ); 
 
   Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
-   
+  */ 
 
   //--------------------SUBSYSTEM CREATION----------------- 
   
-  Odometry odom = Odometry();
-  Drivebase drive = Drivebase();  
+  Odometry odom = Odometry(); 
+  Drivebase drive = Drivebase();   
+  /*
   Intake intake = Intake(); 
-  
   SuperSystem ss = SuperSystem();
   Elevator elevator = Elevator();
   Forearm forearm = Forearm();
-  Claw claw = Claw();
+  Claw claw = Claw();  
+  */
 
   //-------------------------------------------------------
   
   robot.initialize(); 
 
   //-------------------RUN PROTOCOLS HERE-------------------
-  thread graphics = thread(graphTableData);
-  testDrive();
+  thread graphics = thread(runGraphics); 
+  
+  //testDrive();
 } 

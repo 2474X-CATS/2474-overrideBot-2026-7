@@ -8,50 +8,44 @@
 #include "../control/pidcontroller.h" 
 #include "../control/trapezoidalMotion.h"  
 
-#include "../streams/odometry.h"
+#include "../streams/odometry.h" 
+
+#include "../control/path.h" 
+#include "../control/pursuit.h"
 
 
 class Drivebase : public Subsystem { 
     public:
       using Subsystem::get;  
       
-      static double MAX_RPM; 
-      static double WHEEL_RADIUS_MM; 
+      static const double MAX_RPM; 
+      static const double WHEEL_RADIUS_MM; 
 
-      static double MAX_LIN_SPEED;
-      static double MAX_ANG_SPEED;
+      static const double MAX_LIN_SPEED;
+      static const double MAX_ANG_SPEED;
       
       static Drivebase& getObject();
 
-      Drivebase(): 
-      Subsystem( 
-        "drivebase", 
-        { 
-          (EntrySet){"is_on", EntryType::BOOL}
-        }
-      ),
-      leftFront(vex::motor(vex::PORT20, true)), 
-      leftBack(vex::motor(vex::PORT19)),
-      rightFront(vex::motor(vex::PORT17)), 
-      rightBack(vex::motor(vex::PORT18, true)),  
-      leftMotors(leftFront, leftBack), 
-      rightMotors(rightFront, rightBack)
-      {
-        globalPtr = this;
-      };
+      Drivebase();
       
-    
-      void manualDrive(double voltageDrive, double voltageTurn); 
-      
+      void manualDrive(double voltageDrive, double voltageTurn);  
 
-    private:     
+      //---------------------------------------------------- 
+
+      void setSpeeds(double linearVelocity, double angularVelocity);
+
+    private:
       static Drivebase* globalPtr;  
+       
+      Trajectory* path = nullptr;
+      //std::vector<Point> points; 
+      PurePursuit* donkey = nullptr;
 
-      static double TURN_SENSITIVITY; 
-      static double DRIVE_SENSITIVITY; 
+      static const double TURN_SENSITIVITY; 
+      static const double DRIVE_SENSITIVITY; 
       
-      static double ACCELERATION_LIMIT_LIN; 
-      static double ACCELERATION_LIMIT_ANG;
+      static const double ACCELERATION_LIMIT_LIN; 
+      static const double ACCELERATION_LIMIT_ANG;
 
       double lastLinearVoltage = 0;
       double lastAngularVoltage = 0;
@@ -61,6 +55,9 @@ class Drivebase : public Subsystem {
 
       vex::motor rightFront; 
       vex::motor rightBack;  
+      
+      vex::motor leftExtra; 
+      vex::motor rightExtra;
 
       vex::motor_group leftMotors;
       vex::motor_group rightMotors; 
@@ -88,7 +85,10 @@ class DriveForward : public Command<Drivebase> {
      double startX;
      double startY;  
 
-     double initialAngle;
+     double initialAngle; 
+
+     double percentAccel; 
+     double percentVelo; 
 
      double getDistTraveled(); 
      
@@ -98,32 +98,41 @@ class DriveForward : public Command<Drivebase> {
 
      pidcontroller* straightener = nullptr;
 
-     static double MOTION_CONSTANTS_MAX_VELO; 
-     static double MOTION_CONSTANTS_MAX_ACCEL; 
+     static const double MOTION_CONSTANTS_MAX_VELO; 
+     static const double MOTION_CONSTANTS_MAX_ACCEL; 
 
-     static double PID_CONSTANTS_KP;
-     static double PID_CONSTANTS_KI;
-     static double PID_CONSTANTS_KD;
+     static const double PID_CONSTANTS_KP;
+     static const double PID_CONSTANTS_KI;
+     static const double PID_CONSTANTS_KD;
 
-     static double FF_CONSTANTS_S;
-     static double FF_CONSTANTS_V;
-     static double FF_CONSTANTS_A; 
+     static const double FF_CONSTANTS_S;
+     static const double FF_CONSTANTS_V;
+     static const double FF_CONSTANTS_A; 
 
-     static double STRAIGHTEN_PID_KP; 
-     static double STRAIGHTEN_PID_KI; 
-     static double STRAIGHTEN_PID_KD;
+     static const double STRAIGHTEN_PID_KP; 
+     static const double STRAIGHTEN_PID_KI; 
+     static const double STRAIGHTEN_PID_KD;
    
    public:
 
      static CommandInterface* getCommand(double distance){ 
          return new DriveForward(Drivebase::getObject(), distance);
+     } 
+
+     static CommandInterface* getCommand(double distance, double percentVelocity, double percentAcceleration){ 
+         return new DriveForward(Drivebase::getObject(), distance, percentVelocity, percentAcceleration);
      }
 
-     DriveForward(Drivebase& drive, double dist):  
+     DriveForward(Drivebase& drive, double dist, double percentVelocity, double percentAcceleration):  
      Command<Drivebase>(drive),
      drivebaseRef(drive),
-     distance(dist)
-     {}; 
+     distance(dist), 
+     percentVelo(percentVelocity), 
+     percentAccel(percentAcceleration)
+     {};
+
+     DriveForward(Drivebase& drive, double dist): 
+     DriveForward(drive, dist, 100, 100){}; 
 
      void setDistance(double distance);
 
@@ -146,9 +155,9 @@ class TurnToHeading : public Command<Drivebase> {
 
      pidcontroller* controller = nullptr; 
 
-     static double PID_CONSTANTS_KP;
-     static double PID_CONSTANTS_KI;
-     static double PID_CONSTANTS_KD;  
+     static const double PID_CONSTANTS_KP;
+     static const double PID_CONSTANTS_KI;
+     static const double PID_CONSTANTS_KD;  
 
      double getError();
 

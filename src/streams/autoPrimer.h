@@ -22,8 +22,7 @@ Goal targets are chosen in one of two ways by
 
 typedef enum {
     LOCATION = 0, // Find the nearest goal 
-    MANUAL,   // Switch between points from the origin
-    SILENT  // Setpoints are not preset
+    MANUAL_SHIFT   // Switch between points from the origin  
 } DestinationProtocol;
 
 // Represents a single goal that has a current height and location   
@@ -46,15 +45,14 @@ V
 ]
 */
 
-double STACK_HEIGHT_MM;
+extern double STACK_HEIGHT_MM;
 
 typedef struct { 
 
    Location* goalPosition;  
-   int goalIndex;
    double goalHeight = Elevator::LEVELED_HEIGHT; 
    
-   void score();
+   void setHeight(double height);
    double getHeight();
    double getDistance(double botX, double botY);
  
@@ -68,8 +66,10 @@ class AutoPrimer : public DataStream {
        AutoPrimer(): 
          DataStream( 
            "primer", 
-           {   
-             (EntrySet){"priming_method", EntryType::INT}, //Able to be typecasted to a DestinationProtocol
+           {
+            (EntrySet){"priming_method", EntryType::INT}, //Able to be typecasted to a DestinationProtocol
+            (EntrySet){"shift_direction", EntryType::INT},
+            (EntrySet){"active", EntryType::BOOL}
            }
          )
        {};
@@ -85,21 +85,22 @@ class AutoPrimer : public DataStream {
              - Then record the height of the elevator when deactivated   
              - Pending is false  
        */
-       void init() override; // Sets up sensors for data-collection 
+       void init() override; 
          
-       void initializeGoalVector(); 
-    
     private: 
        
        void locationBasedShiftUpdate(); //Reference the closest index
        void manualBasedShiftUpdate(); //Simply reference the correct index
-
-       int findClosestShiftValue(); 
        
-       int goalIndex;
-       int lastGoalIndex;
+       bool updateGoalIndex(); //Runs appropriate shift update function and modifies the elevator priming setpoint based on it
+       void pasteSetpoints();  
 
-       Goal[] Goals;
+       void replaceGoalHeight();
+
+       int goalIndex = -1;
+       int lastGoalIndex = -2; 
+
+       Goal goals[8]; 
 };
 
 

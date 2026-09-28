@@ -16,11 +16,13 @@ typedef enum {
 class Forearm : public Subsystem {  
     private:
 
-       static double PLACE_SETPOINT; 
-       static double PRIMING_SETPOINT; 
-       static double GROUND_SETPOINT; 
-       static double STANDING_SETPOINT;   
-       static double RELEASE_SETPOINT;
+       static const double PLACE_SETPOINT; 
+       static const double PRIMING_SETPOINT; 
+       static const double GROUND_SETPOINT; 
+       static const double STANDING_SETPOINT;   
+       static const double RELEASE_SETPOINT; 
+       static const double SCOOP_SETPOINT; 
+       static const double KCOS;
 
        static Forearm* globalPtr;
         
@@ -29,8 +31,6 @@ class Forearm : public Subsystem {
 
        bool requestingSetpoint = false; 
        double requestedSetpoint; 
-
-       static double KCOS; 
 
        double angularDeadZones[2];   
        
@@ -43,9 +43,6 @@ class Forearm : public Subsystem {
      
        pidcontroller* feedback = nullptr; //Rest done with feedback
        PIDConstants pidConsts;
-
-       //TrapezoidConstants motionConsts;
-       //TrapezoidalMotionProfile* motionProfile = nullptr;
         
        double getOutput(); //velocity and acceleration but for angles
        
@@ -66,34 +63,21 @@ class Forearm : public Subsystem {
        
        void stateControl();  //ONLY (We can't manually modify the forearm with the controller) 
 
-       void findNextSetpoint(); 
+       void findNextSetpoint();  
+
+       double getError();
 
     public:   
        using Subsystem::get;  
 
        static Forearm& getObject();  
 
-       Forearm(): 
-         Subsystem( 
-            "forearm",
-            {  
-               (EntrySet){"task_id", EntryType::INT}, 
-               (EntrySet){"active", EntryType::BOOL}, 
-               (EntrySet){"at_setpoint", EntryType::BOOL}, 
-               (EntrySet){"current_angle", EntryType::DOUBLE}, 
-               (EntrySet){"hold", EntryType::BOOL} 
-            }
-         ),
-         forearmMotor(vex::motor(vex::PORT4)), 
-         rot(vex::rotation(vex::PORT12))
-         { 
-            globalPtr = this;
-         };    
+       Forearm();
 
-         void init() override; 
-         void periodic() override; 
-         void updateTelemetry() override; 
-         void stop() override;  
+       void init() override; 
+       void periodic() override; 
+       void updateTelemetry() override; 
+       void stop() override;  
       
 
     protected: 

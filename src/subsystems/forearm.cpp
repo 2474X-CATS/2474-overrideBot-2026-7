@@ -3,17 +3,34 @@
 
 Forearm* Forearm::globalPtr = nullptr; 
 
-double Forearm::PLACE_SETPOINT = 15;
-double Forearm::PRIMING_SETPOINT = 82.5;
-double Forearm::GROUND_SETPOINT = 270;
-double Forearm::STANDING_SETPOINT = 5;
-double Forearm::RELEASE_SETPOINT = 82.5;
-
-double Forearm::KCOS = 1.45; 
+const double Forearm::PLACE_SETPOINT = 15;
+const double Forearm::PRIMING_SETPOINT = 89;
+const double Forearm::GROUND_SETPOINT = 276;
+const double Forearm::STANDING_SETPOINT = 10;
+const double Forearm::RELEASE_SETPOINT = 82.5; 
+const double Forearm::SCOOP_SETPOINT = 5.0;//7.5; 
+const double Forearm::KCOS = 0.135;
 
 Forearm& Forearm::getObject(){ 
   return *globalPtr;
-}
+} 
+
+Forearm::Forearm(): 
+    Subsystem( 
+        "forearm",
+        {  
+          (EntrySet){"task_id", EntryType::INT}, 
+          (EntrySet){"active", EntryType::BOOL}, 
+          (EntrySet){"at_setpoint", EntryType::BOOL}, 
+          (EntrySet){"current_angle", EntryType::DOUBLE}, 
+          (EntrySet){"hold", EntryType::BOOL} 
+        }
+    ),
+    forearmMotor(vex::motor(vex::PORT4)), 
+    rot(vex::rotation(vex::PORT12))
+    { 
+        globalPtr = this;
+    };
 
 void Forearm::init(){  
    forearmMotor.setPosition(0, vex::rotationUnits::deg); 
@@ -22,9 +39,9 @@ void Forearm::init(){
    angularDeadZones[0] = 0;
    angularDeadZones[1] = 0;
 
-   pidConsts.P = 0.1;
-   pidConsts.I = 0.0075;//0.0025;//0.02;
-   pidConsts.D = 0.0018;//0.00625;//0.0075;
+   pidConsts.P = 12/90.0;
+   pidConsts.I = 0.075;//0.35;//0.0025;//0.02;
+   pidConsts.D = 3/360.0;//1.0/540;//0.00625;//0.0075; 
    pidConsts.errorTolerance = 5;
 
    feedback = new pidcontroller(pidConsts, 0);  
@@ -33,17 +50,16 @@ void Forearm::init(){
   
    startingAngle = 270;
    rot.setPosition(0, vex::rotationUnits::rev); 
-   rot.setReversed(true);
    setpoint = startingAngle;
 }
 
 void Forearm::periodic(){
-    forearmMotor.spin(vex::directionType::fwd, getOutput(), vex::voltageUnits::volt);
+    forearmMotor.spin(vex::directionType::fwd, getOutput(), vex::voltageUnits::volt);  
+    Brain.Screen.printAt(20, 120, "Forearm Angle: %.2f", cos(toRadians(getCurrentAngle()))); 
+    //stop();
 }
 
-void Forearm::updateTelemetry(){ 
-    //Brain.Screen.printAt(20, 120, "Forearm Angle: %.2f", getCurrentAngle()); 
-
+void Forearm::updateTelemetry(){  
     set<double>("current_angle", getCurrentAngle());
     stateControl();
 }
@@ -52,29 +68,43 @@ void Forearm::stop(){
     forearmMotor.stop();
 }
 
-double Forearm::getOutput(){   
-    Telemetry::inst.placeValueAt<double>(angleDifference(getCurrentAngle(), setpoint), "graph", "error");
-    double pidOutput = feedback->calculate(angleDifference(getCurrentAngle(), setpoint), Brain.Timer.time()); 
-    double output = (KCOS * cos(toRadians(getCurrentAngle()))) + pidOutput;  
+double Forearm::getOutput(){
+    Telemetry::inst.placeValueAt<double>(getError(), "graph", "error"); 
+    double pidOutput = feedback->calculate(getError(), Brain.Timer.time()); 
+    double standingOutput = (KCOS * cos(toRadians(getCurrentAngle())));
+    double output = standingOutput + pidOutput;
     output = max<double>(output, -12);
     output = min<double>(output, 12);
     return output;
 }
 
+double Forearm::getError(){
+    double angleDiff = angleDifference(getCurrentAngle(), setpoint);
+    double currentAngle = toRadians(getCurrentAngle());
+    if (cos(currentAngle) < 0){
+       if (sin(currentAngle) > 0 && angleDiff < 0){
+          angleDiff = 360 + angleDiff;
+       } else if (sin(currentAngle) < 0 && angleDiff > 0){
+          angleDiff = 360 - angleDiff;
+       }
+    }
+    return angleDiff;
+}
+
 double Forearm::getCurrentAngle(){ 
-    return angleSum(rot.angle(vex::rotationUnits::deg), startingAngle); //angleSum(startingAngle, (forearmMotor.position(vex::rotationUnits::rev) * 180)); 
+    return angleSum(rot.angle(vex::rotationUnits::deg), startingAngle);
 } 
 
 double Forearm::getVelocity(){
-    return rot.velocity(vex::velocityUnits::dps); //(forearmMotor.velocity(vex::velocityUnits::dps) / 2); 
+    return rot.velocity(vex::velocityUnits::dps);  
 }
 
 bool Forearm::reachedSetpoint(){ 
-  return feedback->atSetpoint(angleDifference(getCurrentAngle(), setpoint)); //(Brain.Timer.time() - motionProfile->getStartTime()) >= motionProfile->getTotalDuration();
+  return feedback->atSetpoint(angleDifference(getCurrentAngle(), setpoint));
 }
 
 bool Forearm::safeToManuever(){
-  return sin(toRadians(getCurrentAngle())) > 0 || Telemetry::inst.getValueAt<double>("elevator", "current_height") > 700; 
+  return Telemetry::inst.getValueAt<double>("elevator", "current_height") > 700; 
 }
  
 void Forearm::maintainHoldLock(){ 
@@ -121,7 +151,7 @@ void Forearm::findNextSetpoint(){
           requestedSetpoint = GROUND_SETPOINT;
           break;
         case STANDING:   
-          requestingSetpoint = true; 
+          requestingSetpoint = true;   
           requestedSetpoint = STANDING_SETPOINT;
           break; 
         case AUTO: 
@@ -139,19 +169,22 @@ void Forearm::findNextSetpoint(){
     }  
 }
 
-void Forearm::stateControl(){ 
+void Forearm::stateControl(){    
+  
     receiveSetpoints();  
     maintainHoldLock(); 
     if (currentState == ForearmState::F_PURSUING){  
       if (reachedSetpoint()){ 
           currentState = ForearmState::F_HOLDING;   
+          feedback->reset(); 
           if (get<bool>("active")){ 
             passMacroTurn(); 
           } 
       }
     } else if (currentState == ForearmState::F_HOLDING && !get<bool>("hold")) {     
         findNextSetpoint(); 
-    }  
+    }   
+    
     set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING && !get<bool>("hold"));  
 }  
 

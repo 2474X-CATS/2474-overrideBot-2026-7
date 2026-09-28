@@ -44,52 +44,33 @@ void RobotState::initializeState()
            (EntrySet){"k_score", EntryType::BOOL}, 
            (EntrySet){"switch_score_mode", EntryType::BOOL},
            (EntrySet){"field_type_is_vex", EntryType::BOOL}, // True = VEX, False = RECF 
-           (EntrySet){"intaking", EntryType::BOOL}, 
-           (EntrySet){"outtaking", EntryType::BOOL}, 
-           (EntrySet){"command_grip", EntryType::BOOL}
+
        }); 
    
-   manuallyModifyState("field_type_is_vex", true);
+   manuallyModifyState("field_type_is_vex", true); 
 }
 
 void RobotState::updateRegular()
-{   
-   manuallyModifyState("awaiting_land", Controller1.ButtonY.pressing()); 
-   manuallyModifyState("rise", Controller1.ButtonUp.pressing()); 
-   manuallyModifyState("fall", Controller1.ButtonDown.pressing()); 
-   
-   manuallyModifyState("grounded", Controller1.ButtonR2.pressing()); 
-   manuallyModifyState("standing", Controller1.ButtonL2.pressing());   
+{    
 
-   manuallyModifyState("intaking", Controller1.ButtonA.pressing()); 
-   manuallyModifyState("outtaking", Controller1.ButtonLeft.pressing());
+   manuallyModifyState("awaiting_land", Controller1.ButtonB.pressing()); 
+   manuallyModifyState("rise", Controller1.ButtonR2.pressing()); 
+   manuallyModifyState("fall", Controller1.ButtonR1.pressing()); 
    
-   manuallyModifyState("command_grip", Controller1.ButtonR1.pressing());
+   manuallyModifyState("grounded", Controller1.ButtonY.pressing()); 
+   manuallyModifyState("standing", Controller1.ButtonRight.pressing());   
 
-   if (Controller1.ButtonX.pressing()){ 
+
+   if (Controller1.ButtonL2.pressing()){ 
       manuallyModifyState("k_score", true);
-   } else if (getStateOf("k_score")){ 
+   } else if (getStateOf("k_score")){  
       manuallyModifyState("k_score", false); 
       Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");
-   } 
-   
-   /*
-   if (Controller1.ButtonL1.pressing()){ 
-      manuallyModifyState("switch_score_mode", true); 
-      if (Telemetry::inst.getValueAt<int>("ss_manager", "pickup_position") == SuperStructurePosition::GROUND){ 
-         setVibrationCode("..");
-      } else {
-         setVibrationCode("."); 
-      }
-   } else if (getStateOf("switch_score_mode")){ 
-      manuallyModifyState("switch_score_mode", false);  
-      disableVibrations(); 
-      Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "pickup_switch_requested");
-   }  
-   */
+   }   
 
+   //Brain.Screen.printAt(20, 120, "Current height: %.2f", Telemetry::inst.getValueAt<double>("elevator", "percentage_extended"));
    
-
+   
 };
 
 void RobotState::updateStopped() {

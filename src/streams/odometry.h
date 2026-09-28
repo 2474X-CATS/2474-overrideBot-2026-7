@@ -26,23 +26,7 @@ class Odometry : public DataStream {
        
        static Location* getLocation(int index);  
 
-       Odometry() : 
-       DataStream( 
-         "odometry",
-         {  
-           (EntrySet){"starting_left", EntryType::BOOL}, 
-           (EntrySet){"x_position_mm", EntryType::DOUBLE}, 
-           (EntrySet){"y_position_mm", EntryType::DOUBLE}, 
-           (EntrySet){"heading_deg", EntryType::DOUBLE}, 
-           (EntrySet){"velocity_ms", EntryType::DOUBLE},  
-           (EntrySet){"immediate_distance", EntryType::DOUBLE},
-           (EntrySet){"oriented_c", EntryType::BOOL}
-         }
-       ),
-       gyro(vex::inertial(vex::PORT16)),
-       linRot(vex::rotation(vex::PORT8)), 
-       angRot(vex::rotation(vex::PORT13))
-       {};
+       Odometry();
 
        void refreshData() override; // Calls every telemetry frame
        void init() override; // Sets up sensors for data-collection
@@ -51,9 +35,9 @@ class Odometry : public DataStream {
        
        void setStartingOdometry();
 
-       static double INERTIAL_WHEEL_RADIUS;   
-       static double ANG_ROT_DIST_FROM_CENTER;
-       static double GOAL_WIDTH;
+       static const double INERTIAL_WHEEL_RADIUS;   
+       static const double ANG_ROT_DIST_FROM_CENTER;
+       static const double GOAL_WIDTH;
 
        static Location* locations[];   
 
@@ -61,7 +45,7 @@ class Odometry : public DataStream {
 
        vex::inertial gyro; 
        vex::rotation linRot;   
-       vex::rotation angRot;
+       //vex::rotation angRot;
 
        double lastTimestamp = 0; 
        
