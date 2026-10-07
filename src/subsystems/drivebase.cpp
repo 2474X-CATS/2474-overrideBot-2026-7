@@ -9,8 +9,8 @@ const double Drivebase::WHEEL_RADIUS_MM = 2.75 / 2 * 25.4;
 const double Drivebase::DRIVE_SENSITIVITY = 1; 
 const double Drivebase::TURN_SENSITIVITY = 1; 
 
-const double Drivebase::ACCELERATION_LIMIT_LIN = 12 / 0.00001; 
-const double Drivebase::ACCELERATION_LIMIT_ANG = 12 / 0.00001; 
+const double Drivebase::ACCELERATION_LIMIT_LIN = 12 / 0.00001;
+const double Drivebase::ACCELERATION_LIMIT_ANG = 12 / 0.00001;
 
 const double Drivebase::MAX_LIN_SPEED = 12;
 const double Drivebase::MAX_ANG_SPEED = 12;
@@ -22,27 +22,14 @@ Subsystem(
     (EntrySet){"is_on", EntryType::BOOL}
    }
 ),
-leftFront(vex::motor(vex::PORT4)), //20 true
-leftBack(vex::motor(vex::PORT5, true)), //19 
-leftExtra(vex::motor(vex::PORT6)),
-rightFront(vex::motor(vex::PORT1, true)), //17
-rightBack(vex::motor(vex::PORT2)), //18 true   
-rightExtra(vex::motor(vex::PORT3, true)),
-leftMotors(leftFront, leftBack, leftExtra), //Get rid of extra motors later
-rightMotors(rightFront, rightBack, rightExtra)
+leftFront(vex::motor(vex::PORT20, true)), //20 true
+leftBack(vex::motor(vex::PORT19)), //19 
+rightFront(vex::motor(vex::PORT17)), //17
+rightBack(vex::motor(vex::PORT18, true)), //18 true   
+leftMotors(leftFront, leftBack), 
+rightMotors(rightFront, rightBack)
 {
-  globalPtr = this;  
-  Point p1; 
-  Point p2; 
-  p1.x = ROBOT_WIDTH_MM / 2; 
-  p1.y = ROBOT_LENGTH_MM / 2; 
-  p2.x = TILE_SIZE_MM * 3; 
-  p2.y = TILE_SIZE_MM * 1;  
-
-  path = new Line(p1, p2); 
-  vector<Point> points;
-  path->generatePoints(points, 7);
-  donkey = new PurePursuit(points, ROBOT_LENGTH_MM/2);
+  globalPtr = this;   
 };
 
 void Drivebase::init(){ 
@@ -55,20 +42,7 @@ Drivebase& Drivebase::getObject(){
 }
 
 void Drivebase::periodic(){
-  //arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL));  
-  //setSpeeds(0, 90); 
-  double linearError; 
-  double angularError; 
-  donkey->calculateError( 
-    Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"), 
-    Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"),  
-    Telemetry::inst.getValueAt<double>("odometry", "heading_deg"), 
-    linearError, 
-    angularError
-  );
-  Brain.Screen.printAt(20, 120, "Distance from setpoint: %.2f", linearError); 
-  Brain.Screen.printAt(20, 140, "Angular Error: %.2f", angularError); 
-  setSpeeds(linearError * 0.5, angularError * 0.5);
+  arcadeDrive(RobotState::getAxisState(AxisType::M_LEFT_VERTICAL), RobotState::getAxisState(AxisType::M_RIGHT_HORIZONTAL));  
 }
 
 void Drivebase::updateTelemetry(){   
@@ -175,9 +149,9 @@ void DriveForward::periodic(){
     double setpointVelocity = motionGoal.velocity; 
     double setpointAcceleration = motionGoal.acceleration;  
 
-    Telemetry::inst.placeValueAt<double>(setpointVelocity, "graph", "expected_velocity"); 
-    Telemetry::inst.placeValueAt<double>(setpointAcceleration, "graph", "expected_acceleration");
-    Telemetry::inst.placeValueAt<double>(Telemetry::inst.getValueAt<double>("odometry", "velocity_ms"), "graph", "current_velocity");
+    //Telemetry::inst.placeValueAt<double>(setpointVelocity, "graph", "expected_velocity"); 
+    //Telemetry::inst.placeValueAt<double>(setpointAcceleration, "graph", "expected_acceleration");
+    //Telemetry::inst.placeValueAt<double>(Telemetry::inst.getValueAt<double>("odometry", "velocity_ms"), "graph", "current_velocity");
 
     double ffOutput = ffController.calculate(setpointVelocity, setpointAcceleration);  
     double correction = controller->calculate(Telemetry::inst.getValueAt<double>("odometry", "velocity_ms") - setpointVelocity, Brain.Timer.time()); 
@@ -211,9 +185,9 @@ void DriveForward::setDistance(double dist){
 
 //------------------------------------------------------------- 
 
-const double TurnToHeading::PID_CONSTANTS_KP = 12.0/75;
-const double TurnToHeading::PID_CONSTANTS_KI = 0.025;//0.110;
-const double TurnToHeading::PID_CONSTANTS_KD = 0.001;
+const double TurnToHeading::PID_CONSTANTS_KP = 12.0/105;
+const double TurnToHeading::PID_CONSTANTS_KI = 0.001;//0.110;
+const double TurnToHeading::PID_CONSTANTS_KD = 0.0015;
 
 void TurnToHeading::start(){ 
    PIDConstants pidConstants;
@@ -222,7 +196,7 @@ void TurnToHeading::start(){
    pidConstants.I = PID_CONSTANTS_KI; 
    pidConstants.D = PID_CONSTANTS_KD;  
 
-   pidConstants.errorTolerance = 1; 
+   pidConstants.errorTolerance = 3; 
      
    controller = new pidcontroller(pidConstants, 0); 
    controller->setLastTimestamp(Brain.Timer.time());   
@@ -333,3 +307,77 @@ void ApproachTarget::start(){
     setDistance(hypot(currentX - targetX, currentY - targetY) - offset);
     DriveForward::start();
 } 
+
+//-------------------------------------------------------------------------- 
+
+DriveTrajectory::DriveTrajectory(Drivebase& drivebase, double lookAheadDist, double maxVelocity, double maxAcceleration): 
+    Command<Drivebase>(drivebase), 
+    drivebaseRef(drivebase), 
+    lDist(lookAheadDist), 
+    maxVelo(maxVelocity), 
+    maxAccel(maxAcceleration)
+    { 
+      PIDConstants pidConsts; 
+      pidConsts.P = TurnToHeading::PID_CONSTANTS_KP; 
+      pidConsts.I = TurnToHeading::PID_CONSTANTS_KI; 
+      pidConsts.D = TurnToHeading::PID_CONSTANTS_KD; 
+      turnController = new pidcontroller(pidConsts, 0);
+    }
+
+void DriveTrajectory::start(){ 
+  initializePath(); //Creates the trajectory 
+  int steps = static_cast<int>(trajectory->calculateLength() / lDist); 
+  std::vector<Point> points;
+  trajectory->generatePoints(points, steps);
+  donkey = new PurePursuit(points, lDist);   
+
+  turnController->setLastTimestamp(Brain.Timer.time()); 
+}  
+
+void DriveTrajectory::findNextSpeeds(double linearError, double angularError, double& linearSpeed, double& angularSpeed){ 
+  angularSpeed = turnController->calculate(angularError, Brain.Timer.time());  
+}
+
+void DriveTrajectory::periodic(){   
+
+  double linearError; 
+  double angularError; 
+
+  donkey->calculateError( 
+       Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"), 
+       Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"), 
+       Telemetry::inst.getValueAt<double>("odometry", "heading_deg"), 
+       linearError, 
+       angularError 
+  );
+
+  double linearSpeed = 0; 
+  double angularSpeed = 0;
+
+  findNextSpeeds(linearError, angularError, linearSpeed, angularSpeed); 
+
+  drivebaseRef.setSpeeds(linearSpeed, angularSpeed);
+} 
+
+
+void Toggle::start(){ 
+    startTime = Brain.Timer.time(); 
+} 
+
+void Toggle::periodic(){ 
+   int timePassed = Brain.Timer.time() - startTime; 
+   if (timePassed < 400){ 
+      drivebaseRef.manualDrive(-12, 0); 
+   } else { 
+      drivebaseRef.manualDrive(5, 0); 
+   }
+}  
+
+bool Toggle::isOver(){ 
+  return Brain.Timer.time() - startTime >= 800;
+} 
+
+void Toggle::end(){ 
+  drivebaseRef.manualDrive(0,0);
+}
+

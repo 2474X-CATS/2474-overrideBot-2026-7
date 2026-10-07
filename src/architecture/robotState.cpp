@@ -40,37 +40,53 @@ void RobotState::initializeState()
            (EntrySet){"rise", EntryType::BOOL}, 
            (EntrySet){"fall", EntryType::BOOL},  
            (EntrySet){"grounded", EntryType::BOOL},
-           (EntrySet){"standing", EntryType::BOOL},
-           (EntrySet){"k_score", EntryType::BOOL}, 
+           (EntrySet){"standing", EntryType::BOOL}, 
+           (EntrySet){"purge", EntryType::BOOL},
+           (EntrySet){"k_matchloading", EntryType::BOOL}, 
+           (EntrySet){"k_score", EntryType::BOOL},
            (EntrySet){"switch_score_mode", EntryType::BOOL},
-           (EntrySet){"field_type_is_vex", EntryType::BOOL}, // True = VEX, False = RECF 
-
+           (EntrySet){"field_type_is_vex", EntryType::BOOL}, // True = VEX, False = RECF   
+           (EntrySet){"override", EntryType::BOOL}, 
+           (EntrySet){"outtaking", EntryType::BOOL}
        }); 
    
    manuallyModifyState("field_type_is_vex", true); 
 }
 
 void RobotState::updateRegular()
-{    
-
+{     
+   
    manuallyModifyState("awaiting_land", Controller1.ButtonB.pressing()); 
    manuallyModifyState("rise", Controller1.ButtonR2.pressing()); 
    manuallyModifyState("fall", Controller1.ButtonR1.pressing()); 
    
    manuallyModifyState("grounded", Controller1.ButtonY.pressing()); 
-   manuallyModifyState("standing", Controller1.ButtonRight.pressing());   
+   manuallyModifyState("standing", Controller1.ButtonRight.pressing()); 
+   manuallyModifyState("purge", Controller1.ButtonA.pressing());   
 
+   manuallyModifyState("outtaking", Controller1.ButtonL1.pressing());
+   
+   if (Controller1.ButtonX.pressing()){ 
+      manuallyModifyState("override", true);
+   } else if (getStateOf("override")){  
+      manuallyModifyState("override", false); 
+      Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "override");
+   } 
 
    if (Controller1.ButtonL2.pressing()){ 
       manuallyModifyState("k_score", true);
    } else if (getStateOf("k_score")){  
-      manuallyModifyState("k_score", false); 
+      manuallyModifyState("k_score", false);  
       Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");
-   }   
+   }  
 
-   //Brain.Screen.printAt(20, 120, "Current height: %.2f", Telemetry::inst.getValueAt<double>("elevator", "percentage_extended"));
+   if (Telemetry::inst.getValueAt<bool>("elevator", "hold")){ 
+      setVibrationCode("..");
+   } else { 
+      disableVibrations();
+   }
    
-   
+
 };
 
 void RobotState::updateStopped() {

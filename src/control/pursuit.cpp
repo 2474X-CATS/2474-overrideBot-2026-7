@@ -6,7 +6,7 @@
 PurePursuit::PurePursuit(std::vector<Point> points, double lookAheadDist): 
 checkPoints(points), 
 lDist(lookAheadDist)
-{} 
+{}
 
 
 Point PurePursuit::checkIntersection(double posX, double posY, int i1, int i2){ //i1 and i2 are within bounds
@@ -102,8 +102,8 @@ void PurePursuit::calculateError(double posX, double posY, double heading, doubl
       angularError = 0;  
       return;
    }
-   linearError = dist; 
+   linearError = dist;
    angularError = angleDifference(theta, heading);  
-   Brain.Screen.printAt(20, 160, "Next point: (%.2f, %.2f) Progress: (%d/%d)", reference.x, reference.y, lastFoundIndex, checkPoints.size()); 
-   Brain.Screen.clearLine(160);
+   //Brain.Screen.printAt(20, 160, "Next point: (%.2f, %.2f) Progress: (%d/%d)", reference.x, reference.y, lastFoundIndex, checkPoints.size()); 
+   //Brain.Screen.clearLine(160);
 }

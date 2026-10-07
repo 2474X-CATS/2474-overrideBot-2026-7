@@ -69,7 +69,9 @@ class Sprite {
       virtual void mousePressed(int mx, int my){};   
       virtual void mouseReleased(){};  
 
-};  
+};   
+
+
 
 
 

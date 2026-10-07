@@ -9,7 +9,7 @@ class PurePursuit {
       std::vector<Point> checkPoints;
 
       double lDist; 
-      int lastFoundIndex = 0;
+      int lastFoundIndex = 0; 
 
       Point checkIntersection(double posX, double posY, int i1, int i2); //Between the line
       

@@ -12,7 +12,8 @@
 #include "streams/autoPrimer.h" 
 
 #include "gui/graph.h"  
-#include "gui/pathBoard.h"
+#include "gui/pathBoard.h" 
+
 
 using namespace vex;
 
@@ -59,8 +60,8 @@ void startCommandMatch()
   robot.runTelemetryThread();
 }
 
-int runGraphics(){   
-
+int runGraphics(){ 
+  /*
   Point p1;
   p1.x = TILE_SIZE_MM; 
   p1.y = TILE_SIZE_MM;  
@@ -75,13 +76,14 @@ int runGraphics(){
   p3.x = TILE_SIZE_MM * 1; 
   p3.y = TILE_SIZE_MM * 4; 
   
-  Arc traj = Arc(p1, p2);
+  Arc traj = Arc(p1, p2); 
+
   PathBoard pBoard = PathBoard(traj, 15);
   Sprite::frameLoop();
 
-  return 0;
-
-  /*
+  return 0; 
+  */
+  
   DataSupplier zero; 
   DataSupplier error;   
    
@@ -99,9 +101,11 @@ int runGraphics(){
       zero,
       error
     }
-  ); 
-  */
+  );   
   
+  Sprite::frameLoop(); 
+
+  return 0;
 
 }
 
@@ -113,7 +117,7 @@ int main()
 
   vexcodeInit();
   
-  /*
+  
   Telemetry::inst.registerSubtable(
     "graph",
     { 
@@ -122,27 +126,33 @@ int main()
     }
   ); 
 
-  Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
-  */ 
+  //Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
+
 
   //--------------------SUBSYSTEM CREATION----------------- 
+   
   
   Odometry odom = Odometry(); 
-  Drivebase drive = Drivebase();   
-  /*
+  Drivebase drive = Drivebase(); 
+  
   Intake intake = Intake(); 
-  SuperSystem ss = SuperSystem();
+  SuperSystem ss = SuperSystem();  
+  
+  Forearm forearm = Forearm(); 
   Elevator elevator = Elevator();
-  Forearm forearm = Forearm();
-  Claw claw = Claw();  
-  */
-
+  
+  Claw claw = Claw();    
+  
+  
   //-------------------------------------------------------
   
   robot.initialize(); 
-
+  //wait(5000, vex::msec); 
   //-------------------RUN PROTOCOLS HERE-------------------
-  thread graphics = thread(runGraphics); 
-  
-  //testDrive();
+  //thread graphics = thread(runGraphics); 
+
+  testDrive();  
+
+
+
 } 

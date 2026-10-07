@@ -22,10 +22,11 @@ extern double MOTOR_TEMP_LIMIT_CELSIUS;
 extern double TILE_SIZE_MM; 
 
 typedef enum { 
-    GROUND = 1,  
+    GROUND = 1,
     PRIMED, 
-    STANDING, 
-    AUTO
+    STANDING,
+    AUTO, 
+    EXIT
 } SuperStructurePosition;  
 
 //-------

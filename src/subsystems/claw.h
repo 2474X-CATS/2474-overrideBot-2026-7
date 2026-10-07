@@ -16,12 +16,14 @@ class Claw : public Subsystem {
        static const int SCORE_DELAY_MILLIS; 
        static const int PICKUP_DELAY_MILLIS;
 
-       vex::pneumatics clamp;
+       vex::motor roller;
 
        vex::distance objectDetector;
 
-       int lastTransitionStamp = 0;   
-       bool clenched = true; 
+       int lastTransitionStamp = 0;    
+
+       bool rollingIn = false; 
+       bool rollingOut = false; 
        
        bool sensesObject(); 
 

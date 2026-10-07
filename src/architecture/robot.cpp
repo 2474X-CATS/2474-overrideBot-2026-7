@@ -14,11 +14,19 @@ void Robot::initialize()
 {
   RobotState::initializeState();
   Subsystem::initSystems();
-  DataStream::initializeAll();
+  DataStream::initializeAll(); 
+  /*
+  while (RobotState::getMode() == ControlType::INITIALIZATION){ 
+    Subystem::primeSystems(); //Primes all subsystems by calling their initPeriodic() method  
+    wait(20, msec);  
+  }  
+  return 0; 
+  */
 };
 
 void Robot::driverControl(bool odometryEnabled)
-{
+{   
+  //Subsystem::phaseShift(); 
   RobotState::setMode(ControlType::DRIVER);
   RobotState::manuallyModifyState("in_autonomous", false);
   while (true)
@@ -52,7 +60,8 @@ void Robot::setAutonomousCommand(std::vector<CommandInterface *> comm)
 };
 
 void Robot::autonControl()
-{
+{ 
+  //Subsystem::phaseShift() Will handle 
   RobotState::setMode(ControlType::MANUAL);
   RobotState::manuallyModifyState("in_autonomous", true);
   vex::wait(20, msec);

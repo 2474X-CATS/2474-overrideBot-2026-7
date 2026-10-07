@@ -20,8 +20,9 @@ class Forearm : public Subsystem {
        static const double PRIMING_SETPOINT; 
        static const double GROUND_SETPOINT; 
        static const double STANDING_SETPOINT;   
-       static const double RELEASE_SETPOINT; 
-       static const double SCOOP_SETPOINT; 
+   
+       //static const double SCOOP_SETPOINT;  
+    
        static const double KCOS;
 
        static Forearm* globalPtr;
@@ -32,14 +33,12 @@ class Forearm : public Subsystem {
        bool requestingSetpoint = false; 
        double requestedSetpoint; 
 
-       double angularDeadZones[2];   
-       
        ForearmState currentState = ForearmState::F_HOLDING;  
 
        vex::motor forearmMotor; 
        vex::rotation rot;
        
-       AngularArmFFConstants armFFConsts; //Bulk (feedforward) 
+       //AngularArmFFConstants armFFConsts; //Bulk (feedforward) 
      
        pidcontroller* feedback = nullptr; //Rest done with feedback
        PIDConstants pidConsts;
@@ -54,8 +53,10 @@ class Forearm : public Subsystem {
        void maintainHoldLock();  
 
        void receiveSetpoints(); 
-
-       void setSetpoint(double setp, bool inverted);    
+       
+       bool underGlobalStall(); 
+       
+       void setSetpoint(double setp);    
        
        bool reachedSetpoint(); 
 

@@ -33,7 +33,7 @@ class Elevator : public Subsystem {
        static const double PRIMING_SPEED; 
 
        static const double MINIMUM_ALIGNER_DISTANCE; 
-       static const double ALIGNER_ERROR_TOLERANCE; 
+       //static const double ALIGNER_ERROR_TOLERANCE; 
 
        static const double SPOOL_DIAMETER;
 
@@ -50,7 +50,9 @@ class Elevator : public Subsystem {
        vex::rotation rot;  
 
        double primingSetpoint = 0; 
-       bool reachedSetpoint(); 
+       bool reachedSetpoint();  
+
+       bool underGlobalStall(); 
 
        void stateControl();
        void respondToRequests();   

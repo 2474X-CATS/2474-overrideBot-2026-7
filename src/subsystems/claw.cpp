@@ -2,8 +2,8 @@
 
 Claw* Claw::globalPtr = nullptr; 
 
-const double Claw::MAXIMUM_TOLERABLE_DISTANCE = 50; 
-const int Claw::SCORE_DELAY_MILLIS = 250; 
+const double Claw::MAXIMUM_TOLERABLE_DISTANCE = 80; 
+const int Claw::SCORE_DELAY_MILLIS = 350; 
 const int Claw::PICKUP_DELAY_MILLIS = 450;
 
 Claw::Claw() : 
@@ -15,7 +15,7 @@ Subsystem(
     (EntrySet){"waiting", EntryType::BOOL}
    } 
 ),  
-clamp(vex::pneumatics(Brain.ThreeWirePort.A)),
+roller(vex::motor(vex::PORT1)),
 objectDetector(vex::distance(vex::PORT5))
 { 
    globalPtr = this;
@@ -30,7 +30,13 @@ void Claw::init(){
 }
 
 void Claw::periodic(){   
-    clamp.set(clenched); 
+    if (rollingIn){ 
+       roller.spin(vex::directionType::fwd, 12, vex::voltageUnits::volt);
+    } else if (rollingOut){ 
+       roller.spin(vex::directionType::rev, 12, vex::voltageUnits::volt); 
+    } else { 
+       roller.stop(); 
+    }
 }
 
 bool Claw::sensesObject(){  
@@ -55,37 +61,42 @@ void Claw::stateControl(){
    if (get<bool>("waiting")){
       if (get<bool>("active") && (Brain.Timer.time() - lastTransitionStamp >= SCORE_DELAY_MILLIS)){ 
         set<bool>("active", false);
-        Telemetry::inst.placeValueAt<bool>(true, "forearm", "active");
         set<bool>("waiting", false);
+        Telemetry::inst.placeValueAt<bool>(true, "forearm", "active"); 
+        rollingOut = false;
       } else if ((Brain.Timer.time() - lastTransitionStamp >= PICKUP_DELAY_MILLIS)){ 
         set<bool>("waiting", false);
       }  
    } else if (pos == SuperStructurePosition::AUTO){ //Whenever macro is running
       if (get<bool>("active")){
          set<bool>("waiting", true);
-         clenched = false;
+         rollingOut = true; 
+         rollingIn = false;
          lastTransitionStamp = Brain.Timer.time();
       }
    } else {
       if (!still){
-        clenched = true;
-      } else {  
-        switch (pos){ 
+        rollingOut = false;
+        rollingIn = false;
+      } else {
+        switch (pos){
           case STANDING:
-             clenched = false;
-             if (get<bool>("in_possession")){  
-                if (RobotState::getStateOf("in_autonomous")){ 
+             rollingIn = true;
+             rollingOut = false;
+             if (get<bool>("in_possession")){
+                if (RobotState::getStateOf("in_autonomous")){
                  set<bool>("waiting", true);
                 }
-                clenched = true;
                 lastTransitionStamp = Brain.Timer.time();
              }
              break; 
           case GROUND:
-             clenched = false;
+             rollingIn = true;
+             rollingOut = false;
              break;
-          case PRIMED:    
-             clenched = true;
+          case PRIMED: 
+             rollingIn = false; 
+             rollingOut = RobotState::getStateOf("outtaking");
              break;  
           default: 
              break;

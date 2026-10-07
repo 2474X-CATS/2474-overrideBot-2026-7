@@ -3,17 +3,20 @@
 
 Forearm* Forearm::globalPtr = nullptr; 
 
-const double Forearm::PLACE_SETPOINT = 15;
-const double Forearm::PRIMING_SETPOINT = 89;
-const double Forearm::GROUND_SETPOINT = 276;
-const double Forearm::STANDING_SETPOINT = 10;
-const double Forearm::RELEASE_SETPOINT = 82.5; 
-const double Forearm::SCOOP_SETPOINT = 5.0;//7.5; 
-const double Forearm::KCOS = 0.135;
+const double Forearm::PLACE_SETPOINT = 0;
+const double Forearm::PRIMING_SETPOINT = 90;
+const double Forearm::GROUND_SETPOINT = 270;
+const double Forearm::STANDING_SETPOINT = 350;
 
-Forearm& Forearm::getObject(){ 
-  return *globalPtr;
+const double Forearm::KCOS = 1.5;
+
+Forearm& Forearm::getObject(){
+  return *globalPtr; 
 } 
+
+bool Forearm::underGlobalStall(){ 
+  return Brain.Timer.time() - Telemetry::inst.getValueAt<double>("ss_manager", "transition_stamp") < Telemetry::inst.getValueAt<double>("ss_manager", "transition_delay");
+}
 
 Forearm::Forearm(): 
     Subsystem( 
@@ -23,7 +26,10 @@ Forearm::Forearm():
           (EntrySet){"active", EntryType::BOOL}, 
           (EntrySet){"at_setpoint", EntryType::BOOL}, 
           (EntrySet){"current_angle", EntryType::DOUBLE}, 
-          (EntrySet){"hold", EntryType::BOOL} 
+          (EntrySet){"hold", EntryType::BOOL}, 
+
+          (EntrySet){"requesting_setpoint", EntryType::BOOL}, 
+          (EntrySet){"requested_setpoint", EntryType::DOUBLE}
         }
     ),
     forearmMotor(vex::motor(vex::PORT4)), 
@@ -32,34 +38,26 @@ Forearm::Forearm():
         globalPtr = this;
     };
 
-void Forearm::init(){  
-   forearmMotor.setPosition(0, vex::rotationUnits::deg); 
-   forearmMotor.setBrake(vex::brakeType::coast); 
+void Forearm::init(){ 
+   forearmMotor.setBrake(vex::brakeType::hold);  
 
-   angularDeadZones[0] = 0;
-   angularDeadZones[1] = 0;
-
-   pidConsts.P = 12/90.0;
-   pidConsts.I = 0.075;//0.35;//0.0025;//0.02;
-   pidConsts.D = 3/360.0;//1.0/540;//0.00625;//0.0075; 
+   pidConsts.P = 12/75.0;
+   pidConsts.I = 0.075;//0.075; 
+   pidConsts.D = 0.0125;//3/360.0;
    pidConsts.errorTolerance = 5;
 
    feedback = new pidcontroller(pidConsts, 0);  
-
    feedback->setLastTimestamp(Brain.Timer.time());  
+   setpoint = 90;
   
-   startingAngle = 270;
-   rot.setPosition(0, vex::rotationUnits::rev); 
-   setpoint = startingAngle;
 }
 
 void Forearm::periodic(){
-    forearmMotor.spin(vex::directionType::fwd, getOutput(), vex::voltageUnits::volt);  
-    Brain.Screen.printAt(20, 120, "Forearm Angle: %.2f", cos(toRadians(getCurrentAngle()))); 
-    //stop();
+    forearmMotor.spin(vex::directionType::rev, getOutput(), vex::voltageUnits::volt);    
 }
 
-void Forearm::updateTelemetry(){  
+void Forearm::updateTelemetry(){   
+    //Brain.Screen.printAt(20, 120, "Current angle: %.2f", getCurrentAngle()); 
     set<double>("current_angle", getCurrentAngle());
     stateControl();
 }
@@ -69,7 +67,8 @@ void Forearm::stop(){
 }
 
 double Forearm::getOutput(){
-    Telemetry::inst.placeValueAt<double>(getError(), "graph", "error"); 
+    Telemetry::inst.placeValueAt<double>(getError(), "graph", "error");  
+    Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
     double pidOutput = feedback->calculate(getError(), Brain.Timer.time()); 
     double standingOutput = (KCOS * cos(toRadians(getCurrentAngle())));
     double output = standingOutput + pidOutput;
@@ -78,21 +77,27 @@ double Forearm::getOutput(){
     return output;
 }
 
-double Forearm::getError(){
+double Forearm::getError(){ 
+    double currentAngle = getCurrentAngle();
     double angleDiff = angleDifference(getCurrentAngle(), setpoint);
-    double currentAngle = toRadians(getCurrentAngle());
-    if (cos(currentAngle) < 0){
-       if (sin(currentAngle) > 0 && angleDiff < 0){
-          angleDiff = 360 + angleDiff;
-       } else if (sin(currentAngle) < 0 && angleDiff > 0){
-          angleDiff = 360 - angleDiff;
-       }
+    double turnDirection = copysign(1, angleDiff); 
+    double distFromTaboo = angleDifference(getCurrentAngle(), 180); 
+    bool flip = false;  
+    if (copysign(1, distFromTaboo) == turnDirection){ 
+      if (turnDirection == -1){
+        flip = angleDiff < distFromTaboo;
+      } else { 
+        flip = angleDiff > distFromTaboo;
+      }
+    } 
+    if (flip){ 
+      angleDiff = (360 - abs(angleDiff)) * -1 * turnDirection; 
     }
     return angleDiff;
 }
 
 double Forearm::getCurrentAngle(){ 
-    return angleSum(rot.angle(vex::rotationUnits::deg), startingAngle);
+    return angleSum(rot.angle(vex::rotationUnits::deg), 0);
 } 
 
 double Forearm::getVelocity(){
@@ -103,17 +108,43 @@ bool Forearm::reachedSetpoint(){
   return feedback->atSetpoint(angleDifference(getCurrentAngle(), setpoint));
 }
 
-bool Forearm::safeToManuever(){
-  return Telemetry::inst.getValueAt<double>("elevator", "current_height") > 700; 
+bool Forearm::safeToManuever(){   
+  
+  double vertAngComponent = sin(toRadians(getCurrentAngle()));  
+  double elevatorHeight = Telemetry::inst.getValueAt<double>("elevator", "current_height"); 
+  int pos = Telemetry::inst.getValueAt<int>("ss_manager", "position");  
+  
+  bool safe = true; 
+
+  if (pos == SuperStructurePosition::STANDING){ 
+    safe = elevatorHeight > 700 || vertAngComponent > -0.75;
+  } else if (pos == SuperStructurePosition::GROUND && Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
+    safe = elevatorHeight > 700;
+  } else if (pos == SuperStructurePosition::PRIMED){ 
+    safe = elevatorHeight > 700;
+  }
+  
+  /*
+  if (Telemetry::inst.getValueAt<bool>("claw", "in_possession")){  
+    if (vertAngComponent > 0.25 && pos == SuperStructurePosition::GROUND){ 
+      safe = Telemetry::inst.getValueAt<double>("elevator", "current_height") > 700; 
+    }
+  } else { 
+    if (vertAngComponent < -0.5 && pos != SuperStructurePosition::GROUND){ 
+      safe = Telemetry::inst.getValueAt<double>("elevator", "current_height") > 700; 
+    }
+  } 
+  */
+  return safe;
 }
  
 void Forearm::maintainHoldLock(){ 
-  if (get<bool>("hold")){  
+  if (get<bool>("hold") && !underGlobalStall()){  
       set<bool>("hold", !safeToManuever());
   }
 } 
 
-void Forearm::setSetpoint(double setp, bool inverted){  
+void Forearm::setSetpoint(double setp){  
   if (setp == setpoint){ 
     return; 
   } 
@@ -122,9 +153,9 @@ void Forearm::setSetpoint(double setp, bool inverted){
 }
 
 void Forearm::receiveSetpoints(){ 
-  if (requestingSetpoint){  
-    requestingSetpoint = false;
-    setSetpoint(requestedSetpoint, RobotState::getStateOf("inverted")); 
+  if (get<bool>("requesting_setpoint")){  
+    set<bool>("requesting_setpoint", false); 
+    setSetpoint(get<double>("requested_setpoint")); 
   }
 } 
 
@@ -141,26 +172,35 @@ void Forearm::passMacroTurn(){
 
 void Forearm::findNextSetpoint(){ 
     SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));  
+    bool inPossession = Telemetry::inst.getValueAt<bool>("claw", "in_possession"); 
     switch (pos){  
         case PRIMED:
-          requestingSetpoint = true; 
-          requestedSetpoint = PRIMING_SETPOINT;
+          set<bool>("requesting_setpoint", true);
+          if (inPossession){ 
+               set<double>("requested_setpoint", PRIMING_SETPOINT); 
+          } else { 
+               set<double>("requested_setpoint", GROUND_SETPOINT);
+          }
           break;
         case GROUND:  
-          requestingSetpoint = true; 
-          requestedSetpoint = GROUND_SETPOINT;
+          set<bool>("requesting_setpoint", true);
+          set<double>("requested_setpoint", GROUND_SETPOINT);
           break;
-        case STANDING:   
-          requestingSetpoint = true;   
-          requestedSetpoint = STANDING_SETPOINT;
-          break; 
+        case STANDING:
+          set<bool>("requesting_setpoint", true);
+          set<double>("requested_setpoint", STANDING_SETPOINT);
+          break;  
         case AUTO: 
-          if (get<bool>("active")){  
-            requestingSetpoint = true;
-            if (get<int>("task_id") == 0){ 
-                requestedSetpoint = PLACE_SETPOINT;
+          if (get<bool>("active")){
+            set<bool>("requesting_setpoint", true);
+            if (get<int>("task_id") == 0){   
+                if (setpoint == PLACE_SETPOINT){ 
+                  passMacroTurn();
+                } else { 
+                  set<double>("requested_setpoint", PLACE_SETPOINT);
+                }
             } else { 
-                requestedSetpoint = RELEASE_SETPOINT;
+                set<double>("requested_setpoint", PRIMING_SETPOINT);
             }
           } 
           break;  
@@ -169,10 +209,9 @@ void Forearm::findNextSetpoint(){
     }  
 }
 
-void Forearm::stateControl(){    
-  
-    receiveSetpoints();  
+void Forearm::stateControl(){     
     maintainHoldLock(); 
+    receiveSetpoints();  
     if (currentState == ForearmState::F_PURSUING){  
       if (reachedSetpoint()){ 
           currentState = ForearmState::F_HOLDING;   
@@ -183,7 +222,7 @@ void Forearm::stateControl(){
       }
     } else if (currentState == ForearmState::F_HOLDING && !get<bool>("hold")) {     
         findNextSetpoint(); 
-    }   
+    }
     
     set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING && !get<bool>("hold"));  
 }  

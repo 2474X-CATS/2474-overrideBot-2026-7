@@ -37,9 +37,9 @@ class Drivebase : public Subsystem {
     private:
       static Drivebase* globalPtr;  
        
-      Trajectory* path = nullptr;
+      //Trajectory* path = nullptr;
       //std::vector<Point> points; 
-      PurePursuit* donkey = nullptr;
+      //PurePursuit* donkey = nullptr;
 
       static const double TURN_SENSITIVITY; 
       static const double DRIVE_SENSITIVITY; 
@@ -56,8 +56,8 @@ class Drivebase : public Subsystem {
       vex::motor rightFront; 
       vex::motor rightBack;  
       
-      vex::motor leftExtra; 
-      vex::motor rightExtra;
+      //vex::motor leftExtra; 
+      //vex::motor rightExtra;
 
       vex::motor_group leftMotors;
       vex::motor_group rightMotors; 
@@ -153,15 +153,15 @@ class TurnToHeading : public Command<Drivebase> {
      
      double setpoint; 
 
-     pidcontroller* controller = nullptr; 
-
-     static const double PID_CONSTANTS_KP;
-     static const double PID_CONSTANTS_KI;
-     static const double PID_CONSTANTS_KD;  
+     pidcontroller* controller = nullptr;  
 
      double getError();
 
-   public:
+   public: 
+
+     static const double PID_CONSTANTS_KP;
+     static const double PID_CONSTANTS_KI;
+     static const double PID_CONSTANTS_KD; 
 
      static CommandInterface* getCommand(double angle){ 
          return new TurnToHeading(Drivebase::getObject(), angle);
@@ -301,7 +301,73 @@ class DriveToSetpoint : public SequentialCommandGroup {
       
       void start() override;
 
+};  
+
+//-------------------------------------------------------- 
+
+class DriveTrajectory : public Command<Drivebase> {   
+
+  private:  
+
+    Drivebase& drivebaseRef;  
+
+    PurePursuit* donkey = nullptr; 
+    Trajectory* trajectory = nullptr;    
+    
+    pidcontroller* turnController = nullptr; 
+
+    double maxAccel; 
+    double maxVelo; 
+
+    void findNextSpeeds(double linearError, double angularError, double& linearSpeed, double& angularSpeed); 
+
+  public: 
+    DriveTrajectory(Drivebase& drivebase, double lookAheadDist, double maxVelocity, double maxAcceleration);
+  
+  protected:   
+    double lDist; //Same throughout extended classes
+    virtual void initializePath(){}; //Actually make the trajectory   
+
+    void start() override; //Call initializePath and partitions trajectory
+    void periodic() override; //Follow path
+    bool isOver() override; //Reached end of path
+    void end() override; //Stop
+    
 }; 
+
+class Toggle : public Command<Drivebase> { 
+   
+   private:  
+
+     static CommandInterface* getCommand(){ 
+       return new Toggle(Drivebase::getObject()); 
+     }  
+
+     double startTime; 
+
+   public: 
+   
+     static CommandInterface* getCommand(int bounces){ 
+         SequentialCommandGroup* group = SequentialCommandGroup::makeGroup(Toggle::getCommand()); 
+         for (int i = 0; i < bounces - 1; i++){ 
+          group->chainThen(Toggle::getCommand());
+         } 
+         return group; 
+     }
+
+     Toggle(Drivebase& drive):  
+     Command<Drivebase>(drive),
+     drivebaseRef(drive)
+     {}; 
+
+   protected: 
+     Drivebase& drivebaseRef;  
+
+     void start() override; 
+     void periodic() override; 
+     bool isOver() override; 
+     void end() override; 
+};
 
 
 
