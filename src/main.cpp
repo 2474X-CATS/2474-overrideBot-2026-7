@@ -138,8 +138,9 @@ int main()
   Intake intake = Intake(); 
   SuperSystem ss = SuperSystem();  
   
-  Forearm forearm = Forearm(); 
-  Elevator elevator = Elevator();
+   
+  Elevator elevator = Elevator(); 
+  Forearm forearm = Forearm();
   
   Claw claw = Claw();    
   

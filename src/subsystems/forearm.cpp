@@ -39,17 +39,17 @@ Forearm::Forearm():
     };
 
 void Forearm::init(){ 
-   forearmMotor.setBrake(vex::brakeType::hold);  
+   forearmMotor.setBrake(vex::brakeType::hold);   
 
-   pidConsts.P = 12/75.0;
+   pidConsts.P = 12/60.0;
    pidConsts.I = 0.075;//0.075; 
-   pidConsts.D = 0.0125;//3/360.0;
+   pidConsts.D = 0.025;//3/360.0;
    pidConsts.errorTolerance = 5;
 
    feedback = new pidcontroller(pidConsts, 0);  
-   feedback->setLastTimestamp(Brain.Timer.time());  
+   feedback->setLastTimestamp(Brain.Timer.time());   
+
    setpoint = 90;
-  
 }
 
 void Forearm::periodic(){
@@ -108,11 +108,15 @@ bool Forearm::reachedSetpoint(){
   return feedback->atSetpoint(angleDifference(getCurrentAngle(), setpoint));
 }
 
-bool Forearm::safeToManuever(){   
-  
-  double vertAngComponent = sin(toRadians(getCurrentAngle()));  
-  double elevatorHeight = Telemetry::inst.getValueAt<double>("elevator", "current_height"); 
-  int pos = Telemetry::inst.getValueAt<int>("ss_manager", "position");  
+bool Forearm::safeToManuever(double setpoint){   
+  if (setpoint == get<double>("requested_setpoint")){ 
+    return true;
+  }
+  double currentSin = sin(toRadians(getCurrentAngle()));   
+  double setpointSin = sin(toRadians(getCurrentAngle())); 
+  double elevatorHeight = Telemetry::inst.getValueAt<double>("elevator", "current_height");  
+
+  int pos = Telemetry::inst.getValueAt<int>("ss_manager", "position");   
   
   bool safe = true; 
 
@@ -211,7 +215,8 @@ void Forearm::findNextSetpoint(){
 
 void Forearm::stateControl(){     
     maintainHoldLock(); 
-    receiveSetpoints();  
+    receiveSetpoints();   
+    
     if (currentState == ForearmState::F_PURSUING){  
       if (reachedSetpoint()){ 
           currentState = ForearmState::F_HOLDING;   
@@ -222,7 +227,8 @@ void Forearm::stateControl(){
       }
     } else if (currentState == ForearmState::F_HOLDING && !get<bool>("hold")) {     
         findNextSetpoint(); 
-    }
+    } 
+
     
     set<bool>("at_setpoint", currentState == ForearmState::F_HOLDING && !get<bool>("hold"));  
 }  

@@ -55,10 +55,10 @@ bool Elevator::underGlobalStall(){
 void Elevator::init(){  
 
     PIDConstants pidConsts;  
-    pidConsts.P = 0.25;
+    pidConsts.P = 0.4;
     pidConsts.I = 0.000;
     pidConsts.D = 0.0000;
-    pidConsts.errorTolerance = 10;
+    pidConsts.errorTolerance = 30;
 
     lift.setStopping(vex::brakeType::hold); 
     rot.setPosition(0, vex::rotationUnits::rev);  
@@ -73,7 +73,8 @@ void Elevator::stop(){
 }
 
 void Elevator::periodic(){ 
-   double elevatorOutput = 0;   
+   double elevatorOutput = 0;  
+   
    if (currentState == ElevatorState::E_HOLDING || currentState == ElevatorState::E_PURSUING){//Stay Still
      SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
      if (pos == SuperStructurePosition::GROUND || (pos == SuperStructurePosition::PRIMED && !Telemetry::inst.getValueAt<bool>("claw", "in_possession")) && get<bool>("at_setpoint")){ 
@@ -82,8 +83,6 @@ void Elevator::periodic(){
        elevatorOutput = -12; 
      } else { 
        elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time()); 
-       //Telemetry::inst.placeValueAt<double>(getPosition(), "graph", "error");  
-       //Telemetry::inst.placeValueAt<double>(correctionController->getSetpoint(), "graph", "zero");
      }
    } else if (currentState == ElevatorState::E_PRIMING){ //Rise or fall at a constant rate
      if (get<bool>("sensing_stack")){
@@ -93,7 +92,8 @@ void Elevator::periodic(){
      }
    } else if (currentState == ElevatorState::E_ADJUSTING){ 
      elevatorOutput = PRIMING_SPEED * raisingDirection;
-   }
+   } 
+   
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt); 
 }
 

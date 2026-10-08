@@ -59,8 +59,8 @@ class Elevator : public Subsystem {
 
        void receiveSetpoints();  
 
-       bool safeToManuever(); 
-       void maintainHoldLock();  
+       bool safeToManuever(double setpoint);
+       void maintainHoldLock();
 
        void findNextSetpoint(); 
        void regulatePriming();

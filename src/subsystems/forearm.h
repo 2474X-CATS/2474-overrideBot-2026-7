@@ -48,7 +48,7 @@ class Forearm : public Subsystem {
        double getCurrentAngle(); 
        double getVelocity(); 
 
-       bool safeToManuever(); 
+       bool safeToManuever(double setpoint); 
 
        void maintainHoldLock();  
 

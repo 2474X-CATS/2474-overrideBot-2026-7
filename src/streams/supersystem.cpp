@@ -3,6 +3,7 @@
 const double SuperSystem::MINIMUM_SCORING_CLEAREANCE = 100; 
 
 void SuperSystem::setPosition(int pos){  
+    
     if (get<int>("position") != pos){ 
      switch (pos){
       case GROUND:
@@ -12,7 +13,7 @@ void SuperSystem::setPosition(int pos){
         }
         set<double>("transition_delay", 0);
         break;
-      case PRIMED:  
+      case PRIMED:   
         if (!(get<int>("position") == SuperStructurePosition::STANDING && Telemetry::inst.getValueAt<bool>("claw", "in_possession"))){ 
            if (get<int>("position") != SuperStructurePosition::GROUND || Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
              Telemetry::inst.placeValueAt<bool>(true, "elevator", "hold");
@@ -27,13 +28,13 @@ void SuperSystem::setPosition(int pos){
         set<double>("transition_delay", 0);
         break;
      }    
-    }
+    } 
+
     set<double>("transition_stamp", Brain.Timer.time()); 
     set<int>("position", pos);
 } 
 
 void SuperSystem::init(){  
-    set<int>("position", SuperStructurePosition::PRIMED);
     setPosition(SuperStructurePosition::PRIMED);
 }
 

@@ -79,12 +79,14 @@ void RobotState::updateRegular()
       manuallyModifyState("k_score", false);  
       Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");
    }  
-
-   if (Telemetry::inst.getValueAt<bool>("elevator", "hold")){ 
+   
+   /*
+   if (Telemetry::inst.getValueAt<bool>("forearm", "at_setpoint")){ 
       setVibrationCode("..");
    } else { 
       disableVibrations();
-   }
+   } 
+      */
    
 
 };
