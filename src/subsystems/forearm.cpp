@@ -3,7 +3,7 @@
 
 Forearm* Forearm::globalPtr = nullptr; 
 
-const double Forearm::PLACE_SETPOINT = 0;
+const double Forearm::PLACE_SETPOINT = 10;
 const double Forearm::PRIMING_SETPOINT = 90;
 const double Forearm::GROUND_SETPOINT = 270;
 const double Forearm::STANDING_SETPOINT = 350;

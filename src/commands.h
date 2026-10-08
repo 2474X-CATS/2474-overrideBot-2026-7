@@ -134,7 +134,7 @@ class WaitForSSState : public Command<DummySystem> {
 
 CommandInterface* Score();  
 CommandInterface* GroundIntakeMode(bool waitUntilReached);  
-CommandInterface* StandingMode(bool waitUntilReached);  
+CommandInterface* StandingMode(bool waitUntilReached);
 CommandInterface* Bounce(int nBounces);
 
 

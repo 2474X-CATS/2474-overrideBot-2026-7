@@ -149,10 +149,13 @@ int main()
   robot.initialize(); 
   //wait(5000, vex::msec); 
   //-------------------RUN PROTOCOLS HERE-------------------
-  //thread graphics = thread(runGraphics); 
-
-  testDrive();  
-
+  //thread graphics = thread(runGraphics);  
+  /*
+  testAuto( 
+    two_pin_alliance_left()
+  ); 
+  */
+  testDrive();
 
 
 } 

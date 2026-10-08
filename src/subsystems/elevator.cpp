@@ -8,7 +8,7 @@ const double Elevator::GROUND_INTAKE_HEIGHT = LEVELED_HEIGHT + 160;
 const double Elevator::PRIMING_HEIGHT = GROUND_INTAKE_HEIGHT + 150;
 const double Elevator::MAX_HEIGHT = (42 * 25.4); 
 
-const double Elevator::GROUND_PRESSURE = -5;
+const double Elevator::GROUND_PRESSURE = -4;
 
 const double Elevator::PRIMING_SPEED = 12;
 
