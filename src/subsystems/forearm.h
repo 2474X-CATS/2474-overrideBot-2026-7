@@ -28,10 +28,9 @@ class Forearm : public Subsystem {
        static Forearm* globalPtr;
         
        double setpoint;
-       double startingAngle;
 
-       bool requestingSetpoint = false; 
-       double requestedSetpoint; 
+       //bool requestingSetpoint = false; 
+       //double requestedSetpoint; 
 
        ForearmState currentState = ForearmState::F_HOLDING;  
 
@@ -48,7 +47,7 @@ class Forearm : public Subsystem {
        double getCurrentAngle(); 
        double getVelocity(); 
 
-       bool safeToManuever(double setpoint); 
+       bool safeToManuever(double setp); 
 
        void maintainHoldLock();  
 

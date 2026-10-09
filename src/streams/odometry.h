@@ -44,8 +44,10 @@ class Odometry : public DataStream {
 
        void calibratePerspective();
        
-       void findTranslations(double& xTranslate, double& yTranslate, vex::distance sensor, double angleOffset, double distanceOffset);  
+       void findTranslations(double& xCoords, double& yCoords, int& xCount, int& yCount, vex::distance sensor, double angleOffset, double distanceOffset);  
        
+       void laserCalibrate(double& resX, double& resY);
+
        double getHeading();
        
        vex::inertial gyro; 

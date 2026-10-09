@@ -15,7 +15,8 @@ typedef struct
   double D;
   double iLimit = -1;
   double errorTolerance = 0; 
-  double minimumOutput = 0;
+  double minimumOutput = 0; 
+  double maximumOutput = 0;
 } PIDConstants;
 
 class pidcontroller
@@ -39,7 +40,8 @@ private:
 
   double setpoint; 
 
-  double minimumOutput;
+  double minimumOutput; 
+  double maximumOutput; 
 
 public: 
 

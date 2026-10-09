@@ -90,7 +90,7 @@ Odometry::Odometry() :
            (EntrySet){"immediate_distance", EntryType::DOUBLE},
            (EntrySet){"oriented_c", EntryType::BOOL},
            (EntrySet){"forward_acceleration", EntryType::DOUBLE}, 
-           (EntrySet){"goal_clearance", EntryType::DOUBLE}
+           //(EntrySet){"goal_clearance", EntryType::DOUBLE}
        }
     ),
     gyro(vex::inertial(vex::PORT16)), 
@@ -101,7 +101,7 @@ Odometry::Odometry() :
     rightDist(vex::distance(vex::PORT15))
     {};
 
-void Odometry::init(){   
+void Odometry::init(){
    set<bool>("oriented_c", true);
    calibratePerspective();
    setStartingOdometry();
@@ -162,34 +162,64 @@ void Odometry::refreshData(){
     set<double>("x_position_mm", xPos); 
     set<double>("y_position_mm", yPos);   
 
-    set<double>("goal_clearance", frontDist.objectDistance(vex::distanceUnits::mm)); 
-
-    //set<bool>("far_from_matchload", frontDist.objectDistance(vex::distanceUnits::mm) >= MATCHLOAD_CLEARANCE_MM); 
-    //Brain.Screen.printAt(20, 120, "Angle: %.2f", get<double>("heading_deg")); 
-    //displayDistanceSensorOdom(true, true, true); 
+    double distX = -1; 
+    double distY = -1; 
+    laserCalibrate(distX, distY); 
+    //Brain.Screen.printAt(20, 120, "Distance sensor odom: %.2f, %.2f", distX, distY);
 
     lastTimestamp = currentTimestamp;
 
 } 
 
 
-void Odometry::findTranslations(double& xTranslate, double& yTranslate, vex::distance sensor, double angleOffset, double distanceOffset){ 
+void Odometry::laserCalibrate(double& resX, double& resY){ 
+  double xAccum = 0;  
+  int xCount = 0;
+  double yAccum = 0;   
+  int yCount = 0;
+  findTranslations(xAccum, yAccum, xCount, yCount, frontDist, 0, ROBOT_LENGTH_MM/2); 
+  findTranslations(xAccum, yAccum, xCount, yCount, leftDist, 90, ROBOT_WIDTH_MM/2); 
+  findTranslations(xAccum, yAccum, xCount, yCount, rightDist, -90, ROBOT_WIDTH_MM/2);  
+  if (xCount > 0){ 
+    resX = xAccum * 1.0 / xCount;
+  }  
+  if (yCount > 0){ 
+    resY = yAccum * 1.0 / yCount;
+  }
+  
+}
+
+void Odometry::findTranslations(double& xCoords, double& yCoords, int& xCount, int& yCount, vex::distance sensor, double angleOffset, double distanceOffset){ 
    double distance = sensor.objectDistance(vex::distanceUnits::mm) + distanceOffset;  
    double sensorHeading = angleSum(getHeading(), angleOffset);  
    double wallHeading;  
     
    if (sensorHeading > 45 && sensorHeading < 135){ 
-     wallHeading = 0; 
-   } else if (sensorHeading > 135 && sensorHeading < 225) { 
      wallHeading = 90; 
+   } else if (sensorHeading > 135 && sensorHeading < 225) { 
+     wallHeading = 180; 
    } else if (sensorHeading > 225 && sensorHeading < 315){ 
-     wallHeading = 180;
+     wallHeading = 270;
    } else { 
-     wallHeading = 270; 
+     wallHeading = 0; 
    }
    
    sensorHeading = angleDifference(sensorHeading, wallHeading);    
-   double straightDist = cos(toRadians(sensorHeading)) * distance;  
+   double straightDist = cos(toRadians(sensorHeading)) * distance;   
+
+   if (wallHeading == 90){ 
+    yCoords += TILE_SIZE_MM * 6 - straightDist; 
+    yCount++;
+   } else if (wallHeading == 270){ 
+    yCoords += straightDist;  
+    yCount++;
+   } else if (wallHeading == 0){ 
+    xCoords += TILE_SIZE_MM * 6 - straightDist; 
+    xCount++;
+   } else { 
+    xCoords += straightDist; 
+    xCount++;
+   }
 
 }
 

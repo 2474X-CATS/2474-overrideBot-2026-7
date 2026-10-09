@@ -65,28 +65,23 @@ void RobotState::updateRegular()
    manuallyModifyState("purge", Controller1.ButtonA.pressing());   
 
    manuallyModifyState("outtaking", Controller1.ButtonL1.pressing());
-   
-   if (Controller1.ButtonX.pressing()){ 
-      manuallyModifyState("override", true);
-   } else if (getStateOf("override")){  
-      manuallyModifyState("override", false); 
-      Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "override");
-   } 
+   manuallyModifyState("override", Controller1.ButtonX.pressing()); 
 
    if (Controller1.ButtonL2.pressing()){ 
       manuallyModifyState("k_score", true);
    } else if (getStateOf("k_score")){  
       manuallyModifyState("k_score", false);  
       Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");
-   }  
+   }
    
-   /*
-   if (Telemetry::inst.getValueAt<bool>("forearm", "at_setpoint")){ 
+   
+   if (!Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint")){ 
       setVibrationCode("..");
    } else { 
       disableVibrations();
-   } 
-      */
+   }  
+   
+      
    
 
 };

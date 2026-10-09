@@ -2,34 +2,8 @@
 
 const double SuperSystem::MINIMUM_SCORING_CLEAREANCE = 100; 
 
-void SuperSystem::setPosition(int pos){  
-    
-    if (get<int>("position") != pos){ 
-     switch (pos){
-      case GROUND:
-        if (get<int>("position") != SuperStructurePosition::PRIMED){ 
-          Telemetry::inst.placeValueAt<bool>(true, "elevator", "hold");
-          Telemetry::inst.placeValueAt<bool>(true, "forearm", "hold");
-        }
-        set<double>("transition_delay", 0);
-        break;
-      case PRIMED:   
-        if (!(get<int>("position") == SuperStructurePosition::STANDING && Telemetry::inst.getValueAt<bool>("claw", "in_possession"))){ 
-           if (get<int>("position") != SuperStructurePosition::GROUND || Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
-             Telemetry::inst.placeValueAt<bool>(true, "elevator", "hold");
-             Telemetry::inst.placeValueAt<bool>(true, "forearm", "hold");
-           }
-        }
-        set<double>("transition_delay", 0);
-        break;
-      case STANDING:
-        Telemetry::inst.placeValueAt<bool>(true, "elevator", "hold");
-        Telemetry::inst.placeValueAt<bool>(true, "forearm", "hold");
-        set<double>("transition_delay", 0);
-        break;
-     }    
-    } 
-
+void SuperSystem::setPosition(int pos){   
+    //set<double>("transition_delay", 0); 
     set<double>("transition_stamp", Brain.Timer.time()); 
     set<int>("position", pos);
 } 
@@ -44,14 +18,9 @@ void SuperSystem::refreshData(){
         Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint") &&  
         Telemetry::inst.getValueAt<bool>("forearm", "at_setpoint"));    
     
-    if (get<bool>("override") && get<int>("position") != SuperStructurePosition::EXIT){ 
-      Telemetry::inst.placeValueAt<bool>(true, "elevator", "requesting_setpoint"); 
-      Telemetry::inst.placeValueAt<bool>(true, "forearm", "requesting_setpoint");  
-      Telemetry::inst.placeValueAt<double>(90, "forearm", "requested_setpoint"); 
-      Telemetry::inst.placeValueAt<double>(750, "elevator", "requested_setpoint"); 
+    if (RobotState::getStateOf("override") && get<int>("position") != SuperStructurePosition::EXIT){  
       set<int>("position", SuperStructurePosition::EXIT);
-      set<bool>("override", false); 
-    } else if (get<bool>("setpoints_reached")){
+    } else /*if (get<bool>("setpoints_reached"))*/{
         switch (get<int>("position")){ 
             case GROUND:
                 if (!RobotState::getStateOf("grounded")){  
@@ -93,7 +62,6 @@ void SuperSystem::refreshData(){
                   setPosition(SuperStructurePosition::PRIMED); 
                 } else {
                   clearance += fabs(Telemetry::inst.getValueAt<double>("odometry", "immediate_distance"));  
-                  Brain.Screen.printAt(20, 120, "Clearance: %.2f", clearance);
                 }
                 break;  
             case EXIT:  

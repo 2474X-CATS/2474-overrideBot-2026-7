@@ -6,7 +6,8 @@ pidcontroller::pidcontroller(PIDConstants conts, double destination) : kP(conts.
                                                                        kD(conts.D),
                                                                        errorTolerance(conts.errorTolerance),
                                                                        iLimit(conts.iLimit), 
-                                                                       minimumOutput(conts.minimumOutput)
+                                                                       minimumOutput(conts.minimumOutput), 
+                                                                       maximumOutput(conts.maximumOutput)
 {
    setpoint = destination;
 };
@@ -16,7 +17,8 @@ pidcontroller::pidcontroller() : kP(0),
                                  kD(0),
                                  errorTolerance(0),
                                  iLimit(0), 
-                                 minimumOutput(0)
+                                 minimumOutput(0), 
+                                 maximumOutput(0)
 {
    setpoint = 0;
 };
@@ -49,9 +51,11 @@ double pidcontroller::calculate(double position, double timestamp)
    prevError = error;
    double output = (kP * error) + (kI * integral) + (kD * derivative);  
 
-   if (fabs(output) < minimumOutput){ 
-      output = minimumOutput * copysign(1, output); 
-   }  
+   if (fabs(output) < minimumOutput && minimumOutput != 0){ 
+      output = minimumOutput * copysign(1, output);
+   } else if (fabs(output) > maximumOutput && maximumOutput != 0){ 
+      output = maximumOutput * copysign(1, output);
+   }
    
    return output;
 };

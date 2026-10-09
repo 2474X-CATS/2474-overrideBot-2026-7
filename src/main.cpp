@@ -136,27 +136,27 @@ int main()
   Drivebase drive = Drivebase(); 
   
   Intake intake = Intake(); 
-  SuperSystem ss = SuperSystem();  
+  SuperSystem ss = SuperSystem();
   
-   
-  Elevator elevator = Elevator(); 
+  Claw claw = Claw();
   Forearm forearm = Forearm();
-  
-  Claw claw = Claw();    
+  Elevator elevator = Elevator();   
   
   
   //-------------------------------------------------------
-  
-  robot.initialize(); 
-  //wait(5000, vex::msec); 
+  robot.initialize();
   //-------------------RUN PROTOCOLS HERE-------------------
-  //thread graphics = thread(runGraphics);  
-  /*
+  
+  thread runGraph = thread(runGraphics);
+  
   testAuto( 
-    two_pin_alliance_left()
-  ); 
-  */
-  testDrive();
+    { 
+      DriveForward::getCommand(TILE_SIZE_MM)
+    }
+  );   
+  
+
+  //testDrive();
 
 
 } 

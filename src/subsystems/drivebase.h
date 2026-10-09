@@ -82,32 +82,32 @@ class DriveForward : public Command<Drivebase> {
    private: 
      double distance;
 
-     double startX;
-     double startY;  
-
      double initialAngle; 
 
-     double percentAccel; 
-     double percentVelo; 
+     //double percentAccel; 
+     //double percentVelo; 
 
      double getDistTraveled(); 
      
-     TrapezoidalMotionProfile* motionProfile = nullptr;  
+     //TrapezoidalMotionProfile* motionProfile = nullptr;  
      pidcontroller* controller = nullptr; 
-     FFConstants ffController; 
+     //FFConstants ffController; 
 
      pidcontroller* straightener = nullptr;
-
+     
+     /*
      static const double MOTION_CONSTANTS_MAX_VELO; 
      static const double MOTION_CONSTANTS_MAX_ACCEL; 
-
+     */
      static const double PID_CONSTANTS_KP;
      static const double PID_CONSTANTS_KI;
      static const double PID_CONSTANTS_KD;
-
+     
+     /*
      static const double FF_CONSTANTS_S;
      static const double FF_CONSTANTS_V;
      static const double FF_CONSTANTS_A; 
+     */ 
 
      static const double STRAIGHTEN_PID_KP; 
      static const double STRAIGHTEN_PID_KI; 
@@ -119,30 +119,26 @@ class DriveForward : public Command<Drivebase> {
          return new DriveForward(Drivebase::getObject(), distance);
      } 
 
-     static CommandInterface* getCommand(double distance, double percentVelocity, double percentAcceleration){ 
-         return new DriveForward(Drivebase::getObject(), distance, percentVelocity, percentAcceleration);
-     }
-
-     DriveForward(Drivebase& drive, double dist, double percentVelocity, double percentAcceleration):  
+     DriveForward(Drivebase& drive, double dist):  
      Command<Drivebase>(drive),
      drivebaseRef(drive),
-     distance(dist), 
-     percentVelo(percentVelocity), 
-     percentAccel(percentAcceleration)
+     distance(dist)
      {};
-
-     DriveForward(Drivebase& drive, double dist): 
-     DriveForward(drive, dist, 100, 100){}; 
 
      void setDistance(double distance);
 
-   protected: 
+   protected:
      Drivebase& drivebaseRef;  
-
+     
      void start() override; 
      void periodic() override; 
      bool isOver() override; 
-     void end() override; 
+     void end() override;  
+
+     virtual double getAnchorAngle(){return initialAngle;};  
+
+     double startX;
+     double startY;
 }; 
 
 //-----------------------------------------------------------------
@@ -247,7 +243,9 @@ class ApproachTarget : public DriveForward {
     {};
 
   protected: 
-     void start() override;
+     void start() override; 
+
+     double getAnchorAngle() override;
 };
 
 //----------------------------------------------------------------- 

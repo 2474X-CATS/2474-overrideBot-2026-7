@@ -76,7 +76,7 @@ void WaitForSSState::end(){
 
 CommandInterface* Score(){ 
     return SequentialCommandGroup::makeGroup( 
-      WaitForSSState::getCommand(SuperStructurePosition::PRIMED)  
+      Prime(true)  
     )->chainThen( 
       ModifyRobotState::getCommand("ss_manager", "macro_requested", true)
     )->chainThen( 
@@ -98,19 +98,25 @@ CommandInterface* StandingMode(bool waitUntilReached){
     group->chainThen(ModifyRobotState::getCommand("robot_state", "standing", true));
     if (waitUntilReached){ 
        group->chainThen(WaitForSSState::getCommand(SuperStructurePosition::STANDING));
-    } 
+    }
+    return group;
+}   
+
+CommandInterface* Prime(bool waitUntilReached){ 
+    SequentialCommandGroup* group = SequentialCommandGroup::makeGroup(ModifyRobotState::getCommand("robot_state", "grounded", false));  
+    group->chainThen(ModifyRobotState::getCommand("robot_state", "standing", false)); 
+    if (waitUntilReached){ 
+       group->chainThen(WaitForSSState::getCommand(SuperStructurePosition::PRIMED));
+    }
     return group;
 } 
 
-
-CommandInterface* Bounce(int nBounces){
-    SequentialCommandGroup* group = SequentialCommandGroup::makeGroup( 
-        WaitFor::getCommand(10)); 
-    for (int i = 0; i < nBounces; i ++){ 
-        group->
-        chainThen(DriveForward::getCommand(-150, 100, 100))->
-        chainThen(DriveForward::getCommand(25, 100, 50));
-    }
-    return group;
+CommandInterface* Drop(int timeout){ 
+    SequentialCommandGroup* group = SequentialCommandGroup::makeGroup(ModifyRobotState::getCommand("robot_state", "purge", true));  
+    group->chainThen(WaitFor::getCommand(timeout))-> 
+    chainThen(ModifyRobotState::getCommand("robot_state", "purge", false));
+    return group; 
 }
+
+
 

@@ -59,10 +59,9 @@ class Elevator : public Subsystem {
 
        void receiveSetpoints();  
 
-       bool safeToManuever(double setpoint);
-       void maintainHoldLock();
+       bool safeToManuever(double setp); //The forearm dictates whether the elevator will move
 
-       void findNextSetpoint(); 
+       void findNextSetpoint();
        void regulatePriming();
        
        double getPosition();  

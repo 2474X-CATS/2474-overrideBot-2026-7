@@ -26,7 +26,7 @@ Claw& Claw::getObject(){
 }
 
 void Claw::init(){ 
-    return;
+    roller.setBrake(vex::brakeType::brake);
 }
 
 void Claw::periodic(){   

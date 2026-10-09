@@ -51,14 +51,10 @@ void Intake::updateTelemetry(){
           set<bool>("intaking", false);
           set<bool>("outtaking", false);
         }
-    } else {  
-        if (RobotState::getStateOf("override")){ 
-          set<bool>("intaking", false); 
-          set<bool>("outtaking", true); 
-        } else { 
-          set<bool>("intaking", false); 
-          set<bool>("outtaking", false);
-        }
+    } 
+    if (RobotState::getStateOf("override")){ 
+      set<bool>("intaking", false); 
+      set<bool>("outtaking", true); 
     } 
 } 
 
