@@ -76,7 +76,7 @@ void Elevator::stop(){
 
 void Elevator::periodic(){ 
    double elevatorOutput = 0;   
-   Brain.Screen.clearLine(120); 
+   //Brain.Screen.clearLine(120); 
    if (currentState == ElevatorState::E_PURSUING){//Stay Still
      elevatorOutput = correctionController->calculate(getPosition(), Brain.Timer.time()); 
    } else if (currentState == ElevatorState::E_HOLDING){ 
@@ -106,7 +106,7 @@ void Elevator::periodic(){
      elevatorOutput = PRIMING_SPEED * raisingDirection; 
    }  
     
-   Brain.Screen.printAt(20, 120, "%.2f", elevatorOutput);
+   //Brain.Screen.printAt(20, 120, "%.2f", elevatorOutput);
    
    lift.spin(vex::directionType::rev, elevatorOutput, vex::voltageUnits::volt); 
 }

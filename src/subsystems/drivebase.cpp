@@ -95,7 +95,7 @@ const double DriveForward::MOTION_CONSTANTS_MAX_VELO = (((Drivebase::MAX_RPM * (
 const double DriveForward::MOTION_CONSTANTS_MAX_ACCEL = DriveForward::MOTION_CONSTANTS_MAX_VELO / 0.5;
 */ 
 
-const double DriveForward::PID_CONSTANTS_KP = 0.01;//0.001;//75;
+const double DriveForward::PID_CONSTANTS_KP = 12.0/TILE_SIZE_MM;//0.001;//75;
 const double DriveForward::PID_CONSTANTS_KI = 0;
 const double DriveForward::PID_CONSTANTS_KD = 0.000;
 /*
@@ -118,8 +118,8 @@ void DriveForward::start(){
     pidConstants.P = PID_CONSTANTS_KP; 
     pidConstants.I = PID_CONSTANTS_KI; 
     pidConstants.D = PID_CONSTANTS_KD; 
-    pidConstants.errorTolerance = 50; 
-    pidConstants.minimumOutput = 5;
+    pidConstants.errorTolerance = 15; 
+    //pidConstants.minimumOutput = 5;
     
     PIDConstants straightenConstants;
     straightenConstants.P = STRAIGHTEN_PID_KP; 
@@ -134,8 +134,13 @@ void DriveForward::start(){
 
 } 
 
-void DriveForward::periodic(){  
-    double speed = controller->calculate(getDistTraveled(), Brain.Timer.time()) * copysign(1, distance); 
+void DriveForward::periodic(){   
+    double distTraveled = getDistTraveled();  
+
+    Telemetry::inst.placeValueAt<double>(fabs(distance), "graph", "zero");
+    Telemetry::inst.placeValueAt<double>(distTraveled, "graph", "error"); 
+
+    double speed = controller->calculate(distTraveled, Brain.Timer.time()) * copysign(1, distance); 
     double turnCorrection = straightener->calculate(angleDifference(getAnchorAngle(), Telemetry::inst.getValueAt<double>("odometry", "heading_deg")), Brain.Timer.time());
     drivebaseRef.manualDrive(speed, turnCorrection);
 }
@@ -161,9 +166,9 @@ void DriveForward::setDistance(double dist){
 
 //------------------------------------------------------------- 
 
-const double TurnToHeading::PID_CONSTANTS_KP = 12.0/105;
-const double TurnToHeading::PID_CONSTANTS_KI = 0.001;//0.110;
-const double TurnToHeading::PID_CONSTANTS_KD = 0.0015;
+const double TurnToHeading::PID_CONSTANTS_KP = 12.0/75;
+const double TurnToHeading::PID_CONSTANTS_KI = 0.000;//0.110;
+const double TurnToHeading::PID_CONSTANTS_KD = 0.000;
 
 void TurnToHeading::start(){ 
    PIDConstants pidConstants;
@@ -179,10 +184,12 @@ void TurnToHeading::start(){
 
 } 
 
-void TurnToHeading::periodic(){   
-    double error = getError();
+void TurnToHeading::periodic(){    
+    double error = getError(); 
+    Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
+    Telemetry::inst.placeValueAt<double>(error, "graph", "error");
     double output = controller->calculate(error, Brain.Timer.time());   
-    drivebaseRef.manualDrive(0, output); 
+    drivebaseRef.manualDrive(0, output);
 }
 
 bool TurnToHeading::isOver(){ 
@@ -343,15 +350,15 @@ void Toggle::start(){
 
 void Toggle::periodic(){ 
    int timePassed = Brain.Timer.time() - startTime; 
-   if (timePassed < 400){ 
-      drivebaseRef.manualDrive(-12, 0); 
+   if (timePassed < 400){  
+      drivebaseRef.manualDrive(4, 0); 
    } else { 
-      drivebaseRef.manualDrive(5, 0); 
+      drivebaseRef.manualDrive(-7, 0);
    }
 }  
 
 bool Toggle::isOver(){ 
-  return Brain.Timer.time() - startTime >= 800;
+  return Brain.Timer.time() - startTime >= 750;
 } 
 
 void Toggle::end(){ 

@@ -56,17 +56,17 @@ void RobotState::initializeState()
 void RobotState::updateRegular()
 {     
    
-   manuallyModifyState("awaiting_land", Controller1.ButtonB.pressing()); 
+   //manuallyModifyState("awaiting_land", Controller1.ButtonB.pressing()); 
    manuallyModifyState("rise", Controller1.ButtonR2.pressing()); 
    manuallyModifyState("fall", Controller1.ButtonR1.pressing()); 
    
    manuallyModifyState("grounded", Controller1.ButtonY.pressing()); 
    manuallyModifyState("standing", Controller1.ButtonRight.pressing()); 
-   manuallyModifyState("purge", Controller1.ButtonA.pressing());   
+   manuallyModifyState("purge", Controller1.ButtonDown.pressing());   
 
    manuallyModifyState("outtaking", Controller1.ButtonL1.pressing());
    manuallyModifyState("override", Controller1.ButtonX.pressing()); 
-
+   
    if (Controller1.ButtonL2.pressing()){ 
       manuallyModifyState("k_score", true);
    } else if (getStateOf("k_score")){  
@@ -81,14 +81,15 @@ void RobotState::updateRegular()
       disableVibrations();
    }  
    
-      
-   
-
 };
 
 void RobotState::updateStopped() {
    
-};
+}; 
+
+ControlType RobotState::getMode(){ 
+   return mode;
+}
 
 void RobotState::updateInitializing()
 {

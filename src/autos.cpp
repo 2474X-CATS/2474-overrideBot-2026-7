@@ -43,13 +43,13 @@ vector<Routine> generateRoutinePool(){
 //-------------------------------------------------------------------------------------- 
 
 vector<CommandInterface*> two_pin_alliance_left(){ 
-  return {   
+  return {     
     ParallelCommandGroup::makeGroup(
-       SequentialCommandGroup::makeGroup(WaitUntil::getCommand("ss_manager", "setpoints_reached", true))-> 
-       chainThen(StandingMode(false))-> 
-       chainThen(DriveForward::getCommand(TILE_SIZE_MM))-> 
-       chainThen(Drop(1500))-> 
-       chainThen(DriveForward::getCommand(TILE_SIZE_MM))
+       SequentialCommandGroup::makeGroup(Toggle::getCommand(2))->  
+       chainThen(FaceTarget::getCommand(TILE_SIZE_MM * 2, TILE_SIZE_MM))-> 
+       chainThen(ApproachTarget::getCommand(TILE_SIZE_MM*2, TILE_SIZE_MM, 80))-> 
+       chainThen(Score())-> 
+       chainThen(DriveForward::getCommand(-250))
     )->chainWhile(RunSuperStructure::getCommand()) 
   };
 }   

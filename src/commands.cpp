@@ -80,7 +80,7 @@ CommandInterface* Score(){
     )->chainThen( 
       ModifyRobotState::getCommand("ss_manager", "macro_requested", true)
     )->chainThen( 
-      WaitForSSState::getCommand(SuperStructurePosition::PRIMED)
+      WaitUntil::getCommand("ss_manager", "task_completed", true)
     );
 }  
 

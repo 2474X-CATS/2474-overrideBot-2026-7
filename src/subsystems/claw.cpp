@@ -12,24 +12,32 @@ Subsystem(
    { 
     (EntrySet){"active", EntryType::BOOL}, 
     (EntrySet){"in_possession", EntryType::BOOL},
-    (EntrySet){"waiting", EntryType::BOOL}
+    (EntrySet){"waiting", EntryType::BOOL}, 
    } 
 ),  
 roller(vex::motor(vex::PORT1)),
 objectDetector(vex::distance(vex::PORT5))
-{ 
+{
    globalPtr = this;
-}; 
+};
 
 Claw& Claw::getObject(){ 
     return *globalPtr;
 }
 
-void Claw::init(){ 
-    roller.setBrake(vex::brakeType::brake);
+void Claw::init(){  
+    roller.setBrake(vex::brakeType::brake); 
 }
 
 void Claw::periodic(){   
+    /**
+    if (loosening){  
+      if (roller.position(vex::rotationUnits::rev) < -3){ 
+         loosening = false;
+      }
+      roller.spin(vex::directionType::rev, 12, vex::voltageUnits::volt);
+    } else   
+   */
     if (rollingIn){ 
        roller.spin(vex::directionType::fwd, 12, vex::voltageUnits::volt);
     } else if (rollingOut){ 
@@ -43,7 +51,7 @@ bool Claw::sensesObject(){
     return objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE;
 }
 
-void Claw::updateTelemetry(){
+void Claw::updateTelemetry(){ 
    set<bool>("in_possession", sensesObject()); 
    stateControl();
 }  

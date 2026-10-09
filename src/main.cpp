@@ -61,29 +61,6 @@ void startCommandMatch()
 }
 
 int runGraphics(){ 
-  /*
-  Point p1;
-  p1.x = TILE_SIZE_MM; 
-  p1.y = TILE_SIZE_MM;  
-  p1.heading = 135;
-
-  Point p2;
-  p2.x = TILE_SIZE_MM * 4; 
-  p2.y = TILE_SIZE_MM * 4;  
-  p2.heading = 90;
-
-  Point p3;
-  p3.x = TILE_SIZE_MM * 1; 
-  p3.y = TILE_SIZE_MM * 4; 
-  
-  Arc traj = Arc(p1, p2); 
-
-  PathBoard pBoard = PathBoard(traj, 15);
-  Sprite::frameLoop();
-
-  return 0; 
-  */
-  
   DataSupplier zero; 
   DataSupplier error;   
    
@@ -151,12 +128,10 @@ int main()
   
   testAuto( 
     { 
-      DriveForward::getCommand(TILE_SIZE_MM)
+      Toggle::getCommand(10)
     }
-  );   
-  
+  );
 
   //testDrive();
-
 
 } 

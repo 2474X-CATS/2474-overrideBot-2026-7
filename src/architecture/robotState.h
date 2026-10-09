@@ -43,7 +43,9 @@ public:
   static bool getStateOf(string key);
   static bool getExternalState(string subtable, string key);
   static void setMode(ControlType control);
-  static int getAxisState(AxisType axisType);
+  static int getAxisState(AxisType axisType); 
+
+  static ControlType getMode(); 
 
   static void initializeState();
 

@@ -23,8 +23,10 @@ class Claw : public Subsystem {
        int lastTransitionStamp = 0;    
 
        bool rollingIn = false; 
-       bool rollingOut = false; 
-       
+       bool rollingOut = false;  
+      
+       bool loosening = true;  
+
        bool sensesObject(); 
 
     public:   

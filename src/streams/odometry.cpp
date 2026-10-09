@@ -161,12 +161,16 @@ void Odometry::refreshData(){
 
     set<double>("x_position_mm", xPos); 
     set<double>("y_position_mm", yPos);   
-
-    double distX = -1; 
-    double distY = -1; 
-    laserCalibrate(distX, distY); 
-    //Brain.Screen.printAt(20, 120, "Distance sensor odom: %.2f, %.2f", distX, distY);
-
+    
+    /*
+    double distX = -1;
+    double distY = -1;
+    laserCalibrate(distX, distY);
+    Brain.Screen.clearLine(120); 
+    Brain.Screen.clearLine(140);
+    Brain.Screen.printAt(20, 120, "Distance sensor odom: %.2f, %.2f", distX, distY); 
+    Brain.Screen.printAt(20, 120, "Angle: %.2f", get<double>("heading_deg")); 
+    */
     lastTimestamp = currentTimestamp;
 
 } 
@@ -178,7 +182,7 @@ void Odometry::laserCalibrate(double& resX, double& resY){
   double yAccum = 0;   
   int yCount = 0;
   findTranslations(xAccum, yAccum, xCount, yCount, frontDist, 0, ROBOT_LENGTH_MM/2); 
-  findTranslations(xAccum, yAccum, xCount, yCount, leftDist, 90, ROBOT_WIDTH_MM/2); 
+  findTranslations(xAccum, yAccum, xCount, yCount, leftDist, 90, ROBOT_WIDTH_MM/2.0); 
   findTranslations(xAccum, yAccum, xCount, yCount, rightDist, -90, ROBOT_WIDTH_MM/2);  
   if (xCount > 0){ 
     resX = xAccum * 1.0 / xCount;
@@ -191,23 +195,23 @@ void Odometry::laserCalibrate(double& resX, double& resY){
 
 void Odometry::findTranslations(double& xCoords, double& yCoords, int& xCount, int& yCount, vex::distance sensor, double angleOffset, double distanceOffset){ 
    double distance = sensor.objectDistance(vex::distanceUnits::mm) + distanceOffset;  
-   double sensorHeading = angleSum(getHeading(), angleOffset);  
-   double wallHeading;  
+   double sensorHeading = angleSum(getHeading(), angleOffset);
+   double wallHeading;
     
    if (sensorHeading > 45 && sensorHeading < 135){ 
-     wallHeading = 90; 
+     wallHeading = 90;
    } else if (sensorHeading > 135 && sensorHeading < 225) { 
-     wallHeading = 180; 
+     wallHeading = 180;
    } else if (sensorHeading > 225 && sensorHeading < 315){ 
      wallHeading = 270;
    } else { 
-     wallHeading = 0; 
+     wallHeading = 0;
    }
    
    sensorHeading = angleDifference(sensorHeading, wallHeading);    
-   double straightDist = cos(toRadians(sensorHeading)) * distance;   
+   double straightDist = fabs(cos(toRadians(sensorHeading)) * distance);   
 
-   if (wallHeading == 90){ 
+   if (wallHeading == 90){
     yCoords += TILE_SIZE_MM * 6 - straightDist; 
     yCount++;
    } else if (wallHeading == 270){ 
