@@ -90,7 +90,7 @@ Odometry::Odometry() :
            (EntrySet){"immediate_distance", EntryType::DOUBLE},
            (EntrySet){"oriented_c", EntryType::BOOL},
            (EntrySet){"forward_acceleration", EntryType::DOUBLE}, 
-           //(EntrySet){"goal_clearance", EntryType::DOUBLE}
+           (EntrySet){"obstructed", EntryType::BOOL}
        }
     ),
     gyro(vex::inertial(vex::PORT16)), 
@@ -125,8 +125,9 @@ void Odometry::refreshData(){
     double omega = gyro.gyroRate(vex::axisType::zaxis, vex::velocityUnits::dps);   
 
     set<double>("forward_acceleration", gyro.acceleration(vex::axisType::yaxis));
-    
-    if (get<bool>("oriented_c")){  
+    set<bool>("obstructed", frontDist.objectDistance(vex::distanceUnits::mm) < 50); 
+
+    if (get<bool>("oriented_c")){
        omega *= -1;
     }
 

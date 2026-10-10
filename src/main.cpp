@@ -92,8 +92,7 @@ int runGraphics(){
 int main()
 {
 
-  vexcodeInit();
-  
+  vexcodeInit(); 
   
   Telemetry::inst.registerSubtable(
     "graph",
@@ -103,7 +102,6 @@ int main()
     }
   ); 
   
-
   //Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
 
 
@@ -111,22 +109,19 @@ int main()
    
   
   Odometry odom = Odometry(); 
-  Drivebase drive = Drivebase(); 
+  Drivebase drive = Drivebase();
   
-  Intake intake = Intake(); 
+  Intake intake = Intake();
   SuperSystem ss = SuperSystem();
   
   Claw claw = Claw();
   Forearm forearm = Forearm();
-  Elevator elevator = Elevator();   
+  Elevator elevator = Elevator();
   
   //-------------------------------------------------------
   robot.initialize();
-  //-------------------RUN PROTOCOLS HERE-------------------
+  //-------------------RUN PROTOCOLS HERE------------------- 
 
-  thread runGraph = thread(runGraphics);
+  startCommandMatch();
   
-  testDrive();
-  //startCommandMatch();
-
 } 

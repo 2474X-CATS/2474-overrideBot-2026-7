@@ -45,7 +45,7 @@ void SuperSystem::refreshData(){
                 break;
             case PRIMED:  
                 if (get<bool>("macro_requested") && Telemetry::inst.getValueAt<bool>("claw", "in_possession")){ 
-                  Telemetry::inst.placeValueAt<bool>(true, "elevator", "active"); //First subsystem to act
+                  Telemetry::inst.placeValueAt<bool>(true, "forearm", "active"); //First subsystem to act
                   set<bool>("task_completed", false); //Task is not completed
                   setPosition(SuperStructurePosition::AUTO); //Set the position to AUTO (essentially undefined
                   clearance = 0;

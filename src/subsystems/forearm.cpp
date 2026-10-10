@@ -4,17 +4,17 @@
 Forearm* Forearm::globalPtr = nullptr; 
 
 const double Forearm::PLACE_SETPOINT = 10;
-const double Forearm::PRIMING_SETPOINT = 90;
-const double Forearm::GROUND_SETPOINT = 270;
+const double Forearm::PRIMING_SETPOINT = 10;
+const double Forearm::GROUND_SETPOINT = 210;
 const double Forearm::STANDING_SETPOINT = 350;
 
-const double Forearm::KCOS = 1.5;
+const double Forearm::KCOS = 0; //1.38;
 
 Forearm& Forearm::getObject(){
-  return *globalPtr; 
+  return *globalPtr;
 } 
 
-bool Forearm::underGlobalStall(){ 
+bool Forearm::underGlobalStall(){
   return Brain.Timer.time() - Telemetry::inst.getValueAt<double>("ss_manager", "transition_stamp") < Telemetry::inst.getValueAt<double>("ss_manager", "transition_delay");
 }
 
@@ -40,10 +40,10 @@ Forearm::Forearm():
 void Forearm::init(){ 
    forearmMotor.setBrake(vex::brakeType::hold);   
 
-   pidConsts.P = 12/90.0;
-   pidConsts.I = 0.075;//0.075; 
-   pidConsts.D = 0.0125;//3/360.0;
-   pidConsts.errorTolerance = 5;
+   pidConsts.P = 12/67.5;
+   pidConsts.I = 0.000;//0.075;
+   pidConsts.D = 0.015;//3/360.0;
+   pidConsts.errorTolerance = 10;
 
    feedback = new pidcontroller(pidConsts, 0);  
    feedback->setLastTimestamp(Brain.Timer.time());   
@@ -68,7 +68,10 @@ double Forearm::getOutput(){
     //Telemetry::inst.placeValueAt<double>(getError(), "graph", "error");  
     //Telemetry::inst.placeValueAt<double>(0, "graph", "zero");  
     //Brain.Screen.clearLine(120); 
-    //Brain.Screen.printAt(20, 120, "Sin of angle: %.2f", sin(toRadians(getCurrentAngle())));
+    //Brain.Screen.printAt(20, 120, "Sin of angle: %.2f", sin(toRadians(getCurrentAngle())));  
+    if (currentState == ForearmState::F_HOLDING && setpoint == 210){ 
+      return -4;
+    }
     double pidOutput = feedback->calculate(getError(), Brain.Timer.time()); 
     double standingOutput = (KCOS * cos(toRadians(getCurrentAngle())));
     double output = standingOutput + pidOutput;
@@ -104,8 +107,13 @@ double Forearm::getVelocity(){
     return rot.velocity(vex::velocityUnits::dps);  
 }
 
-bool Forearm::reachedSetpoint(){ 
-  return feedback->atSetpoint(angleDifference(getCurrentAngle(), setpoint));
+bool Forearm::reachedSetpoint(){  
+  double forearmSin = sin(getCurrentAngle());  
+  if (setpoint == 210 && forearmSin < sin(toRadians(210))){ 
+    return true;
+  } else { 
+    return feedback->atSetpoint(angleDifference(getCurrentAngle(), setpoint)); 
+  }
 }
 
 bool Forearm::safeToManuever(double setp){    
@@ -197,7 +205,7 @@ void Forearm::findNextSetpoint(){
                   set<double>("requested_setpoint", PLACE_SETPOINT);
                 }
             } else { 
-                set<double>("requested_setpoint", PRIMING_SETPOINT);
+                set<double>("requested_setpoint", 90);
             }
           } 
           break;  

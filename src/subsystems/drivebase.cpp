@@ -146,7 +146,7 @@ void DriveForward::periodic(){
 }
 
 bool DriveForward::isOver(){
-    return controller->atSetpoint(getDistTraveled()); 
+    return controller->atSetpoint(getDistTraveled()) || Telemetry::inst.getValueAt<bool>("odometry", "obstructed"); 
 }
 
 double DriveForward::getDistTraveled(){ 
@@ -175,9 +175,10 @@ void TurnToHeading::start(){
 
    pidConstants.P = PID_CONSTANTS_KP; 
    pidConstants.I = PID_CONSTANTS_KI; 
-   pidConstants.D = PID_CONSTANTS_KD;   
+   pidConstants.D = PID_CONSTANTS_KD; 
    pidConstants.maximumOutput = 8;
-   pidConstants.errorTolerance = 3; 
+   pidConstants.minimumOutput = 1;
+   pidConstants.errorTolerance = 7.5;
      
    controller = new pidcontroller(pidConstants, 0); 
    controller->setLastTimestamp(Brain.Timer.time());   
