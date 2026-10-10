@@ -102,6 +102,7 @@ int main()
       (EntrySet){"error", EntryType::DOUBLE}, 
     }
   ); 
+  
 
   //Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
 
@@ -119,19 +120,13 @@ int main()
   Forearm forearm = Forearm();
   Elevator elevator = Elevator();   
   
-  
   //-------------------------------------------------------
   robot.initialize();
   //-------------------RUN PROTOCOLS HERE-------------------
-  
+
   thread runGraph = thread(runGraphics);
   
-  testAuto( 
-    { 
-      Toggle::getCommand(10)
-    }
-  );
-
-  //testDrive();
+  testDrive();
+  //startCommandMatch();
 
 } 

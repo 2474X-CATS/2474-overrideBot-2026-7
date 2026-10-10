@@ -12,7 +12,9 @@ Subsystem(
    { 
     (EntrySet){"active", EntryType::BOOL}, 
     (EntrySet){"in_possession", EntryType::BOOL},
-    (EntrySet){"waiting", EntryType::BOOL}, 
+    (EntrySet){"waiting", EntryType::BOOL},
+    (EntrySet){"pre_spinning", EntryType::BOOL}, 
+    (EntrySet){"pre_spin_started", EntryType::BOOL}
    } 
 ),  
 roller(vex::motor(vex::PORT1)),
@@ -26,19 +28,23 @@ Claw& Claw::getObject(){
 }
 
 void Claw::init(){  
-    roller.setBrake(vex::brakeType::brake); 
+    roller.setBrake(vex::brakeType::brake);  
+    set<bool>("pre_spin_started", false);
+    set<bool>("pre_spinning", true);
 }
 
-void Claw::periodic(){   
-    /**
-    if (loosening){  
-      if (roller.position(vex::rotationUnits::rev) < -3){ 
-         loosening = false;
+void Claw::periodic(){  
+    if (!get<bool>("pre_spin_started")){ 
+      preSpinStamp = Brain.Timer.time(); 
+      set<bool>("pre_spin_started", true);
+    } else { 
+      if (Brain.Timer.time() - preSpinStamp >= 500){ 
+         set<bool>("pre_spinning", false);
       }
-      roller.spin(vex::directionType::rev, 12, vex::voltageUnits::volt);
-    } else   
-   */
-    if (rollingIn){ 
+    }  
+    if (get<bool>("pre_spinning")){ 
+       roller.spin(vex::directionType::fwd, 4, vex::voltageUnits::volt);
+    } else if (rollingIn){ 
        roller.spin(vex::directionType::fwd, 12, vex::voltageUnits::volt);
     } else if (rollingOut){ 
        roller.spin(vex::directionType::rev, 12, vex::voltageUnits::volt); 
@@ -47,7 +53,7 @@ void Claw::periodic(){
     }
 }
 
-bool Claw::sensesObject(){  
+bool Claw::sensesObject(){
     return objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE;
 }
 
@@ -115,7 +121,7 @@ void Claw::stateControl(){
 
 void RunClaw::start(){ 
   return;
-} 
+}
 
 void RunClaw::periodic(){ 
    clawRef.periodic();
@@ -127,5 +133,7 @@ bool RunClaw::isOver(){
 
 void RunClaw::end(){ 
     return;
-}
+} 
+
+//------------------------------------------------
 

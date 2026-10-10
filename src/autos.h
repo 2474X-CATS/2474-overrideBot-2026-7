@@ -39,6 +39,10 @@ vector<CommandInterface*> two_pin_alliance_left();
 
 vector<CommandInterface*> two_pin_alliance_right(); 
 
+vector<CommandInterface*> toggle();
+
+vector<CommandInterface*> auto_skills(); 
+
 //-------------------------------------------------------------------------------
 
 #endif

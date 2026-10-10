@@ -36,31 +36,77 @@ vector<Routine> generateRoutinePool(){
   vector<Routine> routines;
   /* 
   Add routines here
-  */
+  */ 
+  Routine toggPin; 
+  toggPin.name = "Toggle -> Preload"; 
+  toggPin.desc = "[Self explanatory]";
+  toggPin.autos = {
+    two_pin_alliance_left(), 
+    two_pin_alliance_right()
+  };
+
+  Routine togg; 
+  togg.name = "Toggle only"; 
+  togg.desc = "[Self explanatory]"; 
+  togg.autos = { 
+    toggle(), 
+    toggle()
+  }; 
+
+  routines.push_back(toggPin); 
+  routines.push_back(togg);
   return routines;
 }
 
 //-------------------------------------------------------------------------------------- 
 
-vector<CommandInterface*> two_pin_alliance_left(){ 
+vector<CommandInterface*> two_pin_alliance_right(){ 
   return {     
     ParallelCommandGroup::makeGroup(
        SequentialCommandGroup::makeGroup(Toggle::getCommand(2))->  
        chainThen(FaceTarget::getCommand(TILE_SIZE_MM * 2, TILE_SIZE_MM))-> 
        chainThen(ApproachTarget::getCommand(TILE_SIZE_MM*2, TILE_SIZE_MM, 80))-> 
-       chainThen(Score())-> 
-       chainThen(DriveForward::getCommand(-250))
+       chainThen(Score())->
+       chainThen(DriveForward::getCommand(-500))-> 
+       chainThen(DriveToSetpoint::getCommand(TILE_SIZE_MM*2, TILE_SIZE_MM * 0.5, RouteType::EUCLIDEAN))-> 
+       chainThen(FaceTarget::getCommand(TILE_SIZE_MM, TILE_SIZE_MM * 0.5))-> 
+       chainThen(ApproachTarget::getCommand(TILE_SIZE_MM, TILE_SIZE_MM * 0.5))-> 
+       chainThen(TurnToHeading::getCommand(0))
     )->chainWhile(RunSuperStructure::getCommand()) 
   };
-}   
+}
 
-vector<CommandInterface*> two_pin_alliance_right(){ 
-  return { 
+vector<CommandInterface*> two_pin_alliance_left(){ 
+  return {     
     ParallelCommandGroup::makeGroup(
-       SequentialCommandGroup::makeGroup(DriveForward::getCommand(500))->
-       chainThen(TurnToHeading::getCommand(180))->
-       chainThen(DriveForward::getCommand(500))
-    )->chainWhile(RunSuperStructure::getCommand())
+       SequentialCommandGroup::makeGroup(Toggle::getCommand(2))->  
+       chainThen(FaceTarget::getCommand(TILE_SIZE_MM*4, TILE_SIZE_MM))-> 
+       chainThen(ApproachTarget::getCommand(TILE_SIZE_MM*4, TILE_SIZE_MM, 80))-> 
+       chainThen(Score())->
+       chainThen(DriveForward::getCommand(-500))-> 
+       chainThen(DriveToSetpoint::getCommand(TILE_SIZE_MM*2, TILE_SIZE_MM * 0.5, RouteType::EUCLIDEAN))-> 
+       chainThen(FaceTarget::getCommand(TILE_SIZE_MM, TILE_SIZE_MM * 0.5))-> 
+       chainThen(ApproachTarget::getCommand(TILE_SIZE_MM, TILE_SIZE_MM * 0.5))-> 
+       chainThen(TurnToHeading::getCommand(0))
+    )->chainWhile(RunSuperStructure::getCommand()) 
   };
-} 
+}  
+
+vector<CommandInterface*> toggle(){ 
+  return { 
+    Toggle::getCommand(2),
+    ParallelCommandGroup::makeGroup(WaitFor::getCommand(5000))->
+    chainWhile(RunSuperStructure::getCommand())
+  }; 
+}  
+
+vector<CommandInterface*> auto_skills(){ 
+  return {
+    ParallelCommandGroup::makeGroup(
+       SequentialCommandGroup::makeGroup(DriveForward::getCommand(TILE_SIZE_MM * 2))->
+       chainThen(Score())
+    )->chainWhile(RunSuperStructure::getCommand()) 
+  }; 
+}
+
 

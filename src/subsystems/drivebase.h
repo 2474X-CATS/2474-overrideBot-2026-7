@@ -278,7 +278,7 @@ class DriveToSetpoint : public SequentialCommandGroup {
 
     static CommandInterface* getCommand(double x, double y, RouteType route){ 
        return new DriveToSetpoint(x, y, route, 0);
-    }  
+    } 
 
     DriveToSetpoint(double x, double y, RouteType route, double offset) :  
     SequentialCommandGroup(TurnToHeading::getCommand(0)), 

@@ -13,19 +13,17 @@ class Claw : public Subsystem {
     private:  
        static Claw* globalPtr;  
        static const double MAXIMUM_TOLERABLE_DISTANCE; 
-       static const int SCORE_DELAY_MILLIS; 
+       static const int SCORE_DELAY_MILLIS;
        static const int PICKUP_DELAY_MILLIS;
 
        vex::motor roller;
-
        vex::distance objectDetector;
-
-       int lastTransitionStamp = 0;    
+       
+       int lastTransitionStamp;
+       int preSpinStamp = 0;
 
        bool rollingIn = false; 
-       bool rollingOut = false;  
-      
-       bool loosening = true;  
+       bool rollingOut = false;
 
        bool sensesObject(); 
 
@@ -65,6 +63,7 @@ class RunClaw : public Command<Claw> {
    void periodic() override; 
    bool isOver() override; 
    void end() override;
-};
+}; 
+
 
 #endif 

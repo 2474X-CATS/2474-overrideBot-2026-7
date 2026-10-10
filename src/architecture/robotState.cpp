@@ -75,12 +75,6 @@ void RobotState::updateRegular()
    }
    
    
-   if (!Telemetry::inst.getValueAt<bool>("elevator", "at_setpoint")){ 
-      setVibrationCode("..");
-   } else { 
-      disableVibrations();
-   }  
-   
 };
 
 void RobotState::updateStopped() {
