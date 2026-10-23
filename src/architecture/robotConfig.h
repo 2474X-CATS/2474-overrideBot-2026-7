@@ -21,13 +21,12 @@ extern double MOTOR_TEMP_LIMIT_CELSIUS;
 
 extern double TILE_SIZE_MM; 
 
-typedef enum { 
-    GROUND = 1,
-    PRIMED, 
-    STANDING,
-    AUTO, 
-    EXIT
-} SuperStructurePosition;  
+typedef enum {
+    //INTAKING = 1, //Elevator dropped and the claw ready to receive (no auto transition), can intake
+    PRIMED = 1, // Elevator active ,forearm out, has something, ready to score
+    MATCHLOADING,
+    AUTO // Scoring macro activated 
+} SuperStructurePosition;
 
 //-------
 

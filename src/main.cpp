@@ -2,17 +2,16 @@
 #include "architecture/robot.h"
 #include <iostream> 
 
-#include "streams/supersystem.h" 
-#include "subsystems/drivebase.h" 
+#include "streams/supersystem.h"
+#include "subsystems/drivebase.h"
 #include "streams/odometry.h"
 #include "subsystems/claw.h" 
-#include "subsystems/elevator.h" 
-#include "subsystems/forearm.h"  
-#include "subsystems/intake.h" 
-#include "streams/autoPrimer.h" 
+#include "subsystems/elevator.h"
+#include "subsystems/toggle.h"
+#include "streams/autoPrimer.h"
 
 #include "gui/graph.h"  
-#include "gui/pathBoard.h" 
+//#include "gui/pathBoard.h" 
 
 
 using namespace vex;
@@ -61,6 +60,7 @@ void startCommandMatch()
 }
 
 int runGraphics(){ 
+  
   DataSupplier zero; 
   DataSupplier error;   
    
@@ -80,8 +80,8 @@ int runGraphics(){
     }
   );   
   
-  Sprite::frameLoop(); 
-
+  Sprite::frameLoop();
+  
   return 0;
 
 }
@@ -102,26 +102,49 @@ int main()
     }
   ); 
   
-  //Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
+  
+  Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
 
 
   //--------------------SUBSYSTEM CREATION----------------- 
    
   
-  Odometry odom = Odometry(); 
+  Odometry odom = Odometry();
   Drivebase drive = Drivebase();
-  
-  Intake intake = Intake();
   SuperSystem ss = SuperSystem();
-  
   Claw claw = Claw();
-  Forearm forearm = Forearm();
   Elevator elevator = Elevator();
-  
+  Toggle toggle = Toggle();
+
   //-------------------------------------------------------
   robot.initialize();
   //-------------------RUN PROTOCOLS HERE------------------- 
+ 
+  RobotState::manuallyModifyState("is_team_color_blue", true); 
+  //testDrive();
+  
+  
+  testAuto( 
+    {   
+      DriveForward::getCommand(TILE_SIZE_MM)
+    } 
+  );    
+  
+  
+  
+  
+  
+  
 
-  startCommandMatch();
+  /*
+  testAuto( 
+    {   
+      FaceTarget::getCommand(Setpoint::ALL_NAT_ALL)
+    }
+  ); 
+  */
+  
+  
+  
   
 } 

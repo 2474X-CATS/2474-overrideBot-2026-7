@@ -17,7 +17,7 @@ class PathBoard : public Sprite {
 
     private:
       Trajectory& trajectory;
-      std::vector<Point> points;  
+      std::vector<PathFrame> points;  
 
       int normalizeX(double nx); 
       int normalizeY(double ny); 

@@ -120,7 +120,83 @@ bool ParallelCommandGroup::isOver()
 ParallelCommandGroup *ParallelCommandGroup::makeGroup(CommandInterface *initialCommand)
 {
     return new ParallelCommandGroup(initialCommand);
+} 
+
+//---------------------------------------------------------------------------------- 
+
+RaceCommandGroup::RaceCommandGroup(CommandInterface* firstRacer){ 
+    addRacer(firstRacer);
+};
+
+RaceCommandGroup* RaceCommandGroup::makeGroup(CommandInterface* firstRacer){ 
+    return new RaceCommandGroup(firstRacer); 
+}; 
+
+RaceCommandGroup* RaceCommandGroup::addRacer(CommandInterface* racer){ 
+    bool isCommandCompatible = integrateSubsystems(racer->getSystems());
+    if (!isCommandCompatible)
+    {
+        return nullptr; // Calling a function on a nullptr will cause an error
+    }
+    else
+    {
+        commands.push_back(racer);
+    }
+    return this;
+};
+
+bool RaceCommandGroup::integrateSubsystems(vector<std::reference_wrapper<Subsystem>> subsystems){ 
+    bool successful = true;
+    for (Subsystem &system : subsystems)
+    {
+        for (Subsystem &cachedSystem : allSubsystems)
+        {
+            if (&cachedSystem == &system)
+            {
+                successful = false;
+                break;
+            }
+        }
+        if (successful)
+        {
+            allSubsystems.push_back(system);
+        }
+        else
+        {
+            break;
+        }
+    }
+    return successful;
+}; 
+
+void RaceCommandGroup::start(){ 
+    for (CommandInterface* comm : commands){
+        comm->start();
+    }
+} 
+
+void RaceCommandGroup::periodic(){  
+    for (CommandInterface* comm : commands){ 
+        comm->periodic();
+    } 
+} 
+
+bool RaceCommandGroup::isOver(){  
+    bool over = false;
+    for (CommandInterface* comm : commands){ 
+        if (comm->isOver()){ 
+            over = true; 
+            break;
+        }
+    }
+    return over;
 }
+
+void RaceCommandGroup::end(){ 
+    for (CommandInterface* comm : commands){ 
+        comm->end(); 
+    }
+};
 
 //----------------------------------------------------------------------------------
 

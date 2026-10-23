@@ -10,9 +10,8 @@
 
 #include "../streams/odometry.h" 
 
-#include "../control/path.h" 
-#include "../control/pursuit.h"
-
+//#include "../control/path.h"
+//#include "../control/pursuit.h"
 
 class Drivebase : public Subsystem { 
     public:
@@ -26,9 +25,13 @@ class Drivebase : public Subsystem {
       
       static Drivebase& getObject();
 
-      Drivebase();
+      Drivebase(); 
+
+      Drivebase(bool usingTendy); 
       
-      void manualDrive(double voltageDrive, double voltageTurn);  
+      void manualDrive(double voltageDrive, double voltageTurn);   
+
+      void tankDrive(double leftSpeed, double rightSpeed);
 
       //---------------------------------------------------- 
 
@@ -36,11 +39,7 @@ class Drivebase : public Subsystem {
 
     private:
       static Drivebase* globalPtr;  
-       
-      //Trajectory* path = nullptr;
-      //std::vector<Point> points; 
-      //PurePursuit* donkey = nullptr;
-
+ 
       static const double TURN_SENSITIVITY; 
       static const double DRIVE_SENSITIVITY; 
       
@@ -50,15 +49,14 @@ class Drivebase : public Subsystem {
       double lastLinearVoltage = 0;
       double lastAngularVoltage = 0;
 
-      vex::motor leftFront; 
+      vex::motor leftFront;  
+      vex::motor leftMid;
       vex::motor leftBack; 
 
-      vex::motor rightFront; 
-      vex::motor rightBack;  
+      vex::motor rightFront;  
+      vex::motor rightMid; 
+      vex::motor rightBack;
       
-      //vex::motor leftExtra; 
-      //vex::motor rightExtra;
-
       vex::motor_group leftMotors;
       vex::motor_group rightMotors; 
 
@@ -76,44 +74,73 @@ class Drivebase : public Subsystem {
 
 //--------------------------------------------------------------------------------- 
 
+class PivotToAngle : public Command<Drivebase> { 
+   
+   private:     
+
+      static const double PIV_PID_CONSTANTS_KP;
+      static const double PIV_PID_CONSTANTS_KI;
+      static const double PIV_PID_CONSTANTS_KD; 
+
+      double setpointAngle;   
+      pidcontroller* controller = nullptr; 
+
+      Drivebase& drivebaseRef;
+
+   public:
+
+     static CommandInterface* getCommand(double angle){ 
+         return new PivotToAngle(Drivebase::getObject(), angle);
+     } 
+    
+
+     static CommandInterface* getCommand(Setpoint pivotPoint, double x, double y, bool faceAway){
+         Location* pivotLoc = Odometry::getLocation(pivotPoint);
+         double angle = angleSum(toDegrees(atan2(y - pivotLoc->getY(), x - pivotLoc->getX())), 0); 
+         if (faceAway){ 
+          angle = angleSum(angle, 180);
+         }
+         return getCommand(angle); 
+     }
+
+     PivotToAngle(Drivebase& drive, double angle):
+     Command<Drivebase>(drive),
+     drivebaseRef(drive),
+     setpointAngle(angle)
+     {};
+
+   protected:
+     
+     void start() override; 
+     void periodic() override; 
+     bool isOver() override; 
+     void end() override;
+};
+
+//--------------------------------------------------------------------------------- 
 
 class DriveForward : public Command<Drivebase> {  
    
    private: 
      double distance;
 
-     double initialAngle; 
+     double initialAngle;
 
-     //double percentAccel; 
-     //double percentVelo; 
-
-     double getDistTraveled(); 
+     double getDistTraveled();
      
-     //TrapezoidalMotionProfile* motionProfile = nullptr;  
      pidcontroller* controller = nullptr; 
-     //FFConstants ffController; 
-
+  
      pidcontroller* straightener = nullptr;
-     
-     /*
-     static const double MOTION_CONSTANTS_MAX_VELO; 
-     static const double MOTION_CONSTANTS_MAX_ACCEL; 
-     */
-     static const double PID_CONSTANTS_KP;
-     static const double PID_CONSTANTS_KI;
-     static const double PID_CONSTANTS_KD;
-     
-     /*
-     static const double FF_CONSTANTS_S;
-     static const double FF_CONSTANTS_V;
-     static const double FF_CONSTANTS_A; 
-     */ 
 
      static const double STRAIGHTEN_PID_KP; 
      static const double STRAIGHTEN_PID_KI; 
      static const double STRAIGHTEN_PID_KD;
    
    public:
+      
+     static const double PID_CONSTANTS_KP;
+     static const double PID_CONSTANTS_KI;
+     static const double PID_CONSTANTS_KD; 
 
      static CommandInterface* getCommand(double distance){ 
          return new DriveForward(Drivebase::getObject(), distance);
@@ -245,7 +272,6 @@ class ApproachTarget : public DriveForward {
   protected: 
      void start() override; 
 
-     double getAnchorAngle() override;
 };
 
 //----------------------------------------------------------------- 
@@ -299,40 +325,99 @@ class DriveToSetpoint : public SequentialCommandGroup {
       
       void start() override;
 
-};  
+};   
 
-//-------------------------------------------------------- 
+//--------------------------------------------------------  
 
-class DriveTrajectory : public Command<Drivebase> {   
+class MoveToPoint : public Command<Drivebase> {   
 
   private:  
+    
+    double setpX;
+    double setpY;  
+
+    bool cent;
+
+    pidcontroller* linController = nullptr; 
+    pidcontroller* angController = nullptr;
 
     Drivebase& drivebaseRef;  
 
-    PurePursuit* donkey = nullptr; 
-    Trajectory* trajectory = nullptr;    
-    
-    pidcontroller* turnController = nullptr; 
+    double getLinError(); 
+    double getAngError();  
 
-    double maxAccel; 
-    double maxVelo; 
-
-    void findNextSpeeds(double linearError, double angularError, double& linearSpeed, double& angularSpeed); 
-
-  public: 
-    DriveTrajectory(Drivebase& drivebase, double lookAheadDist, double maxVelocity, double maxAcceleration);
+    double offsetDist;
   
-  protected:   
-    double lDist; //Same throughout extended classes
-    virtual void initializePath(){}; //Actually make the trajectory   
+  public:
+    
+    static CommandInterface* getCommand(double setpointX, double setpointY, bool centered, double offset){ 
+      return new MoveToPoint(Drivebase::getObject(), setpointX, setpointY, centered, offset); 
+    }
+
+    static CommandInterface* getCommand(Setpoint setpoint, bool centered){ 
+      Location* loc = Odometry::getLocation(setpoint); 
+      return getCommand(loc->getX(), loc->getY(), centered, loc->getRadius()); 
+    }
+
+    MoveToPoint(Drivebase& drive, double setpointX, double setpointY, bool centered, double offset): 
+    Command<Drivebase>(drive),
+    drivebaseRef(drive),
+    setpX(setpointX),
+    setpY(setpointY),
+    cent(centered), 
+    offsetDist(offset) 
+    {};
+  
+  protected:  
 
     void start() override; //Call initializePath and partitions trajectory
     void periodic() override; //Follow path
     bool isOver() override; //Reached end of path
     void end() override; //Stop
-    
+  
 }; 
 
+//-------------------------------------------------------- 
+
+typedef enum { 
+   HORI, 
+   VERT
+} AlignmentAxis;
+
+class AlignWithAxis : DriveForward {
+  private: 
+
+    double setpointPos; 
+    AlignmentAxis ax;
+
+  public:
+    
+    static CommandInterface* getCommand(double coordinate, AlignmentAxis axis){ 
+       return new AlignWithAxis(Drivebase::getObject(), coordinate, axis);
+    }  
+
+    static CommandInterface* getCommand(Setpoint setpoint, AlignmentAxis axis){ 
+       Location* loc = Odometry::getLocation(setpoint); 
+       if (axis == AlignmentAxis::HORI){ 
+         return getCommand(loc->getX(), axis);
+       } else { 
+         return getCommand(loc->getY(), axis);
+       }
+    }
+
+    AlignWithAxis(Drivebase& drive, double coordinate, AlignmentAxis axis): 
+    DriveForward(drive, 0),
+    setpointPos(coordinate), 
+    ax(axis)
+    {};
+
+  protected: 
+     void start() override;
+};
+
+//-------------------------------------------------------- 
+
+/*
 class Toggle : public Command<Drivebase> { 
    
    private:  
@@ -366,7 +451,7 @@ class Toggle : public Command<Drivebase> {
      bool isOver() override; 
      void end() override; 
 };
-
+*/
 
 
 #endif

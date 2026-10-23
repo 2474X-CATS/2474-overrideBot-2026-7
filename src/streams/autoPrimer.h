@@ -50,7 +50,7 @@ extern double STACK_HEIGHT_MM;
 typedef struct { 
 
    Location* goalPosition;  
-   double goalHeight = Elevator::LEVELED_HEIGHT; 
+   double goalHeight = 0; 
    
    void setHeight(double height);
    double getHeight();

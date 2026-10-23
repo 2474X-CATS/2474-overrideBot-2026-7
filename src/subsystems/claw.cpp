@@ -2,25 +2,24 @@
 
 Claw* Claw::globalPtr = nullptr; 
 
-const double Claw::MAXIMUM_TOLERABLE_DISTANCE = 80; 
-const int Claw::SCORE_DELAY_MILLIS = 350; 
-const int Claw::PICKUP_DELAY_MILLIS = 450;
+const double Claw::MAXIMUM_TOLERABLE_DISTANCE = 75; 
+const int Claw::SCORE_DELAY_MILLIS = 150;  
+const double Claw::MIN_CLEARANCE = 100;
 
 Claw::Claw() : 
 Subsystem( 
    "claw", 
-   { 
+   {   
     (EntrySet){"active", EntryType::BOOL}, 
     (EntrySet){"in_possession", EntryType::BOOL},
-    (EntrySet){"waiting", EntryType::BOOL},
-    (EntrySet){"pre_spinning", EntryType::BOOL}, 
-    (EntrySet){"pre_spin_started", EntryType::BOOL}
+    (EntrySet){"waiting", EntryType::BOOL}, 
+    (EntrySet){"clamped", EntryType::BOOL}
    } 
-),  
-roller(vex::motor(vex::PORT1)),
-objectDetector(vex::distance(vex::PORT5))
+),
+clamp(vex::pneumatics(Brain.ThreeWirePort.A)),
+objectDetector(vex::distance(vex::PORT12))
 {
-   globalPtr = this;
+   globalPtr = this; 
 };
 
 Claw& Claw::getObject(){ 
@@ -28,96 +27,63 @@ Claw& Claw::getObject(){
 }
 
 void Claw::init(){  
-    roller.setBrake(vex::brakeType::brake);  
-    set<bool>("pre_spin_started", false);
-    set<bool>("pre_spinning", true);
+    clamp.set(false); 
+    clearance = MIN_CLEARANCE;
 }
 
 void Claw::periodic(){  
-    if (!get<bool>("pre_spin_started")){ 
-      preSpinStamp = Brain.Timer.time(); 
-      set<bool>("pre_spin_started", true);
-    } else { 
-      if (Brain.Timer.time() - preSpinStamp >= 500){ 
-         set<bool>("pre_spinning", false);
-      }
-    }  
-    if (get<bool>("pre_spinning")){ 
-       roller.spin(vex::directionType::fwd, 4, vex::voltageUnits::volt);
-    } else if (rollingIn){ 
-       roller.spin(vex::directionType::fwd, 12, vex::voltageUnits::volt);
-    } else if (rollingOut){ 
-       roller.spin(vex::directionType::rev, 12, vex::voltageUnits::volt); 
-    } else { 
-       roller.stop(); 
-    }
+    clamp.set(!get<bool>("clamped"));
+} 
+
+void Claw::stop(){
+   clamp.set(false); 
 }
 
 bool Claw::sensesObject(){
     return objectDetector.objectDistance(vex::distanceUnits::mm) < MAXIMUM_TOLERABLE_DISTANCE;
 }
 
+void Claw::updateDrivercontrol(){ 
+   set<bool>("clamped", RobotState::getStateOf("clamp")); 
+} 
+
+void Claw::updateAuto(){
+   SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
+   switch (pos){ 
+      case MATCHLOADING:   
+        if (clearance < MIN_CLEARANCE){  
+          clearance += fabs(Telemetry::inst.getValueAt<double>("odometry", "immediate_distance"));
+        }
+        set<bool>("clamped", get<bool>("in_possession") && clearance >= MIN_CLEARANCE);
+        break; 
+      case PRIMED: 
+        set<bool>("clamped", true); 
+        break; 
+      case AUTO:
+        if (get<bool>("waiting")){
+          if (Brain.Timer.time() - lastTransitionStamp >= SCORE_DELAY_MILLIS){ 
+            set<bool>("active", false);
+            set<bool>("waiting", false);
+            Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "task_completed"); 
+            clearance = 0;
+          } 
+        } else if (get<bool>("active")){ 
+           set<bool>("waiting", true);
+           set<bool>("clamped", false);
+           lastTransitionStamp = Brain.Timer.time();
+        }
+        break;
+   }
+}
+
 void Claw::updateTelemetry(){ 
-   set<bool>("in_possession", sensesObject()); 
-   stateControl();
+   set<bool>("in_possession", sensesObject());  
+   if (RobotState::getStateOf("in_autonomous")){ 
+      updateAuto();
+   } else { 
+      updateDrivercontrol();
+   }
 }  
-
-void Claw::stop(){  
-    return;
-} 
-
-
-void Claw::stateControl(){  
-   SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));   
-   
-   bool still = Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached");
-   
-   if (get<bool>("waiting")){
-      if (get<bool>("active") && (Brain.Timer.time() - lastTransitionStamp >= SCORE_DELAY_MILLIS)){ 
-        set<bool>("active", false);
-        set<bool>("waiting", false);
-        Telemetry::inst.placeValueAt<bool>(true, "forearm", "active"); 
-        rollingOut = false;
-      } else if ((Brain.Timer.time() - lastTransitionStamp >= PICKUP_DELAY_MILLIS)){ 
-        set<bool>("waiting", false);
-      }  
-   } else if (pos == SuperStructurePosition::AUTO){ //Whenever macro is running
-      if (get<bool>("active")){
-         set<bool>("waiting", true);
-         rollingOut = true; 
-         rollingIn = false;
-         lastTransitionStamp = Brain.Timer.time();
-      }
-   } else {
-      if (!still){
-        rollingOut = false;
-        rollingIn = false;
-      } else {
-        switch (pos){
-          case STANDING:
-             rollingIn = true;
-             rollingOut = false;
-             if (get<bool>("in_possession")){
-                if (RobotState::getStateOf("in_autonomous")){
-                 set<bool>("waiting", true);
-                }
-                lastTransitionStamp = Brain.Timer.time();
-             }
-             break; 
-          case GROUND:
-             rollingIn = true;
-             rollingOut = false;
-             break;
-          case PRIMED: 
-             rollingIn = false; 
-             rollingOut = RobotState::getStateOf("outtaking");
-             break;  
-          default: 
-             break;
-        } 
-      } 
-   }   
-} 
 
 void RunClaw::start(){ 
   return;

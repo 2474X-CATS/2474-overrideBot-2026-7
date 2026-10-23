@@ -15,7 +15,7 @@ class PurePursuit {
       
       Point findReferencePoint(double posX, double posY); 
 
-    public:  
+    public:
 
       PurePursuit(std::vector<Point> points, double lookAheadDist);
       

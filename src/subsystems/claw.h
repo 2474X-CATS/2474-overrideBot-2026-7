@@ -6,26 +6,27 @@
 
 #include "vex.h" 
 
-//vex::PORT5 
 
 class Claw : public Subsystem {  
     
     private:  
-       static Claw* globalPtr;  
+       static Claw* globalPtr;   
+
        static const double MAXIMUM_TOLERABLE_DISTANCE; 
        static const int SCORE_DELAY_MILLIS;
-       static const int PICKUP_DELAY_MILLIS;
+       static const double MIN_CLEARANCE; 
 
-       vex::motor roller;
+       double clearance;  
+
+       vex::pneumatics clamp; 
        vex::distance objectDetector;
        
-       int lastTransitionStamp;
-       int preSpinStamp = 0;
+       int lastTransitionStamp; 
 
-       bool rollingIn = false; 
-       bool rollingOut = false;
+       bool sensesObject();  
 
-       bool sensesObject(); 
+       void updateDrivercontrol(); 
+       void updateAuto(); 
 
     public:   
        using Subsystem::get; 
@@ -37,8 +38,6 @@ class Claw : public Subsystem {
        void periodic() override; 
        void updateTelemetry() override; 
        void stop() override; 
-
-       void stateControl();
        
     protected:
        using Subsystem::set;

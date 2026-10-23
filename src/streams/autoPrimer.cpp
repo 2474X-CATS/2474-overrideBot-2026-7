@@ -18,33 +18,33 @@ void AutoPrimer::init(){
 
     Goal goalWrap1; 
     goalWrap1.goalPosition = Odometry::getLocation(Setpoint::ALL_NAT_NEU); 
-    
 
-    Goal goalWrap2; 
+
+    Goal goalWrap2;
     goalWrap2.goalPosition = Odometry::getLocation(Setpoint::OPP_NAT_ALL); 
     
 
-    Goal goalWrap3; 
+    Goal goalWrap3;
     goalWrap3.goalPosition = Odometry::getLocation(Setpoint::OPP_FOR_ALL); 
     
 
-    Goal goalWrap4; 
+    Goal goalWrap4;
     goalWrap4.goalPosition = Odometry::getLocation(Setpoint::ALL_FOR_ALL); 
     
     
-    Goal goalWrap5; 
+    Goal goalWrap5;
     goalWrap5.goalPosition = Odometry::getLocation(Setpoint::ALL_FOR_ALL); 
     
 
-    Goal goalWrap6; 
+    Goal goalWrap6;
     goalWrap6.goalPosition = Odometry::getLocation(Setpoint::ALL_FOR_ALL); 
     
 
-    Goal goalWrap7; 
+    Goal goalWrap7;
     goalWrap7.goalPosition = Odometry::getLocation(Setpoint::ALL_FOR_ALL); 
     
 
-    Goal goalWrap8; 
+    Goal goalWrap8;
     goalWrap8.goalPosition = Odometry::getLocation(Setpoint::ALL_FOR_ALL); 
     
 

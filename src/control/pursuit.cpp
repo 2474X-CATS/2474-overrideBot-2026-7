@@ -2,8 +2,8 @@
 
 #include "../utilities/functools.h" 
 #include "../architecture/robotConfig.h"
-
-PurePursuit::PurePursuit(std::vector<Point> points, double lookAheadDist): 
+/*
+PurePursuit::PurePursuit(std::vector<PathFrame> points, double lookAheadDist): 
 checkPoints(points), 
 lDist(lookAheadDist)
 {}
@@ -106,4 +106,5 @@ void PurePursuit::calculateError(double posX, double posY, double heading, doubl
    angularError = angleDifference(theta, heading);  
    //Brain.Screen.printAt(20, 160, "Next point: (%.2f, %.2f) Progress: (%d/%d)", reference.x, reference.y, lastFoundIndex, checkPoints.size()); 
    //Brain.Screen.clearLine(160);
-}
+} 
+   */

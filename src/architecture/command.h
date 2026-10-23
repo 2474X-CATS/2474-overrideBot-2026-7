@@ -66,7 +66,8 @@ class CommandInterface
 { // Interface made for autonomous commands that use various types of subsystems
 public:
   friend class ParallelCommandGroup;
-  friend class SequentialCommandGroup;
+  friend class SequentialCommandGroup; 
+  friend class RaceCommandGroup; 
 
   virtual ~CommandInterface() = default;
 
@@ -128,6 +129,8 @@ protected:
   };
 };
 
+//-------------------------------------------------------------------------------------- 
+
 class ParallelCommandGroup : public CommandInterface
 {
 
@@ -161,7 +164,38 @@ protected:
   bool isOver() override;
   void periodic() override;
   void end() override;
-};
+}; 
+
+//----------------------------------------------------------------------------- 
+
+class RaceCommandGroup : public CommandInterface
+{
+private: 
+  vector<std::reference_wrapper<Subsystem>> allSubsystems;
+
+  bool integrateSubsystems(vector<std::reference_wrapper<Subsystem>> subsystems); // Adds subsystems used in a command to
+                                                                                  // the allSubsystems container but throws
+                                                                                  // an error if it contains subsystems that are
+                                                                                  // already in use.
+
+public:
+  static RaceCommandGroup *makeGroup(CommandInterface *firstRunner); 
+
+  RaceCommandGroup(CommandInterface *firstRunner);
+  
+  RaceCommandGroup *addRacer(CommandInterface *racer);      // BUILDERS--
+                                                            // CHAIN calls
+                                                            //
+protected:
+  vector<CommandInterface *> commands; 
+
+  void start() override;
+  bool isOver() override;
+  void periodic() override;
+  void end() override;
+}; 
+
+//----------------------------------------------------------------------------------
 
 class SequentialCommandGroup : public CommandInterface
 {
@@ -173,7 +207,7 @@ private:
   void initializeNext();
 
 public:
-  static SequentialCommandGroup *makeGroup(CommandInterface *initialCommand);
+  static SequentialCommandGroup *makeGroup(CommandInterface *initialCommand); 
 
   SequentialCommandGroup(CommandInterface *initialCommand);
 
@@ -186,6 +220,23 @@ protected:
   bool isOver() override;
   void periodic() override;
   void end() override;
+};  
+
+
+//---------------------------------------------------------------------------------- 
+
+class DoNothing : public Command<DummySystem> {  
+
+   public:
+     DoNothing():Command<DummySystem>(GLOBAL_DUMMY){};  
+     
+   protected:  
+     void start() override {return;}; 
+     bool isOver() override {return true;}; 
+     void periodic() override {return;}; 
+     void end() override {return;};
 };
+
+
 
 #endif

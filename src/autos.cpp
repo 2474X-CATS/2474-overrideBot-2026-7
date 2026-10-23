@@ -61,23 +61,28 @@ vector<Routine> generateRoutinePool(){
 //-------------------------------------------------------------------------------------- 
 
 vector<CommandInterface*> two_pin_alliance_right(){ 
-  return {     
-    ParallelCommandGroup::makeGroup(
-       SequentialCommandGroup::makeGroup(Toggle::getCommand(2))->  
-       chainThen(FaceTarget::getCommand(TILE_SIZE_MM * 2, TILE_SIZE_MM))-> 
-       chainThen(ApproachTarget::getCommand(TILE_SIZE_MM*2, TILE_SIZE_MM, 80))-> 
-       chainThen(Score())->
-       chainThen(DriveForward::getCommand(-500))-> 
-       chainThen(DriveToSetpoint::getCommand(TILE_SIZE_MM*2, TILE_SIZE_MM * 0.5, RouteType::EUCLIDEAN))-> 
-       chainThen(FaceTarget::getCommand(TILE_SIZE_MM, TILE_SIZE_MM * 0.5))->
-       chainThen(ApproachTarget::getCommand(TILE_SIZE_MM, TILE_SIZE_MM * 0.5))-> 
-       chainThen(TurnToHeading::getCommand(0))
-    )->chainWhile(RunSuperStructure::getCommand()) 
+  return {      
+      ParallelCommandGroup::makeGroup( 
+        SequentialCommandGroup::makeGroup(WaitForToggle())->  
+        chainThen(FrontRunElevatorSetpoint::getCommand(3, 25.4))->  
+        chainThen(WaitFor::getCommand(300))->
+        chainThen(DriveIntoGoal(MoveToPoint::getCommand(TILE_SIZE_MM * 1.8, TILE_SIZE_MM, false, 0)))-> 
+        chainThen(Score())->
+        chainThen(DriveForward::getCommand(-300))->
+        chainThen(DriveIntoElement(DriveToSetpoint::getCommand(TILE_SIZE_MM * 2, TILE_SIZE_MM * 2, RouteType::EUCLIDEAN)))-> 
+        chainThen(ParallelCommandGroup::makeGroup(FrontRunElevatorSetpoint::getCommand(4, 35.4))->chainAnd(SequentialCommandGroup::makeGroup(WaitFor::getCommand(600))->chainThen(DriveIntoGoal(MoveToPoint::getCommand(TILE_SIZE_MM * 1.915, TILE_SIZE_MM*0.925, true, 0)))))-> 
+        chainThen(Score())->
+        chainThen(DriveForward::getCommand(-TILE_SIZE_MM*0.75))->
+        chainThen(FaceTarget::getCommand(TILE_SIZE_MM, TILE_SIZE_MM * 0.925))-> 
+        chainThen(DriveIntoElement(DriveForward::getCommand(TILE_SIZE_MM * 1.3)))->  
+        chainThen(ParallelCommandGroup::makeGroup(FrontRunElevatorSetpoint::getCommand(6, 35.4))->chainAnd(SequentialCommandGroup::makeGroup(WaitFor::getCommand(400))->chainThen(DriveIntoGoal(MoveToPoint::getCommand(TILE_SIZE_MM * 1.915, TILE_SIZE_MM*0.925, true, 0)))))
+      )->chainWhile(RunSuperStructure::getCommand())
   };
 }
 
 vector<CommandInterface*> two_pin_alliance_left(){ 
-  return {     
+  return {    
+    /*
     ParallelCommandGroup::makeGroup(
        SequentialCommandGroup::makeGroup(Toggle::getCommand(2))->  
        chainThen(FaceTarget::getCommand(TILE_SIZE_MM*4, TILE_SIZE_MM))-> 
@@ -88,13 +93,14 @@ vector<CommandInterface*> two_pin_alliance_left(){
        chainThen(FaceTarget::getCommand(TILE_SIZE_MM, TILE_SIZE_MM * 0.5))-> 
        chainThen(ApproachTarget::getCommand(TILE_SIZE_MM, TILE_SIZE_MM * 0.5))-> 
        chainThen(TurnToHeading::getCommand(0))
-    )->chainWhile(RunSuperStructure::getCommand()) 
+    )->chainWhile(RunSuperStructure::getCommand())  
+    */
   };
 }  
 
 vector<CommandInterface*> toggle(){ 
   return {
-    Toggle::getCommand(2),
+    //Toggle::getCommand(2),
     DriveForward::getCommand(250),
     ParallelCommandGroup::makeGroup(WaitFor::getCommand(5000))->
     chainWhile(RunSuperStructure::getCommand())
@@ -105,7 +111,6 @@ vector<CommandInterface*> auto_skills(){
   return {
     ParallelCommandGroup::makeGroup(
        SequentialCommandGroup::makeGroup(DriveForward::getCommand(TILE_SIZE_MM * 2))-> 
-       //chainThen(DriveToSetpoint::getCommand(TILE_SIZE_MM * 3, TILE_SIZE_MM * 3 - ROBOT_LENGTH_MM/2, RouteType::EUCLIDEAN))->
        chainThen(Score())
     )->chainWhile(RunSuperStructure::getCommand()) 
   }; 

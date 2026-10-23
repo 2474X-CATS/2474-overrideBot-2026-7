@@ -36,45 +36,26 @@ void RobotState::initializeState()
            (EntrySet){"in_autonomous", EntryType::BOOL}, 
            (EntrySet){"inverted", EntryType::BOOL},
            (EntrySet){"is_team_color_blue", EntryType::BOOL},
-           (EntrySet){"awaiting_land", EntryType::BOOL},
-           (EntrySet){"rise", EntryType::BOOL}, 
-           (EntrySet){"fall", EntryType::BOOL},  
-           (EntrySet){"grounded", EntryType::BOOL},
-           (EntrySet){"standing", EntryType::BOOL}, 
-           (EntrySet){"purge", EntryType::BOOL},
-           (EntrySet){"k_matchloading", EntryType::BOOL}, 
+           (EntrySet){"rise", EntryType::BOOL},
+           (EntrySet){"fall", EntryType::BOOL},
            (EntrySet){"k_score", EntryType::BOOL},
-           (EntrySet){"switch_score_mode", EntryType::BOOL},
-           (EntrySet){"field_type_is_vex", EntryType::BOOL}, // True = VEX, False = RECF   
-           (EntrySet){"override", EntryType::BOOL}, 
-           (EntrySet){"outtaking", EntryType::BOOL}
-       }); 
-   
+           (EntrySet){"transition_ready", EntryType::BOOL},
+           (EntrySet){"field_type_is_vex", EntryType::BOOL}, // True = VEX, False = RECF    
+           (EntrySet){"toggle", EntryType::BOOL}, 
+           (EntrySet){"clamp", EntryType::BOOL} 
+       });   
+
    manuallyModifyState("field_type_is_vex", true); 
 }
 
 void RobotState::updateRegular()
 {     
-   
-   //manuallyModifyState("awaiting_land", Controller1.ButtonB.pressing()); 
    manuallyModifyState("rise", Controller1.ButtonR2.pressing()); 
-   manuallyModifyState("fall", Controller1.ButtonR1.pressing()); 
+   manuallyModifyState("fall", Controller1.ButtonR1.pressing());   
    
-   manuallyModifyState("grounded", Controller1.ButtonY.pressing()); 
-   manuallyModifyState("standing", Controller1.ButtonRight.pressing()); 
-   manuallyModifyState("purge", Controller1.ButtonDown.pressing());   
-
-   manuallyModifyState("outtaking", Controller1.ButtonL1.pressing());
-   manuallyModifyState("override", Controller1.ButtonX.pressing()); 
+   manuallyModifyState("toggle", Controller1.ButtonY.pressing()); 
    
-   if (Controller1.ButtonL2.pressing()){ 
-      manuallyModifyState("k_score", true);
-   } else if (getStateOf("k_score")){  
-      manuallyModifyState("k_score", false);  
-      Telemetry::inst.placeValueAt<bool>(true, "ss_manager", "macro_requested");
-   }
-   
-   
+   manuallyModifyState("clamp", Controller1.ButtonL2.pressing()); 
 };
 
 void RobotState::updateStopped() {

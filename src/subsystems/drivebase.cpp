@@ -22,14 +22,37 @@ Subsystem(
     (EntrySet){"is_on", EntryType::BOOL}
    }
 ),
-leftFront(vex::motor(vex::PORT20, true)), //20 true
-leftBack(vex::motor(vex::PORT19)), //19 
-rightFront(vex::motor(vex::PORT17)), //17
-rightBack(vex::motor(vex::PORT18, true)), //18 true   
-leftMotors(leftFront, leftBack), 
-rightMotors(rightFront, rightBack)
-{
-  globalPtr = this;   
+leftFront(vex::motor(vex::PORT18)), //20 true 
+leftMid(vex::motor(vex::PORT19)),
+leftBack(vex::motor(vex::PORT20)), //19  
+rightFront(vex::motor(vex::PORT15)), //17 
+rightMid(vex::motor(vex::PORT16)),
+rightBack(vex::motor(vex::PORT17)), //18 true   
+leftMotors(leftFront, leftBack, leftMid), 
+rightMotors(rightFront, rightBack, rightMid)
+{   
+  globalPtr = this;
+}; 
+
+Drivebase::Drivebase(bool usingTendy): //Change ports to fit pushback bot
+Subsystem(
+   "drivebase",
+   {
+    (EntrySet){"is_on", EntryType::BOOL}
+   }
+),
+rightFront(vex::motor(vex::PORT4, true)), //20 true 
+rightMid(vex::motor(vex::PORT5)),
+rightBack(vex::motor(vex::PORT6, true)), //19  
+
+leftFront(vex::motor(vex::PORT1, true)), //17 
+leftMid(vex::motor(vex::PORT2)),
+leftBack(vex::motor(vex::PORT3, true)), //18 true    
+
+leftMotors(leftFront, leftBack, leftMid), 
+rightMotors(rightFront, rightBack, rightMid)
+{   
+  globalPtr = this;
 };
 
 void Drivebase::init(){ 
@@ -54,13 +77,19 @@ void Drivebase::stop(){
     rightMotors.stop();
 } 
 
-void Drivebase::manualDrive(double voltageDrive, double voltageTurn){   
-    if (RobotState::getStateOf("inverted")){ 
-      voltageDrive *= -1;
-    }
-    leftMotors.spin(vex::directionType::fwd, voltageDrive + voltageTurn, vex::voltageUnits::volt); 
-    rightMotors.spin(vex::directionType::fwd, voltageDrive - voltageTurn, vex::voltageUnits::volt); 
-} 
+void Drivebase::manualDrive(double voltageDrive, double voltageTurn){     
+    tankDrive(voltageDrive + voltageTurn, voltageDrive - voltageTurn);
+}
+
+void Drivebase::tankDrive(double leftSpeed, double rightSpeed){  
+  if (RobotState::getStateOf("inverted")){ 
+    leftMotors.spin(vex::directionType::rev, -rightSpeed, vex::voltageUnits::volt);
+    rightMotors.spin(vex::directionType::fwd, -leftSpeed, vex::voltageUnits::volt); 
+  } else { 
+    leftMotors.spin(vex::directionType::rev, leftSpeed, vex::voltageUnits::volt);
+    rightMotors.spin(vex::directionType::fwd, rightSpeed, vex::voltageUnits::volt); 
+  }
+}
 
 void Drivebase::arcadeDrive(double speed, double rotation){   
     speed *= DRIVE_SENSITIVITY / 100 * 12.0; 
@@ -71,7 +100,7 @@ void Drivebase::arcadeDrive(double speed, double rotation){
     
     rotation = std::min<double>(std::min<double>(rotation, lastAngularVoltage + ((20/1000.0) * ACCELERATION_LIMIT_ANG)), MAX_ANG_SPEED);
     rotation = std::max<double>(std::max<double>(rotation, lastAngularVoltage - ((20/1000.0) * ACCELERATION_LIMIT_ANG)), -MAX_ANG_SPEED); 
-     
+    
     manualDrive(speed, rotation);
 
     lastAngularVoltage = rotation; 
@@ -90,25 +119,17 @@ void Drivebase::setSpeeds(double linearVelocity, double angularVelocity){
 
 
 ///-------------------------------------------------------------------------------------- 
-/*
-const double DriveForward::MOTION_CONSTANTS_MAX_VELO = (((Drivebase::MAX_RPM * (2 * Drivebase::WHEEL_RADIUS_MM * M_PI)) / 60.0)) * 0.85; //0.75; 
-const double DriveForward::MOTION_CONSTANTS_MAX_ACCEL = DriveForward::MOTION_CONSTANTS_MAX_VELO / 0.5;
-*/ 
 
-const double DriveForward::PID_CONSTANTS_KP = 12.0/TILE_SIZE_MM;//0.001;//75;
+
+const double DriveForward::PID_CONSTANTS_KP = 12.0/(TILE_SIZE_MM * 1.4); //0.001;//75;
 const double DriveForward::PID_CONSTANTS_KI = 0;
-const double DriveForward::PID_CONSTANTS_KD = 0.000;
-/*
-const double DriveForward::FF_CONSTANTS_S = 0.71922;
-const double DriveForward::FF_CONSTANTS_V = 0.00625;//0.05;
-const double DriveForward::FF_CONSTANTS_A = 0.0022; 
-*/
+const double DriveForward::PID_CONSTANTS_KD = 0.001;
+
 const double DriveForward::STRAIGHTEN_PID_KP = 0.115;//0.05;//0.033
 const double DriveForward::STRAIGHTEN_PID_KI = 0;
 const double DriveForward::STRAIGHTEN_PID_KD = 0.000;
 
-
-void DriveForward::start(){ 
+void DriveForward::start(){
     startX = Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"); 
     startY = Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"); 
     
@@ -117,9 +138,9 @@ void DriveForward::start(){
     PIDConstants pidConstants;
     pidConstants.P = PID_CONSTANTS_KP; 
     pidConstants.I = PID_CONSTANTS_KI; 
-    pidConstants.D = PID_CONSTANTS_KD; 
-    pidConstants.errorTolerance = 15; 
-    //pidConstants.minimumOutput = 5;
+    pidConstants.D = PID_CONSTANTS_KD;  
+    pidConstants.minimumOutput = 1.25;
+    pidConstants.errorTolerance = 1; 
     
     PIDConstants straightenConstants;
     straightenConstants.P = STRAIGHTEN_PID_KP; 
@@ -146,7 +167,7 @@ void DriveForward::periodic(){
 }
 
 bool DriveForward::isOver(){
-    return controller->atSetpoint(getDistTraveled()) || Telemetry::inst.getValueAt<bool>("odometry", "obstructed"); 
+    return controller->atSetpoint(getDistTraveled());
 }
 
 double DriveForward::getDistTraveled(){ 
@@ -168,7 +189,7 @@ void DriveForward::setDistance(double dist){
 
 const double TurnToHeading::PID_CONSTANTS_KP = 12.0/75;
 const double TurnToHeading::PID_CONSTANTS_KI = 0.000;//0.110;
-const double TurnToHeading::PID_CONSTANTS_KD = 0.000;
+const double TurnToHeading::PID_CONSTANTS_KD = 0.01;
 
 void TurnToHeading::start(){ 
    PIDConstants pidConstants;
@@ -177,17 +198,17 @@ void TurnToHeading::start(){
    pidConstants.I = PID_CONSTANTS_KI; 
    pidConstants.D = PID_CONSTANTS_KD; 
    pidConstants.maximumOutput = 8;
-   pidConstants.minimumOutput = 1;
-   pidConstants.errorTolerance = 7.5;
+   pidConstants.minimumOutput = 2;
+   pidConstants.errorTolerance = 0.5;
      
    controller = new pidcontroller(pidConstants, 0); 
    controller->setLastTimestamp(Brain.Timer.time());   
 
 } 
 
-void TurnToHeading::periodic(){    
+void TurnToHeading::periodic(){
     double error = getError(); 
-    Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
+    //Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
     Telemetry::inst.placeValueAt<double>(error, "graph", "error");
     double output = controller->calculate(error, Brain.Timer.time());   
     drivebaseRef.manualDrive(0, output);
@@ -202,14 +223,60 @@ void TurnToHeading::end(){
 }
  
 double TurnToHeading::getError(){  
-    //double error = angleDifference(setpoint, Telemetry::inst.getValueAt<double>("odometry", "heading_deg"));
-    //Telemetry::inst.placeValueAt<double>(error, "graph", "error");
     return angleDifference(setpoint, Telemetry::inst.getValueAt<double>("odometry", "heading_deg"));
 } 
 
 void TurnToHeading::setAngle(double angle){ 
     setpoint = angle;
+} 
+
+//----------------------------------------------------------------------------------------- 
+
+const double PivotToAngle::PIV_PID_CONSTANTS_KP = 12.0 / 75;
+const double PivotToAngle::PIV_PID_CONSTANTS_KI = 0;
+const double PivotToAngle::PIV_PID_CONSTANTS_KD = 0.01;
+
+void PivotToAngle::start(){ 
+   PIDConstants pidConsts;
+   pidConsts.P = PIV_PID_CONSTANTS_KP; 
+   pidConsts.I = PIV_PID_CONSTANTS_KI; 
+   pidConsts.D = PIV_PID_CONSTANTS_KD; 
+   pidConsts.errorTolerance = 0.5;
+   pidConsts.minimumOutput = 2;
+
+   controller = new pidcontroller(pidConsts, 0); 
+   controller->setLastTimestamp(Brain.Timer.time()); 
+} 
+
+void PivotToAngle::periodic(){  
+   double currentAngle = Telemetry::inst.getValueAt<double>("odometry", "heading_deg");  
+   double error = angleDifference(setpointAngle, currentAngle); 
+   Telemetry::inst.placeValueAt<double>(error, "graph", "error"); 
+   double output = controller->calculate(error, Brain.Timer.time());  
+   
+   bool turningLeft;
+   if (output > 0){ //Going clockwise
+      turningLeft = true;
+   } else { 
+      turningLeft = false;
+   }  
+    
+   if (turningLeft){ 
+      drivebaseRef.tankDrive(fabs(output), 0); 
+   } else { 
+      drivebaseRef.tankDrive(0, fabs(output)); 
+   }
+}  
+
+bool PivotToAngle::isOver(){   
+   double currentAngle = Telemetry::inst.getValueAt<double>("odometry", "heading_deg");
+   return controller->atSetpoint(angleDifference(setpointAngle, currentAngle)); 
 }
+
+void PivotToAngle::end(){ 
+   drivebaseRef.manualDrive(0,0); 
+}
+
 
 //----------------------------------------------------------------------------------------- 
 
@@ -219,10 +286,11 @@ void DriveToSetpoint::calibrateSetpoints_euc(double currentX, double currentY){
 } 
 
 void DriveToSetpoint::calibrateSetpoints_man_xy(double currentX, double currentY, double currentAngle){ 
-   double xDist = setpointX - currentX;  
+  
+   double vertAngle = setpointY > currentY ? 90 : 270;
+   double horiAngle = setpointX > currentX ? 0 : 180;  
    
-   double vertAngle = setpointY - currentY > 0 ? 90 : 270;
-   double horiAngle = xDist > 0 ? 0 : 180;  
+   double xDist = fabs(setpointX - currentX); 
 
    if (fabs(angleDifference(currentAngle, horiAngle)) > 90){ 
      horiAngle = angleSum(horiAngle, 180);
@@ -236,10 +304,10 @@ void DriveToSetpoint::calibrateSetpoints_man_xy(double currentX, double currentY
 } 
 
 void DriveToSetpoint::calibrateSetpoints_man_yx(double currentX, double currentY, double currentAngle){ 
-   double yDist = setpointY - currentY;
+   double yDist = fabs(setpointY - currentY);
    
-   double vertAngle = yDist > 0 ? 90 : 270;
-   double horiAngle = setpointX - currentX > 0 ? 0 : 180;  
+   double vertAngle = setpointY > currentY ? 90 : 270;
+   double horiAngle = setpointX > currentX ? 0 : 180;
 
    if (fabs(angleDifference(currentAngle, vertAngle)) > 90){ 
      vertAngle = angleSum(vertAngle, 180); 
@@ -283,68 +351,105 @@ void FaceTarget::start(){
 //-------------------------------------------------------------------------- 
 
 void ApproachTarget::start(){ 
-    double currentX = Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"); 
-    double currentY = Telemetry::inst.getValueAt<double>("odometry", "y_position_mm");  
+    double currentX = Telemetry::inst.getValueAt<double>("odometry", "tip_x_position_mm"); 
+    double currentY = Telemetry::inst.getValueAt<double>("odometry", "tip_y_position_mm");  
     setDistance(hypot(currentX - targetX, currentY - targetY) - offset);
     DriveForward::start();
 } 
 
-double ApproachTarget::getAnchorAngle(){
-    return angleSum(toDegrees(atan2(targetY - Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"), targetX - Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"))), 0);
-}
 //-------------------------------------------------------------------------- 
 
-DriveTrajectory::DriveTrajectory(Drivebase& drivebase, double lookAheadDist, double maxVelocity, double maxAcceleration): 
-    Command<Drivebase>(drivebase), 
-    drivebaseRef(drivebase), 
-    lDist(lookAheadDist), 
-    maxVelo(maxVelocity), 
-    maxAccel(maxAcceleration)
-    { 
-      PIDConstants pidConsts; 
-      pidConsts.P = TurnToHeading::PID_CONSTANTS_KP; 
-      pidConsts.I = TurnToHeading::PID_CONSTANTS_KI; 
-      pidConsts.D = TurnToHeading::PID_CONSTANTS_KD; 
-      turnController = new pidcontroller(pidConsts, 0);
-    }
-
-void DriveTrajectory::start(){ 
-  initializePath(); //Creates the trajectory 
-  int steps = static_cast<int>(trajectory->calculateLength() / lDist); 
-  std::vector<Point> points;
-  trajectory->generatePoints(points, steps);
-  donkey = new PurePursuit(points, lDist);   
-
-  turnController->setLastTimestamp(Brain.Timer.time()); 
-}  
-
-void DriveTrajectory::findNextSpeeds(double linearError, double angularError, double& linearSpeed, double& angularSpeed){ 
-  linearSpeed = 500;
-  angularSpeed = turnController->calculate(angularError, Brain.Timer.time());  
+void AlignWithAxis::start(){ 
+   double dist;
+   double currentHeading = toRadians(Telemetry::inst.getValueAt<double>("odometry", "heading_deg"));
+   if (ax == AlignmentAxis::HORI){ 
+      dist = (setpointPos - Telemetry::inst.getValueAt<double>("odometry", "x_position_mm")) / cos(currentHeading);
+   } else { 
+      dist = (setpointPos - Telemetry::inst.getValueAt<double>("odometry", "y_position_mm")) / sin(currentHeading);
+   } 
+   setDistance(dist); 
+   DriveForward::start(); 
 }
 
-void DriveTrajectory::periodic(){   
+//-------------------------------------------------------------------------- 
 
-  double linearError; 
-  double angularError; 
+void MoveToPoint::start(){ 
+    PIDConstants turnConsts; 
+    PIDConstants driveConsts; 
 
-  donkey->calculateError( 
-       Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"), 
-       Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"), 
-       Telemetry::inst.getValueAt<double>("odometry", "heading_deg"), 
-       linearError, 
-       angularError 
-  );
+    turnConsts.P = TurnToHeading::PID_CONSTANTS_KP;
+    turnConsts.I = TurnToHeading::PID_CONSTANTS_KI;
+    turnConsts.D = TurnToHeading::PID_CONSTANTS_KD;
 
-  double linearSpeed = 0; 
-  double angularSpeed = 0;
+    driveConsts.P = DriveForward::PID_CONSTANTS_KP;
+    driveConsts.I = DriveForward::PID_CONSTANTS_KI;
+    driveConsts.D = DriveForward::PID_CONSTANTS_KD;  
+    driveConsts.maximumOutput = 12; 
+    driveConsts.minimumOutput = 1.25;
+    driveConsts.errorTolerance = 5;
+    
+    linController = new pidcontroller(driveConsts, 0); 
+    angController = new pidcontroller(turnConsts, 0); 
 
-  findNextSpeeds(linearError, angularError, linearSpeed, angularSpeed); 
+    linController->setLastTimestamp(Brain.Timer.time());
+    angController->setLastTimestamp(Brain.Timer.time());  
+    
+    double currentX = Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"); 
+    double currentY = Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"); 
 
-  drivebaseRef.setSpeeds(linearSpeed, angularSpeed);
+    double theta = angleSum(toDegrees(atan2(setpY - currentY, setpX - currentX)), 180);  
+    
+    setpX += cos(toRadians(theta)) * offsetDist; 
+    setpY += sin(toRadians(theta)) * offsetDist; 
+    
+}  
+
+void MoveToPoint::periodic(){ 
+    double distError = getLinError();
+    double thetaError = getAngError();
+
+    double angOutput = angController->calculate(thetaError, Brain.Timer.time());
+    double linOutput = -linController->calculate(distError, Brain.Timer.time());
+  
+    double discount = 1 - std::min<double>(fabs(thetaError) / 30.0, 1); 
+
+    linOutput *= discount;
+
+    drivebaseRef.manualDrive(linOutput, angOutput);
 } 
 
+bool MoveToPoint::isOver(){ 
+    return linController->atSetpoint(getLinError()); 
+} 
 
+void MoveToPoint::end(){ 
+    drivebaseRef.manualDrive(0,0); 
+} 
+
+double MoveToPoint::getLinError(){    
+    double currentX, currentY;
+    if (cent){ 
+       currentX = Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"); 
+       currentY = Telemetry::inst.getValueAt<double>("odometry", "y_position_mm");
+    } else { 
+       currentX = Telemetry::inst.getValueAt<double>("odometry", "tip_x_position_mm"); 
+       currentY = Telemetry::inst.getValueAt<double>("odometry", "tip_y_position_mm");
+    }
+    return hypot(setpX - currentX, setpY - currentY); 
+}
+
+double MoveToPoint::getAngError(){  
+    double currentX = Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"); 
+    double currentY = Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"); 
+
+    double refHeading = angleSum(toDegrees(atan2(setpY - currentY, setpX - currentX)), 0);  
+
+    return angleDifference(refHeading, Telemetry::inst.getValueAt<double>("odometry", "heading_deg"));
+}
+
+//--------------------------------------------------------------------------
+
+/*
 void Toggle::start(){ 
     startTime = Brain.Timer.time(); 
 } 
@@ -365,4 +470,4 @@ bool Toggle::isOver(){
 void Toggle::end(){ 
   drivebaseRef.manualDrive(0,0);
 }
-
+*/

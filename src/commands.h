@@ -6,8 +6,7 @@
 #include "subsystems/claw.h"
 #include "subsystems/drivebase.h" 
 #include "subsystems/elevator.h" 
-#include "subsystems/forearm.h"  
-#include "subsystems/intake.h"
+#include "subsystems/toggle.h"
 
 
 class RunSuperStructure : public ParallelCommandGroup {  
@@ -21,7 +20,7 @@ class RunSuperStructure : public ParallelCommandGroup {
       RunSuperStructure(): 
       ParallelCommandGroup(RunElevator::getCommand()) 
       { 
-         chainAnd(RunForearm::getCommand())->chainAnd(RunClaw::getCommand())->chainAnd(RunIntake::getCommand());
+         chainAnd(RunClaw::getCommand())->chainAnd(RunToggle::getCommand());
       }
 };  
 
@@ -53,7 +52,6 @@ class ModifyRobotState : public Command<DummySystem> {
       bool isOver() override;
       void end() override;
 };
-
 
 class WaitFor : public Command<DummySystem>{   
 
@@ -106,7 +104,6 @@ class WaitUntil : public Command<DummySystem> {
       void end() override;
 };  
 
-
 class WaitForSSState : public Command<DummySystem> { 
 
     private:  
@@ -132,14 +129,10 @@ class WaitForSSState : public Command<DummySystem> {
 
 };
 
-CommandInterface* Score();  
-CommandInterface* GroundIntakeMode(bool waitUntilReached);  
-CommandInterface* StandingMode(bool waitUntilReached); 
-CommandInterface* Prime(bool waitUntilReached); 
-CommandInterface* Drop(int timeout); 
-
-
-
+CommandInterface* Score();   
+CommandInterface* WaitForToggle(); 
+CommandInterface* DriveIntoElement(CommandInterface* driveComm);
+CommandInterface* DriveIntoGoal(CommandInterface* driveComm);
 
 
 

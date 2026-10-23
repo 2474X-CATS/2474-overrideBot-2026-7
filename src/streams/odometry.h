@@ -27,6 +27,7 @@ class Odometry : public DataStream {
        static Location* getLocation(int index);  
 
        Odometry();
+       Odometry(bool usingTendy);
 
        void refreshData() override; // Calls every telemetry frame
        void init() override; // Sets up sensors for data-collection
@@ -44,7 +45,7 @@ class Odometry : public DataStream {
 
        void calibratePerspective();
        
-       void findTranslations(double& xCoords, double& yCoords, int& xCount, int& yCount, vex::distance sensor, double angleOffset, double distanceOffset);  
+       void findTranslations(double& xCoords, double& yCoords, int& xCount, int& yCount, vex::distance& sensor, double angleOffset, double xOffset, double yOffset);  
        
        void laserCalibrate(double& resX, double& resY);
 

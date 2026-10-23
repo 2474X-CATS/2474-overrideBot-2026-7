@@ -64,7 +64,7 @@ void WaitForSSState::periodic(){
 }
 
 bool WaitForSSState::isOver(){ 
-    return Telemetry::inst.getValueAt<int>("ss_manager", "position") == state && Telemetry::inst.getValueAt<bool>("ss_manager", "setpoints_reached");
+    return Telemetry::inst.getValueAt<int>("ss_manager", "position") == state;
 } 
 
 void WaitForSSState::end(){ 
@@ -75,48 +75,31 @@ void WaitForSSState::end(){
 
 
 CommandInterface* Score(){ 
-    return SequentialCommandGroup::makeGroup( 
-      Prime(true)  
-    )->chainThen( 
-      ModifyRobotState::getCommand("ss_manager", "macro_requested", true)
-    )->chainThen( 
-      WaitUntil::getCommand("ss_manager", "task_completed", true)
-    );
-}  
-
-CommandInterface* GroundIntakeMode(bool waitUntilReached){ 
-    SequentialCommandGroup* group = SequentialCommandGroup::makeGroup(ModifyRobotState::getCommand("robot_state", "standing", false)); 
-    group->chainThen(ModifyRobotState::getCommand("robot_state", "grounded", true));
-    if (waitUntilReached){ 
-       group->chainThen(WaitForSSState::getCommand(SuperStructurePosition::GROUND));
-    } 
-    return group;
-} 
-
-CommandInterface* StandingMode(bool waitUntilReached){ 
-    SequentialCommandGroup* group = SequentialCommandGroup::makeGroup(ModifyRobotState::getCommand("robot_state", "grounded", false)); 
-    group->chainThen(ModifyRobotState::getCommand("robot_state", "standing", true));
-    if (waitUntilReached){ 
-       group->chainThen(WaitForSSState::getCommand(SuperStructurePosition::STANDING));
-    }
-    return group;
+    SequentialCommandGroup* cmd = SequentialCommandGroup::makeGroup(ModifyRobotState::getCommand("ss_manager", "macro_requested", true))-> 
+    chainThen(WaitUntil::getCommand("ss_manager", "task_completed", true));
+    
+    return RaceCommandGroup::makeGroup(cmd)->addRacer(WaitForSSState::getCommand(SuperStructurePosition::MATCHLOADING));
 }   
 
-CommandInterface* Prime(bool waitUntilReached){ 
-    SequentialCommandGroup* group = SequentialCommandGroup::makeGroup(ModifyRobotState::getCommand("robot_state", "grounded", false));  
-    group->chainThen(ModifyRobotState::getCommand("robot_state", "standing", false)); 
-    if (waitUntilReached){ 
-       group->chainThen(WaitForSSState::getCommand(SuperStructurePosition::PRIMED));
-    }
-    return group;
+CommandInterface* WaitForToggle(){ 
+    return WaitUntil::getCommand("toggle", "must_flip", false); 
+}  
+
+CommandInterface* DriveIntoElement(CommandInterface* driveComm){ 
+    RaceCommandGroup* cmd = RaceCommandGroup::makeGroup(driveComm); 
+    cmd->addRacer(WaitForSSState::getCommand(SuperStructurePosition::PRIMED)); 
+    return cmd;
 } 
 
-CommandInterface* Drop(int timeout){ 
-    SequentialCommandGroup* group = SequentialCommandGroup::makeGroup(ModifyRobotState::getCommand("robot_state", "purge", true));  
-    group->chainThen(WaitFor::getCommand(timeout))-> 
-    chainThen(ModifyRobotState::getCommand("robot_state", "purge", false));
-    return group; 
+CommandInterface* DriveIntoGoal(CommandInterface* driveComm){ 
+    RaceCommandGroup* cmd = RaceCommandGroup::makeGroup(driveComm); 
+    cmd->addRacer(WaitUntil::getCommand("odometry", "obstructed", true)); 
+    return cmd;
 }
+
+
+
+   
 
 
 
