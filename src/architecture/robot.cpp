@@ -15,13 +15,6 @@ void Robot::initialize()
   RobotState::initializeState();
   Subsystem::initSystems();
   DataStream::initializeAll(); 
-  /*
-  while (RobotState::getMode() == ControlType::INITIALIZATION){ 
-    Subystem::primeSystems(); //Primes all subsystems by calling their initPeriodic() method  
-    wait(20, msec);  
-  }  
-  return 0; 
-  */
 };
 
 void Robot::driverControl(bool odometryEnabled)
@@ -60,7 +53,6 @@ void Robot::setAutonomousCommand(std::vector<CommandInterface *> comm)
 
 void Robot::autonControl()
 { 
-  //Subsystem::phaseShift() Will handle 
   RobotState::setMode(ControlType::MANUAL);
   RobotState::manuallyModifyState("in_autonomous", true);
   vex::wait(20, msec);
@@ -83,19 +75,10 @@ void Robot::configurateAutonomous()
   ExitBlock(250, 10);
 
   Sprite::frameLoop();
+  
+  setAutonomousCommand(routines.at(catalog.getCurrentAuto().index).autos.at(sidePicker.getIsLeft()));
+  RobotState::manuallyModifyState("is_team_color_blue", colorChooser.getIsBlue());  
+  RobotState::manuallyModifyState("starting_left", sidePicker.getIsLeft()); 
 
-  int sideIndex;
-  int autonIndex = catalog.getCurrentAuto().index;
 
-  if (sidePicker.getIsLeft())
-  {
-    sideIndex = 0;
-  }
-  else
-  {
-    sideIndex = 1;
-  }
-
-  setAutonomousCommand(routines.at(autonIndex).autos.at(sideIndex));
-  RobotState::manuallyModifyState("is_team_color_blue", colorChooser.getIsBlue());
 }

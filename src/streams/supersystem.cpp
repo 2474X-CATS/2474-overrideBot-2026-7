@@ -31,16 +31,14 @@ void SuperSystem::refreshData(){
             }
             break;
         case PRIMED:
-            if (get<bool>("macro_requested")){ 
+            if (get<bool>("macro_requested")){
               Telemetry::inst.placeValueAt<bool>(true, "elevator", "active"); //First subsystem to act
               set<bool>("task_completed", false); //Task is not completed
               setPosition(SuperStructurePosition::AUTO); //Set the position to AUTO (essentially undefined
-            } else if (!inPossession){ 
-              setPosition(SuperStructurePosition::MATCHLOADING);
             }
             break;
         case AUTO:
-            if (get<bool>("task_completed")){ 
+            if (get<bool>("task_completed") && !Telemetry::inst.getValueAt<bool>("odometry", "obstructed")){ 
               setPosition(SuperStructurePosition::MATCHLOADING);
             }
             break;

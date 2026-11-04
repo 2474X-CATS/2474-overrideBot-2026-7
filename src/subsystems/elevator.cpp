@@ -51,20 +51,28 @@ void Elevator::periodic(){
    double elevatorOutput;
    if (currentState == ElevatorState::E_PURSUING){//Stay Still    
      if (currentSetpoint > getPosition()){ 
-       elevatorOutput = 7;
+       elevatorOutput = 8;
      } else { 
-       elevatorOutput = -7;
+       elevatorOutput = -8;
      }
-   } else if (currentState == ElevatorState::E_HOLDING){ 
-     if (raisingDirection == 0){ 
-       elevatorOutput = (get<double>("percentage_extended") - 0.5) * 1.35;
-     } else {
-       elevatorOutput = PRIMING_SPEED * raisingDirection;
+   } else if (currentState == ElevatorState::E_HOLDING){  
+     if (RobotState::getStateOf("in_autonomous") && Telemetry::inst.getValueAt<int>("ss_manager", "position") == SuperStructurePosition::MATCHLOADING){ 
+       elevatorOutput = -12;
+     } else { 
+       if (raisingDirection == 0){
+         elevatorOutput = get<double>("percentage_extended") * 3.5;
+       } else { 
+         elevatorOutput = PRIMING_SPEED * raisingDirection; 
+         if (elevatorOutput < 0){ 
+          elevatorOutput *= 0.75;
+         }
+       }
      }
    } else {
      elevatorOutput = -6;
-   } 
-   lift.spin(vex::directionType::fwd, elevatorOutput, vex::voltageUnits::volt);
+   }  
+   //Brain.Screen.printAt(20, 120, "Output: %.2f", elevatorOutput); 
+   lift.spin(vex::directionType::fwd, elevatorOutput, vex::voltageUnits::volt); 
 }
 
 void Elevator::updateDrivercontrol(){  
@@ -88,7 +96,6 @@ void Elevator::updateAuto(){
     } else {
         findNextSetpoint();
     }  
-    
     //Testing purposes-- get rid of when making autos
 
 }
@@ -122,7 +129,7 @@ void Elevator::findNextSetpoint(){
    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
    switch (pos){
       case MATCHLOADING:
-          setSetpoint(-5);
+          setSetpoint(0);
           break;
       case AUTO:
           currentSetpoint = -1;

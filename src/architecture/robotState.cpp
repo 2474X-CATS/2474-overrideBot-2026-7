@@ -40,12 +40,13 @@ void RobotState::initializeState()
            (EntrySet){"fall", EntryType::BOOL},
            (EntrySet){"k_score", EntryType::BOOL},
            (EntrySet){"transition_ready", EntryType::BOOL},
-           (EntrySet){"field_type_is_vex", EntryType::BOOL}, // True = VEX, False = RECF    
+           (EntrySet){"field_type_is_vex", EntryType::BOOL}, // True = VEX, False = RECF 
+           (EntrySet){"starting_left", EntryType::BOOL},    
            (EntrySet){"toggle", EntryType::BOOL}, 
            (EntrySet){"clamp", EntryType::BOOL} 
        });   
 
-   manuallyModifyState("field_type_is_vex", true); 
+   manuallyModifyState("field_type_is_vex", true);  
 }
 
 void RobotState::updateRegular()
@@ -55,8 +56,15 @@ void RobotState::updateRegular()
    
    manuallyModifyState("toggle", Controller1.ButtonY.pressing()); 
    
-   manuallyModifyState("clamp", Controller1.ButtonL2.pressing()); 
-};
+   manuallyModifyState("clamp", Controller1.ButtonL2.pressing());  
+
+   if (Telemetry::inst.getValueAt<bool>("claw","in_possession")){ 
+      setVibrationCode(".."); 
+   } else { 
+      disableVibrations(); 
+   } 
+
+}; 
 
 void RobotState::updateStopped() {
    

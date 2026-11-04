@@ -10,44 +10,30 @@
 
 #include "../streams/odometry.h" 
 
-//#include "../control/path.h"
-//#include "../control/pursuit.h"
-
 class Drivebase : public Subsystem { 
     public:
       using Subsystem::get;  
       
       static const double MAX_RPM; 
-      static const double WHEEL_RADIUS_MM; 
+      static const double WHEEL_RADIUS_MM;
 
-      static const double MAX_LIN_SPEED;
-      static const double MAX_ANG_SPEED;
+      static const double TRACK_WIDTH_MM; 
       
       static Drivebase& getObject();
 
       Drivebase(); 
 
-      Drivebase(bool usingTendy); 
+      Drivebase(bool usingTendy);
       
       void manualDrive(double voltageDrive, double voltageTurn);   
 
       void tankDrive(double leftSpeed, double rightSpeed);
-
-      //---------------------------------------------------- 
-
-      void setSpeeds(double linearVelocity, double angularVelocity);
 
     private:
       static Drivebase* globalPtr;  
  
       static const double TURN_SENSITIVITY; 
       static const double DRIVE_SENSITIVITY; 
-      
-      static const double ACCELERATION_LIMIT_LIN; 
-      static const double ACCELERATION_LIMIT_ANG;
-
-      double lastLinearVoltage = 0;
-      double lastAngularVoltage = 0;
 
       vex::motor leftFront;  
       vex::motor leftMid;
@@ -59,7 +45,6 @@ class Drivebase : public Subsystem {
       
       vex::motor_group leftMotors;
       vex::motor_group rightMotors; 
-
       
       void arcadeDrive(double speed, double rotation); 
 
@@ -74,49 +59,94 @@ class Drivebase : public Subsystem {
 
 //--------------------------------------------------------------------------------- 
 
-class PivotToAngle : public Command<Drivebase> { 
+class Pivot : public Command<Drivebase> { 
    
-   private:     
+   private:
 
       static const double PIV_PID_CONSTANTS_KP;
       static const double PIV_PID_CONSTANTS_KI;
-      static const double PIV_PID_CONSTANTS_KD; 
+      static const double PIV_PID_CONSTANTS_KD;
 
-      double setpointAngle;   
+      double setpointAngle;
+      double arcRadius;
+
       pidcontroller* controller = nullptr; 
 
       Drivebase& drivebaseRef;
 
    public:
-
-     static CommandInterface* getCommand(double angle){ 
-         return new PivotToAngle(Drivebase::getObject(), angle);
-     } 
     
-
-     static CommandInterface* getCommand(Setpoint pivotPoint, double x, double y, bool faceAway){
-         Location* pivotLoc = Odometry::getLocation(pivotPoint);
-         double angle = angleSum(toDegrees(atan2(y - pivotLoc->getY(), x - pivotLoc->getX())), 0); 
-         if (faceAway){ 
-          angle = angleSum(angle, 180);
-         }
-         return getCommand(angle); 
-     }
-
-     PivotToAngle(Drivebase& drive, double angle):
+     Pivot(Drivebase& drive, double angle, double radius):
      Command<Drivebase>(drive),
      drivebaseRef(drive),
-     setpointAngle(angle)
-     {};
+     setpointAngle(angle), 
+     arcRadius(radius)
+     {};  
 
    protected:
-     
-     void start() override; 
-     void periodic() override; 
-     bool isOver() override; 
+  
+     void start() override;
+     void periodic() override;
+     bool isOver() override;
      void end() override;
 };
 
+//---------------------------------------------------------------------------------
+
+class CurveInto : public Command<Drivebase> {  
+
+    private:
+      Drivebase& drivebaseRef; 
+
+      double targetX;
+      double targetY;
+      double radius;
+       
+      double distTraveled = 0; 
+
+      pidcontroller* controller = nullptr;
+      
+    public: 
+      
+      static CommandInterface* getCommand(double x, double y){ 
+        return new CurveInto(Drivebase::getObject(), x, y);
+      }
+
+      CurveInto(Drivebase& drive, double x, double y):   
+      Command<Drivebase>(drive), 
+      drivebaseRef(drive),
+      targetX(x), 
+      targetY(y){};  
+
+    protected: 
+
+      void start() override; 
+      void periodic() override; 
+      bool isOver() override;  
+      void end() override;  
+
+}; 
+
+/*
+class SlideIn : public Pivot {  
+  private: 
+    double targetX; 
+    double targetY; 
+  public:  
+    
+    static CommandInterface* getCommand(double x, double y){ 
+      return new SlideIn(Drivebase::getObject(), x, y); 
+    }
+
+    SlideIn(Drivebase& drive, double x, double y): 
+    Pivot(drive, 0, 0),
+    targetX(x), 
+    targetY(y){}; 
+
+  protected: 
+    void start() override;
+}; 
+*/
 //--------------------------------------------------------------------------------- 
 
 class DriveForward : public Command<Drivebase> {  

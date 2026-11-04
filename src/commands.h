@@ -6,7 +6,9 @@
 #include "subsystems/claw.h"
 #include "subsystems/drivebase.h" 
 #include "subsystems/elevator.h" 
-#include "subsystems/toggle.h"
+#include "subsystems/toggle.h" 
+
+#include "streams/odometry.h"
 
 
 class RunSuperStructure : public ParallelCommandGroup {  
@@ -22,7 +24,7 @@ class RunSuperStructure : public ParallelCommandGroup {
       { 
          chainAnd(RunClaw::getCommand())->chainAnd(RunToggle::getCommand());
       }
-};  
+};
 
 class ModifyRobotState : public Command<DummySystem> {  
     
@@ -129,11 +131,71 @@ class WaitForSSState : public Command<DummySystem> {
 
 };
 
+class ResetPose : public Command<DummySystem> { 
+    private:
+
+       vector<ResetFace> faces; 
+
+    public:
+       
+       static CommandInterface* getCommand(vector<ResetFace> resetFaces){ 
+        CommandInterface* comm = new ResetPose(GLOBAL_DUMMY, resetFaces); 
+        return SequentialCommandGroup::makeGroup( 
+         { 
+            comm, 
+            WaitFor::getCommand(100)
+         }
+        );
+       };
+
+       ResetPose(DummySystem& dummy, vector<ResetFace> resetFaces): 
+       Command<DummySystem>(dummy),
+       faces(resetFaces)
+       {}; 
+
+    protected:
+      void start() override; 
+      void periodic() override; 
+      bool isOver() override;  
+      void end() override;
+};
+
+class ResetFromGoal : public Command<Drivebase> { 
+   private: 
+      int g;  
+      int startTime;
+      Drivebase& drivebaseRef;   
+
+      bool switched = false;
+   public:  
+
+      static CommandInterface* getCommand(Setpoint goal){ 
+        return new ResetFromGoal(Drivebase::getObject(), goal);
+      };
+
+      ResetFromGoal(Drivebase& drive, Setpoint goal): 
+      Command<Drivebase>(drive), 
+      drivebaseRef(drive), 
+      g(goal){};  
+
+   protected:  
+      void start() override; 
+      void periodic() override; 
+      bool isOver() override;  
+      void end() override;
+};
+
 CommandInterface* Score();   
 CommandInterface* WaitForToggle(); 
 CommandInterface* DriveIntoElement(CommandInterface* driveComm);
 CommandInterface* DriveIntoGoal(CommandInterface* driveComm);
 
+CommandInterface* SnapHeading();  
+CommandInterface* ResetFromGoal(Setpoint goal); 
+
+CommandInterface* Clench(); 
+
+vector<CommandInterface*> RoutineWrap(vector<CommandInterface*> content); 
 
 
 

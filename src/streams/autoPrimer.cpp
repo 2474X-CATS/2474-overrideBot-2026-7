@@ -69,7 +69,6 @@ void AutoPrimer::refreshData(){
      }
    }
    Brain.Screen.printAt(20, 120, "Goal Index: %d", goalIndex);   
-   
 }
 
 void AutoPrimer::locationBasedShiftUpdate(){   

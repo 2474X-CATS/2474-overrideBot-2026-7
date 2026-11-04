@@ -149,13 +149,15 @@ private:
   // true if successful
 
 public:
-  static ParallelCommandGroup *makeGroup(CommandInterface *initialCommand);
-
+  static ParallelCommandGroup *makeGroup(vector<CommandInterface*> qualifyingCommands);
+  
   ParallelCommandGroup(CommandInterface *initialCommand);
 
   ParallelCommandGroup *chainAnd(CommandInterface *comm);   // BUILDERS--
                                                             // CHAIN calls
   ParallelCommandGroup *chainWhile(CommandInterface *comm); //
+
+  ParallelCommandGroup* addBackgroundTasks(vector<CommandInterface*> background);
 
 protected:
   vector<CommandInterface *> participatingCommands; 
@@ -179,7 +181,7 @@ private:
                                                                                   // already in use.
 
 public:
-  static RaceCommandGroup *makeGroup(CommandInterface *firstRunner); 
+  static RaceCommandGroup *makeGroup(vector<CommandInterface*> runners); 
 
   RaceCommandGroup(CommandInterface *firstRunner);
   
@@ -207,8 +209,8 @@ private:
   void initializeNext();
 
 public:
-  static SequentialCommandGroup *makeGroup(CommandInterface *initialCommand); 
-
+  static SequentialCommandGroup *makeGroup(vector<CommandInterface*> commands); 
+  
   SequentialCommandGroup(CommandInterface *initialCommand);
 
   SequentialCommandGroup *chainThen(CommandInterface *comm);

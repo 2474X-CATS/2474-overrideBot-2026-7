@@ -33,7 +33,7 @@ int scheduleCallbacks()
   Competition.drivercontrol([]()
                             { robot.driverControl(false); });
 
-  drawLogo(RobotState::getStateOf("is_team_color_blue"));
+  //drawLogo(RobotState::getStateOf("is_team_color_blue"));
   return 0;
 }
 
@@ -55,8 +55,18 @@ void testAuto(vector<CommandInterface *> auton)
 void startCommandMatch()
 {
   robot.configurateAutonomous();
-  thread callBackTrigger = thread(scheduleCallbacks);
+  thread callBackTrigger = thread(scheduleCallbacks); 
+  drawLogo(RobotState::getStateOf("is_team_color_blue"));
   robot.runTelemetryThread();
+}
+
+void startSkills(vector<CommandInterface*> auton){ 
+   robot.setAutonomousCommand(auton);
+   scheduleCallbacks();
+   RobotState::manuallyModifyState("is_team_color_blue", false); 
+   RobotState::manuallyModifyState("starting_left", true); 
+   drawLogo(true);
+   runTelemetry();
 }
 
 int runGraphics(){ 
@@ -64,19 +74,19 @@ int runGraphics(){
   DataSupplier zero; 
   DataSupplier error;   
    
-  zero.directory = "graph";
-  zero.name = "zero";
-  zero.label = "Goal";
-  
+  zero.directory = "odometry";
+  zero.name = "velocity_ms";
+  zero.label = "mm/s"; 
+
   error.directory = "graph";
   error.name = "error";
   error.label = "Err";  
-
+  
   Graph g = Graph( 
-    "Forearm PID", 
+    "Data Display", 
     { 
       zero,
-      error
+      //error
     }
   );   
   
@@ -103,48 +113,32 @@ int main()
   ); 
   
   
-  Telemetry::inst.placeValueAt<double>(0, "graph", "zero");
-
+  //Telemetry::inst.placeValueAt<double>(0, "graph", "zero");  
 
   //--------------------SUBSYSTEM CREATION----------------- 
    
-  
   Odometry odom = Odometry();
   Drivebase drive = Drivebase();
   SuperSystem ss = SuperSystem();
   Claw claw = Claw();
   Elevator elevator = Elevator();
   Toggle toggle = Toggle();
-
-  //-------------------------------------------------------
+  
+  //------------------------------------------------------- 
+  
   robot.initialize();
+  
   //-------------------RUN PROTOCOLS HERE------------------- 
- 
-  RobotState::manuallyModifyState("is_team_color_blue", true); 
-  //testDrive();
   
+  RobotState::manuallyModifyState("starting_left", false); 
+  RobotState::manuallyModifyState("is_team_color_blue", true);  
   
-  testAuto( 
-    {   
-      DriveForward::getCommand(TILE_SIZE_MM)
-    } 
-  );    
+  testAuto(
+    //auto_skills()
+    //two_pin_alliance_left()
+  );  
   
-  
-  
-  
-  
+ //testDrive(); 
   
 
-  /*
-  testAuto( 
-    {   
-      FaceTarget::getCommand(Setpoint::ALL_NAT_ALL)
-    }
-  ); 
-  */
-  
-  
-  
-  
 } 

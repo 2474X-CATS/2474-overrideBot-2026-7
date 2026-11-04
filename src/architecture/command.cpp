@@ -117,10 +117,22 @@ bool ParallelCommandGroup::isOver()
     return finished;
 }
 
-ParallelCommandGroup *ParallelCommandGroup::makeGroup(CommandInterface *initialCommand)
+ParallelCommandGroup *ParallelCommandGroup::makeGroup(vector<CommandInterface*> qualifyingCommands)
 {
-    return new ParallelCommandGroup(initialCommand);
+    ParallelCommandGroup* g = new ParallelCommandGroup(qualifyingCommands.at(0)); 
+    for (int i = 1; i < qualifyingCommands.size(); i ++){ 
+        g->chainAnd(qualifyingCommands.at(i));
+    }
+    return g;
 } 
+ 
+ParallelCommandGroup *ParallelCommandGroup::addBackgroundTasks(vector<CommandInterface*> background)
+{
+    for (int i = 0; i < background.size(); i ++){ 
+        this->chainWhile(background.at(i));
+    } 
+    return this;
+};
 
 //---------------------------------------------------------------------------------- 
 
@@ -128,8 +140,12 @@ RaceCommandGroup::RaceCommandGroup(CommandInterface* firstRacer){
     addRacer(firstRacer);
 };
 
-RaceCommandGroup* RaceCommandGroup::makeGroup(CommandInterface* firstRacer){ 
-    return new RaceCommandGroup(firstRacer); 
+RaceCommandGroup* RaceCommandGroup::makeGroup(vector<CommandInterface*> runners){ 
+    RaceCommandGroup* g = new RaceCommandGroup(runners.at(0)); 
+    for (int i = 1; i < runners.size(); i ++){ 
+        g->addRacer(runners.at(i));
+    } 
+    return g;
 }; 
 
 RaceCommandGroup* RaceCommandGroup::addRacer(CommandInterface* racer){ 
@@ -249,7 +265,11 @@ SequentialCommandGroup *SequentialCommandGroup::chainThen(CommandInterface *comm
     return this;
 }
 
-SequentialCommandGroup *SequentialCommandGroup::makeGroup(CommandInterface *comm)
+SequentialCommandGroup *SequentialCommandGroup::makeGroup(vector<CommandInterface*> commands)
 {
-    return new SequentialCommandGroup(comm);
+    SequentialCommandGroup* g = new SequentialCommandGroup(commands.at(0)); 
+    for (int i = 1; i < commands.size(); i ++){ 
+        g->chainThen(commands.at(i)); 
+    }
+    return g;
 }

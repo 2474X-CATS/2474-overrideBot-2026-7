@@ -69,37 +69,154 @@ bool WaitForSSState::isOver(){
 
 void WaitForSSState::end(){ 
     return; 
-} 
-
-//--------------------------------------------------------------------------------------  
-
-
-CommandInterface* Score(){ 
-    SequentialCommandGroup* cmd = SequentialCommandGroup::makeGroup(ModifyRobotState::getCommand("ss_manager", "macro_requested", true))-> 
-    chainThen(WaitUntil::getCommand("ss_manager", "task_completed", true));
-    
-    return RaceCommandGroup::makeGroup(cmd)->addRacer(WaitForSSState::getCommand(SuperStructurePosition::MATCHLOADING));
-}   
-
-CommandInterface* WaitForToggle(){ 
-    return WaitUntil::getCommand("toggle", "must_flip", false); 
 }  
 
-CommandInterface* DriveIntoElement(CommandInterface* driveComm){ 
-    RaceCommandGroup* cmd = RaceCommandGroup::makeGroup(driveComm); 
-    cmd->addRacer(WaitForSSState::getCommand(SuperStructurePosition::PRIMED)); 
-    return cmd;
-} 
+//-------------------------------------------------------------------------------------- 
 
-CommandInterface* DriveIntoGoal(CommandInterface* driveComm){ 
-    RaceCommandGroup* cmd = RaceCommandGroup::makeGroup(driveComm); 
-    cmd->addRacer(WaitUntil::getCommand("odometry", "obstructed", true)); 
-    return cmd;
+void ResetPose::start(){  
+   Telemetry::inst.placeValueAt<bool>(true, "odometry", "dr_reset_triggered");
+   for (ResetFace face : faces){ 
+      if (face == ResetFace::FRONT){ 
+         Telemetry::inst.placeValueAt<bool>(true, "odometry", "factor_front");
+      } else if (face == ResetFace::LEFT){ 
+         Telemetry::inst.placeValueAt<bool>(true, "odometry", "factor_left");
+      } else if (face == ResetFace::BACK){ 
+         Telemetry::inst.placeValueAt<bool>(true, "odometry", "factor_back");
+      } else { 
+         Telemetry::inst.placeValueAt<bool>(true, "odometry", "factor_right");
+      }
+   }
+}
+
+void ResetPose::periodic(){ 
+    return;
+}
+
+bool ResetPose::isOver(){ 
+    return !Telemetry::inst.getValueAt<bool>("odometry", "dr_reset_triggered");
+}
+
+void ResetPose::end(){ 
+    return;
 }
 
 
+//--------------------------------------------------------------------------------------  
 
-   
+void ResetFromGoal::start(){  
+   startTime = Brain.Timer.time();
+}
+
+void ResetFromGoal::periodic(){ 
+    drivebaseRef.manualDrive(2,0); //A bit of meshing (but not a significnt amount) 
+    if (Brain.Timer.time() - startTime >= 200 && !Telemetry::inst.getValueAt<bool>("odometry", "proxy_reset_triggered")){ 
+      Telemetry::inst.placeValueAt<bool>(true, "odometry", "proxy_reset_triggered");
+      Telemetry::inst.placeValueAt<int>(g, "odometry", "goal_index");  
+      switched = true;
+    }
+}
+
+bool ResetFromGoal::isOver(){ 
+    return !Telemetry::inst.getValueAt<bool>("odometry", "proxy_reset_triggered") && switched;
+}
+
+void ResetFromGoal::end(){ 
+    return;
+}
+
+//-------------------------------------------------------------------------------------- 
+
+
+CommandInterface* Score(){ 
+    return RaceCommandGroup::makeGroup( 
+              { 
+                SequentialCommandGroup::makeGroup( 
+                 { 
+                  ModifyRobotState::getCommand("ss_manager", "macro_requested", true), 
+                  WaitUntil::getCommand("ss_manager", "task_completed", true)  
+                 } 
+                ),
+                //WaitForSSState::getCommand(SuperStructurePosition::MATCHLOADING)
+              }
+           );
+}   
+
+CommandInterface* WaitForToggle(){  
+    return SequentialCommandGroup::makeGroup({ 
+             ModifyRobotState::getCommand("toggle", "auto_spin_enabled", true),
+             WaitUntil::getCommand("toggle", "must_flip", false),
+             ModifyRobotState::getCommand("toggle", "auto_spin_enabled", false)
+           }); 
+} 
+
+CommandInterface* DriveIntoElement(CommandInterface* driveComm){ 
+    return SequentialCommandGroup::makeGroup( 
+        { 
+           ModifyRobotState::getCommand("claw", "auto_clamp_enabled", true),
+           RaceCommandGroup::makeGroup( 
+            { 
+             driveComm, 
+             WaitForSSState::getCommand(SuperStructurePosition::PRIMED)
+            }
+           ),
+           ModifyRobotState::getCommand("claw", "auto_clamp_enabled", false)
+        }
+    );
+} 
+
+CommandInterface* DriveIntoGoal(CommandInterface* driveComm){ 
+    return RaceCommandGroup::makeGroup( 
+        { 
+            driveComm, 
+            WaitUntil::getCommand("odometry", "obstructed", true)
+        }
+    );
+}
+
+CommandInterface* SnapHeading(){ 
+    return SequentialCommandGroup::makeGroup( 
+        { 
+          ModifyRobotState::getCommand("odometry", "ang_reset_triggered", true), 
+          WaitUntil::getCommand("odometry", "ang_reset_triggered", false)
+        }
+    );
+}
+
+CommandInterface* Clench(){  
+    return SequentialCommandGroup::makeGroup( 
+        { 
+          ModifyRobotState::getCommand("claw", "auto_clamp_enabled", true), 
+          RaceCommandGroup::makeGroup( 
+            { 
+               WaitFor::getCommand(300), 
+               WaitUntil::getCommand("claw", "clamped", true)
+            }
+          ), 
+          ModifyRobotState::getCommand("claw", "auto_clamp_enabled", false) 
+        }
+    ); 
+}
+
+vector<CommandInterface*> RoutineWrap(vector<CommandInterface*> content){  
+  content.insert( 
+     content.begin(),   
+     WaitUntil::getCommand("odometry", "opened", true)
+  );
+  return { 
+     ParallelCommandGroup::makeGroup({
+        SequentialCommandGroup::makeGroup( 
+            { 
+                content 
+            }) 
+     })->addBackgroundTasks(
+        { 
+         RunSuperStructure::getCommand()
+        } 
+     )
+  }; 
+};
+
+
 
 
 

@@ -6,14 +6,10 @@ Drivebase* Drivebase::globalPtr = nullptr;
 const double Drivebase::MAX_RPM = 450; 
 const double Drivebase::WHEEL_RADIUS_MM = 2.75 / 2 * 25.4;
 
-const double Drivebase::DRIVE_SENSITIVITY = 1; 
-const double Drivebase::TURN_SENSITIVITY = 1; 
+const double Drivebase::DRIVE_SENSITIVITY = 1;
+const double Drivebase::TURN_SENSITIVITY = 1;
 
-const double Drivebase::ACCELERATION_LIMIT_LIN = 12 / 0.00001;
-const double Drivebase::ACCELERATION_LIMIT_ANG = 12 / 0.00001;
-
-const double Drivebase::MAX_LIN_SPEED = 12;
-const double Drivebase::MAX_ANG_SPEED = 12;
+const double Drivebase::TRACK_WIDTH_MM = ROBOT_WIDTH_MM - (2 * 2 * 25.4); 
 
 Drivebase::Drivebase(): 
 Subsystem( 
@@ -82,7 +78,7 @@ void Drivebase::manualDrive(double voltageDrive, double voltageTurn){
 }
 
 void Drivebase::tankDrive(double leftSpeed, double rightSpeed){  
-  if (RobotState::getStateOf("inverted")){ 
+  if (RobotState::getStateOf("inverted")){
     leftMotors.spin(vex::directionType::rev, -rightSpeed, vex::voltageUnits::volt);
     rightMotors.spin(vex::directionType::fwd, -leftSpeed, vex::voltageUnits::volt); 
   } else { 
@@ -95,37 +91,18 @@ void Drivebase::arcadeDrive(double speed, double rotation){
     speed *= DRIVE_SENSITIVITY / 100 * 12.0; 
     rotation *= TURN_SENSITIVITY / 100 * 12.0;
     
-    speed = std::min<double>(std::min<double>(speed, lastLinearVoltage + ((20/1000.0) * ACCELERATION_LIMIT_LIN)), MAX_LIN_SPEED);
-    speed = std::max<double>(std::max<double>(speed, lastLinearVoltage - ((20/1000.0) * ACCELERATION_LIMIT_LIN)), -MAX_LIN_SPEED); 
-    
-    rotation = std::min<double>(std::min<double>(rotation, lastAngularVoltage + ((20/1000.0) * ACCELERATION_LIMIT_ANG)), MAX_ANG_SPEED);
-    rotation = std::max<double>(std::max<double>(rotation, lastAngularVoltage - ((20/1000.0) * ACCELERATION_LIMIT_ANG)), -MAX_ANG_SPEED); 
-    
     manualDrive(speed, rotation);
-
-    lastAngularVoltage = rotation; 
-    lastLinearVoltage = speed;
+    
 }   
-
-
-void Drivebase::setSpeeds(double linearVelocity, double angularVelocity){ 
-    double linRPM = linearVelocity / (WHEEL_RADIUS_MM * 2 * M_PI) * 60 * 600 / MAX_RPM; 
-    double angRPM = ((ROBOT_WIDTH_MM * M_PI) * (angularVelocity / 360.0)) / (WHEEL_RADIUS_MM * 2 * M_PI) * 60 * 600 / MAX_RPM; 
-    leftMotors.setVelocity(linRPM - angRPM, vex::velocityUnits::rpm);
-    rightMotors.setVelocity(linRPM + angRPM, vex::velocityUnits::rpm); 
-    leftMotors.spin(vex::directionType::fwd); 
-    rightMotors.spin(vex::directionType::fwd);
-}
-
 
 ///-------------------------------------------------------------------------------------- 
 
 
-const double DriveForward::PID_CONSTANTS_KP = 12.0/(TILE_SIZE_MM * 1.4); //0.001;//75;
-const double DriveForward::PID_CONSTANTS_KI = 0;
-const double DriveForward::PID_CONSTANTS_KD = 0.001;
+const double DriveForward::PID_CONSTANTS_KP = 12.0/(TILE_SIZE_MM*1.4);//12.0/(TILE_SIZE_MM * (1 - 0.22));//(TILE_SIZE_MM * 1.415); //0.001;//75;
+const double DriveForward::PID_CONSTANTS_KI = 0.000;
+const double DriveForward::PID_CONSTANTS_KD = 0.000; //0.00198375;//0.00425;
 
-const double DriveForward::STRAIGHTEN_PID_KP = 0.115;//0.05;//0.033
+const double DriveForward::STRAIGHTEN_PID_KP = 0.2;//0.05;//0.033
 const double DriveForward::STRAIGHTEN_PID_KI = 0;
 const double DriveForward::STRAIGHTEN_PID_KD = 0.000;
 
@@ -136,16 +113,17 @@ void DriveForward::start(){
     initialAngle = Telemetry::inst.getValueAt<double>("odometry", "heading_deg");
 
     PIDConstants pidConstants;
-    pidConstants.P = PID_CONSTANTS_KP; 
-    pidConstants.I = PID_CONSTANTS_KI; 
-    pidConstants.D = PID_CONSTANTS_KD;  
-    pidConstants.minimumOutput = 1.25;
-    pidConstants.errorTolerance = 1; 
+    pidConstants.P = PID_CONSTANTS_KP;
+    pidConstants.I = PID_CONSTANTS_KI;
+    pidConstants.D = PID_CONSTANTS_KD;
+    pidConstants.minimumOutput = 2.15;
+    pidConstants.maximumOutput = 12;
+    pidConstants.errorTolerance = 5;
     
     PIDConstants straightenConstants;
-    straightenConstants.P = STRAIGHTEN_PID_KP; 
-    straightenConstants.I = STRAIGHTEN_PID_KI; 
-    straightenConstants.D = STRAIGHTEN_PID_KD;
+    straightenConstants.P = TurnToHeading::PID_CONSTANTS_KP;//STRAIGHTEN_PID_KP; 
+    straightenConstants.I = TurnToHeading::PID_CONSTANTS_KI;//STRAIGHTEN_PID_KI; 
+    straightenConstants.D = TurnToHeading::PID_CONSTANTS_KD;//STRAIGHTEN_PID_KD;
 
     controller = new pidcontroller(pidConstants, fabs(distance));   
     straightener = new pidcontroller(straightenConstants, 0); 
@@ -198,7 +176,7 @@ void TurnToHeading::start(){
    pidConstants.I = PID_CONSTANTS_KI; 
    pidConstants.D = PID_CONSTANTS_KD; 
    pidConstants.maximumOutput = 8;
-   pidConstants.minimumOutput = 2;
+   pidConstants.minimumOutput = 2.35; 
    pidConstants.errorTolerance = 0.5;
      
    controller = new pidcontroller(pidConstants, 0); 
@@ -232,51 +210,95 @@ void TurnToHeading::setAngle(double angle){
 
 //----------------------------------------------------------------------------------------- 
 
-const double PivotToAngle::PIV_PID_CONSTANTS_KP = 12.0 / 75;
-const double PivotToAngle::PIV_PID_CONSTANTS_KI = 0;
-const double PivotToAngle::PIV_PID_CONSTANTS_KD = 0.01;
+const double Pivot::PIV_PID_CONSTANTS_KP = 12.0 / 75;
+const double Pivot::PIV_PID_CONSTANTS_KI = 0;
+const double Pivot::PIV_PID_CONSTANTS_KD = 0.01;
 
-void PivotToAngle::start(){ 
+void Pivot::start(){ 
    PIDConstants pidConsts;
    pidConsts.P = PIV_PID_CONSTANTS_KP; 
    pidConsts.I = PIV_PID_CONSTANTS_KI; 
    pidConsts.D = PIV_PID_CONSTANTS_KD; 
    pidConsts.errorTolerance = 0.5;
    pidConsts.minimumOutput = 2;
-
+   pidConsts.maximumOutput = 12 / ((arcRadius + Drivebase::TRACK_WIDTH_MM/2) / (Drivebase::TRACK_WIDTH_MM/2));
+   //ratio of driving to turning stays the same
    controller = new pidcontroller(pidConsts, 0); 
    controller->setLastTimestamp(Brain.Timer.time()); 
 } 
 
-void PivotToAngle::periodic(){  
+void Pivot::periodic(){  
+   
    double currentAngle = Telemetry::inst.getValueAt<double>("odometry", "heading_deg");  
    double error = angleDifference(setpointAngle, currentAngle); 
-   Telemetry::inst.placeValueAt<double>(error, "graph", "error"); 
-   double output = controller->calculate(error, Brain.Timer.time());  
    
-   bool turningLeft;
-   if (output > 0){ //Going clockwise
-      turningLeft = true;
-   } else { 
-      turningLeft = false;
-   }  
-    
-   if (turningLeft){ 
-      drivebaseRef.tankDrive(fabs(output), 0); 
-   } else { 
-      drivebaseRef.tankDrive(0, fabs(output)); 
-   }
+   Telemetry::inst.placeValueAt<double>(error, "graph", "error"); 
+
+   double feedback = controller->calculate(error, Brain.Timer.time()); 
+
+   double majorOutput = feedback * ((arcRadius + Drivebase::TRACK_WIDTH_MM/2.0) / (Drivebase::TRACK_WIDTH_MM/2.0));
+   double minorOutput = feedback * ((arcRadius - Drivebase::TRACK_WIDTH_MM/2.0) / (Drivebase::TRACK_WIDTH_MM/2.0)); 
+
+   if (feedback > 0){ 
+      drivebaseRef.tankDrive(minorOutput, majorOutput); 
+   } else {
+      drivebaseRef.tankDrive(majorOutput, minorOutput); 
+   } 
+
 }  
 
-bool PivotToAngle::isOver(){   
+bool Pivot::isOver(){   
    double currentAngle = Telemetry::inst.getValueAt<double>("odometry", "heading_deg");
    return controller->atSetpoint(angleDifference(setpointAngle, currentAngle)); 
 }
 
-void PivotToAngle::end(){ 
+void Pivot::end(){ 
    drivebaseRef.manualDrive(0,0); 
 }
+//-----------------------------------------------------------------------------------------  
 
+void CurveInto::start(){  
+
+   PIDConstants consts; 
+   consts.P = DriveForward::PID_CONSTANTS_KP;
+   consts.I = DriveForward::PID_CONSTANTS_KI;
+   consts.D = DriveForward::PID_CONSTANTS_KD;
+   consts.errorTolerance = 0.5;  
+   consts.minimumOutput = 2;
+   
+   double currentX = Telemetry::inst.getValueAt<double>("odometry", "x_position_mm"); 
+   double currentY = Telemetry::inst.getValueAt<double>("odometry", "y_position_mm"); 
+   double currentAngle = Telemetry::inst.getValueAt<double>("odometry", "heading_deg");
+   double targetTheta = angleSum(toDegrees(atan2(targetY - currentY, targetX - currentX)), 0); 
+ 
+   double thetaTrans = toRadians(angleDifference(targetTheta, currentAngle)); 
+
+   radius = hypot(targetY - currentY, targetX - currentX) / (2 * sin(thetaTrans / 2.0));
+
+   consts.maximumOutput = 12 / ((fabs(radius) + Drivebase::TRACK_WIDTH_MM/2.0) / (Drivebase::TRACK_WIDTH_MM/2.0)); 
+   
+   double arcLength = fabs(radius) * thetaTrans;  
+
+   controller = new pidcontroller(consts, arcLength); 
+   controller->setLastTimestamp(Brain.Timer.time());
+
+} 
+
+void CurveInto::periodic(){ 
+   distTraveled += Telemetry::inst.getValueAt<double>("odometry","immediate_distance"); 
+   double feedback = controller->calculate(distTraveled, Brain.Timer.time()); 
+   double leftOutput = feedback * ((radius - Drivebase::TRACK_WIDTH_MM/2.0) / (Drivebase::TRACK_WIDTH_MM/2.0)); 
+   double rightOutput = feedback * ((radius + Drivebase::TRACK_WIDTH_MM/2.0) / (Drivebase::TRACK_WIDTH_MM/2.0)); 
+   drivebaseRef.tankDrive(leftOutput, rightOutput);
+}
+ 
+bool CurveInto::isOver(){ 
+   return controller->atSetpoint(distTraveled);
+} 
+
+void CurveInto::end(){ 
+   drivebaseRef.tankDrive(0,0);
+}
 
 //----------------------------------------------------------------------------------------- 
 
@@ -379,13 +401,15 @@ void MoveToPoint::start(){
 
     turnConsts.P = TurnToHeading::PID_CONSTANTS_KP;
     turnConsts.I = TurnToHeading::PID_CONSTANTS_KI;
-    turnConsts.D = TurnToHeading::PID_CONSTANTS_KD;
+    turnConsts.D = TurnToHeading::PID_CONSTANTS_KD; 
+    turnConsts.maximumOutput = 12; 
+    //turnConsts.minimumOutput = 1.5;
 
     driveConsts.P = DriveForward::PID_CONSTANTS_KP;
     driveConsts.I = DriveForward::PID_CONSTANTS_KI;
     driveConsts.D = DriveForward::PID_CONSTANTS_KD;  
     driveConsts.maximumOutput = 12; 
-    driveConsts.minimumOutput = 1.25;
+    driveConsts.minimumOutput = 1.1;
     driveConsts.errorTolerance = 5;
     
     linController = new pidcontroller(driveConsts, 0); 
@@ -411,7 +435,7 @@ void MoveToPoint::periodic(){
     double angOutput = angController->calculate(thetaError, Brain.Timer.time());
     double linOutput = -linController->calculate(distError, Brain.Timer.time());
   
-    double discount = 1 - std::min<double>(fabs(thetaError) / 30.0, 1); 
+    double discount = 1 - std::min<double>(fabs(thetaError) / 30, 1); 
 
     linOutput *= discount;
 

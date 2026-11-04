@@ -3,7 +3,7 @@
 Claw* Claw::globalPtr = nullptr; 
 
 const double Claw::MAXIMUM_TOLERABLE_DISTANCE = 75; 
-const int Claw::SCORE_DELAY_MILLIS = 150;  
+const int Claw::SCORE_DELAY_MILLIS = 150;
 const double Claw::MIN_CLEARANCE = 100;
 
 Claw::Claw() : 
@@ -13,7 +13,8 @@ Subsystem(
     (EntrySet){"active", EntryType::BOOL}, 
     (EntrySet){"in_possession", EntryType::BOOL},
     (EntrySet){"waiting", EntryType::BOOL}, 
-    (EntrySet){"clamped", EntryType::BOOL}
+    (EntrySet){"clamped", EntryType::BOOL}, 
+    (EntrySet){"auto_clamp_enabled", EntryType::BOOL}
    } 
 ),
 clamp(vex::pneumatics(Brain.ThreeWirePort.A)),
@@ -50,12 +51,9 @@ void Claw::updateDrivercontrol(){
 void Claw::updateAuto(){
    SuperStructurePosition pos = static_cast<SuperStructurePosition>(Telemetry::inst.getValueAt<int>("ss_manager", "position"));
    switch (pos){ 
-      case MATCHLOADING:   
-        if (clearance < MIN_CLEARANCE){  
-          clearance += fabs(Telemetry::inst.getValueAt<double>("odometry", "immediate_distance"));
-        }
-        set<bool>("clamped", get<bool>("in_possession") && clearance >= MIN_CLEARANCE);
-        break; 
+      case MATCHLOADING:
+        set<bool>("clamped", get<bool>("in_possession") && get<bool>("auto_clamp_enabled"));
+        break;
       case PRIMED: 
         set<bool>("clamped", true); 
         break; 

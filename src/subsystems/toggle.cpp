@@ -9,9 +9,10 @@ Toggle& Toggle::getObject(){
 Toggle::Toggle(): 
     Subsystem(
       "toggle",
-      { 
+      {
          (EntrySet){"is_on", EntryType::BOOL}, 
-         (EntrySet){"must_flip", EntryType::BOOL}
+         (EntrySet){"must_flip", EntryType::BOOL}, 
+         (EntrySet){"auto_spin_enabled", EntryType::BOOL}
       }
     ),
     toggle(vex::motor(vex::PORT10)),
@@ -20,25 +21,31 @@ Toggle::Toggle():
      globalPtr = this;
     };
 
-void Toggle::init(){  
-    set<bool>("must_flip", true); 
+void Toggle::init(){   
+    toggle.setBrake(vex::brakeType::brake);
+    set<bool>("must_flip", true);    
+
+    colorSensor.setLight(vex::ledState::on); 
+    colorSensor.setLightPower(100);
 } 
 
 void Toggle::periodic(){  
-    bool spinning = RobotState::getStateOf("toggle");  
-    if (colorSensor.isNearObject() && !spinning){
+    if (colorSensor.isNearObject()){
       if (RobotState::getStateOf("is_team_color_blue")){ 
-         spinning = colorSensor.color() != vex::color::blue; 
+         set<bool>("must_flip", colorSensor.color() != vex::color::blue); 
       } else { 
-         spinning = colorSensor.color() != vex::color::red; 
+         set<bool>("must_flip", colorSensor.color() != vex::color::red); 
       } 
-      set<bool>("must_flip", spinning);
     } else { 
       set<bool>("must_flip", false);
     }
-    
-    if (spinning){ 
-      toggle.spin(vex::directionType::rev, 7.2, vex::voltageUnits::volt); 
+
+    if (RobotState::getStateOf("toggle") || (get<bool>("auto_spin_enabled") && get<bool>("must_flip"))){  
+      double speed = 8;
+      if (!RobotState::getStateOf("toggle")){ 
+         speed = 5;
+      }
+      toggle.spin(vex::directionType::rev, speed, vex::voltageUnits::volt); 
     } else {
       toggle.stop();
     }
@@ -50,7 +57,9 @@ void Toggle::stop(){
 } 
 
 void Toggle::updateTelemetry(){  
-    return;
+    if (!RobotState::getStateOf("in_autonomous")){ 
+      set<bool>("auto_spin_enabled", true);
+    }
 } 
 
 void RunToggle::start(){ 
